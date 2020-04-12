@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>jina.executors.rankers &mdash; Jina Documentation 0.0.6 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="jina.executors.rankers.bi_match" href="jina.executors.rankers.bi_match.html" />
+    <link rel="prev" title="jina.executors.indexers.vector.sptag" href="jina.executors.indexers.vector.sptag.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Jina Documentation
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.6
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/main.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/remote/main.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/main.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="jina.html">Jina Python API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="jina.clients.html">jina.clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.drivers.html">jina.drivers</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="jina.executors.html">jina.executors</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.crafters.html">jina.executors.crafters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.encoders.html">jina.executors.encoders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.indexers.html">jina.executors.indexers</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">jina.executors.rankers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.rankers.bi_match.html">jina.executors.rankers.bi_match</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.compound.html">jina.executors.compound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.decorators.html">jina.executors.decorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.metas.html">jina.executors.metas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.requests.html">jina.executors.requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jina.flow.html">jina.flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.logging.html">jina.logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.main.html">jina.main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.peapods.html">jina.peapods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.proto.html">jina.proto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.enums.html">jina.enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.excepts.html">jina.excepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helper.html">jina.helper</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/proto/main.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/executor-encoder.html">General Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CONTRIBUTING.html">Contributing Guideline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/jep/main.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Miscs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Frequently Asked Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/RELEASE.html#friday-release">Friday Release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CHANGELOG.html">Change Logs</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Jina Documentation</a>
+        
+      </nav>
+
+      <div class="card table-of-contents">
+          <span class="card-title">Table of Contents</span>
+            <div class="card-content">
+            <ul>
+<li><a class="reference internal" href="#">jina.executors.rankers</a></li>
+</ul>
+
+            </div>
+        <a href="https://github.com/jina-ai/jina/">
+          <span class="toc-card-footer">
+            <span>Visit us on Github</span>
+          </span>
+        </a>
+      </div>
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="jina.html">Jina Python API Reference</a> &raquo;</li>
+        
+          <li><a href="jina.executors.html">jina.executors</a> &raquo;</li>
+        
+      <li>jina.executors.rankers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="jina-executors-rankers">
+<h1>jina.executors.rankers<a class="headerlink" href="#jina-executors-rankers" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="jina.executors.rankers.bi_match.html">jina.executors.rankers.bi_match</a></li>
+</ul>
+</div>
+<span class="target" id="module-jina.executors.rankers"></span><dl class="class">
+<dt id="jina.executors.rankers.BaseRanker">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.rankers.</code><code class="sig-name descname">BaseRanker</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers.html#BaseRanker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.BaseRanker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.executors.html#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a></p>
+<p>The base class for a <cite>Ranker</cite>. A <cite>Ranker</cite> translates the chunk-wise score (distance) to the doc-wise score.</p>
+<p>In the query-time, <a class="reference internal" href="#jina.executors.rankers.BaseRanker" title="jina.executors.rankers.BaseRanker"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRanker</span></code></a> is an almost-always required component.
+Because in the end we want to retrieve top-k documents of given query-document not top-k chunks of
+given query-chunks. The purpose of <a class="reference internal" href="#jina.executors.rankers.BaseRanker" title="jina.executors.rankers.BaseRanker"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRanker</span></code></a> is to aggregate the already existed top-k chunks
+into documents.</p>
+<p>The key function here is <a class="reference internal" href="#jina.executors.rankers.BaseRanker.score" title="jina.executors.rankers.BaseRanker.score"><code class="xref py py-func docutils literal notranslate"><span class="pre">score()</span></code></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">jina.drivers.handlers.score</span></code></p>
+</div>
+<dl class="attribute">
+<dt id="jina.executors.rankers.BaseRanker.required_keys">
+<code class="sig-name descname">required_keys</code><em class="property"> = {}</em><a class="headerlink" href="#jina.executors.rankers.BaseRanker.required_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>a set of <code class="docutils literal notranslate"><span class="pre">str</span></code>, key-values to extracted from the chunk-level protobuf message</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.rankers.BaseRanker.score">
+<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">match_idx</em>, <em class="sig-param">query_chunk_meta</em>, <em class="sig-param">match_chunk_meta</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers.html#BaseRanker.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.BaseRanker.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate the chunk-level top-k results into doc-level top-k results. Some score functions may leverage the
+meta information of the query, hence the meta info of the query chunks and matched chunks are given
+as arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>match_idx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – <p>a [N x 4] numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, column-wise:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">match_idx[:,0]</span></code>: <code class="docutils literal notranslate"><span class="pre">doc_id</span></code> of the matched chunks, integer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">match_idx[:,1]</span></code>: <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the matched chunks, integer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">match_idx[:,2]</span></code>: <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the query chunks, integer</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">match_idx[:,3]</span></code>: distance/metric/score between the query and matched chunks, float</p></li>
+</ul>
+</p></li>
+<li><p><strong>query_chunk_meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – the meta information of the query chunks, where the key is query chunks’ <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code>,
+the value is extracted by the <code class="docutils literal notranslate"><span class="pre">required_keys</span></code>.</p></li>
+<li><p><strong>match_chunk_meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – the meta information of the matched chunks, where the key is matched chunks’ <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code>,
+the value is extracted by the <code class="docutils literal notranslate"><span class="pre">required_keys</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a [N x 2] numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, where the first column is the matched documents’ <code class="docutils literal notranslate"><span class="pre">doc_id</span></code> (integer)
+the second column is the score/distance/metric between the matched doc and the query doc (float).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.rankers.BaseRanker.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#jina.executors.rankers.BaseRanker.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train this executor, need to be overrided</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="jina.executors.rankers.bi_match.html" class="btn btn-neutral float-right" title="jina.executors.rankers.bi_match" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="jina.executors.indexers.vector.sptag.html" class="btn btn-neutral float-left" title="jina.executors.indexers.vector.sptag" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI and its lovely contributors
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
