@@ -1,0 +1,629 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>JEP 1 — Redesigning Driver and its relation to Executor &mdash; Jina 0.1.11 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="JEP 2 — Supporting Docker Container in Flow API" href="../jep-2/main.html" />
+    <link rel="prev" title="Jina Enhancement Proposals (JEP)" href="../main.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.11
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../helloworld/main.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flow/README.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/main.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hub/main.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../remote/main.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dashboard/main.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cli/main.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">yaml-path</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proto/main.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing Guideline</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../main.html">Jina Enhancement Proposals (JEP)</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">JEP 1 — Redesigning <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and its relation to <code class="docutils literal notranslate"><span class="pre">Executor</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jep-2/main.html">JEP 2 — Supporting Docker Container in Flow API</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Jina</a>
+        
+      </nav>
+
+      <div class="card table-of-contents">
+          <span class="card-title">Table of Contents</span>
+            <div class="card-content">
+            <ul>
+<li><a class="reference internal" href="#">JEP 1 — Redesigning <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and its relation to <code class="docutils literal notranslate"><span class="pre">Executor</span></code></a><ul>
+<li><a class="reference internal" href="#abstract">Abstract</a></li>
+<li><a class="reference internal" href="#rationale">Rationale</a></li>
+<li><a class="reference internal" href="#specification">Specification</a><ul>
+<li><a class="reference internal" href="#new-design-of-the-executor-driver-and-pea">New design of the <code class="docutils literal notranslate"><span class="pre">Executor</span></code>, <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and <code class="docutils literal notranslate"><span class="pre">Pea</span></code></a></li>
+<li><a class="reference internal" href="#connecting-driver-pea-and-executor">Connecting <code class="docutils literal notranslate"><span class="pre">Driver</span></code>, <code class="docutils literal notranslate"><span class="pre">Pea</span></code> and <code class="docutils literal notranslate"><span class="pre">Executor</span></code></a></li>
+<li><a class="reference internal" href="#adding-requests-on-syntax">Adding <code class="docutils literal notranslate"><span class="pre">requests.on</span></code> syntax</a></li>
+<li><a class="reference internal" href="#the-default-values-on-requests-on">The default values on <code class="docutils literal notranslate"><span class="pre">requests.on</span></code></a></li>
+<li><a class="reference internal" href="#serialization-of-driver">Serialization of <code class="docutils literal notranslate"><span class="pre">Driver</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#backwards-compatibility">Backwards Compatibility</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+        <a href="https://github.com/jina-ai/jina/">
+          <span class="toc-card-footer">
+            <span>Visit us on Github</span>
+          </span>
+        </a>
+      </div>
+
+      <div id="showhide-navbar-btn" onclick="showhide_navbar()">
+      </div>
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../main.html">Jina Enhancement Proposals (JEP)</a> &raquo;</li>
+        
+      <li>JEP 1 — Redesigning <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and its relation to <code class="docutils literal notranslate"><span class="pre">Executor</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="jep-1-redesigning-driver-and-its-relation-to-executor">
+<h1><a class="toc-backref" href="#id12">JEP 1 — Redesigning <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and its relation to <code class="docutils literal notranslate"><span class="pre">Executor</span></code></a><a class="headerlink" href="#jep-1-redesigning-driver-and-its-relation-to-executor" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#jep-1-redesigning-driver-and-its-relation-to-executor" id="id2">JEP 1 — Redesigning <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and its relation to <code class="docutils literal notranslate"><span class="pre">Executor</span></code></a></p>
+<ul>
+<li><p><a class="reference internal" href="#abstract" id="id3">Abstract</a></p></li>
+<li><p><a class="reference internal" href="#rationale" id="id4">Rationale</a></p></li>
+<li><p><a class="reference internal" href="#specification" id="id5">Specification</a></p>
+<ul>
+<li><p><a class="reference internal" href="#new-design-of-the-executor-driver-and-pea" id="id6">New design of the <code class="docutils literal notranslate"><span class="pre">Executor</span></code>, <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and <code class="docutils literal notranslate"><span class="pre">Pea</span></code></a></p></li>
+<li><p><a class="reference internal" href="#connecting-driver-pea-and-executor" id="id7">Connecting <code class="docutils literal notranslate"><span class="pre">Driver</span></code>, <code class="docutils literal notranslate"><span class="pre">Pea</span></code> and <code class="docutils literal notranslate"><span class="pre">Executor</span></code></a></p></li>
+<li><p><a class="reference internal" href="#adding-requests-on-syntax" id="id8">Adding <code class="docutils literal notranslate"><span class="pre">requests.on</span></code> syntax</a></p></li>
+<li><p><a class="reference internal" href="#the-default-values-on-requests-on" id="id9">The default values on <code class="docutils literal notranslate"><span class="pre">requests.on</span></code></a></p></li>
+<li><p><a class="reference internal" href="#serialization-of-driver" id="id10">Serialization of <code class="docutils literal notranslate"><span class="pre">Driver</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#backwards-compatibility" id="id11">Backwards Compatibility</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Han Xiao (<a class="reference external" href="mailto:han&#46;xiao&#37;&#52;&#48;jina&#46;ai">han<span>&#46;</span>xiao<span>&#64;</span>jina<span>&#46;</span>ai</a>)</p>
+</dd>
+<dt class="field-even">Created</dt>
+<dd class="field-even"><p>Feb. 24, 2020</p>
+</dd>
+<dt class="field-odd">Status</dt>
+<dd class="field-odd"><p>Accepted</p>
+</dd>
+<dt class="field-even">Related JEPs</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">Created on Jina VCS version</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">&#64;ece529e</span></code></p>
+</dd>
+<dt class="field-even">Merged to Jina VCS version</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">&#64;f6796ac</span></code></p>
+</dd>
+<dt class="field-odd">Released in Jina version</dt>
+<dd class="field-odd"><p>TBA</p>
+</dd>
+<dt class="field-even">Discussions</dt>
+<dd class="field-even"><p><a class="reference external" href="https://github.com/jina-ai/jina/issues/27">https://github.com/jina-ai/jina/issues/27</a></p>
+</dd>
+</dl>
+<div class="contents topic" id="id1">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#jep-1-redesigning-driver-and-its-relation-to-executor" id="id12">JEP 1 — Redesigning <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and its relation to <code class="docutils literal notranslate"><span class="pre">Executor</span></code></a></p>
+<ul>
+<li><p><a class="reference internal" href="#abstract" id="id13">Abstract</a></p></li>
+<li><p><a class="reference internal" href="#rationale" id="id14">Rationale</a></p></li>
+<li><p><a class="reference internal" href="#specification" id="id15">Specification</a></p></li>
+<li><p><a class="reference internal" href="#backwards-compatibility" id="id16">Backwards Compatibility</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="abstract">
+<h2><a class="toc-backref" href="#id13">Abstract</a><a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
+<p>We describe why and how we refactor the <a class="reference internal" href="../../../api/jina.drivers.html#jina.drivers.BaseDriver" title="jina.drivers.BaseDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseDriver</span></code></a> and make it as a part of <a class="reference internal" href="../../../api/jina.executors.html#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a>.</p>
+</div>
+<div class="section" id="rationale">
+<h2><a class="toc-backref" href="#id14">Rationale</a><a class="headerlink" href="#rationale" title="Permalink to this headline">¶</a></h2>
+<p>In the current implementation, the driver config is placed separately from the executor config. They are connected through CLI parameters <code class="docutils literal notranslate"><span class="pre">--driver_yaml_path</span></code> and <code class="docutils literal notranslate"><span class="pre">--driver_group</span></code> on the Pea’s level.</p>
+<p>This poses multiple problems such as:</p>
+<ul class="simple">
+<li><p>As people working on executor, they have a very vague clue how it will work in the microservice/network settings. They later have to design the corresponding <code class="docutils literal notranslate"><span class="pre">driver_group</span></code> to match the logic of the executor.</p></li>
+<li><p>Almost every executor needs a driver, separating the driver from the executor seems unnecessary.</p></li>
+<li><p>Two YAML configs are cross-referencing the others. This is error-prone.</p></li>
+<li><p>The name <code class="docutils literal notranslate"><span class="pre">driver</span></code> and <code class="docutils literal notranslate"><span class="pre">handler</span></code> are used interchangeably and they can be very confusing.</p></li>
+</ul>
+<p>What we are expecting is the driver specification defined inside the executor YAML config, such as</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!CompoundExecutor</span>
+<span class="nt">components</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!NumpyIndexer</span>
+    <span class="nt">with</span><span class="p">:</span>
+      <span class="nt">num_dim</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">-1</span>
+      <span class="nt">index_key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HNSW32</span>
+      <span class="nt">index_filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vec.idx</span>
+    <span class="nt">metas</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my_vec_indexer</span>  <span class="c1"># a customized name</span>
+      <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$TEST_WORKDIR</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!MetaProtoIndexer</span>
+    <span class="nt">with</span><span class="p">:</span>
+      <span class="nt">index_filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk.gzip</span>
+    <span class="nt">metas</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk_meta_indexer</span>
+      <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$TEST_WORKDIR</span>
+<span class="nt">metas</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk_compound_indexer</span>
+  <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$TEST_WORKDIR</span>
+<span class="nt">on</span><span class="p">:</span>
+  <span class="nt">SearchRequest</span><span class="p">:</span>  <span class="c1"># under request type1</span>
+    <span class="p p-Indicator">-</span> <span class="nt">!ChunkSearchDriver</span><span class="p">:</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my_vec_indexer</span>
+          <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">query</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!ChunkMetaSearchDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">meta_query</span>
+  <span class="nt">IndexRequest</span><span class="p">:</span>    <span class="c1"># under request type2</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!ChunkIndexDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+            <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">add</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!PruneChunkDriver</span> <span class="p p-Indicator">{}</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!MetaChunkDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+            <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">add</span>
+</pre></div>
+</div>
+<p>The above YAML illustrates a simple example when writing JEP-1, please refer to the docs for the final YAML syntax and specification.</p>
+</div>
+<div class="section" id="specification">
+<h2><a class="toc-backref" href="#id15">Specification</a><a class="headerlink" href="#specification" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="new-design-of-the-executor-driver-and-pea">
+<h3><a class="toc-backref" href="#id6">New design of the <code class="docutils literal notranslate"><span class="pre">Executor</span></code>, <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and <code class="docutils literal notranslate"><span class="pre">Pea</span></code></a><a class="headerlink" href="#new-design-of-the-executor-driver-and-pea" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Driver</span></code> is purposed to translate between protobuf message (in the network layer) and the python native object (in the executor). It connects the Python native <code class="docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code> with the network layer <code class="docutils literal notranslate"><span class="pre">jina.peapods.pea.Pea</span></code>. With <code class="docutils literal notranslate"><span class="pre">Driver</span></code> ML developers can focus on the model/logic behind an <code class="docutils literal notranslate"><span class="pre">Executor</span></code>, using Python objects/numpy array as input and output, without worrying about how it deals with protobuf. The next figure illustrates this idea.</p>
+<a class="reference internal image-reference" href="../../../_images/JEP1-driver-design.svg"><img alt="../../../_images/JEP1-driver-design.svg" class="align-center" src="../../../_images/JEP1-driver-design.svg" width="60%" /></a>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p>Each public <code class="docutils literal notranslate"><span class="pre">Executor</span></code> function requires a <code class="docutils literal notranslate"><span class="pre">Driver</span></code> if this function want to process the Protobuf message from the <code class="docutils literal notranslate"><span class="pre">Pea</span></code>.  If an <code class="docutils literal notranslate"><span class="pre">Executor</span></code> exposes multiple function interfaces, e.g. <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">query()</span></code>, then multiple <code class="docutils literal notranslate"><span class="pre">Driver</span></code> need to be implemented respectively. This is because each function requires different information from the Protobuf message, thus requires different extraction and filling strategies of each <code class="docutils literal notranslate"><span class="pre">Driver</span></code>.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">Driver</span></code> has access to both <code class="docutils literal notranslate"><span class="pre">Executor</span></code> and <code class="docutils literal notranslate"><span class="pre">Pea</span></code>’s context. In particular, it can access any function from the <code class="docutils literal notranslate"><span class="pre">Executor</span></code> and the current message and previous messages received from <code class="docutils literal notranslate"><span class="pre">Pea</span></code>.</p>
+<p>The same executor may work differently under different incoming requests, this is defined by chaining multiple drivers together as a driver group. The executor invokes different driver group according to the type of message that the Pea received.</p>
+</div>
+<div class="section" id="connecting-driver-pea-and-executor">
+<h3><a class="toc-backref" href="#id7">Connecting <code class="docutils literal notranslate"><span class="pre">Driver</span></code>, <code class="docutils literal notranslate"><span class="pre">Pea</span></code> and <code class="docutils literal notranslate"><span class="pre">Executor</span></code></a><a class="headerlink" href="#connecting-driver-pea-and-executor" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Driver</span></code>, <code class="docutils literal notranslate"><span class="pre">Pea</span></code> and <code class="docutils literal notranslate"><span class="pre">Executor</span></code> are connected via a chain of <code class="xref py py-func docutils literal notranslate"><span class="pre">attach()</span></code>. First, the <code class="docutils literal notranslate"><span class="pre">Pea</span></code> tells the <code class="docutils literal notranslate"><span class="pre">Executor</span></code> to attach to the <code class="docutils literal notranslate"><span class="pre">Pea</span></code> after loading:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="n">this</span> <span class="n">message</span><span class="o">.</span>
+
+        <span class="p">:</span><span class="n">param</span> <span class="n">msg</span><span class="p">:</span> <span class="n">the</span> <span class="n">message</span> <span class="n">received</span>
+        <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        self._request = getattr(msg.request, msg.request.WhichOneof(&#39;body&#39;))</span>
+<span class="s2">        self._message = msg</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Executor</span></code> tells all contained drivers to <code class="xref py py-func docutils literal notranslate"><span class="pre">attach()</span></code> to the <code class="docutils literal notranslate"><span class="pre">Pea</span></code> and <code class="docutils literal notranslate"><span class="pre">Executor</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+        This is called inside the initializing of a :class:`jina.peapods.pea.BasePea`.
+        &quot;&quot;&quot;
+        for v in self._drivers.values():
+            for d in v:
+                d.attach(executor=self, *args, **kwargs)
+
+    def __call__(self, req_type, *args, **kwargs):
+</pre></div>
+</div>
+<p>Depending on the <code class="docutils literal notranslate"><span class="pre">Driver</span></code> type, <a class="reference internal" href="../../../api/jina.drivers.html#jina.drivers.BaseExecutableDriver" title="jina.drivers.BaseExecutableDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseExecutableDriver</span></code></a> is attached to both, whereas <a class="reference internal" href="../../../api/jina.drivers.html#jina.drivers.BaseDriver" title="jina.drivers.BaseDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseDriver</span></code></a> is only attach to <code class="docutils literal notranslate"><span class="pre">Pea</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">return</span> <span class="n">arg_wrapper</span>
+
+
+<span class="k">class</span> <span class="nc">DriverType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adding-requests-on-syntax">
+<h3><a class="toc-backref" href="#id8">Adding <code class="docutils literal notranslate"><span class="pre">requests.on</span></code> syntax</a><a class="headerlink" href="#adding-requests-on-syntax" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">requests</span></code> field is used to define the behavior of the executor under different requests. It is defined at the same level with <code class="docutils literal notranslate"><span class="pre">metas</span></code> and <code class="docutils literal notranslate"><span class="pre">with</span></code>. The <code class="docutils literal notranslate"><span class="pre">on</span></code> field describes what will the executor do on certain network requests. For example, for a <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.encode.BaseEncoder</span></code>, which is expected to do <code class="xref py py-func docutils literal notranslate"><span class="pre">encode()</span></code> in any circumstances. The <code class="docutils literal notranslate"><span class="pre">on</span></code> field should be defined as follows:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!AwesomeExecutor</span>
+<span class="nt">with</span><span class="p">:</span>
+<span class="nt">metas</span><span class="p">:</span>
+<span class="nt">requests</span><span class="p">:</span>
+    <span class="nt">on</span><span class="p">:</span>
+        <span class="p p-Indicator">[</span><span class="nv">SearchRequest</span><span class="p p-Indicator">,</span> <span class="nv">IndexRequest</span><span class="p p-Indicator">,</span> <span class="nv">TrainRequest</span><span class="p p-Indicator">]:</span>
+            <span class="p p-Indicator">-</span> <span class="kt">!EncodeDriver</span>
+                <span class="nt">with</span><span class="p">:</span>
+                    <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">encode</span>
+</pre></div>
+</div>
+<p>In the future, there may be other subfields implemented right under the <code class="docutils literal notranslate"><span class="pre">requests</span></code> field.</p>
+<dl class="confval">
+<dt id="confval-requests.on.[RequestType]">
+<code class="sig-name descname">requests.on.[RequestType]</code><a class="headerlink" href="#confval-requests.on.[RequestType]" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">[RequestType]</span></code> can be a list of <code class="docutils literal notranslate"><span class="pre">jina.jina_pb2.Request</span></code>, i.e. SearchRequest, IndexRequest, TrainRequest and ControlRequest.</p>
+</dd></dl>
+
+<dl class="confval">
+<dt id="confval-requests.on.[RequestType].method">
+<code class="sig-name descname">requests.on.[RequestType].method</code><a class="headerlink" href="#confval-requests.on.[RequestType].method" title="Permalink to this definition">¶</a></dt>
+<dd><p>The executor’s method to call, the method must be defined inside the scope of this executor. It is <strong>optional</strong> though.</p>
+</dd></dl>
+
+<dl class="confval">
+<dt id="confval-requests.on.[RequestType].driver">
+<code class="sig-name descname">requests.on.[RequestType].driver</code><a class="headerlink" href="#confval-requests.on.[RequestType].driver" title="Permalink to this definition">¶</a></dt>
+<dd><p>The corresponding driver to use, defined in <a class="reference internal" href="../../../api/jina.drivers.html#module-jina.drivers" title="jina.drivers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jina.drivers</span></code></a>. It is <strong>always required</strong>.</p>
+</dd></dl>
+
+<p>The <code class="docutils literal notranslate"><span class="pre">on</span></code> field supports multiple methods/drivers, and they are being called in the order of how they defined. For example,</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">on</span><span class="p">:</span>
+    <span class="nt">SearchRequest</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="kt">!PruneChunkDriver</span> <span class="p p-Indicator">{}</span>
+        <span class="p p-Indicator">-</span> <span class="kt">!Chunk2DocScoreDriver</span>
+          <span class="nt">with</span><span class="p">:</span>
+            <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">score</span>
+        <span class="p p-Indicator">-</span> <span class="kt">!PruneDocDriver</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+<p>For the <a class="reference internal" href="../../../api/jina.executors.compound.html#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a>, the <code class="docutils literal notranslate"><span class="pre">on</span></code> field supports specifying a method of a member executor with <code class="docutils literal notranslate"><span class="pre">executor</span></code>. For example,</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!CompoundExecutor</span>
+<span class="nt">components</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!NumpyIndexer</span>
+    <span class="nt">metas</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my_vec_indexer</span>  <span class="c1"># a customized name</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!MetaProtoIndexer</span>
+    <span class="nt">metas</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk_meta_indexer</span>
+<span class="nt">requests</span><span class="p">:</span>
+    <span class="nt">on</span><span class="p">:</span>
+        <span class="nt">SearchRequest</span><span class="p">:</span>  <span class="c1"># under request type1</span>
+            <span class="p p-Indicator">-</span> <span class="kt">!VecIndexDriver</span>
+                <span class="nt">with</span><span class="p">:</span>
+                    <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my_vec_indexer</span>
+                    <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">query</span>
+
+            <span class="p p-Indicator">-</span> <span class="kt">!MetaChunkIndexDriver</span>
+                <span class="nt">with</span><span class="p">:</span>
+                    <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk_meta_indexer</span>
+                    <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">meta_query</span>
+</pre></div>
+</div>
+<dl class="confval">
+<dt id="confval-requests.on.[RequestType].executor">
+<code class="sig-name descname">requests.on.[RequestType].executor</code><a class="headerlink" href="#confval-requests.on.[RequestType].executor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the sub-executor defined. It is only required for <a class="reference internal" href="../../../api/jina.executors.compound.html#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a>.</p>
+</dd></dl>
+
+<p>Note, a meaningful <code class="docutils literal notranslate"><span class="pre">Executor</span></code> is not always required. For example, a “router”, which only forwards the message can be defined as the follows using simply the <a class="reference internal" href="../../../api/jina.executors.html#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!BaseExecutor</span>
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="nt">on</span><span class="p">:</span>
+    <span class="p p-Indicator">[</span><span class="nv">SearchRequest</span><span class="p p-Indicator">,</span> <span class="nv">IndexRequest</span><span class="p p-Indicator">,</span> <span class="nv">TrainRequest</span><span class="p p-Indicator">]:</span>
+        <span class="p p-Indicator">-</span> <span class="kt">!RouteDriver</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-default-values-on-requests-on">
+<h3><a class="toc-backref" href="#id9">The default values on <code class="docutils literal notranslate"><span class="pre">requests.on</span></code></a><a class="headerlink" href="#the-default-values-on-requests-on" title="Permalink to this headline">¶</a></h3>
+<p>Certain behaviors are followed by all executors, it makes sense to have a <code class="file docutils literal notranslate"><span class="pre">requests.default.yml</span></code> to define all those default behaviors. A redefinition in the user-specified YAML will certainly override these default values.</p>
+<dl class="confval">
+<dt id="confval-requests.on.ControlRequest">
+<code class="sig-name descname">requests.on.ControlRequest</code><a class="headerlink" href="#confval-requests.on.ControlRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>All executors must handle the <code class="docutils literal notranslate"><span class="pre">ControlRequest</span></code> correctly, so that they (and their container <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.peapods.pea.Pea</span></code>) can be closed/terminated gracefully. Therefore, it is more convenient to set <code class="docutils literal notranslate"><span class="pre">ControlRequest</span></code> as defaults:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">requests</span><span class="p">:</span>
+    <span class="nt">on</span><span class="p">:</span>
+        <span class="nt">ControlRequest</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="kt">!ControlReqDriver</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="serialization-of-driver">
+<h3><a class="toc-backref" href="#id10">Serialization of <code class="docutils literal notranslate"><span class="pre">Driver</span></code></a><a class="headerlink" href="#serialization-of-driver" title="Permalink to this headline">¶</a></h3>
+<p>When <code class="xref py py-func docutils literal notranslate"><span class="pre">jina.drivers.BaseExecutableDriver.save()</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">jina.drivers.BaseExecutableDriver.save_config()</span></code> is called, then the driver it contains will be also saved as a part of YAML or as a part of the binary pickle. Note, that the driver deserialized from the binary/YAML will be always “unattached”. This is because the attached <code class="docutils literal notranslate"><span class="pre">Pea</span></code> and <code class="docutils literal notranslate"><span class="pre">Executor</span></code> should not be serialized while saving. Thus it has to call <code class="xref py py-func docutils literal notranslate"><span class="pre">attach()</span></code> for making it connected to <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.peapods.pea.Pea</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executuors.BaseExecutor</span></code> again.</p>
+<p>We make <a class="reference internal" href="../../../api/jina.drivers.html#jina.drivers.BaseDriver" title="jina.drivers.BaseDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseDriver</span></code></a> and <a class="reference internal" href="../../../api/jina.drivers.html#jina.drivers.BaseExecutableDriver" title="jina.drivers.BaseExecutableDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseExecutableDriver</span></code></a> loadable from YAML configs. The arguments of <code class="xref py py-func docutils literal notranslate"><span class="pre">__init__()</span></code> can be specified via <code class="docutils literal notranslate"><span class="pre">with</span></code>, and a non-parametric <code class="xref py py-func docutils literal notranslate"><span class="pre">__init__()</span></code> can be specified via <code class="docutils literal notranslate"><span class="pre">{}</span></code>. Very similar to how it is defined for <a class="reference internal" href="../../../api/jina.executors.html#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a>. For example,</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="kt">!MetaDocSearchDriver</span>
+  <span class="nt">with</span><span class="p">:</span>
+    <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">blah</span>
+    <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">goto</span>
+<span class="p p-Indicator">-</span> <span class="kt">!ControlReqDriver</span> <span class="p p-Indicator">{}</span>
+<span class="p p-Indicator">-</span> <span class="kt">!BaseDriver</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="backwards-compatibility">
+<h2><a class="toc-backref" href="#id16">Backwards Compatibility</a><a class="headerlink" href="#backwards-compatibility" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The old <a class="reference internal" href="../../../api/jina.drivers.html#module-jina.drivers" title="jina.drivers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">jina.drivers</span></code></a> module is essentially removed.</p></li>
+<li><p>The Pod arguments <code class="docutils literal notranslate"><span class="pre">--driver_yaml_path</span></code> and <code class="docutils literal notranslate"><span class="pre">driver_group</span></code> are removed. Flow interface is also affected.</p></li>
+<li><p>The Pod arguments <code class="docutils literal notranslate"><span class="pre">--exec_yaml_path</span></code> is renamed to <code class="docutils literal notranslate"><span class="pre">yaml_path</span></code> as now the Pod only needs one YAML config file.</p></li>
+<li><p><code class="file docutils literal notranslate"><span class="pre">resources/drivers.default.yml</span></code> is kept only for references, it is not used in any Python code anymore. This file is expected to be removed in the future release.</p></li>
+<li><p>A solely driver-powered <code class="docutils literal notranslate"><span class="pre">Pea</span></code> such as <code class="xref py py-func docutils literal notranslate"><span class="pre">route()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">merge()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">clear()</span></code> are now implemented with <code class="file docutils literal notranslate"><span class="pre">resources/executors.route.yml</span></code>, <code class="file docutils literal notranslate"><span class="pre">resources/executors.merge.yml</span></code> and <code class="file docutils literal notranslate"><span class="pre">resources/executors.clear.yml</span></code>. The Pod arguments  <code class="docutils literal notranslate"><span class="pre">--yaml_path</span></code> is also adapted to accept <code class="docutils literal notranslate"><span class="pre">route</span></code>,  <code class="docutils literal notranslate"><span class="pre">merge</span></code>,  <code class="docutils literal notranslate"><span class="pre">clear</span></code> as shortcuts.</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../jep-2/main.html" class="btn btn-neutral float-right" title="JEP 2 — Supporting Docker Container in Flow API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../main.html" class="btn btn-neutral float-left" title="Jina Enhancement Proposals (JEP)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
