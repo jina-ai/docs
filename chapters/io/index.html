@@ -1,0 +1,485 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>Input and Output Functions in Jina &mdash; Jina 0.2.6 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using Jina Pod with Docker Container" href="../hub/index.html" />
+    <link rel="prev" title="Jina 101: First Thing to Learn About Jina" href="../101/.sphinx.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.6
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">yaml-path</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing Guideline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Jina</a>
+        
+      </nav>
+
+      <div class="card table-of-contents">
+          <span class="card-title">Table of Contents</span>
+            <div class="card-content">
+            <ul>
+<li><a class="reference internal" href="#">Input and Output Functions in Jina</a><ul>
+<li><a class="reference internal" href="#input-function">Input Function</a><ul>
+<li><a class="reference internal" href="#tldr">TLDR;</a></li>
+<li><a class="reference internal" href="#why-in-bytes">Why in bytes?</a></li>
+<li><a class="reference internal" href="#but-then-how-can-you-recognize-those-bytes-in-jina">But then how can you recognize those bytes in Jina?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#output-function">Output Function</a><ul>
+<li><a class="reference internal" href="#id1">TLDR;</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+        <a href="https://github.com/jina-ai/jina/">
+          <span class="toc-card-footer">
+            <span>Visit us on Github</span>
+          </span>
+        </a>
+      </div>
+
+      <div id="showhide-navbar-btn" onclick="showhide_navbar()">
+      </div>
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Input and Output Functions in Jina</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="input-and-output-functions-in-jina">
+<h1>Input and Output Functions in Jina<a class="headerlink" href="#input-and-output-functions-in-jina" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter I will explain the input and output design of Jina.</p>
+<div class="section" id="input-function">
+<h2>Input Function<a class="headerlink" href="#input-function" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="tldr">
+<h3>TLDR;<a class="headerlink" href="#tldr" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Everything is sent in bytes</p></li>
+<li><p>Use crafter to work with <code class="docutils literal notranslate"><span class="pre">buffer</span></code></p></li>
+</ul>
+<p>In the <a class="reference internal" href="../flow/index.html"><span class="doc">Flow API</span></a>, we highlight that you can use <code class="docutils literal notranslate"><span class="pre">.index()</span></code>, <code class="docutils literal notranslate"><span class="pre">.search()</span></code> and <code class="docutils literal notranslate"><span class="pre">.train()</span></code> to feed index data and search query to a flow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">output_fn</span><span class="o">=</span><span class="nb">print</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">input_fn</span></code> is <code class="docutils literal notranslate"><span class="pre">Iterator[bytes]</span></code>, each of which corresponds to a bytes representation of a Document.</p>
+<p>A simple <code class="docutils literal notranslate"><span class="pre">input_fn</span></code> can be defined as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">input_fn</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="sa">b</span><span class="s1">&#39;look! i am a Document!&#39;</span>  <span class="c1"># `s` is a &quot;Document&quot;! </span>
+
+<span class="c1"># or ...</span>
+<span class="n">input_fn</span> <span class="o">=</span> <span class="p">(</span><span class="sa">b</span><span class="s1">&#39;look! i am a Document!&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="why-in-bytes">
+<h3>Why in bytes?<a class="headerlink" href="#why-in-bytes" title="Permalink to this headline">¶</a></h3>
+<p>Some users may wonder why we use bytes instead of some Python native objects as the input. There are two reasons behind:</p>
+<ul class="simple">
+<li><p>As a universal search framework, Jina accepts documents in different formats, from text document, image to video. The only data representation that is consistent over those modalities is raw bytes.</p></li>
+<li><p>Client can be written in different languages other than Python. The only data type that can be recognized across the languages is raw bytes.</p></li>
+</ul>
+</div>
+<div class="section" id="but-then-how-can-you-recognize-those-bytes-in-jina">
+<h3>But then how can you recognize those bytes in Jina?<a class="headerlink" href="#but-then-how-can-you-recognize-those-bytes-in-jina" title="Permalink to this headline">¶</a></h3>
+<p>The answer relies in the <code class="docutils literal notranslate"><span class="pre">crafter</span></code> in the Flow, and the “type recognition” is implemented as a “deserialization” step. The <code class="docutils literal notranslate"><span class="pre">crafter</span></code> is often the first component in the Flow, it translates the raw bytes into some Python native object.</p>
+<p>For example, let’s say our input function is</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">input_fn</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">all_gif_files</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>which basically reads gif video in binary.</p>
+<p>The corresponding <code class="docutils literal notranslate"><span class="pre">crafter</span></code> takes whatever stored in <code class="docutils literal notranslate"><span class="pre">buffer</span></code> and try to make sense out of it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">jina.executors.crafters</span> <span class="kn">import</span> <span class="n">BaseDocCrafter</span>
+
+<span class="k">class</span> <span class="nc">GifCrafter</span><span class="p">(</span><span class="n">BaseDocCrafter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">craft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">buffer</span><span class="p">))</span>
+        <span class="c1"># manipulate the image here</span>
+        <span class="c1"># ...</span>
+</pre></div>
+</div>
+<p>In this example, <code class="docutils literal notranslate"><span class="pre">PIL.Image.open</span></code> takes either the filename or file object as argument. We convert <code class="docutils literal notranslate"><span class="pre">buffer</span></code> to a file object here using <code class="docutils literal notranslate"><span class="pre">io.BytesIO</span></code>.</p>
+<p>Alternatively, if your input function is sending the file name only, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">input_fn</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">all_gif_files</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">g</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>  <span class="c1"># convert str to binary string b&#39;str&#39;</span>
+</pre></div>
+</div>
+<p>Then the corresponding <code class="docutils literal notranslate"><span class="pre">crafter</span></code> should change accordingly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">jina.executors.crafters</span> <span class="kn">import</span> <span class="n">BaseDocCrafter</span>
+
+<span class="k">class</span> <span class="nc">GifCrafter</span><span class="p">(</span><span class="n">BaseDocCrafter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">craft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">buffer</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+        <span class="c1"># manipulate the image here</span>
+        <span class="c1"># ...</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">buffer</span></code> now stores the file path, so we convert it back to normal string with <code class="docutils literal notranslate"><span class="pre">.decode()</span></code> and reads from the file path.</p>
+<p>One can also combine two types of data together, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">input_fn</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">all_gif_files</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">g</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;JINA_DELIM&#39;</span> <span class="o">+</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">crafter</span></code> then can be implemented as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.executors.crafters</span> <span class="kn">import</span> <span class="n">BaseDocCrafter</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="k">class</span> <span class="nc">GifCrafter</span><span class="p">(</span><span class="n">BaseDocCrafter</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">craft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">file_name</span><span class="p">,</span> <span class="n">img_raw</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;JINA_DELIM&#39;</span><span class="p">)</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">img_raw</span><span class="p">))</span>
+        <span class="c1"># manipulate the image and file_name here</span>
+        <span class="c1"># ...</span>
+</pre></div>
+</div>
+<p>As you can see from the examples above, we use <code class="docutils literal notranslate"><span class="pre">buffer</span></code> to transfer string and gif video.</p>
+<p><code class="docutils literal notranslate"><span class="pre">.index()</span></code>, <code class="docutils literal notranslate"><span class="pre">.search()</span></code> and <code class="docutils literal notranslate"><span class="pre">.train()</span></code> also accept <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> which controls the number of documents per each request. But this does not change the implementation of the <code class="docutils literal notranslate"><span class="pre">crafter</span></code>, as the <code class="docutils literal notranslate"><span class="pre">crafter</span></code> always works at document level.</p>
+<p>Further readings:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="../cli/jina-client.html"><code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">client</span> <span class="pre">--help</span></code></a></p></li>
+<li><p><a class="reference external" href="../proto/docs.html#document">Jina <code class="docutils literal notranslate"><span class="pre">Document</span></code> Protobuf</a></p></li>
+<li><p><a class="reference external" href="../cli/jina-gateway.html?highlight=prefetch#gateway%20arguments"><code class="docutils literal notranslate"><span class="pre">prefetch</span></code> in <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">gateway</span></code></a></p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="output-function">
+<h2>Output Function<a class="headerlink" href="#output-function" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>TLDR;<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Everything works asynchronously</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">callback=</span></code> to specify the output function</p></li>
+</ul>
+<p>The output function in Jina is basically <em>asynchronous callback</em>. For the sake of efficiency Jina is designed to be highly asynchronous on data transmission. You just keep sending request to Jina without any blocking. When a request is finished, the callback function will be invoked.</p>
+<p>For example, the following will print the request after a <code class="docutils literal notranslate"><span class="pre">IndexRequest</span></code> is finished:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">output_fn</span><span class="o">=</span><span class="nb">print</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is quite useful when debugging.</p>
+<p>In the “Hello, World!” example, we use callback function to append the top-k result to a HTML page:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_html</span><span class="p">(</span><span class="n">resp</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">resp</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">docs</span><span class="p">:</span>
+        <span class="n">vi</span> <span class="o">=</span> <span class="s1">&#39;data:image/png;base64,&#39;</span> <span class="o">+</span> <span class="n">d</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="n">result_html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;tr&gt;&lt;td&gt;&lt;img src=&quot;</span><span class="si">{</span><span class="n">vi</span><span class="si">}</span><span class="s1">&quot;/&gt;&lt;/td&gt;&lt;td&gt;&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">kk</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">topk_results</span><span class="p">:</span>
+            <span class="n">kmi</span> <span class="o">=</span> <span class="s1">&#39;data:image/png;base64,&#39;</span> <span class="o">+</span> <span class="n">kk</span><span class="o">.</span><span class="n">match_doc</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+            <span class="n">result_html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;img src=&quot;</span><span class="si">{</span><span class="n">kmi</span><span class="si">}</span><span class="s1">&quot; style=&quot;opacity:</span><span class="si">{</span><span class="n">kk</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span><span class="p">)</span>
+            <span class="c1"># k[&#39;score&#39;][&#39;explained&#39;] = json.loads(kk.score.explained)</span>
+        <span class="n">result_html</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&lt;/td&gt;&lt;/tr&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span>
+                 <span class="n">output_fn</span><span class="o">=</span><span class="n">print_html</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">top_k</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">query_batch_size</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../hub/index.html" class="btn btn-neutral float-right" title="Using Jina Pod with Docker Container" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../101/.sphinx.html" class="btn btn-neutral float-left" title="Jina 101: First Thing to Learn About Jina" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
