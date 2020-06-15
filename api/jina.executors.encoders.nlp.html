@@ -1,0 +1,380 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.executors.encoders.nlp &mdash; Jina 0.2.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="jina.executors.encoders.nlp.char" href="jina.executors.encoders.nlp.char.html" />
+    <link rel="prev" title="jina.executors.encoders.image.torchvision" href="jina.executors.encoders.image.torchvision.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.7
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="jina.html">Jina Python API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="jina.clients.html">jina.clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.drivers.html">jina.drivers</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="jina.executors.html">jina.executors</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.crafters.html">jina.executors.crafters</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="jina.executors.encoders.html">jina.executors.encoders</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.encoders.audio.html">jina.executors.encoders.audio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.encoders.image.html">jina.executors.encoders.image</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">jina.executors.encoders.nlp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.encoders.numeric.html">jina.executors.encoders.numeric</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.encoders.video.html">jina.executors.encoders.video</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.encoders.clients.html">jina.executors.encoders.clients</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.encoders.frameworks.html">jina.executors.encoders.frameworks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.encoders.helper.html">jina.executors.encoders.helper</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.indexers.html">jina.executors.indexers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.rankers.html">jina.executors.rankers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.clients.html">jina.executors.clients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.compound.html">jina.executors.compound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.decorators.html">jina.executors.decorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.frameworks.html">jina.executors.frameworks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.metas.html">jina.executors.metas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.requests.html">jina.executors.requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jina.flow.html">jina.flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helloworld.html">jina.helloworld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.logging.html">jina.logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.main.html">jina.main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.peapods.html">jina.peapods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.proto.html">jina.proto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.enums.html">jina.enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.excepts.html">jina.excepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helper.html">jina.helper</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">yaml-path</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CONTRIBUTING.html">Contributing Guideline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Jina</a>
+        
+      </nav>
+
+      <div class="card table-of-contents">
+          <span class="card-title">Table of Contents</span>
+            <div class="card-content">
+            <ul>
+<li><a class="reference internal" href="#">jina.executors.encoders.nlp</a></li>
+</ul>
+
+            </div>
+        <a href="https://github.com/jina-ai/jina/">
+          <span class="toc-card-footer">
+            <span>Visit us on Github</span>
+          </span>
+        </a>
+      </div>
+
+      <div id="showhide-navbar-btn" onclick="showhide_navbar()">
+      </div>
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="jina.html">Jina Python API Reference</a> &raquo;</li>
+        
+          <li><a href="jina.executors.html">jina.executors</a> &raquo;</li>
+        
+          <li><a href="jina.executors.encoders.html">jina.executors.encoders</a> &raquo;</li>
+        
+      <li>jina.executors.encoders.nlp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="jina-executors-encoders-nlp">
+<h1>jina.executors.encoders.nlp<a class="headerlink" href="#jina-executors-encoders-nlp" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="jina.executors.encoders.nlp.char.html">jina.executors.encoders.nlp.char</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jina.executors.encoders.nlp.farm.html">jina.executors.encoders.nlp.farm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jina.executors.encoders.nlp.flair.html">jina.executors.encoders.nlp.flair</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jina.executors.encoders.nlp.paddlehub.html">jina.executors.encoders.nlp.paddlehub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jina.executors.encoders.nlp.transformer.html">jina.executors.encoders.nlp.transformer</a></li>
+</ul>
+</div>
+<span class="target" id="module-jina.executors.encoders.nlp"></span></div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="jina.executors.encoders.nlp.char.html" class="btn btn-neutral float-right" title="jina.executors.encoders.nlp.char" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="jina.executors.encoders.image.torchvision.html" class="btn btn-neutral float-left" title="jina.executors.encoders.image.torchvision" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
