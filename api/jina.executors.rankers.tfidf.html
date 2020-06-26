@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.executors.rankers.tfidf &mdash; Jina 0.3.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="jina.executors.clients" href="jina.executors.clients.html" />
+    <link rel="prev" title="jina.executors.rankers.bi_match" href="jina.executors.rankers.bi_match.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.2
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="jina.html">Jina Python API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="jina.clients.html">jina.clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.drivers.html">jina.drivers</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="jina.executors.html">jina.executors</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.crafters.html">jina.executors.crafters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.encoders.html">jina.executors.encoders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.indexers.html">jina.executors.indexers</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="jina.executors.rankers.html">jina.executors.rankers</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.rankers.bi_match.html">jina.executors.rankers.bi_match</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">jina.executors.rankers.tfidf</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.clients.html">jina.executors.clients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.compound.html">jina.executors.compound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.decorators.html">jina.executors.decorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.frameworks.html">jina.executors.frameworks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.metas.html">jina.executors.metas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.requests.html">jina.executors.requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jina.flow.html">jina.flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helloworld.html">jina.helloworld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.hubapi.html">jina.hubapi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.logging.html">jina.logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.main.html">jina.main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.peapods.html">jina.peapods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.proto.html">jina.proto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.enums.html">jina.enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.excepts.html">jina.excepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helper.html">jina.helper</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">yaml-path</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Jina</a>
+        
+      </nav>
+
+      <div class="card table-of-contents">
+          <span class="card-title">Table of Contents</span>
+            <div class="card-content">
+            <ul>
+<li><a class="reference internal" href="#">jina.executors.rankers.tfidf</a></li>
+</ul>
+
+            </div>
+        <a href="https://github.com/jina-ai/jina/">
+          <span class="toc-card-footer">
+            <span>Visit us on Github</span>
+          </span>
+        </a>
+      </div>
+
+      <div id="showhide-navbar-btn" onclick="showhide_navbar()">
+      </div>
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="jina.html">Jina Python API Reference</a> &raquo;</li>
+        
+          <li><a href="jina.executors.html">jina.executors</a> &raquo;</li>
+        
+          <li><a href="jina.executors.rankers.html">jina.executors.rankers</a> &raquo;</li>
+        
+      <li>jina.executors.rankers.tfidf</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-jina.executors.rankers.tfidf">
+<span id="jina-executors-rankers-tfidf"></span><h1>jina.executors.rankers.tfidf<a class="headerlink" href="#module-jina.executors.rankers.tfidf" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.executors.rankers.tfidf.TfIdfRanker">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.rankers.tfidf.</code><code class="sig-name descname">TfIdfRanker</code><span class="sig-paren">(</span><em class="sig-param">threshold=0.1</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers/tfidf.html#TfIdfRanker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.tfidf.TfIdfRanker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.executors.rankers.html#jina.executors.rankers.Chunk2DocRanker" title="jina.executors.rankers.Chunk2DocRanker"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.rankers.Chunk2DocRanker</span></code></a></p>
+<dl class="simple">
+<dt><a class="reference internal" href="#jina.executors.rankers.tfidf.TfIdfRanker" title="jina.executors.rankers.tfidf.TfIdfRanker"><code class="xref py py-class docutils literal notranslate"><span class="pre">TfIdfRanker</span></code></a> calculates the weighted score from the matched chunks. The weights of each chunk is based on</dt><dd><p>the tf-idf algorithm. Each query chunk is considered as a <code class="docutils literal notranslate"><span class="pre">term</span></code>, and the frequency of the query chunk in a
+specific matched document is considered as the naive <code class="docutils literal notranslate"><span class="pre">term-frequency</span></code>. All the matched results as a whole is
+considered as the corpus, and therefore the frequency of the query chunk in all the matched docs is considered
+as the naive <code class="docutils literal notranslate"><span class="pre">document-frequency</span></code>. Please refer to the functions for the details of calculating <code class="docutils literal notranslate"><span class="pre">tf</span></code> and
+<code class="docutils literal notranslate"><span class="pre">idf</span></code>.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>threshold</strong> – the threshold of matching scores. Only the matched chunks with a score that is higher or equal
+to the <code class="docutils literal notranslate"><span class="pre">threshold</span></code> are counted as matched.</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="jina.executors.rankers.tfidf.TfIdfRanker.required_keys">
+<code class="sig-name descname">required_keys</code><em class="property"> = {'doc_id', 'length'}</em><a class="headerlink" href="#jina.executors.rankers.tfidf.TfIdfRanker.required_keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.rankers.tfidf.TfIdfRanker.score">
+<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">match_idx</em>, <em class="sig-param">query_chunk_meta</em>, <em class="sig-param">match_chunk_meta</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers/tfidf.html#TfIdfRanker.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.tfidf.TfIdfRanker.score" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>match_idx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – <p>an <cite>ndarray</cite> of the size <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">x</span> <span class="pre">4</span></code>. <code class="docutils literal notranslate"><span class="pre">N</span></code> is the batch size of the matched chunks for the
+query doc. The columns correspond to the <code class="docutils literal notranslate"><span class="pre">doc_id</span></code> of the matched chunk, <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the matched chunk,</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the query chunk, and <code class="docutils literal notranslate"><span class="pre">score</span></code> of the matched chunk.</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>query_chunk_meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – a dict of meta info for the query chunks with <strong>ONLY</strong> the <code class="docutils literal notranslate"><span class="pre">required_keys</span></code> are kept.</p></li>
+<li><p><strong>match_chunk_meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – a dict of meta info for the matched chunks with <strong>ONLY</strong> the <code class="docutils literal notranslate"><span class="pre">required_keys</span></code> are
+kept.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>an <cite>ndarray</cite> of the size <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">x</span> <span class="pre">2</span></code>. <code class="docutils literal notranslate"><span class="pre">M</span></code> is the number of matched docs. The columns correspond to the
+<code class="docutils literal notranslate"><span class="pre">doc_id</span></code> and <code class="docutils literal notranslate"><span class="pre">score</span></code>.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In both <cite>query_chunk_meta</cite> and <cite>match_chunk_meta</cite>, ONLY the fields from the <code class="docutils literal notranslate"><span class="pre">required_keys</span></code> are kept.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.rankers.tfidf.TfIdfRanker.get_idf">
+<code class="sig-name descname">get_idf</code><span class="sig-paren">(</span><em class="sig-param">match_idx</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers/tfidf.html#TfIdfRanker.get_idf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.tfidf.TfIdfRanker.get_idf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the idf dictionary for query chunks that matched a given doc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>match_idx</strong> – <p>an <cite>ndarray</cite> of the size <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">x</span> <span class="pre">4</span></code>. <code class="docutils literal notranslate"><span class="pre">N</span></code> is the batch size of the matched chunks for the
+query doc. The columns correspond to the <code class="docutils literal notranslate"><span class="pre">doc_id</span></code> of the matched chunk, <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the matched chunk,</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the query chunk, and <code class="docutils literal notranslate"><span class="pre">score</span></code> of the matched chunk.</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dict in the size of query chunks</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>The 10-based logarithm version idf is used, i.e. idf = log10(total / df). <code class="docutils literal notranslate"><span class="pre">df</span></code> denotes the frequency of</dt><dd><p>the query chunk in the matched results. <cite>total</cite> denotes the total number of the matched chunks.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.rankers.tfidf.TfIdfRanker.get_tf">
+<code class="sig-name descname">get_tf</code><span class="sig-paren">(</span><em class="sig-param">match_idx</em>, <em class="sig-param">match_chunk_meta</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers/tfidf.html#TfIdfRanker.get_tf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.tfidf.TfIdfRanker.get_tf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tf dictionary for query chunks that matched a given doc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>match_idx</strong> – an <cite>ndarray</cite> of the size <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">x</span> <span class="pre">4</span></code>. <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of chunks in a given doc that matched
+with the query doc.</p></li>
+<li><p><strong>match_chunk_meta</strong> – a dict of meta info for the matched chunks with <strong>ONLY</strong> the <code class="docutils literal notranslate"><span class="pre">required_keys</span></code> are
+kept.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dict in the size of query chunks</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>The term-frequency of a query chunk is frequency of the query chunk that has a matching score equal or</dt><dd><p>higher than the <code class="docutils literal notranslate"><span class="pre">threshold</span></code>.</p>
+</dd>
+<dt>To avoid the effects of long texts, the term-frequency of a query chunk is normalized by the total number of</dt><dd><dl class="simple">
+<dt>chunks in the matched doc, i.e. tf = (n / n_doc). <code class="docutils literal notranslate"><span class="pre">n</span></code> denotes the frequency of the query chunk in the</dt><dd><p>matched doc. <code class="docutils literal notranslate"><span class="pre">n_doc</span></code> denotes the total number of chunks in the matched doc.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.rankers.tfidf.TfIdfRanker.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#jina.executors.rankers.tfidf.TfIdfRanker.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train this executor, need to be overrided</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.rankers.tfidf.BM25Ranker">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.rankers.tfidf.</code><code class="sig-name descname">BM25Ranker</code><span class="sig-paren">(</span><em class="sig-param">k=1.2</em>, <em class="sig-param">b=0.75</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers/tfidf.html#BM25Ranker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.tfidf.BM25Ranker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.rankers.tfidf.TfIdfRanker" title="jina.executors.rankers.tfidf.TfIdfRanker"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.rankers.tfidf.TfIdfRanker</span></code></a></p>
+<dl class="simple">
+<dt><a class="reference internal" href="#jina.executors.rankers.tfidf.BM25Ranker" title="jina.executors.rankers.tfidf.BM25Ranker"><code class="xref py py-class docutils literal notranslate"><span class="pre">BM25Ranker</span></code></a> calculates the weighted score from the matched chunks. The weights of each chunk is based on</dt><dd><p>the tf-idf algorithm. Each query chunk is considered as a <code class="docutils literal notranslate"><span class="pre">term</span></code>, and the frequency of the query chunk in a
+specific matched document is considered as the naive <code class="docutils literal notranslate"><span class="pre">term-frequency</span></code>. All the matched results as a whole is
+considered as the corpus, and therefore the frequency of the query chunk in all the matched docs is considered
+as the naive <code class="docutils literal notranslate"><span class="pre">document-frequency</span></code>. Please refer to the functions for the details of calculating <code class="docutils literal notranslate"><span class="pre">tf</span></code> and
+<code class="docutils literal notranslate"><span class="pre">idf</span></code>.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> – the parameter <code class="docutils literal notranslate"><span class="pre">k</span></code> for the BM25 algorithm.</p></li>
+<li><p><strong>b</strong> – the parameter <code class="docutils literal notranslate"><span class="pre">b</span></code> for the BM25 algorithm.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.executors.rankers.tfidf.BM25Ranker.get_idf">
+<code class="sig-name descname">get_idf</code><span class="sig-paren">(</span><em class="sig-param">match_idx</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers/tfidf.html#BM25Ranker.get_idf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.tfidf.BM25Ranker.get_idf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the idf dictionary for query chunks that matched a given doc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>match_idx</strong> – <p>an <cite>ndarray</cite> of the size <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">x</span> <span class="pre">4</span></code>. <code class="docutils literal notranslate"><span class="pre">N</span></code> is the batch size of the matched chunks for the
+query doc. The columns correspond to the <code class="docutils literal notranslate"><span class="pre">doc_id</span></code> of the matched chunk, <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the matched chunk,</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the query chunk, and <code class="docutils literal notranslate"><span class="pre">score</span></code> of the matched chunk.</p>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dict in the size of query chunks</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>The 10-based logarithm version idf is used, i.e. idf = log10(1 + (total - df + 0.5) / (df + 0.5)). <code class="docutils literal notranslate"><span class="pre">df</span></code></dt><dd><dl class="simple">
+<dt>denotes the frequency of the query chunk in all the matched chunks. <cite>total</cite> denotes the total number of</dt><dd><p>the matched chunks.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.rankers.tfidf.BM25Ranker.get_tf">
+<code class="sig-name descname">get_tf</code><span class="sig-paren">(</span><em class="sig-param">match_idx</em>, <em class="sig-param">match_chunk_meta</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers/tfidf.html#BM25Ranker.get_tf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.tfidf.BM25Ranker.get_tf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tf dictionary for query chunks that matched a given doc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>match_idx</strong> – an <cite>ndarray</cite> of the size <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">x</span> <span class="pre">4</span></code>. <code class="docutils literal notranslate"><span class="pre">N</span></code> is the number of chunks in a given doc that matched
+with the query doc.</p></li>
+<li><p><strong>match_chunk_meta</strong> – a dict of meta info for the matched chunks with <strong>ONLY</strong> the <code class="docutils literal notranslate"><span class="pre">required_keys</span></code> are
+kept.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a dict in the size of query chunks</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>The term-frequency of a query chunk is frequency of the query chunk that has a matching score equal or</dt><dd><p>higher than the <code class="docutils literal notranslate"><span class="pre">threshold</span></code>.</p>
+</dd>
+<dt>In BM25, tf = (1 + k) * tf / (k * (1 - b + b * n_doc / avg_n_doc) + tf). <code class="docutils literal notranslate"><span class="pre">n</span></code> denotes the</dt><dd><p>frequency of the query chunk in the matched doc. <code class="docutils literal notranslate"><span class="pre">n_doc</span></code> denotes the total number of chunks in the
+matched doc. <code class="docutils literal notranslate"><span class="pre">avg_n_doc</span></code> denotes the average number of chunks over all the matched docs.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.rankers.tfidf.BM25Ranker.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#jina.executors.rankers.tfidf.BM25Ranker.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train this executor, need to be overrided</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="jina.executors.clients.html" class="btn btn-neutral float-right" title="jina.executors.clients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="jina.executors.rankers.bi_match.html" class="btn btn-neutral float-left" title="jina.executors.rankers.bi_match" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
