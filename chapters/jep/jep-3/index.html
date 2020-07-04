@@ -1,0 +1,646 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>JEP 3 — Adding support for multi-fields search &mdash; Jina 0.3.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Release Cycle" href="../../RELEASE.html" />
+    <link rel="prev" title="JEP 2 — Supporting Docker Container in Flow API" href="../jep-2/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.5
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">yaml-path</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Jina Enhancement Proposals (JEP)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../jep-1/index.html">JEP 1 — Redesigning <code class="docutils literal notranslate"><span class="pre">Driver</span></code> and its relation to <code class="docutils literal notranslate"><span class="pre">Executor</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../jep-2/index.html">JEP 2 — Supporting Docker Container in Flow API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">JEP 3 — Adding support for multi-fields search</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Jina</a>
+        
+      </nav>
+
+      <div class="card table-of-contents">
+          <span class="card-title">Table of Contents</span>
+            <div class="card-content">
+            <ul>
+<li><a class="reference internal" href="#">JEP 3 — Adding support for multi-fields search</a><ul>
+<li><a class="reference internal" href="#abstract">Abstract</a></li>
+<li><a class="reference internal" href="#motivation">Motivation</a></li>
+<li><a class="reference internal" href="#rationale">Rationale</a><ul>
+<li><a class="reference internal" href="#modify-jina-proto">Modify <code class="docutils literal notranslate"><span class="pre">jina.proto</span></code></a></li>
+<li><a class="reference internal" href="#adapt-index-flow-pods">Adapt Index-Flow Pods</a></li>
+<li><a class="reference internal" href="#adapt-query-flow-pods">Adapt Query-Flow Pods</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#specification">Specification</a></li>
+<li><a class="reference internal" href="#open-issues">Open Issues</a></li>
+</ul>
+</li>
+</ul>
+
+            </div>
+        <a href="https://github.com/jina-ai/jina/">
+          <span class="toc-card-footer">
+            <span>Visit us on Github</span>
+          </span>
+        </a>
+      </div>
+
+      <div id="showhide-navbar-btn" onclick="showhide_navbar()">
+      </div>
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Jina Enhancement Proposals (JEP)</a> &raquo;</li>
+        
+      <li>JEP 3 — Adding support for multi-fields search</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="jep-3-adding-support-for-multi-fields-search">
+<h1><a class="toc-backref" href="#id11">JEP 3 — Adding support for multi-fields search</a><a class="headerlink" href="#jep-3-adding-support-for-multi-fields-search" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#jep-3-adding-support-for-multi-fields-search" id="id2">JEP 3 — Adding support for multi-fields search</a></p>
+<ul>
+<li><p><a class="reference internal" href="#abstract" id="id3">Abstract</a></p></li>
+<li><p><a class="reference internal" href="#motivation" id="id4">Motivation</a></p></li>
+<li><p><a class="reference internal" href="#rationale" id="id5">Rationale</a></p>
+<ul>
+<li><p><a class="reference internal" href="#modify-jina-proto" id="id6">Modify <code class="docutils literal notranslate"><span class="pre">jina.proto</span></code></a></p></li>
+<li><p><a class="reference internal" href="#adapt-index-flow-pods" id="id7">Adapt Index-Flow Pods</a></p></li>
+<li><p><a class="reference internal" href="#adapt-query-flow-pods" id="id8">Adapt Query-Flow Pods</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#specification" id="id9">Specification</a></p></li>
+<li><p><a class="reference internal" href="#open-issues" id="id10">Open Issues</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Author</dt>
+<dd class="field-odd"><p>Nan Wang (<a class="reference external" href="mailto:nan&#46;wang&#37;&#52;&#48;jina&#46;ai">nan<span>&#46;</span>wang<span>&#64;</span>jina<span>&#46;</span>ai</a>)</p>
+</dd>
+<dt class="field-even">Created</dt>
+<dd class="field-even"><p>May. 28, 2020</p>
+</dd>
+<dt class="field-odd">Status</dt>
+<dd class="field-odd"><p>Proposal</p>
+</dd>
+<dt class="field-even">Related JEPs</dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">Created on Jina VCS version</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">TBA</span></code></p>
+</dd>
+<dt class="field-even">Merged to Jina VCS version</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">TBA</span></code></p>
+</dd>
+<dt class="field-odd">Released in Jina version</dt>
+<dd class="field-odd"><p>TBA</p>
+</dd>
+<dt class="field-even">Discussions</dt>
+<dd class="field-even"><p><a class="reference external" href="https://github.com/jina-ai/jina/issues/441">https://github.com/jina-ai/jina/issues/441</a></p>
+</dd>
+</dl>
+<div class="contents topic" id="id1">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#jep-3-adding-support-for-multi-fields-search" id="id11">JEP 3 — Adding support for multi-fields search</a></p>
+<ul>
+<li><p><a class="reference internal" href="#abstract" id="id12">Abstract</a></p></li>
+<li><p><a class="reference internal" href="#motivation" id="id13">Motivation</a></p></li>
+<li><p><a class="reference internal" href="#rationale" id="id14">Rationale</a></p></li>
+<li><p><a class="reference internal" href="#specification" id="id15">Specification</a></p></li>
+<li><p><a class="reference internal" href="#open-issues" id="id16">Open Issues</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="abstract">
+<h2><a class="toc-backref" href="#id12">Abstract</a><a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
+<p>We propose a way to implement the multi-field search in Jina.</p>
+</div>
+<div class="section" id="motivation">
+<h2><a class="toc-backref" href="#id13">Motivation</a><a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<p>The Multi-field search is commonly used in practice. Concretely,</p>
+<blockquote class="highlights">
+<div><p>as a user, I want to limit the query within some selected fields.</p>
+</div></blockquote>
+<p>In the following use case, there are two documents and three two fields in each of them, i.e. <cite>title</cite> and <cite>summary</cite>.
+The user wants to query <code class="docutils literal notranslate"><span class="pre">painter</span></code> but <strong>only</strong> from the <cite>title</cite> field. The expected result will be <cite>{‘doc_id’: 11, ‘title’: ‘hackers and painters’}</cite>.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+  &quot;doc_id&quot;: 10,
+  &quot;title&quot;: &quot;the story of the art&quot;,
+  &quot;summary&quot;: &quot;This is a book about the history of the art, and the stories of the great painters&quot;
+}, {
+  &quot;doc_id&quot;: 11,
+  &quot;title&quot;: &quot;hackers and painters&quot;,
+  &quot;summary&quot;: &quot;This book discusses hacking, start-up companies, and many other technological issues&quot;
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="rationale">
+<h2><a class="toc-backref" href="#id14">Rationale</a><a class="headerlink" href="#rationale" title="Permalink to this headline">¶</a></h2>
+<p>The core issue of this use case is the need of marking the <code class="docutils literal notranslate"><span class="pre">Chunks</span></code> from different fields.
+During the query time,
+the user should be able to change the selected fields in different queries <strong>without rebuilding the query</strong> <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p>
+<div class="section" id="modify-jina-proto">
+<h3><a class="toc-backref" href="#id6">Modify <code class="docutils literal notranslate"><span class="pre">jina.proto</span></code></a><a class="headerlink" href="#modify-jina-proto" title="Permalink to this headline">¶</a></h3>
+<p>Let’s take the following <code class="docutils literal notranslate"><span class="pre">Flow</span></code> as an example.
+The <code class="docutils literal notranslate"><span class="pre">FieldsMapper</span></code> is a <code class="docutils literal notranslate"><span class="pre">Crafter</span></code> that split each <code class="docutils literal notranslate"><span class="pre">Document</span></code> into fields and add the  <code class="docutils literal notranslate"><span class="pre">field_name</span></code> information for <code class="docutils literal notranslate"><span class="pre">Chunks</span></code>.
+Afterwards, the <code class="docutils literal notranslate"><span class="pre">Chunks</span></code> containing the <cite>title</cite> and the <cite>summary</cite> information are processed differently in two pathways and stored seperately.</p>
+<a class="reference internal image-reference" href="../../../_images/JEP3-index-design.png"><img alt="../../../_images/JEP3-index-design.png" class="align-center" src="../../../_images/JEP3-index-design.png" style="width: 60%;" /></a>
+<p>To add the field information into <code class="docutils literal notranslate"><span class="pre">Chunks</span></code>, we need first add new fields in the protobuf defination.
+At the <code class="docutils literal notranslate"><span class="pre">Chunk</span></code> level, one new field, namely <code class="docutils literal notranslate"><span class="pre">field_name</span></code>, is required to denote the field information of the <code class="docutils literal notranslate"><span class="pre">Chunk</span></code>.
+Each <code class="docutils literal notranslate"><span class="pre">Document</span></code> have one or more fields, and each field can be further splitted into one or more <code class="docutils literal notranslate"><span class="pre">Chunks</span></code>.
+In other words, each <code class="docutils literal notranslate"><span class="pre">Chunk</span></code> can <strong>only</strong> be assigned to one field, but each field contains one or more <code class="docutils literal notranslate"><span class="pre">Chunks</span></code>.</p>
+<blockquote class="highlights">
+<div><p>The concept of <cite>field</cite> can be considered as a group of <code class="docutils literal notranslate"><span class="pre">Chunks</span></code>.</p>
+</div></blockquote>
+<p>Secondly, at the <code class="docutils literal notranslate"><span class="pre">Request</span></code> level, we will add another new field, namely <code class="docutils literal notranslate"><span class="pre">filter_by</span></code>, for the <code class="docutils literal notranslate"><span class="pre">SearchRequest</span></code>.
+This is used to store the information of on which fields the user wants to query.
+By adding this information, the users can specify different fields to query in each search request.</p>
+</div>
+<div class="section" id="adapt-index-flow-pods">
+<h3><a class="toc-backref" href="#id7">Adapt Index-Flow Pods</a><a class="headerlink" href="#adapt-index-flow-pods" title="Permalink to this headline">¶</a></h3>
+<p>During index time, most parts of the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> stay the same as before.</p>
+<p>To make the <code class="docutils literal notranslate"><span class="pre">Encoder</span></code> only encode the <code class="docutils literal notranslate"><span class="pre">Chunks</span></code> whose <code class="docutils literal notranslate"><span class="pre">field_name</span></code> meet the selected fields, a new argument, <code class="docutils literal notranslate"><span class="pre">filter_by</span></code>, is introduced to specify which fields will be encoded.
+To do so, we need adapt <code class="docutils literal notranslate"><span class="pre">EncodeDriver</span></code> and the <code class="docutils literal notranslate"><span class="pre">extract_chunks()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">extract_chunks</span><span class="p">(</span>
+        <span class="n">docs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;jina_pb2.Document&#39;</span><span class="p">],</span>
+        <span class="n">filter_by</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+        <span class="n">embedding</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param filter_by: a list of service names to wait</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">EncodeDriver</span><span class="p">(</span><span class="n">BaseEncodeDriver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_by</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="n">filter_by</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">filter_by</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;SearchRequest&#39;</span><span class="p">:</span>
+            <span class="n">filter_by</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">filter_by</span>
+        <span class="n">contents</span><span class="p">,</span> <span class="n">chunk_pts</span><span class="p">,</span> <span class="n">no_chunk_docs</span><span class="p">,</span> <span class="n">bad_chunk_ids</span> <span class="o">=</span> \
+            <span class="n">extract_chunks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In order to make the <code class="docutils literal notranslate"><span class="pre">Indexer</span></code> only index the <code class="docutils literal notranslate"><span class="pre">Chunks</span></code> whose <code class="docutils literal notranslate"><span class="pre">field_name</span></code> meet the selected fields, we need to adapt the <code class="docutils literal notranslate"><span class="pre">VectorIndexDriver</span></code> as well.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">VectorIndexDriver</span><span class="p">(</span><span class="n">BaseIndexDriver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_by</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="n">filter_by</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">embed_vecs</span><span class="p">,</span> <span class="n">chunk_pts</span><span class="p">,</span> <span class="n">no_chunk_docs</span><span class="p">,</span> <span class="n">bad_chunk_ids</span> <span class="o">=</span> \
+            <span class="n">extract_chunks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The same change goes for the <code class="docutils literal notranslate"><span class="pre">ChunkKVIndexDriver</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ChunkKVIndexDriver</span><span class="p">(</span><span class="n">KVIndexDriver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;chunk&#39;</span><span class="p">,</span> <span class="n">filter_by</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="o">=</span> <span class="n">filter_by</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span> <span class="k">else</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToJson</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="sa">f</span><span class="s1">&#39;c</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">chunk_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="n">MessageToJson</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">chunks</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">field_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_by</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">content</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adapt-query-flow-pods">
+<h3><a class="toc-backref" href="#id8">Adapt Query-Flow Pods</a><a class="headerlink" href="#adapt-query-flow-pods" title="Permalink to this headline">¶</a></h3>
+<p>During the query time,
+Moreover, we need to refactor the <code class="docutils literal notranslate"><span class="pre">BasePea</span></code> so that the <code class="docutils literal notranslate"><span class="pre">Pea</span></code> gets the information of how many incoming messages are expected.
+The expected number of incoming messages will change from query to query because the user will select different fields with the <code class="docutils literal notranslate"><span class="pre">filter_by</span></code> argument.
+In the current version (v.0.1.15), this information is fixed and stored in <code class="docutils literal notranslate"><span class="pre">self.args.num_parts</span></code> when the graph is built.
+And the <code class="docutils literal notranslate"><span class="pre">Pea</span></code> will <strong>NOT</strong> start processing the data until the expected number of incoming messages arrive.
+In order to make the <code class="docutils literal notranslate"><span class="pre">Pea</span></code> handle the varying number of incoming messages, we need to make the expected number adjustable on the fly for each query.
+Note that the <code class="docutils literal notranslate"><span class="pre">self.args.num_parts</span></code> is the upper bound of the expected number of incoming messages.
+Thereafter, it is reasonable to set the expected number of incoming messages as following,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">num_part</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">num_part</span>
+<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_type</span> <span class="o">==</span> <span class="s1">&#39;SearchRequest&#39;</span><span class="p">:</span>
+    <span class="c1"># modify the num_part on the fly for SearchRequest</span>
+    <span class="n">num_part</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">num_part</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">filtered_by</span><span class="p">),</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Furthermore, the <code class="docutils literal notranslate"><span class="pre">VectorSearchDriver</span></code> and the <code class="docutils literal notranslate"><span class="pre">KVSearchDriver</span></code> also need to be adapted accordingly in order to <strong>only</strong> process the <code class="docutils literal notranslate"><span class="pre">Chunks</span></code> meet the <code class="docutils literal notranslate"><span class="pre">filter_by</span></code> requirement.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">VectorSearchDriver</span><span class="p">(</span><span class="n">BaseSearchDriver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">embed_vecs</span><span class="p">,</span> <span class="n">chunk_pts</span><span class="p">,</span> <span class="n">no_chunk_docs</span><span class="p">,</span> <span class="n">bad_chunk_ids</span> <span class="o">=</span> \
+            <span class="n">extract_chunks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">filter_by</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">KVSearchDriver</span><span class="p">(</span><span class="n">BaseSearchDriver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="o">...</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;chunk&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">chunks</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">field_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">filter_by</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="o">...</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_update_topk_docs</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">chunks</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">field_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">filter_by</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="o">...</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="specification">
+<h2><a class="toc-backref" href="#id15">Specification</a><a class="headerlink" href="#specification" title="Permalink to this headline">¶</a></h2>
+<p>For the use case above, the <cite>index.yml</cite> will be defined as following,</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!Flow</span>
+<span class="nt">pods</span><span class="p">:</span>
+  <span class="nt">fields_mapper</span><span class="p">:</span>
+    <span class="nt">yaml_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mapper.yml</span>
+  <span class="nt">title_encoder</span><span class="p">:</span>
+    <span class="nt">yaml_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">title_encoder.yml</span>
+    <span class="nt">needs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fields_mapper</span>
+  <span class="nt">sum_encoder</span><span class="p">:</span>
+    <span class="nt">yaml_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sum_encoder.yml</span>
+    <span class="nt">needs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">fields_mapper</span>
+  <span class="nt">title_indexer</span><span class="p">:</span>
+    <span class="nt">yaml_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">title_indexer.yml</span>
+    <span class="nt">needs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">title_encoder</span>
+  <span class="nt">sum_indexer</span><span class="p">:</span>
+    <span class="nt">yaml_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sum_indexer.yml</span>
+    <span class="nt">needs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sum_encoder</span>
+  <span class="nt">join</span><span class="p">:</span>
+    <span class="nt">needs</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">title_indexer</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">sum_indexer</span>
+</pre></div>
+</div>
+<p>And the <cite>mapper.yml</cite> will be defined as below,</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!FilterMapper</span>
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="nt">on</span><span class="p">:</span>
+    <span class="p p-Indicator">[</span><span class="nv">SearchRequest</span><span class="p p-Indicator">,</span> <span class="nv">IndexRequest</span><span class="p p-Indicator">]:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!MapperDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">craft</span>
+          <span class="nt">mapping</span><span class="p">:</span> <span class="p p-Indicator">{</span><span class="s">&#39;title&#39;</span><span class="p p-Indicator">:</span> <span class="s">&#39;title&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;summary&#39;</span><span class="p p-Indicator">:</span> <span class="s">&#39;summ&#39;</span><span class="p p-Indicator">}</span>
+</pre></div>
+</div>
+<p>The <cite>sum_encoder.yml</cite> is as below,</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!AnotherTextEncoder</span>
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="nt">on</span><span class="p">:</span>
+    <span class="p p-Indicator">[</span><span class="nv">SearchRequest</span><span class="p p-Indicator">,</span> <span class="nv">IndexRequest</span><span class="p p-Indicator">]:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!EncodeDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">encode</span>
+          <span class="nt">filter_by</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">summ</span>
+</pre></div>
+</div>
+<p>The <cite>sum_indexer.yml</cite> is as below,</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!ChunkIndexer</span>
+<span class="nt">components</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!NumpyIndexer</span>
+    <span class="nt">with</span><span class="p">:</span>
+      <span class="nt">index_filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vec.gz</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!BasePbIndexer</span>
+    <span class="nt">with</span><span class="p">:</span>
+      <span class="nt">index_filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk.gz</span>
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="nt">on</span><span class="p">:</span>
+    <span class="nt">IndexRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!VectorIndexDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">NumpyIndexer</span>
+          <span class="nt">filter_by</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">summ</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!PruneDriver</span> <span class="p p-Indicator">{}</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!KVIndexDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">level</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk</span>
+          <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BasePbIndexer</span>
+          <span class="nt">filter_by</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">summ</span>
+    <span class="nt">SearchRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!VectorSearchDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">NumpyIndexer</span>
+          <span class="nt">filter_by</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">summ</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!PruneDriver</span> <span class="p p-Indicator">{}</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!KVSearchDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">level</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk</span>
+          <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BasePbIndexer</span>
+          <span class="nt">filter_by</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">summ</span>
+</pre></div>
+</div>
+<p>To send the request, one can specify the <cite>filter_by</cite> argument as below,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">flow</span><span class="o">.</span><span class="n">build</span><span class="p">()</span> <span class="k">as</span> <span class="n">fl</span><span class="p">:</span>
+    <span class="n">fl</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">read_data_fn</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">call_back_fn</span><span class="p">,</span> <span class="n">filter_by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">,])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="open-issues">
+<h2><a class="toc-backref" href="#id16">Open Issues</a><a class="headerlink" href="#open-issues" title="Permalink to this headline">¶</a></h2>
+<p>This use case can be further extened to the multi-modality search by extending the <code class="docutils literal notranslate"><span class="pre">filter_by</span></code> to accepting the <code class="docutils literal notranslate"><span class="pre">mimitype</span></code>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../RELEASE.html" class="btn btn-neutral float-right" title="Release Cycle" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../jep-2/index.html" class="btn btn-neutral float-left" title="JEP 2 — Supporting Docker Container in Flow API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
