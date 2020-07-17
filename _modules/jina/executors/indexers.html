@@ -1,0 +1,579 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.executors.indexers &mdash; Jina 0.3.8 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.8
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">yaml-path</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Jina</a>
+        
+      </nav>
+
+      <div class="card table-of-contents">
+          <span class="card-title">Table of Contents</span>
+            <div class="card-content">
+            
+            </div>
+        <a href="https://github.com/jina-ai/jina/">
+          <span class="toc-card-footer">
+            <span>Visit us on Github</span>
+          </span>
+        </a>
+      </div>
+
+      <div id="showhide-navbar-btn" onclick="showhide_navbar()">
+      </div>
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../jina.html">jina</a> &raquo;</li>
+        
+          <li><a href="../executors.html">jina.executors</a> &raquo;</li>
+        
+      <li>jina.executors.indexers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jina.executors.indexers</h1><div class="highlight"><pre>
+<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseExecutor</span>
+<span class="kn">from</span> <span class="nn">..compound</span> <span class="kn">import</span> <span class="n">CompoundExecutor</span>
+<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">call_obj_fn</span>
+
+
+<div class="viewcode-block" id="BaseIndexer"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer">[docs]</a><span class="k">class</span> <span class="nc">BaseIndexer</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;``BaseIndexer`` stores and searches with vectors.</span>
+
+<span class="sd">    The key functions here are :func:`add` and :func:`query`.</span>
+<span class="sd">    One can decorate them with :func:`jina.decorator.require_train`,</span>
+<span class="sd">    :func:`jina.helper.batching` and :func:`jina.logging.profile.profiling`.</span>
+
+<span class="sd">    One should always inherit from either :class:`BaseVectorIndexer` or :class:`BaseKVIndexer`.</span>
+
+<span class="sd">    .. seealso::</span>
+<span class="sd">        :mod:`jina.drivers.handlers.index`</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        Calling :func:`save` to save a :class:`BaseIndexer` will create</span>
+<span class="sd">        more than one files. One is the serialized version of the :class:`BaseIndexer` object, often ends with ``.bin``</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        When using :class:`BaseIndexer` out of the Pod, use it with context manager</span>
+
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            with BaseIndexer() as b:</span>
+<span class="sd">                b.add()</span>
+
+<span class="sd">        So that it can safely save the data. Or you have to manually call `b.close()` to close the indexer safely.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">index_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param index_filename: the name of the file for storing the index, when not given metas.name is used.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index_filename</span> <span class="o">=</span> <span class="n">index_filename</span>  <span class="c1">#: the file name of the stored index, no path is required</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="BaseIndexer.add"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add new chunks and their vector representations</span>
+
+<span class="sd">        :param keys: ``chunk_id`` in 1D-ndarray, shape B x 1</span>
+<span class="sd">        :param vectors: vector representations in B x D</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="nf">_validate_key_vector_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">vectors</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;vectors shape </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> is not valid, expecting &quot;vectors&quot; to have rank of 2&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;num_dim&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span> <span class="o">=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span> <span class="o">!=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;vectors shape </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> does not match with indexers</span><span class="se">\&#39;</span><span class="s1">s dim: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;vectors</span><span class="se">\&#39;</span><span class="s1"> dtype </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> does not match with indexers</span><span class="se">\&#39;</span><span class="s1">s dtype: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;number of key </span><span class="si">{</span><span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> not equal to number of vectors </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_dtype</span> <span class="o">!=</span> <span class="n">keys</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;keys</span><span class="se">\&#39;</span><span class="s1"> dtype </span><span class="si">{</span><span class="n">keys</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> does not match with indexers keys</span><span class="se">\&#39;</span><span class="s1">s dtype: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">key_dtype</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseIndexer.post_init"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;query handler and write handler can not be serialized, thus they must be put into :func:`post_init`. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_filename</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_handler</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="BaseIndexer.query"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Find k-NN using query vectors, return chunk ids and chunk scores</span>
+
+<span class="sd">        :param vectors: query vectors in ndarray, shape B x D</span>
+<span class="sd">        :param top_k: int, the number of nearest neighbour to return</span>
+<span class="sd">        :return: a tuple of two ndarray.</span>
+<span class="sd">            The first is ids in shape B x K (`dtype=int`), the second is scores in shape B x K (`dtype=float`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">index_abspath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the file path of the index storage</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_from_workspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_filename</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">query_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A readable and indexable object, could be dict, map, list, numpy array etc. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_query_handler</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;indexer size: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;you can not query from </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1"> as its &quot;query_handler&quot; is not set. &#39;</span>
+                                <span class="s1">&#39;If you are indexing data from scratch then it is fine. &#39;</span>
+                                <span class="s1">&#39;If you are querying data then the index file must be empty or broken.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">write_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A writable and indexable object, could be dict, map, list, numpy array etc. &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_add_handler</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_create_handler</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;&quot;write_handler&quot; is None, you may not add data to this index, &#39;</span>
+                                <span class="s1">&#39;unless &quot;write_handler&quot; is later assigned with a meaningful value&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_handler</span>
+
+<div class="viewcode-block" id="BaseIndexer.get_query_handler"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer.get_query_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_query_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a *readable* index handler when the ``index_abspath`` already exist, need to be overrided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BaseIndexer.get_add_handler"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer.get_add_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a *writable* index handler when the ``index_abspath`` already exist, need to be overrided&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BaseIndexer.get_create_handler"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer.get_create_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_create_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a *writable* index handler when the ``index_abspath`` does not exist, need to be overrided&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The number of vectors/chunks indexed &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+<div class="viewcode-block" id="BaseIndexer.close"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close all file-handlers and release all resources. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;indexer size: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">call_obj_fn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_write_handler</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">)</span>
+        <span class="n">call_obj_fn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_query_handler</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BaseIndexer.flush"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Flush all buffered data to ``index_abspath`` &quot;&quot;&quot;</span>
+        <span class="n">call_obj_fn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_write_handler</span><span class="p">,</span> <span class="s1">&#39;flush&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="BaseVectorIndexer"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseVectorIndexer">[docs]</a><span class="k">class</span> <span class="nc">BaseVectorIndexer</span><span class="p">(</span><span class="n">BaseIndexer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An abstract class for vector indexer. It is equipped with drivers in ``requests.on``</span>
+
+<span class="sd">    All vector indexers should inherit from it.</span>
+
+<span class="sd">    It can be used to tell whether an indexer is vector indexer, via ``isinstance(a, BaseVectorIndexer)``</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="BaseKVIndexer"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.BaseKVIndexer">[docs]</a><span class="k">class</span> <span class="nc">BaseKVIndexer</span><span class="p">(</span><span class="n">BaseIndexer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An abstract class for key-value indexer.</span>
+
+<span class="sd">    All key-value indexers should inherit from it.</span>
+
+<span class="sd">    It can be used to tell whether an indexer is key-value indexer, via ``isinstance(a, BaseKVIndexer)``</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ChunkIndexer"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.executors.indexers.ChunkIndexer">[docs]</a><span class="k">class</span> <span class="nc">ChunkIndexer</span><span class="p">(</span><span class="n">CompoundExecutor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Frequently used pattern for combining A :class:`BaseVectorIndexer` and :class:`BaseKVIndexer`.</span>
+<span class="sd">    It will be equipped with predefined ``requests.on`` behaviors:</span>
+
+<span class="sd">        -  In the index time</span>
+<span class="sd">            - 1. stores the vector via :class:`BaseVectorIndexer`</span>
+<span class="sd">            - 2. remove all vector information (embedding, buffer, blob, text)</span>
+<span class="sd">            - 3. store the remained meta information via :class:`BaseKVIndexer`</span>
+<span class="sd">        - In the query time</span>
+<span class="sd">            - 1. Find the knn using the vector via :class:`BaseVectorIndexer`</span>
+<span class="sd">            - 2. remove all vector information (embedding, buffer, blob, text)</span>
+<span class="sd">            - 3. Fill in the meta information of the chunk via :class:`BaseKVIndexer`</span>
+
+<span class="sd">    One can use the :class:`ChunkIndexer` via</span>
+
+<span class="sd">    .. highlight:: yaml</span>
+<span class="sd">    .. code-block:: yaml</span>
+
+<span class="sd">        !ChunkIndexer</span>
+<span class="sd">        components:</span>
+<span class="sd">          - !NumpyIndexer</span>
+<span class="sd">            with:</span>
+<span class="sd">              index_filename: vec.gz</span>
+<span class="sd">            metas:</span>
+<span class="sd">              name: vecidx  # a customized name</span>
+<span class="sd">              workspace: $TEST_WORKDIR</span>
+<span class="sd">          - !BasePbIndexer</span>
+<span class="sd">            with:</span>
+<span class="sd">              index_filename: chunk.gz</span>
+<span class="sd">            metas:</span>
+<span class="sd">              name: chunkidx  # a customized name</span>
+<span class="sd">              workspace: $TEST_WORKDIR</span>
+<span class="sd">        metas:</span>
+<span class="sd">          name: chunk_compound_indexer</span>
+<span class="sd">          workspace: $TEST_WORKDIR</span>
+
+<span class="sd">    Without defining any ``requests.on`` logic. When load from this YAML, it will be auto equipped with</span>
+
+<span class="sd">    .. highlight:: yaml</span>
+<span class="sd">    .. code-block:: yaml</span>
+
+<span class="sd">        on:</span>
+<span class="sd">          SearchRequest:</span>
+<span class="sd">            - !VectorSearchDriver</span>
+<span class="sd">              with:</span>
+<span class="sd">                executor: BaseVectorIndexer</span>
+<span class="sd">            - !PruneDriver</span>
+<span class="sd">              with:</span>
+<span class="sd">                level: chunk</span>
+<span class="sd">                pruned:</span>
+<span class="sd">                  - embedding</span>
+<span class="sd">                  - buffer</span>
+<span class="sd">                  - blob</span>
+<span class="sd">                  - text</span>
+<span class="sd">            - !KVSearchDriver</span>
+<span class="sd">              with:</span>
+<span class="sd">                executor: BaseKVIndexer</span>
+<span class="sd">                level: chunk</span>
+<span class="sd">          IndexRequest:</span>
+<span class="sd">            - !VectorIndexDriver</span>
+<span class="sd">              with:</span>
+<span class="sd">                executor: BaseVectorIndexer</span>
+<span class="sd">            - !PruneDriver</span>
+<span class="sd">              with:</span>
+<span class="sd">                level: chunk</span>
+<span class="sd">                pruned:</span>
+<span class="sd">                  - embedding</span>
+<span class="sd">                  - buffer</span>
+<span class="sd">                  - blob</span>
+<span class="sd">                  - text</span>
+<span class="sd">            - !KVIndexDriver</span>
+<span class="sd">              with:</span>
+<span class="sd">                level: chunk</span>
+<span class="sd">                executor: BaseKVIndexer</span>
+<span class="sd">          ControlRequest:</span>
+<span class="sd">            - !ControlReqDriver {}</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
