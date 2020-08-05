@@ -1,0 +1,558 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.executors.decorators &mdash; Jina 0.4.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4.3
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Jina</a>
+        
+      </nav>
+
+      <div class="card table-of-contents">
+          <span class="card-title">Table of Contents</span>
+            <div class="card-content">
+            
+            </div>
+        <a href="https://github.com/jina-ai/jina/">
+          <span class="toc-card-footer">
+            <span>Visit us on Github</span>
+          </span>
+        </a>
+      </div>
+
+      <div id="showhide-navbar-btn" onclick="showhide_navbar()">
+      </div>
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../jina.html">jina</a> &raquo;</li>
+        
+          <li><a href="../executors.html">jina.executors</a> &raquo;</li>
+        
+      <li>jina.executors.decorators</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jina.executors.decorators</h1><div class="highlight"><pre>
+<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;Decorators and wrappers designed for wrapping :class:`BaseExecutor` functions. &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.metas</span> <span class="kn">import</span> <span class="n">get_default_metas</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">batch_iterator</span>
+
+
+<div class="viewcode-block" id="as_update_method"><a class="viewcode-back" href="../../../api/jina.executors.decorators.html#jina.executors.decorators.as_update_method">[docs]</a><span class="k">def</span> <span class="nf">as_update_method</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mark the function as the updating function of this executor,</span>
+<span class="sd">    calling this function will change the executor so later you can save the change via :func:`save`</span>
+<span class="sd">    Will set the is_updated property after function is called.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_updated</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">f</span>
+
+    <span class="k">return</span> <span class="n">arg_wrapper</span></div>
+
+
+<div class="viewcode-block" id="as_train_method"><a class="viewcode-back" href="../../../api/jina.executors.decorators.html#jina.executors.decorators.as_train_method">[docs]</a><span class="k">def</span> <span class="nf">as_train_method</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mark a function as the training function of this executor.</span>
+<span class="sd">    Will set the is_trained property after function is called.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_trained</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">%s</span><span class="s1">&quot; has been trained already, &#39;</span>
+                                <span class="s1">&#39;training it again will override the previous training&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_trained</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">f</span>
+
+    <span class="k">return</span> <span class="n">arg_wrapper</span></div>
+
+
+<div class="viewcode-block" id="as_ndarray"><a class="viewcode-back" href="../../../api/jina.executors.decorators.html#jina.executors.decorators.as_ndarray">[docs]</a><span class="k">def</span> <span class="nf">as_ndarray</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert an :class:`BaseExecutor` function returns to a ``numpy.ndarray``,</span>
+<span class="sd">    the following type are supported: `EagerTensor`, `Tensor`, `list`</span>
+
+<span class="sd">    :param func: the function to decorate</span>
+<span class="sd">    :param dtype: the converted dtype of the ``numpy.ndarray``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">r_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">if</span> <span class="n">r_type</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;EagerTensor&#39;</span><span class="p">,</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">}:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unrecognized type </span><span class="si">{</span><span class="n">r_type</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">arg_wrapper</span></div>
+
+
+<div class="viewcode-block" id="require_train"><a class="viewcode-back" href="../../../api/jina.executors.decorators.html#jina.executors.decorators.require_train">[docs]</a><span class="k">def</span> <span class="nf">require_train</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mark an :class:`BaseExecutor` function as training required, so it can only be called</span>
+<span class="sd">    after the function decorated by ``@as_train_method``. &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;is_trained&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_trained</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;training is required before calling &quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> has no attribute &quot;is_trained&quot;&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">arg_wrapper</span></div>
+
+
+<div class="viewcode-block" id="store_init_kwargs"><a class="viewcode-back" href="../../../api/jina.executors.decorators.html#jina.executors.decorators.store_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">store_init_kwargs</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mark the args and kwargs of :func:`__init__` later to be stored via :func:`save_config` in YAML &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s1">&#39;__init__&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;this decorator should only be used on __init__ method of an executor&#39;</span><span class="p">)</span>
+        <span class="n">taboo</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">}</span>
+        <span class="n">_defaults</span> <span class="o">=</span> <span class="n">get_default_metas</span><span class="p">()</span>
+        <span class="n">taboo</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">all_pars</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">all_pars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">taboo</span><span class="p">}</span>
+        <span class="n">tmp_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">all_pars</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">taboo</span><span class="p">]</span>
+        <span class="c1"># set args by aligning tmp_list with arg values</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tmp_list</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+            <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="c1"># set kwargs</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_args_kwargs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;kwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">taboo</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_init_kwargs_dict&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span> <span class="o">=</span> <span class="n">tmp</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span>
+
+    <span class="k">return</span> <span class="n">arg_wrapper</span></div>
+
+
+<div class="viewcode-block" id="batching"><a class="viewcode-back" href="../../../api/jina.executors.decorators.html#jina.executors.decorators.batching">[docs]</a><span class="k">def</span> <span class="nf">batching</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+             <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">num_batch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+             <span class="n">split_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split the input of a function into small batches and call :func:`func` on each batch</span>
+<span class="sd">    , collect the merged result and return. This is useful when the input is too big to fit into memory</span>
+
+<span class="sd">    :param func: function to decorate</span>
+<span class="sd">    :param batch_size: size of each batch</span>
+<span class="sd">    :param num_batch: number of batches to take, the rest will be ignored</span>
+<span class="sd">    :param split_over_axis: split over which axis into batches</span>
+<span class="sd">    :param merge_over_axis: merge over which axis into a single result</span>
+<span class="sd">    :return: the merged result as if run :func:`func` once on the input.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            class MemoryHungryExecutor:</span>
+
+<span class="sd">                @batching</span>
+<span class="sd">                def train(self, batch: &#39;numpy.ndarray&#39;, *args, **kwargs):</span>
+<span class="sd">                    gpu_train(batch)  #: this will respect the ``batch_size`` defined as object attribute</span>
+
+<span class="sd">                @batching(batch_size = 64)</span>
+<span class="sd">                def train(self, batch: &#39;numpy.ndarray&#39;, *args, **kwargs):</span>
+<span class="sd">                    gpu_train(batch)</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_batching</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="c1"># priority: decorator &gt; class_attribute</span>
+            <span class="n">b_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span> <span class="k">else</span> <span class="n">batch_size</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="c1"># no batching if b_size is None</span>
+            <span class="k">if</span> <span class="n">b_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;logger&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;batching enabled for </span><span class="si">%s</span><span class="s1">(). batch_size=</span><span class="si">%s</span><span class="se">\t</span><span class="s1">num_batch=</span><span class="si">%s</span><span class="se">\t</span><span class="s1">axis=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="p">,</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">num_batch</span><span class="p">,</span> <span class="n">split_over_axis</span><span class="p">))</span>
+
+            <span class="n">total_size1</span> <span class="o">=</span> <span class="n">_get_size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">split_over_axis</span><span class="p">)</span>
+            <span class="n">total_size2</span> <span class="o">=</span> <span class="n">b_size</span> <span class="o">*</span> <span class="n">num_batch</span> <span class="k">if</span> <span class="n">num_batch</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">total_size1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">total_size2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">total_size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">total_size1</span><span class="p">,</span> <span class="n">total_size2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">total_size</span> <span class="o">=</span> <span class="n">total_size1</span> <span class="ow">or</span> <span class="n">total_size2</span>
+
+            <span class="n">final_result</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batch_iterator</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="n">total_size</span><span class="p">],</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">split_over_axis</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># the only result of one batch</span>
+                <span class="k">return</span> <span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span> <span class="ow">and</span> <span class="n">merge_over_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="n">final_result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">)</span>
+                    <span class="c1"># if chunk_dim != -1:</span>
+                    <span class="c1">#     final_result = final_result.reshape((-1, chunk_dim, final_result.shape[1]))</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                    <span class="n">reduced_result</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">num_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_cols</span><span class="p">):</span>
+                        <span class="n">reduced_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">final_result</span><span class="p">],</span> <span class="n">merge_over_axis</span><span class="p">))</span>
+                    <span class="c1"># if chunk_dim != -1:</span>
+                    <span class="c1">#     for col in range(num_cols):</span>
+                    <span class="c1">#         reduced_result[col] = reduced_result[col].reshape(</span>
+                    <span class="c1">#             (-1, chunk_dim, reduced_result[col].shape[1]))</span>
+                    <span class="n">final_result</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">reduced_result</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">final_result</span>
+
+        <span class="k">return</span> <span class="n">arg_wrapper</span>
+
+    <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_batching</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_batching</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_size</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">total_size</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
