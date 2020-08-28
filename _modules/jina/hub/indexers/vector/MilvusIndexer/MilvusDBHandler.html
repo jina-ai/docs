@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../../../../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../../../../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler &mdash; Jina 0.4.16 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../../_static/jquery.js"></script>
+        <script src="../../../../../../_static/underscore.js"></script>
+        <script src="../../../../../../_static/doctools.js"></script>
+        <script src="../../../../../../_static/language_data.js"></script>
+        <script src="../../../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.4.16
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/install/on-x.html">Can I Run Jina On ….?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/flow/index.html#common-design-patterns">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../../index.html">Jina</a>
+        
+      </nav>
+
+      <div class="card table-of-contents">
+          <span class="card-title" onclick="showhide_littlenavbar()">Table of Contents</span>
+            <div id="little-navbar" class="card-content">
+            
+            </div>
+        <a href="https://github.com/jina-ai/jina/">
+          <span class="toc-card-footer" >
+            <span>Visit us on Github</span>
+          </span>
+        </a>
+      </div>
+
+      <div id="showhide-navbar-btn" onclick="showhide_navbar()">
+      </div>
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../../../../jina.html">jina</a> &raquo;</li>
+        
+          <li><a href="../MilvusIndexer.html">jina.hub.indexers.vector.MilvusIndexer</a> &raquo;</li>
+        
+      <li>jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler</h1><div class="highlight"><pre>
+<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
+
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">jina.excepts</span> <span class="kn">import</span> <span class="n">MilvusDBException</span>
+<span class="kn">from</span> <span class="nn">jina.logging.base</span> <span class="kn">import</span> <span class="n">get_logger</span>
+
+
+<div class="viewcode-block" id="MilvusDBHandler"><a class="viewcode-back" href="../../../../../../api/jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.html#jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.MilvusDBHandler">[docs]</a><span class="k">class</span> <span class="nc">MilvusDBHandler</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Milvus DB handler</span>
+<span class="sd">        This class is intended to abstract the access and communication with external MilvusDB from Executors</span>
+
+<span class="sd">        For more information about Milvus:</span>
+<span class="sd">            - https://github.com/milvus-io/milvus/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MilvusDBHandler.get_index_type"><a class="viewcode-back" href="../../../../../../api/jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.html#jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.MilvusDBHandler.get_index_type">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_index_type</span><span class="p">(</span><span class="n">index_type</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">milvus</span> <span class="kn">import</span> <span class="n">IndexType</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;Flat&#39;</span><span class="p">:</span> <span class="n">IndexType</span><span class="o">.</span><span class="n">FLAT</span><span class="p">,</span>
+            <span class="s1">&#39;IVF,Flat&#39;</span><span class="p">:</span> <span class="n">IndexType</span><span class="o">.</span><span class="n">IVFLAT</span><span class="p">,</span>
+            <span class="s1">&#39;IVF,SQ8&#39;</span><span class="p">:</span> <span class="n">IndexType</span><span class="o">.</span><span class="n">IVF_SQ8</span><span class="p">,</span>
+            <span class="s1">&#39;RNSG&#39;</span><span class="p">:</span> <span class="n">IndexType</span><span class="o">.</span><span class="n">RNSG</span><span class="p">,</span>
+            <span class="s1">&#39;IVF,SQ8H&#39;</span><span class="p">:</span> <span class="n">IndexType</span><span class="o">.</span><span class="n">IVF_SQ8H</span><span class="p">,</span>
+            <span class="s1">&#39;IVF,PQ&#39;</span><span class="p">:</span> <span class="n">IndexType</span><span class="o">.</span><span class="n">IVF_PQ</span><span class="p">,</span>
+            <span class="s1">&#39;HNSW&#39;</span><span class="p">:</span> <span class="n">IndexType</span><span class="o">.</span><span class="n">IVF_PQ</span><span class="p">,</span>
+            <span class="s1">&#39;Annoy&#39;</span><span class="p">:</span> <span class="n">IndexType</span><span class="o">.</span><span class="n">ANNOY</span>
+        <span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index_type</span><span class="p">,</span> <span class="n">IndexType</span><span class="o">.</span><span class="n">FLAT</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MilvusDBHandler.MilvusDBInserter"><a class="viewcode-back" href="../../../../../../api/jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.html#jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.MilvusDBHandler.MilvusDBInserter">[docs]</a>    <span class="k">class</span> <span class="nc">MilvusDBInserter</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Milvus DB Inserter</span>
+<span class="sd">            This class is an inner class and provides a context manager to insert vectors into Milvus while ensuring</span>
+<span class="sd">            data is flushed.</span>
+
+<span class="sd">            For more information about Milvus:</span>
+<span class="sd">                - https://github.com/milvus-io/milvus/</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">client</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span> <span class="o">=</span> <span class="n">collection_name</span>
+
+        <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sending flush command to Milvus Server for collection: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">flush</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="p">])</span>
+
+<div class="viewcode-block" id="MilvusDBHandler.MilvusDBInserter.insert"><a class="viewcode-back" href="../../../../../../api/jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.html#jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.MilvusDBHandler.MilvusDBInserter.insert">[docs]</a>        <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">):</span>
+            <span class="n">status</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">vectors</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">keys</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="o">.</span><span class="n">OK</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Insert failed: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">status</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">MilvusDBException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">collection_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an MilvusDBHandler</span>
+
+<span class="sd">        :param host: Host of the Milvus Server</span>
+<span class="sd">        :param port: Port to connect to the Milvus Server</span>
+<span class="sd">        :param collection_name: Name of the collection where the Handler will insert and query vectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">host</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span> <span class="o">=</span> <span class="n">collection_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">milvus_client</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MilvusDBHandler.connect"><a class="viewcode-back" href="../../../../../../api/jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.html#jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.MilvusDBHandler.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">milvus</span> <span class="kn">import</span> <span class="n">Milvus</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">milvus_client</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">milvus_client</span><span class="o">.</span><span class="n">server_status</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">OK</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Setting connection to Milvus Server at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">milvus_client</span> <span class="o">=</span> <span class="n">Milvus</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="MilvusDBHandler.close"><a class="viewcode-back" href="../../../../../../api/jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.html#jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.MilvusDBHandler.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Closing connection to Milvus Server at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">milvus_client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MilvusDBHandler.insert"><a class="viewcode-back" href="../../../../../../api/jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.html#jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.MilvusDBHandler.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">MilvusDBHandler</span><span class="o">.</span><span class="n">MilvusDBInserter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">milvus_client</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">concat</span><span class="p">,</span> <span class="n">keys</span><span class="o">.</span><span class="n">tolist</span><span class="p">()),</span> <span class="n">vectors</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MilvusDBHandler.build_index"><a class="viewcode-back" href="../../../../../../api/jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.html#jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.MilvusDBHandler.build_index">[docs]</a>    <span class="k">def</span> <span class="nf">build_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="nb">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_index_type</span><span class="p">(</span><span class="n">index_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Creating index of type: </span><span class="si">{</span><span class="n">index_type</span><span class="si">}</span><span class="s1"> at&#39;</span>
+                         <span class="sa">f</span><span class="s1">&#39; Milvus Server. collection: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="si">}</span><span class="s1"> with index params: </span><span class="si">{</span><span class="n">index_params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">milvus_client</span><span class="o">.</span><span class="n">create_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">index_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="o">.</span><span class="n">OK</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Creating index failed: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">status</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">MilvusDBException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MilvusDBHandler.search"><a class="viewcode-back" href="../../../../../../api/jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.html#jina.hub.indexers.vector.MilvusIndexer.MilvusDBHandler.MilvusDBHandler.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">search_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Querying collection: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="si">}</span><span class="s1"> with search params: </span><span class="si">{</span><span class="n">search_params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">status</span><span class="p">,</span> <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">milvus_client</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">collection_name</span><span class="p">,</span>
+                                                    <span class="n">query_records</span><span class="o">=</span><span class="n">query_vectors</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="n">top_k</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">search_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="o">.</span><span class="n">OK</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Querying index failed: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">status</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">MilvusDBException</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">results</span><span class="o">.</span><span class="n">distance_array</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">id_array</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+
+    }
+    function showhide_littlenavbar() {
+      var x = document.getElementById("little-navbar");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
