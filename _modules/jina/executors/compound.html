@@ -1,0 +1,702 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.executors.compound &mdash; Jina 0.5.6 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.5.6
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/on-x.html">Can I Run Jina On ….?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/index.html#common-design-patterns">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Jina</a>
+        
+      </nav>
+
+   
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../jina.html">jina</a> &raquo;</li>
+        
+          <li><a href="../executors.html">jina.executors</a> &raquo;</li>
+        
+      <li>jina.executors.compound</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jina.executors.compound</h1><div class="highlight"><pre>
+<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseExecutor</span><span class="p">,</span> <span class="n">AnyExecutor</span>
+
+
+<div class="viewcode-block" id="CompoundExecutor"><a class="viewcode-back" href="../../../api/jina.executors.compound.html#jina.executors.compound.CompoundExecutor">[docs]</a><span class="k">class</span> <span class="nc">CompoundExecutor</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :class:`CompoundExecutor` is a set of multiple executors.</span>
+<span class="sd">    The most common usage is chaining a pipeline of executors, where the</span>
+<span class="sd">    input of the current is the output of the former.</span>
+
+<span class="sd">    A common use case of :class:`CompoundExecutor` is to glue multiple :class:`BaseExecutor` together, instead of breaking them into different Pods.</span>
+
+<span class="sd">    **Example 1: a compound Chunk Indexer that does vector indexing and key-value index**</span>
+
+<span class="sd">    .. highlight:: yaml</span>
+<span class="sd">    .. code-block:: yaml</span>
+
+<span class="sd">        !CompoundExecutor</span>
+<span class="sd">        components:</span>
+<span class="sd">          - !NumpyIndexer</span>
+<span class="sd">            with:</span>
+<span class="sd">              index_filename: vec.gz</span>
+<span class="sd">            metas:</span>
+<span class="sd">              name: vecidx_exec  # a customized name</span>
+<span class="sd">              workspace: $TEST_WORKDIR</span>
+<span class="sd">          - !BasePbIndexer</span>
+<span class="sd">            with:</span>
+<span class="sd">              index_filename: chunk.gz</span>
+<span class="sd">            metas:</span>
+<span class="sd">              name: chunkidx_exec</span>
+<span class="sd">              workspace: $TEST_WORKDIR</span>
+<span class="sd">        metas:</span>
+<span class="sd">          name: chunk_compound_indexer</span>
+<span class="sd">          workspace: $TEST_WORKDIR</span>
+<span class="sd">        requests:</span>
+<span class="sd">          on:</span>
+<span class="sd">            SearchRequest:</span>
+<span class="sd">              - !VectorSearchDriver</span>
+<span class="sd">                with:</span>
+<span class="sd">                  executor: vecidx_exec</span>
+<span class="sd">            IndexRequest:</span>
+<span class="sd">              - !VectorIndexDriver</span>
+<span class="sd">                with:</span>
+<span class="sd">                  executor: vecidx_exec</span>
+<span class="sd">            ControlRequest:</span>
+<span class="sd">              - !ControlReqDriver {}</span>
+
+<span class="sd">    **Example 2: a compound crafter that first craft the doc and then segment **</span>
+
+<span class="sd">    .. highlight:: yaml</span>
+<span class="sd">    .. code-block:: yaml</span>
+
+<span class="sd">        !CompoundExecutor</span>
+<span class="sd">        components:</span>
+<span class="sd">          - !GifNameRawSplit</span>
+<span class="sd">            metas:</span>
+<span class="sd">              name: name_split  # a customized name</span>
+<span class="sd">              workspace: $TEST_WORKDIR</span>
+<span class="sd">          - !GifPreprocessor</span>
+<span class="sd">            with:</span>
+<span class="sd">              every_k_frame: 2</span>
+<span class="sd">              from_buffer: true</span>
+<span class="sd">            metas:</span>
+<span class="sd">              name: gif2chunk_preprocessor  # a customized name</span>
+<span class="sd">        metas:</span>
+<span class="sd">          name: compound_crafter</span>
+<span class="sd">          workspace: $TEST_WORKDIR</span>
+<span class="sd">          py_modules: gif2chunk.py</span>
+<span class="sd">        requests:</span>
+<span class="sd">          on:</span>
+<span class="sd">            IndexRequest:</span>
+<span class="sd">              - !DocCraftDriver</span>
+<span class="sd">                with:</span>
+<span class="sd">                  executor: name_split</span>
+<span class="sd">              - !SegmentDriver</span>
+<span class="sd">                with:</span>
+<span class="sd">                  executor: gif2chunk_preprocessor</span>
+<span class="sd">            ControlRequest:</span>
+<span class="sd">              - !ControlReqDriver {}</span>
+
+
+<span class="sd">    One can access the component of a :class:`CompoundExecutor` via index, e.g.</span>
+
+<span class="sd">    .. highlight:: python</span>
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        c = BaseExecutor.load_config(&#39;compound-example.yaml&#39;)</span>
+<span class="sd">        assertTrue(c[0] == c[&#39;dummyA-1ef90ea8&#39;])</span>
+<span class="sd">        c[0].add(obj)</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        All components ``workspace`` and ``replica_workspace`` are overrided by their :class:`CompoundExecutor` counterparts.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        When sub-component is external, ``py_modules`` must be given at root level ``metas`` not at the sub-level.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">class</span> <span class="nc">_FnWrapper</span><span class="p">:</span>
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fns</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fns</span> <span class="o">=</span> <span class="n">fns</span>
+
+        <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fns</span><span class="p">:</span>
+                <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">r</span>
+
+    <span class="k">class</span> <span class="nc">_FnAllWrapper</span><span class="p">(</span><span class="n">_FnWrapper</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+    <span class="k">class</span> <span class="nc">_FnOrWrapper</span><span class="p">(</span><span class="n">_FnWrapper</span><span class="p">):</span>
+        <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">routes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">resolve_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a new :class:`CompoundExecutor` object</span>
+
+<span class="sd">        :param routes: a map of function routes. The key is the function name, the value is a tuple of two pieces,</span>
+<span class="sd">            where the first element is the name of the referred component (``metas.name``) and the second element</span>
+<span class="sd">            is the name of the referred function.</span>
+
+<span class="sd">            .. seealso::</span>
+
+<span class="sd">                :func:`add_route`</span>
+<span class="sd">        :param resolve_all: universally add ``*_all()`` to all functions that have the identical name</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        We have two dummy executors as follows:</span>
+
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            class dummyA(BaseExecutor):</span>
+<span class="sd">                def say(self):</span>
+<span class="sd">                    return &#39;a&#39;</span>
+
+<span class="sd">                def sayA(self):</span>
+<span class="sd">                    print(&#39;A: im A&#39;)</span>
+
+
+<span class="sd">            class dummyB(BaseExecutor):</span>
+<span class="sd">                def say(self):</span>
+<span class="sd">                    return &#39;b&#39;</span>
+
+<span class="sd">                def sayB(self):</span>
+<span class="sd">                    print(&#39;B: im B&#39;)</span>
+
+<span class="sd">        and we create a :class:`CompoundExecutor` consisting of these two via</span>
+
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            da, db = dummyA(), dummyB()</span>
+<span class="sd">            ce = CompoundExecutor()</span>
+<span class="sd">            ce.components = lambda: [da, db]</span>
+
+<span class="sd">        Now the new executor ``ce`` have two new methods, i.e :func:`ce.sayA` and :func:`ce.sayB`. They point to the original</span>
+<span class="sd">        :func:`dummyA.sayA` and :func:`dummyB.sayB` respectively. One can say ``ce`` has inherited these two methods.</span>
+
+<span class="sd">        The interesting part is :func:`say`, as this function name is shared between :class:`dummyA` and :class:`dummyB`.</span>
+<span class="sd">        It requires some resolution. When `resolve_all=True`, then a new function :func:`say_all` is add to ``ce``.</span>
+<span class="sd">        ``ce.say_all`` works as if you call :func:`dummyA.sayA` and :func:`dummyB.sayB` in a row. This</span>
+<span class="sd">        makes sense in some cases such as training, saving. In other cases, it may require a more sophisticated resolution,</span>
+<span class="sd">        where one can use :func:`add_route` to achieve that. For example,</span>
+
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            ce.add_route(&#39;say&#39;, db.name, &#39;say&#39;)</span>
+<span class="sd">            assert b.say() == &#39;b&#39;</span>
+
+<span class="sd">        Such resolution is what we call **routes** here, and it can be specified in advance with the</span>
+<span class="sd">        arguments ``routes`` in :func:`__init__`, or using YAML.</span>
+
+<span class="sd">        .. highlight:: yaml</span>
+<span class="sd">        .. code-block:: yaml</span>
+
+<span class="sd">            !CompoundExecutor</span>
+<span class="sd">            components: ...</span>
+<span class="sd">            with:</span>
+<span class="sd">              resolve_all: true</span>
+<span class="sd">              routes:</span>
+<span class="sd">                say:</span>
+<span class="sd">                - dummyB-e3acc910</span>
+<span class="sd">                - say</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_components</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: List[AnyExecutor]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_routes</span> <span class="o">=</span> <span class="n">routes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_updated</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1">#: the internal update state of this compound executor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resolve_all</span> <span class="o">=</span> <span class="n">resolve_all</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_trained</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return ``True`` only if all components are trained (i.e. ``is_trained=True``)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_trained</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return ``True``  if any components is updated&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_updated</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">))</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_updated</span>
+
+    <span class="nd">@is_updated</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set :attr:`is_updated` for this :class:`CompoundExecutor`. Note, not to all its components &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_updated</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="nd">@is_trained</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">is_trained</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set :attr:`is_trained` for all components of this :class:`CompoundExecutor` &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">is_trained</span> <span class="o">=</span> <span class="n">val</span>
+
+<div class="viewcode-block" id="CompoundExecutor.save"><a class="viewcode-back" href="../../../api/jina.executors.compound.html#jina.executors.compound.CompoundExecutor.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Serialize this compound executor along with all components in it to binary files</span>
+
+<span class="sd">        :param filename: file path of the serialized file, if not given then :attr:`save_abspath` is used</span>
+<span class="sd">        :return: successfully dumped or not</span>
+
+<span class="sd">        It uses ``pickle`` for dumping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>  <span class="c1"># do i really need to save the compound executor itself</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AnyExecutor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return all component executors as a list. The list follows the order as defined in the YAML config or the</span>
+<span class="sd">        pre-given order when calling the setter. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
+
+    <span class="nd">@components</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comps</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">List</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Set the components of this executors</span>
+
+<span class="sd">        :param comps: a function returns a list of executors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">comps</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;components must be a callable function that returns &#39;</span>
+                            <span class="s1">&#39;a List[BaseExecutor]&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;init_from_yaml&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_components</span> <span class="o">=</span> <span class="n">comps</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;components expect a list of executors, receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">)</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># self._set_comp_workspace()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_routes</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_routes</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;components is omitted from construction, as it is initialized from yaml config&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_comp_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># overrider the workspace setting for all components</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">separated_workspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">separated_workspace</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">replica_workspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_workspace</span>
+
+    <span class="k">def</span> <span class="nf">_resolve_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_routes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_routes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">kk</span><span class="p">,</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">kk</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompoundExecutor.add_route"><a class="viewcode-back" href="../../../api/jina.executors.compound.html#jina.executors.compound.CompoundExecutor.add_route">[docs]</a>    <span class="k">def</span> <span class="nf">add_route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_stored</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Create a new function for this executor which refers to the component&#39;s function</span>
+
+<span class="sd">        This will create a new function :func:`fn_name` which actually refers to ``components[comp_name].comp_fn_name``.</span>
+<span class="sd">        It is useful when two components have a function with duplicated name and one wants to resolve this duplication.</span>
+
+<span class="sd">        :param fn_name: the name of the new function</span>
+<span class="sd">        :param comp_name: the name of the referred component, defined in ``metas.name``</span>
+<span class="sd">        :param comp_fn_name: the name of the referred function of ``comp_name``</span>
+<span class="sd">        :param is_stored: if ``True`` then this change will be stored in the config and affects future :func:`save` and</span>
+<span class="sd">            :func:`save_config`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">comp_name</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">)):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">is_stored</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_routes</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_routes</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_routes</span><span class="p">[</span><span class="n">fn_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">comp_name</span><span class="p">:</span> <span class="n">comp_fn_name</span><span class="p">}</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">is_updated</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;bad names: </span><span class="si">{</span><span class="n">comp_name</span><span class="si">}</span><span class="s1"> and </span><span class="si">{</span><span class="n">comp_fn_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_routes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">inspect</span>
+        <span class="c1"># add all existing routes</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">common</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># set(dir(BaseExecutor()))</span>
+
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">common</span><span class="p">:</span>
+                    <span class="n">r</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">m</span><span class="p">)))</span>
+
+        <span class="n">new_routes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bad_routes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_all</span><span class="p">:</span>
+                    <span class="n">new_r</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">_all&#39;</span>
+                    <span class="n">fns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_FnWrapper</span><span class="p">([</span><span class="n">vv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_r</span><span class="p">,</span> <span class="n">fns</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;function &quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&quot; appears multiple times in </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;a new function &quot;</span><span class="si">{</span><span class="n">new_r</span><span class="si">}</span><span class="s1">&quot; is added to </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> by iterating over all&#39;</span><span class="p">)</span>
+                    <span class="n">new_routes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_r</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s1">&#39;function &quot;</span><span class="si">%s</span><span class="s1">&quot; appears multiple times in </span><span class="si">%s</span><span class="s1">, it needs to be resolved manually before using.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+                    <span class="n">bad_routes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">new_routes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;new functions added: </span><span class="si">{</span><span class="n">new_routes</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bad_routes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unresolvable functions: </span><span class="si">{</span><span class="n">bad_routes</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CompoundExecutor.close"><a class="viewcode-back" href="../../../api/jina.executors.compound.html#jina.executors.compound.CompoundExecutor.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Close all components and release the resources&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CompoundExecutor.to_yaml"><a class="viewcode-back" href="../../../api/jina.executors.compound.html#jina.executors.compound.CompoundExecutor.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">representer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_dump_instance_to_yaml</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">components</span>
+        <span class="k">return</span> <span class="n">representer</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="s1">&#39;!&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CompoundExecutor.from_yaml"><a class="viewcode-back" href="../../../api/jina.executors.compound.html#jina.executors.compound.CompoundExecutor.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="n">obj</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">from_dump</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_instance_from_yaml</span><span class="p">(</span><span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">from_dump</span> <span class="ow">and</span> <span class="s1">&#39;components&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;components&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+    <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">item</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;CompoundExecutor only support string type &quot;in&quot;&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">item</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">c</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;CompoundExecutor only supports int or string index&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+
+    }
+    function showhide_littlenavbar() {
+      var x = document.getElementById("little-navbar");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
