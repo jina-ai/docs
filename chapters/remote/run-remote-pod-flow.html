@@ -1,0 +1,532 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>Creating a Remote Jina Pod via Flow API &mdash; Jina 0.6.5 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Logging configuration in jina" href="../logging/index.html" />
+    <link rel="prev" title="Creating a Remote Jina Pod via Jina Gateway" href="run-remote-pod-jina.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.5
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/on-x.html">Can I Run Jina On ….?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/index.html#common-design-patterns">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Using Jina Pod Remotely</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="run-remote-pod-console.html">Creating a Remote Jina Pod from Console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run-remote-pod-jina.html">Creating a Remote Jina Pod via Jina Gateway</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Creating a Remote Jina Pod via Flow API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Jina</a>
+        
+      </nav>
+
+   
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Using Jina Pod Remotely</a> &raquo;</li>
+        
+      <li>Creating a Remote Jina Pod via Flow API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="creating-a-remote-jina-pod-via-flow-api">
+<h1>Creating a Remote Jina Pod via Flow API<a class="headerlink" href="#creating-a-remote-jina-pod-via-flow-api" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial guides you to run a Jina Pod remotely via Flow API.</p>
+<p>Before the start, make sure to read <a class="reference external" href="/tba">“Understanding Pea and Pod in Jina”</a> and <a class="reference external" href="/tba">“Jina Flow API”</a>.</p>
+<div class="section" id="terminologies">
+<h2>Terminologies<a class="headerlink" href="#terminologies" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><em>Workflow</em>: a set of connected pods for accomplishing certain task, e.g. indexing, searching, extracting.</p></li>
+<li><p><em>Flow API</em>: a pythonic way for users to construct workflows in Jina with clean, readable idioms.</p></li>
+<li><p><em>Remote</em>, <em>local instance</em>, <em>local machine</em>: the place where you want to run the pod, the place offers better computational capability or larger storage. For example, one may want to run an encode pod on the remote GPU instance.</p></li>
+<li><p><em>Local</em>, <em>local instance</em>, <em>local machine</em>: the place of your entrypoint and the rest parts of your workflow.</p></li>
+</ul>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Both remote and local needs to have Jina installed.</p></li>
+<li><p>The local needs to know the IP address/host name of the remote.</p></li>
+<li><p>The ports on the remote (in the range of <code class="docutils literal notranslate"><span class="pre">49152-65535</span></code>) must be public accessible.</p></li>
+</ul>
+</div>
+<div class="section" id="steps">
+<h2>Steps<a class="headerlink" href="#steps" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="let-the-remote-jina-listen">
+<h3>1. Let the Remote Jina Listen<a class="headerlink" href="#let-the-remote-jina-listen" title="Permalink to this headline">¶</a></h3>
+<p>We start a Jina gateway to listen on the spawning request. By default, this feature is not enabled, one can simply type the following in the remote console:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jina gateway --allow-spawn
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>GatewayPea@8233[W]:SECURITY ALERT! this gateway allows SpawnRequest from remote Jina
+GatewayPea@8233[C]:gateway is listening at: 0.0.0.0:41851
+</pre></div>
+</div>
+<p>After it reaches to <code class="docutils literal notranslate"><span class="pre">gateway</span> <span class="pre">is</span> <span class="pre">listening</span></code>, the remote Jina is ready. The port number is important for the local to connect to it. In this example we write down <code class="docutils literal notranslate"><span class="pre">41851</span></code>. If you want to have fixed port number everytime, please use <code class="docutils literal notranslate"><span class="pre">--port-expose</span></code> to specify it. More information can be found <a class="reference external" href="/tba">in the documentation</a>.</p>
+</div>
+<div class="section" id="build-a-simple-index-flow">
+<h3>2. Build a Simple Index Flow<a class="headerlink" href="#build-a-simple-index-flow" title="Permalink to this headline">¶</a></h3>
+<p>Here we assume the remote is in the intranet and its IP address is <code class="docutils literal notranslate"><span class="pre">192.168.31.76</span></code>.</p>
+<p>To build a simple flow, we add a <code class="docutils literal notranslate"><span class="pre">NumpyIndexer</span></code> with three replicas (i.e. shards).</p>
+<p>Locally, we write:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+<span class="kn">from</span> <span class="nn">jina.enums</span> <span class="kn">import</span> <span class="n">FlowOptimizeLevel</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">(</span><span class="n">optimize_level</span><span class="o">=</span><span class="n">FlowOptimizeLevel</span><span class="o">.</span><span class="n">IGNORE_GATEWAY</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">&#39;yaml/test-index.yml&#39;</span><span class="p">,</span>
+          <span class="n">replicas</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">separated_workspace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+          <span class="n">host</span><span class="o">=</span><span class="s1">&#39;192.168.31.76&#39;</span><span class="p">,</span> <span class="n">port_expose</span><span class="o">=</span><span class="mi">41851</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">yaml/test-index.yml</span></code> should exist on the remote <code class="docutils literal notranslate"><span class="pre">192.168.31.76</span></code>, not at local.</p>
+<p>The YAML config we used here is as following:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!NumpyIndexer</span>
+<span class="nt">with</span><span class="p">:</span>
+  <span class="nt">index_filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">tmp2</span>
+<span class="nt">metas</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">test2</span>
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="nt">on</span><span class="p">:</span>
+    <span class="nt">SearchRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!VectorSearchDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">query</span>
+    <span class="nt">IndexRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!VectorIndexDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">method</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">add</span>
+    <span class="nt">ControlRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!ControlReqDriver</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-the-flow-and-index-data">
+<h3>3. Run the Flow and Index Data<a class="headerlink" href="#run-the-flow-and-index-data" title="Permalink to this headline">¶</a></h3>
+<p>Locally, we write:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">random_docs</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span> <span class="n">in_proto</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">random_docs</span><span class="p">(</span><span class="n">num_docs</span><span class="p">,</span> <span class="n">chunks_per_doc</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">embed_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">from</span> <span class="nn">jina.proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
+    <span class="n">c_id</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_docs</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">Document</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">chunks_per_doc</span><span class="p">):</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">array2pb</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">embed_dim</span><span class="p">])))</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">chunk_id</span> <span class="o">=</span> <span class="n">c_id</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">doc_id</span> <span class="o">=</span> <span class="n">j</span>
+            <span class="n">c_id</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">yield</span> <span class="n">d</span>
+</pre></div>
+</div>
+<p>While its running, you should observe the following log on both local and remote:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>GatewayPea@54104[C]:gateway is listening at: 0.0.0.0:53174
+GatewayPea@54101[C]:gateway is listening at: 0.0.0.0:53178
+SpawnDictP@54101[C]:connected to the gateway at 192.168.31.76:44444!
+RemotePars@54101[C]:ready and listening
+🌏     router@5927[I]:setting up sockets...
+      Flow@54101[I]:2 Pods (i.e. 1 Peas) are running in this Flow
+      Flow@54101[C]:flow is now ready for use, current build_level is GRAPH
+🌏     router@5927[I]:input tcp://0.0.0.0:53179 (PULL_BIND) 	 output tcp://0.0.0.0:53184 (PUSH_BIND)	 control over tcp://0.0.0.0:53183 (PAIR_BIND)
+🌏     router@5927[C]:ready and listening
+🌏     router@5927[I]:setting up sockets...
+  PyClient@54101[C]:connected to the gateway at 0.0.0.0:53178!
+index [=                   ]  elapsed: 0.0s  batch:        0 @ 0.0/s index ...	🌏     router@5927[I]:input tcp://0.0.0.0:53185 (PULL_BIND) 	 output tcp://0.0.0.0:53180 (PUSH_BIND)	 control over tcp://0.0.0.0:53186 (PAIR_BIND)
+🌏     router@5927[C]:ready and listening
+🌏     pod0-0@5927[I]:setting up sockets...
+🌏     pod0-0@5927[I]:input tcp://0.0.0.0:53184 (PULL_CONNECT) 	 output tcp://0.0.0.0:53185 (PUSH_CONNECT)	 control over tcp://0.0.0.0:53187 (PAIR_BIND)
+🌏     pod0-0@5927[C]:ready and listening
+🌏     pod0-1@5927[I]:setting up sockets...
+🌏     pod0-1@5927[I]:input tcp://0.0.0.0:53184 (PULL_CONNECT) 	 output tcp://0.0.0.0:53185 (PUSH_CONNECT)	 control over tcp://0.0.0.0:53188 (PAIR_BIND)
+🌏     pod0-1@5927[C]:ready and listening
+🌏     pod0-2@5927[I]:setting up sockets...
+🌏     pod0-2@5927[I]:input tcp://0.0.0.0:53184 (PULL_CONNECT) 	 output tcp://0.0.0.0:53185 (PUSH_CONNECT)	 control over tcp://0.0.0.0:53189 (PAIR_BIND)
+🌏     pod0-2@5927[C]:ready and listening
+GatewayPea@54101[I]:setting up sockets...
+GatewayPea@54101[I]:input tcp://192.168.31.76:53180 (PULL_CONNECT) 	 output tcp://192.168.31.76:53179 (PUSH_CONNECT)	 control over ipc:///var/folders/hw/gpxkv2_n1fv0_cvxs6vjbc540000gn/T/tmp0vbyq01v (PAIR_BIND)
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+🌏     pod0-1@5927[I]:received &quot;index&quot; from gateway▸router▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+🌏     pod0-2@5927[I]:received &quot;index&quot; from gateway▸router▸⚐
+🌏     pod0-0@5927[I]:received &quot;index&quot; from gateway▸router▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+🌏     pod0-0@5927[I]:received &quot;index&quot; from gateway▸router▸⚐
+🌏     pod0-1@5927[I]:received &quot;index&quot; from gateway▸router▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸router▸pod0-1▸⚐
+index [=                   ]  elapsed: 10.8s  batch:        1 @ 0.1/s 🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+🌏     pod0-2@5927[I]:received &quot;index&quot; from gateway▸router▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+GatewayPea@54104[C]:terminated
+🌏     pod0-0@5927[I]:received &quot;index&quot; from gateway▸router▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸router▸pod0-0▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+index [==                  ]  elapsed: 44.9s  batch:        2 @ 0.0/s 🌏     pod0-1@5927[I]:received &quot;index&quot; from gateway▸router▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸router▸pod0-2▸⚐
+index [===                 ]  elapsed: 50.3s  batch:        3 @ 0.1/s 🌏     router@5927[I]:received &quot;index&quot; from gateway▸⚐
+🌏     pod0-0@5927[I]:received &quot;control&quot; from ctl▸⚐
+🌏     pod0-0@5927[I]:bytes_sent: 8 KB bytes_recv:7 KB
+🌏     pod0-0@5927[I]:break from the event loop
+🌏     pod0-0@5927[I]:dumped changes to the executor,  53s since last the save
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸router▸pod0-1▸⚐
+🌏     router@5927[I]:received &quot;control&quot; from ctl▸⚐
+🌏     router@5927[I]:bytes_sent: 27 KB bytes_recv:24 KB
+🌏     router@5927[I]:break from the event loop
+🌏     router@5927[I]:executor says there is nothing to save
+🌏     router@5927[C]:terminated
+index [====                ]  elapsed: 56.1s  batch:        4 @ 0.1/s 🌏     pod0-2@5927[I]:received &quot;index&quot; from gateway▸router▸⚐
+🌏     router@5927[I]:received &quot;index&quot; from gateway▸router▸pod0-0▸⚐
+index [=====               ]  elapsed: 57.2s  batch:        5 @ 0.1/s 🌏     router@5927[I]:received &quot;index&quot; from gateway▸router▸pod0-2▸⚐
+🌏     pod0-1@5927[I]:received &quot;control&quot; from ctl▸⚐
+index [======              ]  elapsed: 59.2s  batch:        6 @ 0.1/s     [70.448 secs]
+</pre></div>
+</div>
+</div>
+<div class="section" id="checkout-the-index-files-on-the-remote">
+<h3>4. Checkout the Index Files On the Remote<a class="headerlink" href="#checkout-the-index-files-on-the-remote" title="Permalink to this headline">¶</a></h3>
+<p>After everything is done, checkout the working directory on the remote. And it should give you</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>├── test2-0
+│   ├── test2.bin
+│   └── tmp2
+├── test2-1
+│   ├── test2.bin
+│   └── tmp2
+├── test2-2
+│   ├── test2.bin
+│   └── tmp2
+</pre></div>
+</div>
+<p>Congratulations! You now have a remote Pod that can be connected.</p>
+</div>
+</div>
+<div class="section" id="troubleshooting-checklist">
+<h2>Troubleshooting Checklist<a class="headerlink" href="#troubleshooting-checklist" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>[ ] Is the remote address correct?</p></li>
+<li><p>[ ] Are the remote ports public accessible (e.g. Security Group on AWS, firewall blacklist)?</p></li>
+<li><p>[ ] Is the remote address an internal IP address and not publicly accessible?</p></li>
+<li><p>[ ] Is the local connected to internet?</p></li>
+<li><p>[ ] Is remote Pod successfully started? You shall see a green highlighted <code class="docutils literal notranslate"><span class="pre">ready</span> <span class="pre">and</span> <span class="pre">listening</span></code> if it is successful.</p></li>
+</ul>
+</div>
+<div class="section" id="what-s-next">
+<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline">¶</a></h2>
+<p>You many also want to checkout the following articles.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../logging/index.html" class="btn btn-neutral float-right" title="Logging configuration in jina" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="run-remote-pod-jina.html" class="btn btn-neutral float-left" title="Creating a Remote Jina Pod via Jina Gateway" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+
+    }
+    function showhide_littlenavbar() {
+      var x = document.getElementById("little-navbar");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
