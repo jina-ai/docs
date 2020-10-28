@@ -1,0 +1,607 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.executors.devices &mdash; Jina 0.7.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="jina.executors.metas" href="jina.executors.metas.html" />
+    <link rel="prev" title="jina.executors.decorators" href="jina.executors.decorators.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.7.2
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/on-x.html">Can I Run Jina On ….?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/flow/index.html#common-design-patterns">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="jina.html">Jina Python API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="jina.clients.html">jina.clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.docker.html">jina.docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.drivers.html">jina.drivers</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="jina.executors.html">jina.executors</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.crafters.html">jina.executors.crafters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.encoders.html">jina.executors.encoders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.evaluators.html">jina.executors.evaluators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.indexers.html">jina.executors.indexers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.rankers.html">jina.executors.rankers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.clients.html">jina.executors.clients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.compound.html">jina.executors.compound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.decorators.html">jina.executors.decorators</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">jina.executors.devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.metas.html">jina.executors.metas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.requests.html">jina.executors.requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jina.flow.html">jina.flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helloworld.html">jina.helloworld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.hub.html">jina.hub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.logging.html">jina.logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.peapods.html">jina.peapods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.proto.html">jina.proto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.checker.html">jina.checker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.counter.html">jina.counter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.enums.html">jina.enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.excepts.html">jina.excepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helper.html">jina.helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.parser.html">jina.parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 80 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 35 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Jina</a>
+        
+      </nav>
+
+   
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="jina.html">Jina Python API Reference</a> &raquo;</li>
+        
+          <li><a href="jina.executors.html">jina.executors</a> &raquo;</li>
+        
+      <li>jina.executors.devices</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-jina.executors.devices">
+<span id="jina-executors-devices"></span><h1>jina.executors.devices<a class="headerlink" href="#module-jina.executors.devices" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.executors.devices.BaseDevice">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.devices.</code><code class="sig-name descname">BaseDevice</code><a class="reference internal" href="../_modules/jina/executors/devices.html#BaseDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.BaseDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFrameworkExecutor</span></code> is the base class for the executors using other frameworks internally, including</dt><dd><p><cite>tensorflow</cite>, <cite>pytorch</cite>, <cite>onnx</cite>, <cite>faiss</cite> and <cite>paddlepaddle</cite>.</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="jina.executors.devices.BaseDevice.device">
+<code class="sig-name descname">device</code><a class="headerlink" href="#jina.executors.devices.BaseDevice.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.devices.BaseDevice.to_device">
+<em class="property">abstract </em><code class="sig-name descname">to_device</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/devices.html#BaseDevice.to_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.BaseDevice.to_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the computation from GPU to CPU or vice versa</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.devices.TorchDevice">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.devices.</code><code class="sig-name descname">TorchDevice</code><a class="reference internal" href="../_modules/jina/executors/devices.html#TorchDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.TorchDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.devices.BaseDevice" title="jina.executors.devices.BaseDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.devices.BaseDevice</span></code></a></p>
+<dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTorchDeviceHandler</span></code> implements the base class for the executors using <code class="xref py py-mod docutils literal notranslate"><span class="pre">torch</span></code> library. The common setups</dt><dd><p>go into this class.</p>
+</dd>
+</dl>
+<p>To implement your own executor with the <code class="xref py py-mod docutils literal notranslate"><span class="pre">torch</span></code> library,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyAwesomeTorchEncoder</span><span class="p">(</span><span class="n">BaseEncoder</span><span class="p">,</span> <span class="n">BaseTorchDeviceHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># load your awesome model</span>
+        <span class="kn">import</span> <span class="nn">torchvision.models</span> <span class="k">as</span> <span class="nn">models</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">mobilenet_v2</span><span class="p">()</span><span class="o">.</span><span class="n">features</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># use your awesome model to encode/craft/score</span>
+        <span class="kn">import</span> <span class="nn">torch</span>
+        <span class="n">_input</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_gpu</span><span class="p">:</span>
+            <span class="n">_input</span> <span class="o">=</span> <span class="n">_input</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
+        <span class="n">_output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">_input</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_gpu</span><span class="p">:</span>
+            <span class="n">_output</span> <span class="o">=</span> <span class="n">_output</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">_output</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="jina.executors.devices.TorchDevice.device">
+<code class="sig-name descname">device</code><a class="headerlink" href="#jina.executors.devices.TorchDevice.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.devices.TorchDevice.to_device">
+<code class="sig-name descname">to_device</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/devices.html#TorchDevice.to_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.TorchDevice.to_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the computation from GPU to CPU or vice versa</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.devices.PaddleDevice">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.devices.</code><code class="sig-name descname">PaddleDevice</code><a class="reference internal" href="../_modules/jina/executors/devices.html#PaddleDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.PaddleDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.devices.BaseDevice" title="jina.executors.devices.BaseDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.devices.BaseDevice</span></code></a></p>
+<dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePaddleExecutor</span></code> implements the base class for the executors using <code class="xref py py-mod docutils literal notranslate"><span class="pre">paddlepaddle</span></code> library. The</dt><dd><p>common setups go into this class.</p>
+</dd>
+</dl>
+<p>To implement your own executor with the <code class="xref py py-mod docutils literal notranslate"><span class="pre">paddlepaddle</span></code> library,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyAwesomePaddleEncoder</span><span class="p">(</span><span class="n">BasePaddleExecutor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># load your awesome model</span>
+        <span class="kn">import</span> <span class="nn">paddlehub</span> <span class="k">as</span> <span class="nn">hub</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">hub</span><span class="o">.</span><span class="n">Module</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;mobilenet_v2_imagenet&#39;</span><span class="p">)</span>
+        <span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">context</span><span class="p">(</span><span class="n">trainable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs_name</span> <span class="o">=</span> <span class="n">input_dict</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs_name</span> <span class="o">=</span> <span class="n">output_dict</span><span class="p">[</span><span class="s1">&#39;feature_map&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_device</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># use your awesome model to encode/craft/score</span>
+        <span class="n">_output</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exe</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">program</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+            <span class="n">fetch_list</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs_name</span><span class="p">],</span>
+            <span class="n">feed</span><span class="o">=</span><span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_name</span><span class="p">:</span> <span class="n">data</span><span class="p">},</span>
+            <span class="n">return_numpy</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">feature_map</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="jina.executors.devices.PaddleDevice.device">
+<code class="sig-name descname">device</code><a class="headerlink" href="#jina.executors.devices.PaddleDevice.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.devices.PaddleDevice.to_device">
+<code class="sig-name descname">to_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/devices.html#PaddleDevice.to_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.PaddleDevice.to_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the computation from GPU to CPU or vice versa</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.devices.TFDevice">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.devices.</code><code class="sig-name descname">TFDevice</code><a class="reference internal" href="../_modules/jina/executors/devices.html#TFDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.TFDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.devices.BaseDevice" title="jina.executors.devices.BaseDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.devices.BaseDevice</span></code></a></p>
+<dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTFDeviceHandler</span></code> implements the base class for the executors using <code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorflow</span></code> library. The common</dt><dd><p>setups go into this class.</p>
+</dd>
+</dl>
+<p>To implement your own executor with the <code class="xref py py-mod docutils literal notranslate"><span class="pre">tensorflow</span></code> library,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyAwesomeTFEncoder</span><span class="p">(</span><span class="n">BaseTFDeviceHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># load your awesome model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_device</span><span class="p">()</span>
+        <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">applications</span><span class="o">.</span><span class="n">MobileNetV2</span><span class="p">(</span>
+            <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_shape</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">include_top</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">pooling</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_strategy</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;imagenet&#39;</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">trainable</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># use your awesome model to encode/craft/score</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="jina.executors.devices.TFDevice.device">
+<code class="sig-name descname">device</code><a class="headerlink" href="#jina.executors.devices.TFDevice.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.devices.TFDevice.to_device">
+<code class="sig-name descname">to_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/devices.html#TFDevice.to_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.TFDevice.to_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the computation from GPU to CPU or vice versa</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.devices.OnnxDevice">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.devices.</code><code class="sig-name descname">OnnxDevice</code><a class="reference internal" href="../_modules/jina/executors/devices.html#OnnxDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.OnnxDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.devices.BaseDevice" title="jina.executors.devices.BaseDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.devices.BaseDevice</span></code></a></p>
+<dl class="simple">
+<dt><a class="reference internal" href="#jina.executors.devices.OnnxDevice" title="jina.executors.devices.OnnxDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">OnnxDevice</span></code></a> implements the base class for the executors using <code class="xref py py-mod docutils literal notranslate"><span class="pre">onnxruntime</span></code> library. The common</dt><dd><p>setups go into this class.</p>
+</dd>
+</dl>
+<p>To implement your own executor with the <code class="xref py py-mod docutils literal notranslate"><span class="pre">onnxruntime</span></code> library,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyAwesomeOnnxEncoder</span><span class="p">(</span><span class="n">BaseOnnxDeviceHandler</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_feature</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs_name</span> <span class="o">=</span> <span class="n">output_feature</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="n">model_path</span>
+
+    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">onnxruntime</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">onnxruntime</span><span class="o">.</span><span class="n">InferenceSession</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inputs_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_inputs</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># use your awesome model to encode/craft/score</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data_encoded</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs_name</span><span class="p">,</span> <span class="p">],</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs_name</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_encoded</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="jina.executors.devices.OnnxDevice.device">
+<code class="sig-name descname">device</code><a class="headerlink" href="#jina.executors.devices.OnnxDevice.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.devices.OnnxDevice.to_device">
+<code class="sig-name descname">to_device</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/devices.html#OnnxDevice.to_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.OnnxDevice.to_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the computation from GPU to CPU or vice versa</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.devices.FaissDevice">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.devices.</code><code class="sig-name descname">FaissDevice</code><a class="reference internal" href="../_modules/jina/executors/devices.html#FaissDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.FaissDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.devices.BaseDevice" title="jina.executors.devices.BaseDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.devices.BaseDevice</span></code></a></p>
+<dl class="simple">
+<dt><a class="reference internal" href="#jina.executors.devices.FaissDevice" title="jina.executors.devices.FaissDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">FaissDevice</span></code></a> implements the base class for the executors using <code class="xref py py-mod docutils literal notranslate"><span class="pre">faiss</span></code> library. The common</dt><dd><p>setups go into this class.</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="jina.executors.devices.FaissDevice.device">
+<code class="sig-name descname">device</code><a class="headerlink" href="#jina.executors.devices.FaissDevice.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.devices.FaissDevice.to_device">
+<code class="sig-name descname">to_device</code><span class="sig-paren">(</span><em class="sig-param">index</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/devices.html#FaissDevice.to_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.FaissDevice.to_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the computation from GPU to CPU or vice versa</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.devices.MindsporeDevice">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.devices.</code><code class="sig-name descname">MindsporeDevice</code><a class="reference internal" href="../_modules/jina/executors/devices.html#MindsporeDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.MindsporeDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.devices.BaseDevice" title="jina.executors.devices.BaseDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.devices.BaseDevice</span></code></a></p>
+<dl class="simple">
+<dt><a class="reference internal" href="#jina.executors.devices.MindsporeDevice" title="jina.executors.devices.MindsporeDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">MindsporeDevice</span></code></a> implements the base classes for the executors using <code class="xref py py-mod docutils literal notranslate"><span class="pre">mindspore</span></code> library. The</dt><dd><p>common setups go into this class.</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="jina.executors.devices.MindsporeDevice.device">
+<code class="sig-name descname">device</code><a class="headerlink" href="#jina.executors.devices.MindsporeDevice.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.devices.MindsporeDevice.to_device">
+<code class="sig-name descname">to_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/devices.html#MindsporeDevice.to_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.devices.MindsporeDevice.to_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the computation from GPU to CPU or vice versa</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="jina.executors.metas.html" class="btn btn-neutral float-right" title="jina.executors.metas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="jina.executors.decorators.html" class="btn btn-neutral float-left" title="jina.executors.decorators" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+
+    }
+    function showhide_littlenavbar() {
+      var x = document.getElementById("little-navbar");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
