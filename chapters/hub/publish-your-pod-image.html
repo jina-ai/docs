@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>Publish Your Pod Image to Jina Hub &mdash; Jina 0.8.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using Jina Pod Remotely" href="../remote/index.html" />
+    <link rel="prev" title="Use Your Pod Image" href="use-your-pod.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.8.2
+              </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Install</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/via-pip.html">Install Jina via <code class="docutils literal notranslate"><span class="pre">pip</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/via-docker.html">Install Jina via Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/on-rasp-linux.html">Install Jina on Raspberry Pi and other Linux Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/on-x.html">Can I Run Jina On ….?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/on-wsl.html">Install Jina on Windows Subsystem for Linux (WSL)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/upgrade.html">Upgrade Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install/autocomplete.html">Autocomplete commands on Bash, Zsh and Fish</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../101/.sphinx.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/index.html#common-design-patterns">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proto/index.html">Jina Protobuf Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extending Jina</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Publish Your Pod Image to Jina Hub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Release Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Change Logs</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Debugging and FAQ</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../all_exec.html">List of 100 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_driver.html">List of 66 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Jina</a>
+        
+      </nav>
+
+   
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Using Jina Pod with Docker Container</a> &raquo;</li>
+        
+      <li>Publish Your Pod Image to Jina Hub</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="publish-your-pod-image-to-jina-hub">
+<h1>Publish Your Pod Image to Jina Hub<a class="headerlink" href="#publish-your-pod-image-to-jina-hub" title="Permalink to this headline">¶</a></h1>
+<p>You can contribute your executor into this repository and it will be automatically built into an image and published to the Jina Hub via our CI/CD pipeline.</p>
+<div class="section" id="what-files-need-to-be-uploaded">
+<h2>What Files Need to be Uploaded?<a class="headerlink" href="#what-files-need-to-be-uploaded" title="Permalink to this headline">¶</a></h2>
+<p>Typically, the following files are required:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>File</th>
+<th>Descriptions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Dockerfile</code></td>
+<td>describes the dependency setup and expose the entry point;</td>
+</tr>
+<tr>
+<td><code>manifest.yml</code></td>
+<td>metadata of the image, author, tags, etc. help the Hub to index and classify your image</td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>a instruction for guiding users to use your image</td>
+</tr>
+<tr>
+<td><code>*.py</code></td>
+<td>describes the executor logic written in Python, if applicable;</td>
+</tr>
+<tr>
+<td><code>*.yml</code></td>
+<td>a YAML file describes the executor arguments and configs, if you want users to use your config;</td>
+</tr>
+</tbody>
+</table><p>Note, large binary files (such as pretrained model, auxiliary data) are <strong>not</strong> recommended to upload to this repository. You can use <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">wget</span> <span class="pre">...</span></code> or <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">curl</span></code> inside the <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code> to download it from the web during the build.</p>
+<p>Your file bundle <code class="docutils literal notranslate"><span class="pre">awesomeness</span></code> should be uploaded to:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>hub/
+  |
+   - executors/
+       |
+        - encoders/
+            |
+            - awesomeness/
+                |
+                |- Dockerfile
+                |- manifest.yml
+                |- README.md
+                |- awesome_ai.py
+</pre></div>
+</div>
+<p>Your image will be published as <code class="docutils literal notranslate"><span class="pre">jinaai/hub.executors.encoders.awesomeness</span></code>.</p>
+</div>
+<div class="section" id="schema-of-manifest-yml">
+<h2>Schema of <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code><a class="headerlink" href="#schema-of-manifest-yml" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> must exist if you want to publish your Pod image to Jina Hub.</p>
+<p><code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> annotates your image so that it can be managed by Jina Hub. To get better appealing on Jina Hub, you should carefully set <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> to the correct values.</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>Human-readable title of the image (must match with <code>^[a-zA-Z_$][a-zA-Z_\s\-$0-9]{3,20}$</code>)</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>Human-readable description of the software packaged in the image</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>author</code></td>
+<td>contact details of the people or organization responsible for the image (string)</td>
+<td><code>Jina AI Dev-Team (dev-team@jina.ai)</code></td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>URL to find more information on the image (string)</td>
+<td><code>https://jina.ai</code></td>
+</tr>
+<tr>
+<td><code>documentation</code></td>
+<td>URL to get documentation on the image (string)</td>
+<td><code>https://docs.jina.ai</code></td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>version of the image, it should be <a href="http://semver.org/">Semantic versioning-compatible</a></td>
+<td><code>0.0.0</code></td>
+</tr>
+<tr>
+<td><code>vendor</code></td>
+<td>the name of the distributing entity, organization or individual (string)</td>
+<td><code>Jina AI Limited</code></td>
+</tr>
+<tr>
+<td><code>license</code></td>
+<td>license under which contained software is distributed, it should be <a href="https://github.com/jina-ai/jina/blob/master/jina/resources/hub-builder/osi-approved.yml">in this list</a></td>
+<td><code>apache-2.0</code></td>
+</tr>
+<tr>
+<td><code>avatar</code></td>
+<td>a picture that personalizes and distinguishes your image</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>platform</code></td>
+<td>a list of CPU architectures that your image is built on, each item should be <a href="https://github.com/jina-ai/jina/blob/master/jina/resources/hub-builder/platforms.yml">in this list</a></td>
+<td><code>[linux/amd64]</code></td>
+</tr>
+</tbody>
+</table><p>Please refer to <a class="reference external" href="hub/examples/mwu_encoder/manifest.yml">hub/examples/mwu_encoder/manifest.yml</a> for the example.</p>
+</div>
+<div class="section" id="steps-to-publish-your-image">
+<h2>Steps to Publish Your Image<a class="headerlink" href="#steps-to-publish-your-image" title="Permalink to this headline">¶</a></h2>
+<p>All you need is to publish your bundle into this repo, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline.</p>
+<ol class="simple">
+<li><p>Let’s say your organize <a class="reference external" href="#what-files-need-to-be-uploaded">all files mentioned in here</a> in a folder called <code class="docutils literal notranslate"><span class="pre">awesomeness</span></code>. Depending on what you are contributing, you can put it into <code class="docutils literal notranslate"><span class="pre">hub/executors/indexers/awesomeness</span></code>.</p></li>
+<li><p>Make a Pull Request and commit your changes into this repository, remember to follow the commit lint style.</p></li>
+<li><p>Wait until the CICD finish and you get at least one reviewer’s approval.</p></li>
+<li><p>Merge it!</p></li>
+</ol>
+<p>The CICD pipeline will work on building, uploading and tagging the image on the Jina Hub.</p>
+<p>The image will be available at <code class="docutils literal notranslate"><span class="pre">jinaai/hub.executors.indexers.awesomeness:0.0.0</span></code> assuming your version number is defined as <code class="docutils literal notranslate"><span class="pre">0.0.0</span></code> in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code>.</p>
+<p>You can use the image as <a class="reference external" href="./use-your-pod.html#use-your-pod-image">the ways we described here</a>.</p>
+</div>
+<div class="section" id="why-my-upload-fails-on-the-cicd">
+<h2>Why My Upload Fails on the CICD?<a class="headerlink" href="#why-my-upload-fails-on-the-cicd" title="Permalink to this headline">¶</a></h2>
+<p>Here is the checklist to help you locate the problem.</p>
+<ul class="simple">
+<li><p>[ ] Required file <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code>, <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">README.md</span></code> is missing.</p></li>
+<li><p>[ ] The required field in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> is missing.</p></li>
+<li><p>[ ] Some field value is not in the correct format, not passing the sanity check.</p></li>
+<li><p>[ ] The pod bundle is badly placed.</p></li>
+<li><p>[ ] The build is success but it fails on <a class="reference external" href="./use-your-pod.html#use-your-pod-image">three basic usage tests</a>.</p></li>
+</ul>
+<p>Click “Details” and checkout the log of the CICD pipeline:</p>
+<p><img alt="../../_images/5f4181e9.png" src="../../_images/5f4181e9.png" /></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../remote/index.html" class="btn btn-neutral float-right" title="Using Jina Pod Remotely" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="use-your-pod.html" class="btn btn-neutral float-left" title="Use Your Pod Image" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright Jina AI Limited. All rights reserved.
+
+    </p>
+  </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "23rem";
+        z.style.left = "23rem";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+
+    }
+    function showhide_littlenavbar() {
+      var x = document.getElementById("little-navbar");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+    }
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
