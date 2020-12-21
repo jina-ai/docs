@@ -1,0 +1,829 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.drivers &mdash; Jina 0.8.12 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+  <div id="showhide-navbar-btn" onclick="showhide_navbar();"></div>
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+
+          <div class="dropdown">
+            Version: <button class="dropbtn version">0.8.12</button>
+            <div class="dropdown-content">
+              
+                        <a class="dropdown-item" href="/">latest</a>
+                        
+                        <a class="dropdown-item" href="/master">master</a>
+                        
+            </div>
+          </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/install/os/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/101/index.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/flow/pattern.html">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extensions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/CHANGELOG.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/faq/dev.html">FAQ for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/faq/user.html">FAQ for End-Users</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 100 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 60 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Jina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>jina.drivers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jina.drivers</h1><div class="highlight"><pre>
+<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
+
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Sequence</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">google.protobuf.struct_pb2</span> <span class="kn">import</span> <span class="n">Struct</span>
+
+<span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">SkipOnErrorType</span>
+<span class="kn">from</span> <span class="nn">..executors</span> <span class="kn">import</span> <span class="n">BaseExecutor</span>
+<span class="kn">from</span> <span class="nn">..executors.compound</span> <span class="kn">import</span> <span class="n">CompoundExecutor</span>
+<span class="kn">from</span> <span class="nn">..executors.decorators</span> <span class="kn">import</span> <span class="n">wrap_func</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">convert_tuple_to_list</span>
+<span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAML</span>
+
+<span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="c1"># fix type-hint complain for sphinx and flake</span>
+    <span class="kn">from</span> <span class="nn">..peapods.peas</span> <span class="kn">import</span> <span class="n">BasePea</span>
+    <span class="kn">from</span> <span class="nn">..executors</span> <span class="kn">import</span> <span class="n">AnyExecutor</span>
+    <span class="kn">from</span> <span class="nn">..logging.logger</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
+    <span class="kn">from</span> <span class="nn">..types.message</span> <span class="kn">import</span> <span class="n">Message</span>
+    <span class="kn">from</span> <span class="nn">..types.request</span> <span class="kn">import</span> <span class="n">Request</span>
+    <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
+    <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">QueryLangSet</span><span class="p">,</span> <span class="n">DocumentSet</span>
+
+
+<div class="viewcode-block" id="store_init_kwargs"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.store_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">store_init_kwargs</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Mark the args and kwargs of :func:`__init__` later to be stored via :func:`save_config` in YAML &quot;&quot;&quot;</span>
+
+    <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s1">&#39;__init__&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;this decorator should only be used on __init__ method of a driver&#39;</span>
+            <span class="p">)</span>
+        <span class="n">taboo</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">}</span>
+        <span class="n">all_pars</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">all_pars</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">taboo</span><span class="p">}</span>
+        <span class="n">tmp_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">all_pars</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">taboo</span><span class="p">]</span>
+        <span class="c1"># set args by aligning tmp_list with arg values</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tmp_list</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+            <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="c1"># set kwargs</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_args_kwargs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;kwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">taboo</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_init_kwargs_dict&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span> <span class="o">=</span> <span class="n">tmp</span>
+        <span class="n">convert_tuple_to_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span>
+
+    <span class="k">return</span> <span class="n">arg_wrapper</span></div>
+
+
+<div class="viewcode-block" id="QuerySetReader"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.QuerySetReader">[docs]</a><span class="k">class</span> <span class="nc">QuerySetReader</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :class:`QuerySetReader` allows a driver to read arguments from the protobuf message. This allows a</span>
+<span class="sd">    driver to override its behavior based on the message it receives. Extremely useful in production, for example,</span>
+<span class="sd">    get ``top_k`` results, doing pagination, filtering.</span>
+
+<span class="sd">    To register the field you want to read from the message, simply register them in :meth:`__init__`.</span>
+<span class="sd">    For example, ``__init__(self, arg1, arg2, **kwargs)`` will allow the driver to read field ``arg1`` and ``arg2`` from</span>
+<span class="sd">    the message. When they are not found in the message, the value ``_arg1`` and ``_arg2`` will be used. Note the underscore</span>
+<span class="sd">    prefix.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        - To set default value of ``arg1``, use ``self._arg1 =``, note the underscore in the front.</span>
+<span class="sd">        - To access ``arg1``, simply use ``self.arg1``. It automatically switch between default ``_arg1`` and ``arg1`` from the request.</span>
+
+<span class="sd">    For successful value reading, the following condition must be met:</span>
+
+<span class="sd">        - the ``name`` in the proto must match with the current class name</span>
+<span class="sd">        - the ``disabled`` field in the proto should not be ``False``</span>
+<span class="sd">        - the ``priority`` in the proto should be strictly greater than the driver&#39;s priority (by default is 0)</span>
+<span class="sd">        - the field name must exist in proto&#39;s ``parameters``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_get_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;queryset&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">queryset</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">disabled</span>
+                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="n">q</span><span class="o">.</span><span class="n">name</span>
+                    <span class="ow">and</span> <span class="n">q</span><span class="o">.</span><span class="n">priority</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_priority</span>
+                    <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">q</span><span class="o">.</span><span class="n">parameters</span>
+                <span class="p">):</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">Struct</span><span class="p">)</span> <span class="k">else</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="c1"># https://docs.python.org/3/reference/datamodel.html#object.__getattr__</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;_init_kwargs_dict&#39;</span><span class="p">:</span>
+            <span class="c1"># raise attribute error to avoid recursive call</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span></div>
+
+
+<div class="viewcode-block" id="DriverType"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.DriverType">[docs]</a><span class="k">class</span> <span class="nc">DriverType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">register_class</span><span class="p">(</span><span class="n">_cls</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DriverType.register_class"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.DriverType.register_class">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">register_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="n">reg_cls_set</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_registered_class&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reg_cls_set</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;force_register&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;__init__&#39;</span><span class="p">],</span> <span class="n">store_init_kwargs</span><span class="p">)</span>
+            <span class="c1"># wrap_func(cls, [&#39;__call__&#39;], as_reduce_method)</span>
+
+            <span class="n">reg_cls_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_registered_class&#39;</span><span class="p">,</span> <span class="n">reg_cls_set</span><span class="p">)</span>
+        <span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span></div></div>
+
+
+<div class="viewcode-block" id="BaseDriver"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseDriver</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">DriverType</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :class:`BaseDriver` is a logic unit above the :class:`jina.peapods.pea.BasePea`.</span>
+<span class="sd">    It reads the protobuf message, extracts/modifies the required information and then return</span>
+<span class="sd">    the message back to :class:`jina.peapods.pea.BasePea`.</span>
+
+<span class="sd">    A :class:`BaseDriver` needs to be :attr:`attached` to a :class:`jina.peapods.pea.BasePea` before using. This is done by</span>
+<span class="sd">    :func:`attach`. Note that a deserialized :class:`BaseDriver` from file is always unattached.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">store_args_kwargs</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1">#: set this to ``True`` to save ``args`` (in a list) and ``kwargs`` (in a map) in YAML config</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param priority: the priority of its default arg values (hardcoded in Python). If the</span>
+<span class="sd">             received ``QueryLang`` has a higher priority, it will override the hardcoded value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attached</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1">#: represent if this driver is attached to a :class:`jina.peapods.pea.BasePea` (&amp; :class:`jina.executors.BaseExecutor`)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pea</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: Optional[&#39;BasePea&#39;]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_priority</span> <span class="o">=</span> <span class="n">priority</span>
+
+<div class="viewcode-block" id="BaseDriver.attach"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseDriver.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pea</span><span class="p">:</span> <span class="s1">&#39;BasePea&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Attach this driver to a :class:`jina.peapods.pea.BasePea`</span>
+
+<span class="sd">        :param pea: the pea to be attached.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pea</span> <span class="o">=</span> <span class="n">pea</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attached</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">req</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Request&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the current (typed) request, shortcut to ``self.pea.request``&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea</span><span class="o">.</span><span class="n">request</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">partial_reqs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;The collected partial requests under the current ``request_id`` &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea</span><span class="o">.</span><span class="n">partial_requests</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;trying to access all partial requests, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;but </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pea</span><span class="si">}</span><span class="s1"> has only one message&#39;</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">expect_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The expected number of partial messages &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea</span><span class="o">.</span><span class="n">expect_parts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">msg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the current request, shortcut to ``self.pea.message``&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea</span><span class="o">.</span><span class="n">message</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QueryLangSet&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">queryset</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;JinaLogger&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Shortcut to ``self.pea.logger``&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea</span><span class="o">.</span><span class="n">logger</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_dump_instance_to_yaml</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+        <span class="c1"># note: we only save non-default property for the sake of clarity</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">[</span><span class="s1">&#39;with&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="k">return</span> <span class="n">r</span>
+
+<div class="viewcode-block" id="BaseDriver.to_yaml"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseDriver.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">representer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Required by :mod:`pyyaml` &quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">_dump_instance_to_yaml</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">representer</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="s1">&#39;!&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseDriver.from_yaml"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseDriver.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Required by :mod:`pyyaml` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_instance_from_yaml</span><span class="p">(</span><span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_instance_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">constructor</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;with&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Do not save the BasePea, as it would be cross-referencing. In other words, a deserialized :class:`BaseDriver` from</span>
+<span class="sd">        file is always unattached.&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;pea&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;pea&#39;</span><span class="p">]</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;attached&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+
+<div class="viewcode-block" id="BaseRecursiveDriver"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseRecursiveDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRecursiveDriver</span><span class="p">(</span><span class="n">BaseDriver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param traversal_paths: The describes the leaves of the document tree on which _apply_all are called</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">traversal_paths</span><span class="p">]</span>
+
+    <span class="c1"># TODO(Han): probably want to publicize this, as it is not obvious for driver</span>
+    <span class="c1">#  developer which one should be inherited</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
+        <span class="n">context_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
+        <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply function works on a list of docs, modify the docs in-place</span>
+
+<span class="sd">        :param docs: a list of :class:`jina.Document` objects to work on; they could come from ``matches``/``chunks``.</span>
+<span class="sd">        :param context_doc: the owner of ``docs``</span>
+<span class="sd">        :param field: where ``docs`` comes from, either ``matches`` or ``chunks``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_traverse_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">doc</span><span class="p">],</span>
+                    <span class="kc">None</span><span class="p">,</span>
+                    <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">path</span><span class="p">,</span>
+                    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_traverse_rec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">parent_doc</span><span class="p">,</span> <span class="n">parent_edge_type</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">next_edge</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">next_edge</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span>
+                        <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">next_edge</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span>
+                        <span class="n">doc</span><span class="o">.</span><span class="n">chunks</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">parent_doc</span><span class="p">,</span> <span class="n">parent_edge_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseExecutableDriver"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseExecutableDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseExecutableDriver</span><span class="p">(</span><span class="n">BaseRecursiveDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :class:`BaseExecutableDriver` is an intermediate logic unit between the :class:`jina.peapods.pea.BasePea` and :class:`jina.executors.BaseExecutor`</span>
+<span class="sd">    It reads the protobuf message, extracts/modifies the required information and then sends to the :class:`jina.executors.BaseExecutor`,</span>
+<span class="sd">    finally it returns the message back to :class:`jina.peapods.pea.BasePea`.</span>
+
+<span class="sd">    A :class:`BaseExecutableDriver` needs to be :attr:`attached` to a :class:`jina.peapods.pea.BasePea` and :class:`jina.executors.BaseExecutor` before using.</span>
+<span class="sd">    This is done by :func:`attach`. Note that a deserialized :class:`BaseDriver` from file is always unattached.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a :class:`BaseExecutableDriver`</span>
+
+<span class="sd">        :param executor: the name of the sub-executor, only necessary when :class:`jina.executors.compound.CompoundExecutor` is used</span>
+<span class="sd">        :param method: the function name of the executor that the driver feeds to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span> <span class="o">=</span> <span class="n">executor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;AnyExecutor&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;the executor that attached &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">exec_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;the function of :func:`jina.executors.BaseExecutor` to call &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">is_error</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">skip_on_error</span> <span class="o">&lt;</span> <span class="n">SkipOnErrorType</span><span class="o">.</span><span class="n">EXECUTOR</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="BaseExecutableDriver.attach"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseExecutableDriver.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="s1">&#39;AnyExecutor&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Attach the driver to a :class:`jina.executors.BaseExecutor`&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">CompoundExecutor</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span> <span class="ow">in</span> <span class="n">executor</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span> <span class="o">=</span> <span class="n">executor</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">executor</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+                        <span class="n">t</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">type</span><span class="o">.</span><span class="n">mro</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+                    <span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span> <span class="o">=</span> <span class="n">c</span>
+                        <span class="k">break</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;fail to attach the driver to </span><span class="si">{</span><span class="n">executor</span><span class="si">}</span><span class="s1">, &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;no executor is named or typed as </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span> <span class="o">=</span> <span class="n">executor</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">exec_methods</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Using method </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span><span class="si">}</span><span class="s1"> as driver execution function which is not registered&#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;as a potential `exec_method` of an Executor. It won</span><span class="se">\&#39;</span><span class="s1">t work if used inside a CompoundExecutor&#39;</span>
+                <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Do not save the executor and executor function, as it would be cross-referencing and unserializable.</span>
+<span class="sd">        In other words, a deserialized :class:`BaseExecutableDriver` from file is always unattached.&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;_exec&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_exec&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;_exec_fn&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_exec_fn&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+    
+
+    <hr/>
+
+    <div role="contentinfo">
+        <nav class="devsite-footer-linkboxes nocontent" aria-label="Footer links">
+
+            <ul class="devsite-footer-linkboxes-list">
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Stay connected</h3>
+                    <ul class="devsite-footer-linkbox-list">
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                <i class="fab fa-github"></i> GitHub
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.linkedin.com/company/jinaai/" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                <i class="fab fa-linkedin"></i> LinkedIn
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://twitter.com/JinaAI_" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-twitter"></i> Twitter
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.youtube.com/c/JinaAI" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                <i class="fab fa-youtube"></i> YouTube
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Support</h3>
+                    <ul class="devsite-footer-linkbox-list">
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://slack.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-slack"></i> Slack community
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/issues"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                Issue tracker
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/blob/master/CHANGELOG.md"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                Release notes
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://career.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                Career@Jina AI
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+
+        </nav>
+        <p>
+            
+            &copy; Copyright Jina AI Limited. All rights reserved.
+            <span class="lastupdated">
+        Last updated on Dec 21, 2020.
+      </span>
+
+        </p>
+    </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "300px";
+        z.style.left = "300px";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
