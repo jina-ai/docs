@@ -1,0 +1,658 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.drivers.rank.aggregate &mdash; Jina 0.8.13 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+  <div id="showhide-navbar-btn" onclick="showhide_navbar();"></div>
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+
+          <div class="dropdown">
+            Version: <button class="dropbtn version">0.8.13</button>
+            <div class="dropdown-content">
+              
+                        <a class="dropdown-item" href="/">latest</a>
+                        
+                        <a class="dropdown-item" href="/master">master</a>
+                        
+            </div>
+          </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/install/os/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/101/index.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extensions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/CHANGELOG.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/faq/dev.html">FAQ for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/faq/user.html">FAQ for End-Users</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec.html">List of 100 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver.html">List of 60 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Jina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../drivers.html">jina.drivers</a> &raquo;</li>
+        
+          <li><a href="../rank.html">jina.drivers.rank</a> &raquo;</li>
+        
+      <li>jina.drivers.rank.aggregate</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jina.drivers.rank.aggregate</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">namedtuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">....executors.rankers</span> <span class="kn">import</span> <span class="n">Chunk2DocRanker</span>
+<span class="kn">from</span> <span class="nn">....types.document</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">....types.score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseRankDriver</span>
+
+<span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">....types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+
+
+<div class="viewcode-block" id="BaseAggregateMatchesRanker"><a class="viewcode-back" href="../../../../api/jina.drivers.rank.aggregate.html#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker">[docs]</a><span class="k">class</span> <span class="nc">BaseAggregateMatchesRanker</span><span class="p">(</span><span class="n">BaseRankDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Drivers inherited from this Driver will focus on aggregating scores from `chunks` to its `parents`.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">keep_source_matches_as_chunks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param keep_old_matches_as_chunks: A flag to indicate if the driver must return the old matches of the query or its chunks</span>
+<span class="sd">        (at a greater granularity level (k + 1)) as the chunks of the new computed `matches` (at granularity level k).</span>
+
+<span class="sd">        Useful to keep track of the chunks that lead to a retrieved result.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            - The chunks of the matches will only contain the chunks that lead to the document matching, not all the chunks of the match.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keep_source_matches_as_chunks</span> <span class="o">=</span> <span class="n">keep_source_matches_as_chunks</span>
+
+    <span class="n">QueryMatchInfo</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;QueryMatchInfo&#39;</span><span class="p">,</span> <span class="s1">&#39;match_parent_id match_id query_id score&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_extract_query_match_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">Document</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">QueryMatchInfo</span><span class="p">(</span><span class="n">match_parent_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">parent_id</span><span class="p">),</span>
+                                   <span class="n">match_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                                   <span class="n">query_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                                   <span class="n">score</span><span class="o">=</span><span class="n">match</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_insert_query_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">query</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span>
+                              <span class="n">parent_id_chunk_id_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                              <span class="n">chunk_matches_by_id</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+                              <span class="n">docs_scores</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param query: the query Document where the resulting matches will be inserted</span>
+<span class="sd">        :param parent_id_chunk_id_map: a map with parent_id as key and list of previous matches ids as values</span>
+<span class="sd">        :param chunk_matches_by_id: the previous matches of the query (at a higher granularity) grouped by the new map (by its parent)</span>
+<span class="sd">        :param docs_scores: An `np.ndarray` resulting from the ranker executor with the `scores` of the new matches</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">op_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">for</span> <span class="n">int_doc_id</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">docs_scores</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">int_doc_id</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span><span class="n">op_name</span><span class="o">=</span><span class="n">op_name</span><span class="p">,</span>
+                                 <span class="n">value</span><span class="o">=</span><span class="n">score</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_source_matches_as_chunks</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">match_chunk_id</span> <span class="ow">in</span> <span class="n">parent_id_chunk_id_map</span><span class="p">[</span><span class="n">int_doc_id</span><span class="p">]:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk_matches_by_id</span><span class="p">[</span><span class="n">match_chunk_id</span><span class="p">])</span>
+            <span class="n">query</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Chunk2DocRankDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.rank.aggregate.html#jina.drivers.rank.aggregate.Chunk2DocRankDriver">[docs]</a><span class="k">class</span> <span class="nc">Chunk2DocRankDriver</span><span class="p">(</span><span class="n">BaseAggregateMatchesRanker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the</span>
+<span class="sd">    level above.</span>
+
+<span class="sd">    Input-Output ::</span>
+<span class="sd">        Input:</span>
+<span class="sd">        document: {granularity: k-1}</span>
+<span class="sd">                |- chunks: {granularity: k}</span>
+<span class="sd">                |    |- matches: {granularity: k}</span>
+<span class="sd">                |</span>
+<span class="sd">                |- chunks: {granularity: k}</span>
+<span class="sd">                    |- matches: {granularity: k}</span>
+<span class="sd">        Output:</span>
+<span class="sd">        document: {granularity: k-1}</span>
+<span class="sd">                |- chunks: {granularity: k}</span>
+<span class="sd">                |    |- matches: {granularity: k}</span>
+<span class="sd">                |</span>
+<span class="sd">                |- chunks: {granularity: k}</span>
+<span class="sd">                |    |- matches: {granularity: k}</span>
+<span class="sd">                |</span>
+<span class="sd">                |-matches: {granularity: k-1} (Ranked according to Ranker Executor)</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            - It traverses on ``chunks`` not on ``matches``. This is because ranker needs context information</span>
+<span class="sd">            from ``matches`` for several ``chunks``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">traversal_paths</span><span class="o">=</span><span class="n">traversal_paths</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
+                   <span class="n">context_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param docs: the chunks of the ``context_doc``, they are at depth_level ``k``</span>
+<span class="sd">        :param context_doc: the owner of ``docs``, it is at depth_level ``k-1``</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">match_idx</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[Tuple[int, int, int, float]]</span>
+        <span class="n">query_meta</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[int, Dict]</span>
+        <span class="n">match_meta</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[int, Dict]</span>
+        <span class="n">parent_id_chunk_id_map</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">matches_by_id</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">Document</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+            <span class="n">query_meta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">chunk</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">matches</span><span class="p">:</span>
+                <span class="n">match_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_query_match_info</span><span class="p">(</span><span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span>
+                <span class="n">match_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match_info</span><span class="p">)</span>
+                <span class="n">match_meta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
+                <span class="n">parent_id_chunk_id_map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                <span class="n">matches_by_id</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">match</span>
+
+        <span class="k">if</span> <span class="n">match_idx</span><span class="p">:</span>
+            <span class="n">match_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span>
+                                 <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                                 <span class="p">]</span>
+                                 <span class="p">)</span>
+
+            <span class="n">docs_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span> <span class="n">query_meta</span><span class="p">,</span> <span class="n">match_meta</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_query_matches</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">context_doc</span><span class="p">,</span>
+                                       <span class="n">parent_id_chunk_id_map</span><span class="o">=</span><span class="n">parent_id_chunk_id_map</span><span class="p">,</span>
+                                       <span class="n">chunk_matches_by_id</span><span class="o">=</span><span class="n">matches_by_id</span><span class="p">,</span>
+                                       <span class="n">docs_scores</span><span class="o">=</span><span class="n">docs_scores</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AggregateMatches2DocRankDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.rank.aggregate.html#jina.drivers.rank.aggregate.AggregateMatches2DocRankDriver">[docs]</a><span class="k">class</span> <span class="nc">AggregateMatches2DocRankDriver</span><span class="p">(</span><span class="n">BaseAggregateMatchesRanker</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This Driver is intended to take a `document` with matches at a `given granularity &gt; 0`, clear those matches and substitute</span>
+<span class="sd">    these matches by the documents at a lower granularity level.</span>
+<span class="sd">    Input-Output ::</span>
+<span class="sd">        Input:</span>
+<span class="sd">        document: {granularity: k}</span>
+<span class="sd">            |- matches: {granularity: k}</span>
+<span class="sd">            </span>
+<span class="sd">        Output:</span>
+<span class="sd">        document: {granularity: k}</span>
+<span class="sd">            |- matches: {granularity: k-1} (Sorted according to Ranker Executor)</span>
+
+<span class="sd">    Imagine a case where we are querying a system with text documents chunked by sentences. When we query the system,</span>
+<span class="sd">    we use sentences (chunks) to query it. So at some point we will have:</span>
+<span class="sd">    `query sentence (documents of granularity 1):</span>
+<span class="sd">        matches: indexed sentences (documents of level depth 1)`</span>
+<span class="sd">    `</span>
+<span class="sd">    But in the output we want to have the full document that better matches the `sentence`.</span>
+<span class="sd">    `query sentence (documents of granularity 1):</span>
+<span class="sd">        matches: indexed full documents (documents of granularity 0).</span>
+<span class="sd">    `</span>
+<span class="sd">    Using this Driver before querying a Binary Index with full binary document data can be very useful to implement a search system.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">,),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">traversal_paths</span><span class="o">=</span><span class="n">traversal_paths</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="n">context_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                   <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param docs: the matches of the ``context_doc``, they are at granularity ``k``</span>
+<span class="sd">        :param context_doc: the query document having ``docs`` as its matches, it is at granularity ``k``</span>
+<span class="sd">        :return:</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            - This driver will substitute the ``matches`` of `docs` to the corresponding ``parent documents`` of its current ``matches`` according</span>
+<span class="sd">            to the executor.</span>
+<span class="sd">            - Set the ``traversal_paths`` of this driver such that it traverses along the ``matches`` of the ``chunks`` at the granularity desired</span>
+<span class="sd">            (with respect to the ``query``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># if at the top-level already, no need to aggregate further</span>
+        <span class="k">if</span> <span class="n">context_doc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">match_idx</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">query_meta</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">match_meta</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">parent_id_chunk_id_map</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="n">matches_by_id</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">Document</span><span class="p">)</span>
+        <span class="n">query_meta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">context_doc</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">context_doc</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+            <span class="n">match_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_query_match_info</span><span class="p">(</span><span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">context_doc</span><span class="p">)</span>
+            <span class="n">match_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match_info</span><span class="p">)</span>
+            <span class="n">match_meta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
+            <span class="n">parent_id_chunk_id_map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="n">matches_by_id</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">match</span>
+
+        <span class="k">if</span> <span class="n">match_idx</span><span class="p">:</span>
+            <span class="n">match_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span>
+                                 <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                                 <span class="p">]</span>
+                                 <span class="p">)</span>
+
+            <span class="n">docs_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span> <span class="n">query_meta</span><span class="p">,</span> <span class="n">match_meta</span><span class="p">)</span>
+            <span class="c1"># This ranker will change the current matches</span>
+            <span class="n">context_doc</span><span class="o">.</span><span class="n">ClearField</span><span class="p">(</span><span class="s1">&#39;matches&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_query_matches</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">context_doc</span><span class="p">,</span>
+                                       <span class="n">parent_id_chunk_id_map</span><span class="o">=</span><span class="n">parent_id_chunk_id_map</span><span class="p">,</span>
+                                       <span class="n">chunk_matches_by_id</span><span class="o">=</span><span class="n">matches_by_id</span><span class="p">,</span>
+                                       <span class="n">docs_scores</span><span class="o">=</span><span class="n">docs_scores</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+    
+
+    <hr/>
+
+    <div role="contentinfo">
+        <nav class="devsite-footer-linkboxes nocontent" aria-label="Footer links">
+
+            <ul class="devsite-footer-linkboxes-list">
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Stay connected</h3>
+                    <ul class="devsite-footer-linkbox-list">
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                <i class="fab fa-github"></i> GitHub
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.linkedin.com/company/jinaai/" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                <i class="fab fa-linkedin"></i> LinkedIn
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://twitter.com/JinaAI_" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-twitter"></i> Twitter
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.youtube.com/c/JinaAI" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                <i class="fab fa-youtube"></i> YouTube
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Support</h3>
+                    <ul class="devsite-footer-linkbox-list">
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://slack.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-slack"></i> Slack community
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/issues"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                Issue tracker
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/blob/master/CHANGELOG.md"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                Release notes
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://career.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                Career@Jina AI
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+
+        </nav>
+        <p>
+            
+            &copy; Copyright Jina AI Limited. All rights reserved.
+            <span class="lastupdated">
+        Last updated on Dec 23, 2020.
+      </span>
+
+        </p>
+    </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "300px";
+        z.style.left = "300px";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
