@@ -1,0 +1,758 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../../../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../../../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.drivers.querylang.queryset.lookup &mdash; Jina 0.8.15 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/language_data.js"></script>
+        <script src="../../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+  <div id="showhide-navbar-btn" onclick="showhide_navbar();"></div>
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+
+          <div class="dropdown">
+            Version: <button class="dropbtn version">0.8.15</button>
+            <div class="dropdown-content">
+              
+                        <a class="dropdown-item" href="/">latest</a>
+                        
+                        <a class="dropdown-item" href="/master">master</a>
+                        
+            </div>
+          </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/install/os/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/101/index.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API References</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extensions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/CHANGELOG.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/faq/dev.html">FAQ for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/faq/user.html">FAQ for End-Users</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec.html">List of 100 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver.html">List of 60 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Jina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../../drivers.html">jina.drivers</a> &raquo;</li>
+        
+      <li>jina.drivers.querylang.queryset.lookup</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for jina.drivers.querylang.queryset.lookup</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">Originally from https://github.com/naiquevin/lookupy</span>
+
+<span class="sd">The library is provided as-is under the MIT License</span>
+
+<span class="sd">Copyright (c) 2013 Vineet Naik (naikvin@gmail.com)</span>
+
+<span class="sd">Permission is hereby granted, free of charge, to any person obtaining</span>
+<span class="sd">a copy of this software and associated documentation files (the</span>
+<span class="sd">&quot;Software&quot;), to deal in the Software without restriction, including</span>
+<span class="sd">without limitation the rights to use, copy, modify, merge, publish,</span>
+<span class="sd">distribute, sublicense, and/or sell copies of the Software, and to</span>
+<span class="sd">permit persons to whom the Software is furnished to do so, subject to</span>
+<span class="sd">the following conditions:</span>
+
+<span class="sd">The above copyright notice and this permission notice shall be</span>
+<span class="sd">included in all copies or substantial portions of the Software.</span>
+
+<span class="sd">THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND,</span>
+<span class="sd">EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF</span>
+<span class="sd">MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND</span>
+<span class="sd">NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE</span>
+<span class="sd">LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION</span>
+<span class="sd">OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION</span>
+<span class="sd">WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">from</span> <span class="nn">.dunderkey</span> <span class="kn">import</span> <span class="n">dunder_get</span><span class="p">,</span> <span class="n">dunder_partition</span><span class="p">,</span> <span class="n">undunder_keys</span><span class="p">,</span> <span class="n">dunder_truncate</span>
+<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="QuerySet"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.QuerySet">[docs]</a><span class="k">class</span> <span class="nc">QuerySet</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Provides an interface to filter data and select specific fields</span>
+<span class="sd">    from the data</span>
+
+<span class="sd">    QuerySet is used for filtering data and also selecting only</span>
+<span class="sd">    relevant fields out of it. This object is internally created which</span>
+<span class="sd">    means usually you, the user wouldn&#39;t need to create it.</span>
+
+<span class="sd">    :param data: an iterable of dicts</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+
+<div class="viewcode-block" id="QuerySet.filter"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.QuerySet.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QuerySet&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Filters data using the _lookup parameters</span>
+
+<span class="sd">        Lookup parameters can be passed as,</span>
+
+<span class="sd">          1. keyword arguments of type `field__lookuptype=value` where</span>
+<span class="sd">             lookuptype specifies how to &quot;query&quot; eg::</span>
+
+<span class="sd">                 &gt;&gt;&gt; c.items.filter(language__contains=&#39;java&#39;)</span>
+
+<span class="sd">             above will match all items where the language field</span>
+<span class="sd">             contains the substring &#39;java&#39; such as &#39;java&#39;,</span>
+<span class="sd">             &#39;javascript&#39;. Each look up is treated as a conditional</span>
+<span class="sd">             clause and if multiple of them are passed, they are</span>
+<span class="sd">             combined using logical the ``and`` operator</span>
+
+<span class="sd">             For nested fields, double underscore can be used eg::</span>
+
+<span class="sd">                 &gt;&gt;&gt; data = [{&#39;a&#39;: {&#39;b&#39;: 3}}, {&#39;a&#39;: {&#39;b&#39;: 10}}]</span>
+<span class="sd">                 &gt;&gt;&gt; c = Collection(data)</span>
+<span class="sd">                 &gt;&gt;&gt; c.items.filter(a__b__gt=5)</span>
+
+<span class="sd">             above _lookup will match the 2nd element (b &gt; 5)</span>
+
+<span class="sd">             For the list of supported _lookup parameter, see</span>
+<span class="sd">             documentation on Github</span>
+
+<span class="sd">          2. pos arguments of the type ``field__lookuptype=Q(...)``.</span>
+<span class="sd">             These can be useful to build conditional clauses that</span>
+<span class="sd">             need to be combined using logical `or` or negated using</span>
+<span class="sd">             `not`</span>
+
+<span class="sd">                 &gt;&gt;&gt; c.items.filter(Q(language__exact=&#39;Python&#39;)</span>
+<span class="sd">                                    |</span>
+<span class="sd">                                    Q(language__exact=&#39;Ruby&#39;)</span>
+
+<span class="sd">             above query will only filter the data where language is</span>
+<span class="sd">             either &#39;Python&#39; or &#39;Ruby&#39;</span>
+
+<span class="sd">        For more documentation see README on Github</span>
+
+<span class="sd">        :param args   : ``Q`` objects</span>
+<span class="sd">        :param kwargs : _lookup parameters</span>
+<span class="sd">        :rtype        : QuerySet</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">filter_items</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="QuerySet.select"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.QuerySet.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QuerySet&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Selects specific fields of the data</span>
+
+<span class="sd">        e.g. to select just the keys &#39;framework&#39; and &#39;type&#39; from many</span>
+<span class="sd">        keys, ::</span>
+
+<span class="sd">            &gt;&gt;&gt; c.items.select(&#39;framework&#39;, &#39;type&#39;)</span>
+
+
+<span class="sd">        :param args   : field names to select</span>
+<span class="sd">        :param kwargs : optional keyword args</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flatten</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;flatten&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">dunder_truncate</span> <span class="k">if</span> <span class="n">flatten</span> <span class="k">else</span> <span class="n">undunder_keys</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">include_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">d</span></div>
+
+
+<span class="c1"># QuerySet given an alias for backward compatibility</span>
+<span class="n">Collection</span> <span class="o">=</span> <span class="n">QuerySet</span>
+
+
+<span class="c1">## filter and _lookup functions</span>
+
+<div class="viewcode-block" id="filter_items"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.filter_items">[docs]</a><span class="k">def</span> <span class="nf">filter_items</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Filters an iterable using _lookup parameters</span>
+
+<span class="sd">    :param items  : iterable</span>
+<span class="sd">    :param args   : ``Q`` objects</span>
+<span class="sd">    :param kwargs : _lookup parameters</span>
+<span class="sd">    :rtype        : lazy iterable (generator)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="k">if</span> <span class="n">args</span> <span class="k">else</span> <span class="p">[]</span>
+    <span class="n">q2</span> <span class="o">=</span> <span class="p">[</span><span class="n">Q</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)]</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="k">else</span> <span class="p">[]</span>
+    <span class="n">lookup_groups</span> <span class="o">=</span> <span class="n">q1</span> <span class="o">+</span> <span class="n">q2</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="nb">all</span><span class="p">(</span><span class="n">lg</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">lg</span> <span class="ow">in</span> <span class="n">lookup_groups</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">pred</span><span class="p">(</span><span class="n">item</span><span class="p">))</span></div>
+
+
+<span class="k">def</span> <span class="nf">_lookup</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Checks if key-val pair exists in item using various _lookup types</span>
+
+<span class="sd">    The _lookup types are derived from the `key` and then used to check</span>
+<span class="sd">    if the _lookup holds true for the item::</span>
+
+<span class="sd">        &gt;&gt;&gt; _lookup(&#39;request__url__exact&#39;, &#39;http://example.com&#39;, item)</span>
+
+<span class="sd">    The above will return True if item[&#39;request&#39;][&#39;url&#39;] ==</span>
+<span class="sd">    &#39;http://example.com&#39; else False</span>
+
+<span class="sd">    :param key  : (str) that represents the field name to find</span>
+<span class="sd">    :param val  : (mixed) object to match the value in the item against</span>
+<span class="sd">    :param item : (dict)</span>
+<span class="sd">    :rtype      : (boolean) True if field-val exists else False</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">init</span><span class="p">,</span> <span class="n">last</span> <span class="o">=</span> <span class="n">dunder_partition</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;exact&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span> <span class="o">==</span> <span class="n">val</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;neq&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span> <span class="o">!=</span> <span class="n">val</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;contains&#39;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;icontains&#39;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">y</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">guard_iter</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span> <span class="ow">in</span> <span class="n">val</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;startswith&#39;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;istartswith&#39;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;endswith&#39;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;iendswith&#39;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">guard_str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">lower</span><span class="p">()))</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;gt&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;gte&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;lt&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;lte&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span> <span class="o">&lt;=</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;regex&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">iff_not_none</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">),</span> <span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">last</span> <span class="o">==</span> <span class="s1">&#39;filter&#39;</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">guard_Q</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">guard_iter</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">init</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">filter_items</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">val</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="n">val</span>
+
+
+<span class="c1">## Classes to compose compound lookups (Q object)</span>
+
+<div class="viewcode-block" id="LookupTreeElem"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.LookupTreeElem">[docs]</a><span class="k">class</span> <span class="nc">LookupTreeElem</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Base class for a child in the _lookup expression tree&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">negate</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="LookupTreeElem.evaluate"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.LookupTreeElem.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">LookupNode</span><span class="p">()</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="s1">&#39;or&#39;</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">node</span>
+
+    <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">LookupNode</span><span class="p">()</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">node</span></div>
+
+
+<div class="viewcode-block" id="LookupNode"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.LookupNode">[docs]</a><span class="k">class</span> <span class="nc">LookupNode</span><span class="p">(</span><span class="n">LookupTreeElem</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A node (element having children) in the _lookup expression tree</span>
+
+<span class="sd">    Typically it&#39;s any object composed of two ``Q`` objects eg::</span>
+
+<span class="sd">        &gt;&gt;&gt; Q(language__neq=&#39;Ruby&#39;) | Q(framework__startswith=&#39;S&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ~Q(language__exact=&#39;PHP&#39;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="s1">&#39;and&#39;</span>
+
+<div class="viewcode-block" id="LookupNode.add_child"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.LookupNode.add_child">[docs]</a>    <span class="k">def</span> <span class="nf">add_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LookupNode.evaluate"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.LookupNode.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Evaluates the expression represented by the object for the item</span>
+
+<span class="sd">        :param item : (dict) item</span>
+<span class="sd">        :rtype      : (boolean) whether _lookup passed or failed</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">==</span> <span class="s1">&#39;or&#39;</span> <span class="k">else</span> <span class="nb">all</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">result</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">negate</span> <span class="k">else</span> <span class="n">result</span></div>
+
+    <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">newnode</span> <span class="o">=</span> <span class="n">LookupNode</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+            <span class="n">newnode</span><span class="o">.</span><span class="n">add_child</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">newnode</span><span class="o">.</span><span class="n">negate</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">negate</span>
+        <span class="k">return</span> <span class="n">newnode</span></div>
+
+
+<div class="viewcode-block" id="LookupLeaf"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.LookupLeaf">[docs]</a><span class="k">class</span> <span class="nc">LookupLeaf</span><span class="p">(</span><span class="n">LookupTreeElem</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for a leaf in the _lookup expression tree&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lookups</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+<div class="viewcode-block" id="LookupLeaf.evaluate"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.LookupLeaf.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Evaluates the expression represented by the object for the item</span>
+
+<span class="sd">        :param item : (dict) item</span>
+<span class="sd">        :rtype      : (boolean) whether _lookup passed or failed</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">_lookup</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookups</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">result</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">negate</span> <span class="k">else</span> <span class="n">result</span></div>
+
+    <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">newleaf</span> <span class="o">=</span> <span class="n">LookupLeaf</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">lookups</span><span class="p">)</span>
+        <span class="n">newleaf</span><span class="o">.</span><span class="n">negate</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">negate</span>
+        <span class="k">return</span> <span class="n">newleaf</span></div>
+
+
+<span class="c1"># alias LookupLeaf to Q</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">LookupLeaf</span>
+
+
+<span class="c1">## functions that work on the keys in a dict</span>
+
+<div class="viewcode-block" id="include_keys"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.lookup.html#jina.drivers.querylang.queryset.lookup.include_keys">[docs]</a><span class="k">def</span> <span class="nf">include_keys</span><span class="p">(</span><span class="n">items</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Function to keep only specified fields in data</span>
+
+<span class="sd">    Returns a list of dict with only the keys mentioned in the</span>
+<span class="sd">    `fields` param::</span>
+
+<span class="sd">        &gt;&gt;&gt; include_keys(items, [&#39;request__url&#39;, &#39;response__status&#39;])</span>
+
+<span class="sd">    Note: the resulting keys are &quot;dundered&quot;, as they appear in `fields`,</span>
+<span class="sd">    rather than nested as they are in `items`.</span>
+
+<span class="sd">    :param items  : iterable of dicts</span>
+<span class="sd">    :param fields : (iterable) fieldnames to keep</span>
+<span class="sd">    :rtype        : lazy iterable</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">({</span><span class="n">f</span><span class="p">:</span> <span class="n">dunder_get</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">)</span></div>
+
+
+<span class="n">guard_Q</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">guard_type</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+    
+
+    <hr/>
+
+    <div role="contentinfo">
+        <nav class="devsite-footer-linkboxes nocontent" aria-label="Footer links">
+
+            <ul class="devsite-footer-linkboxes-list">
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Stay connected</h3>
+                    <ul class="devsite-footer-linkbox-list">
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                <i class="fab fa-github"></i> GitHub
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.linkedin.com/company/jinaai/" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                <i class="fab fa-linkedin"></i> LinkedIn
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://twitter.com/JinaAI_" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-twitter"></i> Twitter
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.youtube.com/c/JinaAI" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                <i class="fab fa-youtube"></i> YouTube
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Support</h3>
+                    <ul class="devsite-footer-linkbox-list">
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://slack.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-slack"></i> Slack community
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/issues"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                Issue tracker
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/blob/master/CHANGELOG.md"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                Release notes
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://career.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                Career@Jina AI
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+
+        </nav>
+        <p>
+            
+            &copy; Copyright Jina AI Limited. All rights reserved.
+            <span class="lastupdated">
+        Last updated on Dec 28, 2020.
+      </span>
+
+        </p>
+    </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "300px";
+        z.style.left = "300px";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
