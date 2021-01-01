@@ -1,0 +1,647 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.drivers.rank.aggregate &mdash; Jina 0.8.17-devel documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="jina.drivers.cache" href="jina.drivers.cache.html" />
+    <link rel="prev" title="jina.drivers.rank" href="jina.drivers.rank.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+  <div id="showhide-navbar-btn" onclick="showhide_navbar();"></div>
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+
+          <div class="dropdown">
+            Version: <button class="dropbtn version">0.8.17-devel</button>
+            <div class="dropdown-content">
+              
+                        <a class="dropdown-item" href="/">latest</a>
+                        
+                        <a class="dropdown-item" href="/master">master</a>
+                        
+            </div>
+          </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/os/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/101/index.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API References</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="jina.html">Jina Python API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="jina.clients.html">jina.clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.docker.html">jina.docker</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="jina.drivers.html">jina.drivers</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.querylang.html">jina.drivers.querylang</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="jina.drivers.rank.html">jina.drivers.rank</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">jina.drivers.rank.aggregate</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.cache.html">jina.drivers.cache</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.control.html">jina.drivers.control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.convert.html">jina.drivers.convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.craft.html">jina.drivers.craft</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.encode.html">jina.drivers.encode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.evaluate.html">jina.drivers.evaluate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.index.html">jina.drivers.index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.multimodal.html">jina.drivers.multimodal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.predict.html">jina.drivers.predict</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.reduce.html">jina.drivers.reduce</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.drivers.search.html">jina.drivers.search</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jina.executors.html">jina.executors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.flow.html">jina.flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helloworld.html">jina.helloworld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.jaml.html">jina.jaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.logging.html">jina.logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.peapods.html">jina.peapods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.proto.html">jina.proto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.types.html">jina.types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.checker.html">jina.checker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.enums.html">jina.enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.excepts.html">jina.excepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helper.html">jina.helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.importer.html">jina.importer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.parser.html">jina.parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/flow/pattern.html">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extensions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CHANGELOG.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/dev.html">FAQ for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/user.html">FAQ for End-Users</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 112 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 62 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Jina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="jina.html">Jina Python API Reference</a> &raquo;</li>
+        
+          <li><a href="jina.drivers.html">jina.drivers</a> &raquo;</li>
+        
+          <li><a href="jina.drivers.rank.html">jina.drivers.rank</a> &raquo;</li>
+        
+      <li>jina.drivers.rank.aggregate</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-jina.drivers.rank.aggregate">
+<span id="jina-drivers-rank-aggregate"></span><h1>jina.drivers.rank.aggregate<a class="headerlink" href="#module-jina.drivers.rank.aggregate" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.drivers.rank.aggregate.BaseAggregateMatchesRanker">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.rank.aggregate.</code><code class="sig-name descname">BaseAggregateMatchesRanker</code><span class="sig-paren">(</span><em class="sig-param">keep_source_matches_as_chunks=False</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/rank/aggregate.html#BaseAggregateMatchesRanker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.drivers.rank.html#jina.drivers.rank.BaseRankDriver" title="jina.drivers.rank.BaseRankDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.rank.BaseRankDriver</span></code></a></p>
+<p>Drivers inherited from this Driver will focus on aggregating scores from <cite>chunks</cite> to its <cite>parents</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keep_old_matches_as_chunks</strong> – A flag to indicate if the driver must return the old matches of the query or its chunks</p>
+</dd>
+</dl>
+<p>(at a greater granularity level (k + 1)) as the chunks of the new computed <cite>matches</cite> (at granularity level k).</p>
+<p>Useful to keep track of the chunks that lead to a retrieved result.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The chunks of the matches will only contain the chunks that lead to the document matching, not all the chunks of the match.</p></li>
+</ul>
+</div>
+<dl class="class">
+<dt id="jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo">
+<em class="property">class </em><code class="sig-name descname">QueryMatchInfo</code><span class="sig-paren">(</span><em class="sig-param">match_parent_id</em>, <em class="sig-param">match_id</em>, <em class="sig-param">query_id</em>, <em class="sig-param">score</em><span class="sig-paren">)</span><a class="headerlink" href="#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>Create new instance of QueryMatchInfo(match_parent_id, match_id, query_id, score)</p>
+<dl class="method">
+<dt id="jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo.match_id">
+<em class="property">property </em><code class="sig-name descname">match_id</code><a class="headerlink" href="#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo.match_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo.match_parent_id">
+<em class="property">property </em><code class="sig-name descname">match_parent_id</code><a class="headerlink" href="#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo.match_parent_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo.query_id">
+<em class="property">property </em><code class="sig-name descname">query_id</code><a class="headerlink" href="#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo.query_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo.score">
+<em class="property">property </em><code class="sig-name descname">score</code><a class="headerlink" href="#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker.QueryMatchInfo.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.drivers.rank.aggregate.Chunk2DocRankDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.rank.aggregate.</code><code class="sig-name descname">Chunk2DocRankDriver</code><span class="sig-paren">(</span><em class="sig-param">traversal_paths=('c'</em>, <em class="sig-param">)</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/rank/aggregate.html#Chunk2DocRankDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.rank.aggregate.Chunk2DocRankDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker" title="jina.drivers.rank.aggregate.BaseAggregateMatchesRanker"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.rank.aggregate.BaseAggregateMatchesRanker</span></code></a></p>
+<p>Extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the
+level above.</p>
+<dl>
+<dt>Input-Output ::</dt><dd><p>Input:
+document: {granularity: k-1}</p>
+<blockquote>
+<div><p><a href="#id1"><span class="problematic" id="id2">|</span></a>- chunks: {granularity: k}
+|    <a href="#id3"><span class="problematic" id="id4">|</span></a>- matches: {granularity: k}
+|
+<a href="#id5"><span class="problematic" id="id6">|</span></a>- chunks: {granularity: k}</p>
+<blockquote>
+<div><p><a href="#id7"><span class="problematic" id="id8">|</span></a>- matches: {granularity: k}</p>
+</div></blockquote>
+</div></blockquote>
+<p>Output:
+document: {granularity: k-1}</p>
+<blockquote>
+<div><p><a href="#id9"><span class="problematic" id="id10">|</span></a>- chunks: {granularity: k}
+|    <a href="#id11"><span class="problematic" id="id12">|</span></a>- matches: {granularity: k}
+|
+<a href="#id13"><span class="problematic" id="id14">|</span></a>- chunks: {granularity: k}
+|    <a href="#id15"><span class="problematic" id="id16">|</span></a>- matches: {granularity: k}
+|
+<a href="#id17"><span class="problematic" id="id18">|</span></a>-matches: {granularity: k-1} (Ranked according to Ranker Executor)</p>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>It traverses on <code class="docutils literal notranslate"><span class="pre">chunks</span></code> not on <code class="docutils literal notranslate"><span class="pre">matches</span></code>. This is because ranker needs context information</p></li>
+</ul>
+<p>from <code class="docutils literal notranslate"><span class="pre">matches</span></code> for several <code class="docutils literal notranslate"><span class="pre">chunks</span></code></p>
+</div>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keep_old_matches_as_chunks</strong> – A flag to indicate if the driver must return the old matches of the query or its chunks</p>
+</dd>
+</dl>
+<p>(at a greater granularity level (k + 1)) as the chunks of the new computed <cite>matches</cite> (at granularity level k).</p>
+<p>Useful to keep track of the chunks that lead to a retrieved result.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The chunks of the matches will only contain the chunks that lead to the document matching, not all the chunks of the match.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.drivers.rank.aggregate.AggregateMatches2DocRankDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.rank.aggregate.</code><code class="sig-name descname">AggregateMatches2DocRankDriver</code><span class="sig-paren">(</span><em class="sig-param">traversal_paths=('m'</em>, <em class="sig-param">)</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/rank/aggregate.html#AggregateMatches2DocRankDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.rank.aggregate.AggregateMatches2DocRankDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker" title="jina.drivers.rank.aggregate.BaseAggregateMatchesRanker"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.rank.aggregate.BaseAggregateMatchesRanker</span></code></a></p>
+<p>This Driver is intended to take a <cite>document</cite> with matches at a <cite>given granularity &gt; 0</cite>, clear those matches and substitute
+these matches by the documents at a lower granularity level.
+Input-Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Input</span><span class="p">:</span>
+<span class="n">document</span><span class="p">:</span> <span class="p">{</span><span class="n">granularity</span><span class="p">:</span> <span class="n">k</span><span class="p">}</span>
+    <span class="o">|-</span> <span class="n">matches</span><span class="p">:</span> <span class="p">{</span><span class="n">granularity</span><span class="p">:</span> <span class="n">k</span><span class="p">}</span>
+    
+<span class="n">Output</span><span class="p">:</span>
+<span class="n">document</span><span class="p">:</span> <span class="p">{</span><span class="n">granularity</span><span class="p">:</span> <span class="n">k</span><span class="p">}</span>
+    <span class="o">|-</span> <span class="n">matches</span><span class="p">:</span> <span class="p">{</span><span class="n">granularity</span><span class="p">:</span> <span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">}</span> <span class="p">(</span><span class="n">Sorted</span> <span class="n">according</span> <span class="n">to</span> <span class="n">Ranker</span> <span class="n">Executor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Imagine a case where we are querying a system with text documents chunked by sentences. When we query the system,
+we use sentences (chunks) to query it. So at some point we will have:
+<a href="#id19"><span class="problematic" id="id20">`</span></a>query sentence (documents of granularity 1):</p>
+<blockquote>
+<div><p>matches: indexed sentences (documents of level depth 1)`</p>
+</div></blockquote>
+<p>`
+But in the output we want to have the full document that better matches the <cite>sentence</cite>.
+<a href="#id21"><span class="problematic" id="id22">`</span></a>query sentence (documents of granularity 1):</p>
+<blockquote>
+<div><p>matches: indexed full documents (documents of granularity 0).</p>
+</div></blockquote>
+<p>`
+Using this Driver before querying a Binary Index with full binary document data can be very useful to implement a search system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keep_old_matches_as_chunks</strong> – A flag to indicate if the driver must return the old matches of the query or its chunks</p>
+</dd>
+</dl>
+<p>(at a greater granularity level (k + 1)) as the chunks of the new computed <cite>matches</cite> (at granularity level k).</p>
+<p>Useful to keep track of the chunks that lead to a retrieved result.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The chunks of the matches will only contain the chunks that lead to the document matching, not all the chunks of the match.</p></li>
+</ul>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        
+        <a href="jina.drivers.cache.html" class="btn btn-neutral float-right" title="jina.drivers.cache"
+           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="jina.drivers.rank.html" class="btn btn-neutral float-left" title="jina.drivers.rank"
+           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+    <div role="contentinfo">
+        <nav class="devsite-footer-linkboxes nocontent" aria-label="Footer links">
+
+            <ul class="devsite-footer-linkboxes-list">
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Stay connected</h3>
+                    <ul class="devsite-footer-linkbox-list">
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                <i class="fab fa-github"></i> GitHub
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.linkedin.com/company/jinaai/" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                <i class="fab fa-linkedin"></i> LinkedIn
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://twitter.com/JinaAI_" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-twitter"></i> Twitter
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.youtube.com/c/JinaAI" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                <i class="fab fa-youtube"></i> YouTube
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Support</h3>
+                    <ul class="devsite-footer-linkbox-list">
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://slack.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-slack"></i> Slack community
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/issues"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                Issue tracker
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/blob/master/CHANGELOG.md"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                Release notes
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://career.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                Career@Jina AI
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+
+        </nav>
+        <p>
+            
+            &copy; Copyright Jina AI Limited. All rights reserved.
+            <span class="lastupdated">
+        Last updated on Jan 01, 2021.
+      </span>
+
+        </p>
+    </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "300px";
+        z.style.left = "300px";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
