@@ -1,0 +1,1009 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>jina.executors.indexers &mdash; Jina 0.8.21 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="jina.executors.indexers.cache" href="jina.executors.indexers.cache.html" />
+    <link rel="prev" title="jina.executors.evaluators.running_stats" href="jina.executors.evaluators.running_stats.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+  <div id="showhide-navbar-btn" onclick="showhide_navbar();"></div>
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+
+          <div class="dropdown version">
+            <button class="dropbtn version">0.8.21</button>
+            <div class="dropdown-content">
+              
+              <a class="dropdown-item" href="/master">master</a>
+              
+            </div>
+          </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/install/os/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/101/index.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API References</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="jina.html">Jina Python API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="jina.clients.html">jina.clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.docker.html">jina.docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.drivers.html">jina.drivers</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="jina.executors.html">jina.executors</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.classifiers.html">jina.executors.classifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.crafters.html">jina.executors.crafters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.encoders.html">jina.executors.encoders</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.evaluators.html">jina.executors.evaluators</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">jina.executors.indexers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.indexers.cache.html">jina.executors.indexers.cache</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.indexers.keyvalue.html">jina.executors.indexers.keyvalue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="jina.executors.indexers.vector.html">jina.executors.indexers.vector</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.rankers.html">jina.executors.rankers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.clients.html">jina.executors.clients</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.compound.html">jina.executors.compound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.decorators.html">jina.executors.decorators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.devices.html">jina.executors.devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.metas.html">jina.executors.metas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="jina.executors.requests.html">jina.executors.requests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="jina.flow.html">jina.flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helloworld.html">jina.helloworld</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.jaml.html">jina.jaml</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.logging.html">jina.logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.parsers.html">jina.parsers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.peapods.html">jina.peapods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.proto.html">jina.proto</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.types.html">jina.types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.checker.html">jina.checker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.enums.html">jina.enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.excepts.html">jina.excepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.helper.html">jina.helper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jina.importer.html">jina.importer</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/proto/index.html">Jina Protobuf Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/flow/pattern.html">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extensions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/CHANGELOG.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/dev.html">FAQ for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/faq/user.html">FAQ for End-Users</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 100 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 60 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Jina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="jina.html">Jina Python API Reference</a> &raquo;</li>
+        
+          <li><a href="jina.executors.html">jina.executors</a> &raquo;</li>
+        
+      <li>jina.executors.indexers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="jina-executors-indexers">
+<h1>jina.executors.indexers<a class="headerlink" href="#jina-executors-indexers" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="jina.executors.indexers.cache.html">jina.executors.indexers.cache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jina.executors.indexers.keyvalue.html">jina.executors.indexers.keyvalue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jina.executors.indexers.vector.html">jina.executors.indexers.vector</a></li>
+</ul>
+</div>
+<span class="target" id="module-jina.executors.indexers"></span><dl class="class">
+<dt id="jina.executors.indexers.BaseIndexer">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.</code><code class="sig-name descname">BaseIndexer</code><span class="sig-paren">(</span><em class="sig-param">index_filename=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.executors.html#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a></p>
+<p>base class for storing and searching any kind of data structure</p>
+<p>The key functions here are <a class="reference internal" href="#jina.executors.indexers.BaseIndexer.add" title="jina.executors.indexers.BaseIndexer.add"><code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code></a> and <a class="reference internal" href="#jina.executors.indexers.BaseIndexer.query" title="jina.executors.indexers.BaseIndexer.query"><code class="xref py py-func docutils literal notranslate"><span class="pre">query()</span></code></a>.
+One can decorate them with <code class="xref py py-func docutils literal notranslate"><span class="pre">jina.decorator.require_train()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">jina.helper.batching()</span></code> and <a class="reference internal" href="jina.logging.profile.html#jina.logging.profile.profiling" title="jina.logging.profile.profiling"><code class="xref py py-func docutils literal notranslate"><span class="pre">jina.logging.profile.profiling()</span></code></a>.</p>
+<p>One should always inherit from either <a class="reference internal" href="#jina.executors.indexers.BaseVectorIndexer" title="jina.executors.indexers.BaseVectorIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVectorIndexer</span></code></a> or <a class="reference internal" href="#jina.executors.indexers.BaseKVIndexer" title="jina.executors.indexers.BaseKVIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseKVIndexer</span></code></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">jina.drivers.handlers.index</span></code></p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Calling <code class="xref py py-func docutils literal notranslate"><span class="pre">save()</span></code> to save a <a class="reference internal" href="#jina.executors.indexers.BaseIndexer" title="jina.executors.indexers.BaseIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseIndexer</span></code></a> will create
+more than one files. One is the serialized version of the <a class="reference internal" href="#jina.executors.indexers.BaseIndexer" title="jina.executors.indexers.BaseIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseIndexer</span></code></a> object, often ends with <code class="docutils literal notranslate"><span class="pre">.bin</span></code></p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When using <a class="reference internal" href="#jina.executors.indexers.BaseIndexer" title="jina.executors.indexers.BaseIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseIndexer</span></code></a> out of the Pod, use it with context manager</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">BaseIndexer</span><span class="p">()</span> <span class="k">as</span> <span class="n">b</span><span class="p">:</span>
+    <span class="n">b</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>So that it can safely save the data. Or you have to manually call <cite>b.close()</cite> to close the indexer safely.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_filename</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the name of the file for storing the index, when not given metas.name is used.</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="jina.executors.indexers.BaseIndexer.index_filename">
+<code class="sig-name descname">index_filename</code><em class="property"> = None</em><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.index_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>the file name of the stored index, no path is required</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseIndexer.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.post_init">
+<code class="sig-name descname">post_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseIndexer.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>query handler and write handler can not be serialized, thus they must be put into <a class="reference internal" href="#jina.executors.indexers.BaseIndexer.post_init" title="jina.executors.indexers.BaseIndexer.post_init"><code class="xref py py-func docutils literal notranslate"><span class="pre">post_init()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseIndexer.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.query" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.index_abspath">
+<em class="property">property </em><code class="sig-name descname">index_abspath</code><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.index_abspath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the file path of the index storage</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jina.executors.indexers.BaseIndexer.query_handler">
+<code class="sig-name descname">query_handler</code><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.query_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="jina.executors.indexers.BaseIndexer.null_query_handler">
+<code class="sig-name descname">null_query_handler</code><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.null_query_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.is_exist">
+<em class="property">property </em><code class="sig-name descname">is_exist</code><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.is_exist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the database is exist or not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jina.executors.indexers.BaseIndexer.write_handler">
+<code class="sig-name descname">write_handler</code><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.write_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.get_query_handler">
+<code class="sig-name descname">get_query_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseIndexer.get_query_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.get_query_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a <em>readable</em> index handler when the <code class="docutils literal notranslate"><span class="pre">index_abspath</span></code> already exist, need to be overrided</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.get_add_handler">
+<code class="sig-name descname">get_add_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseIndexer.get_add_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.get_add_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a <em>writable</em> index handler when the <code class="docutils literal notranslate"><span class="pre">index_abspath</span></code> already exist, need to be overrided</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.get_create_handler">
+<code class="sig-name descname">get_create_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseIndexer.get_create_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.get_create_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a <em>writable</em> index handler when the <code class="docutils literal notranslate"><span class="pre">index_abspath</span></code> does not exist, need to be overrided</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of vectors/chunks indexed</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseIndexer.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close all file-handlers and release all resources.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseIndexer.flush">
+<code class="sig-name descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseIndexer.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseIndexer.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flush all buffered data to <code class="docutils literal notranslate"><span class="pre">index_abspath</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.indexers.BaseVectorIndexer">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.</code><code class="sig-name descname">BaseVectorIndexer</code><span class="sig-paren">(</span><em class="sig-param">index_filename=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseVectorIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseVectorIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.indexers.BaseIndexer" title="jina.executors.indexers.BaseIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseIndexer</span></code></a></p>
+<p>An abstract class for vector indexer. It is equipped with drivers in <code class="docutils literal notranslate"><span class="pre">requests.on</span></code></p>
+<p>All vector indexers should inherit from it.</p>
+<p>It can be used to tell whether an indexer is vector indexer, via <code class="docutils literal notranslate"><span class="pre">isinstance(a,</span> <span class="pre">BaseVectorIndexer)</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_filename</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the name of the file for storing the index, when not given metas.name is used.</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.executors.indexers.BaseVectorIndexer.query_by_id">
+<code class="sig-name descname">query_by_id</code><span class="sig-paren">(</span><em class="sig-param">ids</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseVectorIndexer.query_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseVectorIndexer.query_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the vectors by id, return a subset of indexed vectors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ids</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – a list of <code class="docutils literal notranslate"><span class="pre">id</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">doc.id</span></code> in protobuf</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseVectorIndexer.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">vectors</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseVectorIndexer.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseVectorIndexer.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new chunks and their vector representations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> in 1D-ndarray, shape B x 1</p></li>
+<li><p><strong>vectors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – vector representations in B x D</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseVectorIndexer.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">top_k</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseVectorIndexer.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseVectorIndexer.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find k-NN using query vectors, return chunk ids and chunk scores</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – query vectors in ndarray, shape B x D</p></li>
+<li><p><strong>top_k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – int, the number of nearest neighbour to return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a tuple of two ndarray.
+The first is ids in shape B x K (<cite>dtype=int</cite>), the second is scores in shape B x K (<cite>dtype=float</cite>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseVectorIndexer.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">values</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseVectorIndexer.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseVectorIndexer.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseVectorIndexer.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseVectorIndexer.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseVectorIndexer.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.indexers.BaseKVIndexer">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.</code><code class="sig-name descname">BaseKVIndexer</code><span class="sig-paren">(</span><em class="sig-param">index_filename=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseKVIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseKVIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.indexers.BaseIndexer" title="jina.executors.indexers.BaseIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseIndexer</span></code></a></p>
+<p>An abstract class for key-value indexer.</p>
+<p>All key-value indexers should inherit from it.</p>
+<p>It can be used to tell whether an indexer is key-value indexer, via <code class="docutils literal notranslate"><span class="pre">isinstance(a,</span> <span class="pre">BaseKVIndexer)</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_filename</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the name of the file for storing the index, when not given metas.name is used.</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.executors.indexers.BaseKVIndexer.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">values</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseKVIndexer.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseKVIndexer.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseKVIndexer.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param">key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseKVIndexer.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseKVIndexer.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the protobuf chunk/doc using id</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – <code class="docutils literal notranslate"><span class="pre">id</span></code></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>protobuf chunk or protobuf document</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseKVIndexer.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">values</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseKVIndexer.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseKVIndexer.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.BaseKVIndexer.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#BaseKVIndexer.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.BaseKVIndexer.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.indexers.UniqueVectorIndexer">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.</code><code class="sig-name descname">UniqueVectorIndexer</code><span class="sig-paren">(</span><em class="sig-param">routes=None</em>, <em class="sig-param">resolve_all=True</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#UniqueVectorIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.UniqueVectorIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.executors.compound.html#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a></p>
+<p>A frequently used pattern for combining a <a class="reference internal" href="#jina.executors.indexers.BaseVectorIndexer" title="jina.executors.indexers.BaseVectorIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVectorIndexer</span></code></a> and a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocIDCache</span></code></p>
+<p>Create a new <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code> object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>routes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]]) – <p>a map of function routes. The key is the function name, the value is a tuple of two pieces,
+where the first element is the name of the referred component (<code class="docutils literal notranslate"><span class="pre">metas.name</span></code>) and the second element
+is the name of the referred function.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">add_route()</span></code></p>
+</div>
+</p></li>
+<li><p><strong>resolve_all</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – universally add <code class="docutils literal notranslate"><span class="pre">*_all()</span></code> to all functions that have the identical name</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<p>We have two dummy executors as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">dummyA</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;a&#39;</span>
+
+    <span class="k">def</span> <span class="nf">sayA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;A: im A&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">dummyB</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;b&#39;</span>
+
+    <span class="k">def</span> <span class="nf">sayB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;B: im B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and we create a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code> consisting of these two via</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">,</span> <span class="n">db</span> <span class="o">=</span> <span class="n">dummyA</span><span class="p">(),</span> <span class="n">dummyB</span><span class="p">()</span>
+<span class="n">ce</span> <span class="o">=</span> <span class="n">CompoundExecutor</span><span class="p">()</span>
+<span class="n">ce</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="n">da</span><span class="p">,</span> <span class="n">db</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Now the new executor <code class="docutils literal notranslate"><span class="pre">ce</span></code> have two new methods, i.e <code class="xref py py-func docutils literal notranslate"><span class="pre">ce.sayA()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ce.sayB()</span></code>. They point to the original
+<code class="xref py py-func docutils literal notranslate"><span class="pre">dummyA.sayA()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">dummyB.sayB()</span></code> respectively. One can say <code class="docutils literal notranslate"><span class="pre">ce</span></code> has inherited these two methods.</p>
+<p>The interesting part is <code class="xref py py-func docutils literal notranslate"><span class="pre">say()</span></code>, as this function name is shared between <code class="xref py py-class docutils literal notranslate"><span class="pre">dummyA</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">dummyB</span></code>.
+It requires some resolution. When <cite>resolve_all=True</cite>, then a new function <code class="xref py py-func docutils literal notranslate"><span class="pre">say_all()</span></code> is add to <code class="docutils literal notranslate"><span class="pre">ce</span></code>.
+<code class="docutils literal notranslate"><span class="pre">ce.say_all</span></code> works as if you call <code class="xref py py-func docutils literal notranslate"><span class="pre">dummyA.sayA()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">dummyB.sayB()</span></code> in a row. This
+makes sense in some cases such as training, saving. In other cases, it may require a more sophisticated resolution,
+where one can use <code class="xref py py-func docutils literal notranslate"><span class="pre">add_route()</span></code> to achieve that. For example,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ce</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;say&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;say&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">b</span><span class="o">.</span><span class="n">say</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span>
+</pre></div>
+</div>
+<p>Such resolution is what we call <strong>routes</strong> here, and it can be specified in advance with the
+arguments <code class="docutils literal notranslate"><span class="pre">routes</span></code> in <code class="xref py py-func docutils literal notranslate"><span class="pre">__init__()</span></code>, or using YAML.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!CompoundExecutor</span>
+<span class="nt">components</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="nt">with</span><span class="p">:</span>
+  <span class="nt">resolve_all</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">routes</span><span class="p">:</span>
+    <span class="nt">say</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">dummyB-e3acc910</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">say</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.indexers.CompoundIndexer">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.</code><code class="sig-name descname">CompoundIndexer</code><span class="sig-paren">(</span><em class="sig-param">routes=None</em>, <em class="sig-param">resolve_all=True</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers.html#CompoundIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.CompoundIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.executors.compound.html#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a></p>
+<p>A Frequently used pattern for combining A <a class="reference internal" href="#jina.executors.indexers.BaseVectorIndexer" title="jina.executors.indexers.BaseVectorIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVectorIndexer</span></code></a> and <a class="reference internal" href="#jina.executors.indexers.BaseKVIndexer" title="jina.executors.indexers.BaseKVIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseKVIndexer</span></code></a>.
+It will be equipped with predefined <code class="docutils literal notranslate"><span class="pre">requests.on</span></code> behaviors:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt>In the index time</dt><dd><ul>
+<li><ol class="arabic simple">
+<li><p>stores the vector via <a class="reference internal" href="#jina.executors.indexers.BaseVectorIndexer" title="jina.executors.indexers.BaseVectorIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVectorIndexer</span></code></a></p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="2">
+<li><p>remove all vector information (embedding, buffer, blob, text)</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="3">
+<li><p>store the remained meta information via <a class="reference internal" href="#jina.executors.indexers.BaseKVIndexer" title="jina.executors.indexers.BaseKVIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseKVIndexer</span></code></a></p></li>
+</ol>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>In the query time</dt><dd><ul>
+<li><ol class="arabic simple">
+<li><p>Find the knn using the vector via <a class="reference internal" href="#jina.executors.indexers.BaseVectorIndexer" title="jina.executors.indexers.BaseVectorIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseVectorIndexer</span></code></a></p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="2">
+<li><p>remove all vector information (embedding, buffer, blob, text)</p></li>
+</ol>
+</li>
+<li><ol class="arabic simple" start="3">
+<li><p>Fill in the meta information of the chunk via <a class="reference internal" href="#jina.executors.indexers.BaseKVIndexer" title="jina.executors.indexers.BaseKVIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseKVIndexer</span></code></a></p></li>
+</ol>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>One can use the <code class="xref py py-class docutils literal notranslate"><span class="pre">ChunkIndexer</span></code> via</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!ChunkIndexer</span>
+<span class="nt">components</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!NumpyIndexer</span>
+    <span class="nt">with</span><span class="p">:</span>
+      <span class="nt">index_filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vec.gz</span>
+    <span class="nt">metas</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vecidx</span>  <span class="c1"># a customized name</span>
+      <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{TEST_WORKDIR}}</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!BinaryPbIndexer</span>
+    <span class="nt">with</span><span class="p">:</span>
+      <span class="nt">index_filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk.gz</span>
+    <span class="nt">metas</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunkidx</span>  <span class="c1"># a customized name</span>
+      <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{TEST_WORKDIR}}</span>
+<span class="nt">metas</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk_compound_indexer</span>
+  <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{TEST_WORKDIR}}</span>
+</pre></div>
+</div>
+<p>Without defining any <code class="docutils literal notranslate"><span class="pre">requests.on</span></code> logic. When load from this YAML, it will be auto equipped with</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">on</span><span class="p">:</span>
+  <span class="nt">SearchRequest</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!VectorSearchDriver</span>
+      <span class="nt">with</span><span class="p">:</span>
+        <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BaseVectorIndexer</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!PruneDriver</span>
+      <span class="nt">with</span><span class="p">:</span>
+        <span class="nt">pruned</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">embedding</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">buffer</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">blob</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">text</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!KVSearchDriver</span>
+      <span class="nt">with</span><span class="p">:</span>
+        <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BaseKVIndexer</span>
+    <span class="nt">IndexRequest</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!VectorIndexDriver</span>
+      <span class="nt">with</span><span class="p">:</span>
+        <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BaseVectorIndexer</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!PruneDriver</span>
+      <span class="nt">with</span><span class="p">:</span>
+        <span class="nt">pruned</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">embedding</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">buffer</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">blob</span>
+          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">text</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!KVIndexDriver</span>
+      <span class="nt">with</span><span class="p">:</span>
+        <span class="nt">executor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BaseKVIndexer</span>
+  <span class="nt">ControlRequest</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="kt">!ControlReqDriver</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+<p>Create a new <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code> object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>routes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]]) – <p>a map of function routes. The key is the function name, the value is a tuple of two pieces,
+where the first element is the name of the referred component (<code class="docutils literal notranslate"><span class="pre">metas.name</span></code>) and the second element
+is the name of the referred function.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">add_route()</span></code></p>
+</div>
+</p></li>
+<li><p><strong>resolve_all</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – universally add <code class="docutils literal notranslate"><span class="pre">*_all()</span></code> to all functions that have the identical name</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<p>We have two dummy executors as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">dummyA</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;a&#39;</span>
+
+    <span class="k">def</span> <span class="nf">sayA</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;A: im A&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">dummyB</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;b&#39;</span>
+
+    <span class="k">def</span> <span class="nf">sayB</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;B: im B&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and we create a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code> consisting of these two via</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">da</span><span class="p">,</span> <span class="n">db</span> <span class="o">=</span> <span class="n">dummyA</span><span class="p">(),</span> <span class="n">dummyB</span><span class="p">()</span>
+<span class="n">ce</span> <span class="o">=</span> <span class="n">CompoundExecutor</span><span class="p">()</span>
+<span class="n">ce</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="n">da</span><span class="p">,</span> <span class="n">db</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Now the new executor <code class="docutils literal notranslate"><span class="pre">ce</span></code> have two new methods, i.e <code class="xref py py-func docutils literal notranslate"><span class="pre">ce.sayA()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ce.sayB()</span></code>. They point to the original
+<code class="xref py py-func docutils literal notranslate"><span class="pre">dummyA.sayA()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">dummyB.sayB()</span></code> respectively. One can say <code class="docutils literal notranslate"><span class="pre">ce</span></code> has inherited these two methods.</p>
+<p>The interesting part is <code class="xref py py-func docutils literal notranslate"><span class="pre">say()</span></code>, as this function name is shared between <code class="xref py py-class docutils literal notranslate"><span class="pre">dummyA</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">dummyB</span></code>.
+It requires some resolution. When <cite>resolve_all=True</cite>, then a new function <code class="xref py py-func docutils literal notranslate"><span class="pre">say_all()</span></code> is add to <code class="docutils literal notranslate"><span class="pre">ce</span></code>.
+<code class="docutils literal notranslate"><span class="pre">ce.say_all</span></code> works as if you call <code class="xref py py-func docutils literal notranslate"><span class="pre">dummyA.sayA()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">dummyB.sayB()</span></code> in a row. This
+makes sense in some cases such as training, saving. In other cases, it may require a more sophisticated resolution,
+where one can use <code class="xref py py-func docutils literal notranslate"><span class="pre">add_route()</span></code> to achieve that. For example,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ce</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">&#39;say&#39;</span><span class="p">,</span> <span class="n">db</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;say&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">b</span><span class="o">.</span><span class="n">say</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;b&#39;</span>
+</pre></div>
+</div>
+<p>Such resolution is what we call <strong>routes</strong> here, and it can be specified in advance with the
+arguments <code class="docutils literal notranslate"><span class="pre">routes</span></code> in <code class="xref py py-func docutils literal notranslate"><span class="pre">__init__()</span></code>, or using YAML.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!CompoundExecutor</span>
+<span class="nt">components</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">...</span>
+<span class="nt">with</span><span class="p">:</span>
+  <span class="nt">resolve_all</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">routes</span><span class="p">:</span>
+    <span class="nt">say</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">dummyB-e3acc910</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">say</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        
+        <a href="jina.executors.indexers.cache.html" class="btn btn-neutral float-right" title="jina.executors.indexers.cache"
+           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="jina.executors.evaluators.running_stats.html" class="btn btn-neutral float-left" title="jina.executors.evaluators.running_stats"
+           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+    <div role="contentinfo">
+        <nav class="devsite-footer-linkboxes nocontent" aria-label="Footer links">
+
+            <ul class="devsite-footer-linkboxes-list">
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Stay connected</h3>
+                    <ul class="devsite-footer-linkbox-list">
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                <i class="fab fa-github"></i> GitHub
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.linkedin.com/company/jinaai/" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                <i class="fab fa-linkedin"></i> LinkedIn
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://twitter.com/JinaAI_" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-twitter"></i> Twitter
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.youtube.com/c/JinaAI" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                <i class="fab fa-youtube"></i> YouTube
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Support</h3>
+                    <ul class="devsite-footer-linkbox-list">
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://slack.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-slack"></i> Slack community
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/issues"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                Issue tracker
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/blob/master/CHANGELOG.md"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                Release notes
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://career.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                Career@Jina AI
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+
+        </nav>
+        <p>
+            
+            &copy; Copyright Jina AI Limited. All rights reserved.
+            <span class="lastupdated">
+        Last updated on Jan 03, 2021.
+      </span>
+
+        </p>
+    </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "300px";
+        z.style.left = "300px";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
