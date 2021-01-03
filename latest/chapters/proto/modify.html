@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>Update Protocol Specification &mdash; Jina 0.8.20 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/main.css" type="text/css" />
+
+<!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">-->
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Understand Jina Recursive Document Representation" href="../traversal/index.html" />
+    <link rel="prev" title="Protocol Documentation" href="docs.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+  <div id="showhide-navbar-btn" onclick="showhide_navbar();"></div>
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+
+          <div class="dropdown version">
+            <button class="dropbtn version">0.8.20</button>
+            <div class="dropdown-content">
+              
+              <a class="dropdown-item" href="/master">master</a>
+              
+            </div>
+          </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/os/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../101/index.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API References</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../yaml/yaml.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Jina Protobuf Specification</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="docs.html">Protocol Documentation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Update Protocol Specification</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usages</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../traversal/index.html">Understand Jina Recursive Document Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/pattern.html">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extensions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../all_exec.html">List of 100 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_driver.html">List of 60 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Jina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Jina Protobuf Specification</a> &raquo;</li>
+        
+      <li>Update Protocol Specification</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="update-protocol-specification">
+<h1>Update Protocol Specification<a class="headerlink" href="#update-protocol-specification" title="Permalink to this headline">¶</a></h1>
+<p>For developers who want to change the protobuf specification, one needs to first edit <code class="file docutils literal notranslate"><span class="pre">jina/proto/jina.proto</span></code> and then use <code class="file docutils literal notranslate"><span class="pre">jina/proto/build-proto.sh</span></code> to regenerate the python interfaces (i.e. <code class="file docutils literal notranslate"><span class="pre">jina/proto/jina_pb2.py</span></code> and <code class="file docutils literal notranslate"><span class="pre">jina/proto/jina_pb2_grpc.py</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Starting 0.7.5, we provide a Docker image for you to generate Protobuf interface in the containerized environment. That means you don’t need to config the build protobuf/grpc environment locally. Simply use <strong class="command">docker run -v $(pwd)/jina/proto:/jina/proto jinaai/protogen</strong> where <code class="docutils literal notranslate"><span class="pre">$(pwd)</span></code> is your Jina repository root.</p>
+</div>
+<p>Take MacOS as an example,</p>
+<ol class="arabic">
+<li><p>Download <code class="file docutils literal notranslate"><span class="pre">protoc-$VERSION-$PLATFORM.zip</span></code> from <a class="reference external" href="https://github.com/protocolbuffers/protobuf/releases/">the official Github site</a> and decompress it.</p></li>
+<li><p>Copy the binary file and include to your system path:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp ~/Downloads/protoc-3.7.1-osx-x86_64/bin/protoc /usr/local/bin/
+
+cp -r ~/Downloads/protoc-3.7.1-osx-x86_64/include/* /usr/local/include/
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Install gRPC tools dependencies:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew install automake autoconf libtool
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Install gRPC and <code class="docutils literal notranslate"><span class="pre">grpc_python_plugin</span></code> from the source:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/grpc/grpc.git
+git submodule update --init
+make grpc_python_plugin
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>This will compile the grpc-python-plugin and build it to, e.g., <code class="file docutils literal notranslate"><span class="pre">~/Documents/grpc/bins/opt/grpc_python_plugin</span></code></p></li>
+<li><p>Generate the python interfaces.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> jina/proto
+bash build-proto.sh ~/Documents/grpc/bins/opt/grpc_python_plugin
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        
+        <a href="../traversal/index.html" class="btn btn-neutral float-right" title="Understand Jina Recursive Document Representation"
+           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="docs.html" class="btn btn-neutral float-left" title="Protocol Documentation"
+           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+    <div role="contentinfo">
+        <nav class="devsite-footer-linkboxes nocontent" aria-label="Footer links">
+
+            <ul class="devsite-footer-linkboxes-list">
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Stay connected</h3>
+                    <ul class="devsite-footer-linkbox-list">
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                <i class="fab fa-github"></i> GitHub
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.linkedin.com/company/jinaai/" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                <i class="fab fa-linkedin"></i> LinkedIn
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://twitter.com/JinaAI_" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-twitter"></i> Twitter
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.youtube.com/c/JinaAI" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                <i class="fab fa-youtube"></i> YouTube
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Support</h3>
+                    <ul class="devsite-footer-linkbox-list">
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://slack.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-slack"></i> Slack community
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/issues"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                Issue tracker
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/blob/master/CHANGELOG.md"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                Release notes
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://career.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                Career@Jina AI
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+
+        </nav>
+        <p>
+            
+            &copy; Copyright Jina AI Limited. All rights reserved.
+            <span class="lastupdated">
+        Last updated on Jan 03, 2021.
+      </span>
+
+        </p>
+    </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "300px";
+        z.style.left = "300px";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
