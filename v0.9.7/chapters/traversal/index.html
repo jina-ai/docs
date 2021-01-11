@@ -1,0 +1,614 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>Understand Jina Recursive Document Representation &mdash; Jina 0.9.7 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/main.css" type="text/css" />
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Common Design Patterns" href="../flow/pattern.html" />
+    <link rel="prev" title="Update Protocol Specification" href="../proto/modify.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+  <div id="showhide-navbar-btn" onclick="showhide_navbar();"></div>
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="https://docs.jina.ai">
+          
+
+          
+            
+            <img src="../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+
+          <div class="dropdown version">
+            <button class="dropbtn version">0.9.7</button>
+            <div class="dropdown-content">
+              
+              <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v0.9.6">0.9.6</a>
+              
+              <a class="dropdown-item" href="/v0.9.5">0.9.5</a>
+              
+              <a class="dropdown-item" href="/v0.9.3">0.9.3</a>
+              
+              <a class="dropdown-item" href="/v0.9.2">0.9.2</a>
+              
+              <a class="dropdown-item" href="/v0.9.1">0.9.1</a>
+              
+              <a class="dropdown-item" href="/v0.9.0">0.9.0</a>
+              
+              <a class="dropdown-item" href="/v0.8.22">0.8.22</a>
+              
+              <a class="dropdown-item" href="/v0.8.21">0.8.21</a>
+              
+            </div>
+          </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/os/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../101/index.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../yaml/index.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proto/index.html">Jina Protobuf Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Understand Jina Recursive Document Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/pattern.html">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extensions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RELEASE.html">Release Cycle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../all_exec.html">List of 100 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_driver.html">List of 60 Drivers in Jina</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Jina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Understand Jina Recursive Document Representation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="understand-jina-recursive-document-representation">
+<h1>Understand Jina Recursive Document Representation<a class="headerlink" href="#understand-jina-recursive-document-representation" title="Permalink to this headline">¶</a></h1>
+<p>In Jina, each Document is represented as a recursive representation (tree).</p>
+<p>A rooted recursive representation has a root node and every node has X children.
+In Jina, the root node is the document itself, while the <em>left</em> &amp; <em>right</em> children are referred to as <em>chunks</em> and <em>matches</em> respectively.</p>
+<p><img alt="rooted-binary-tree" src="../../_images/overview.png" /></p>
+<p>The above image illustrates a basic document structure: A document (root node) and the two possible child nodes: <em>chunks</em> and <em>matches</em>.
+chunks are a sequence of documents which is attached to the root document with a higher <code class="docutils literal notranslate"><span class="pre">granularity</span></code> degree. <code class="docutils literal notranslate"><span class="pre">matches</span></code> is a sequence of documents which are semantically related to the root document.
+We’ll dive into these concepts in this chapter:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="#chunks">Chunks</a></p></li>
+<li><p><a class="reference external" href="#matches">Matches</a></p></li>
+<li><p><a class="reference external" href="#lets-go-deeper-recursive-document-representation">Let’s go deeper: Recursive Document Representation</a></p></li>
+<li><p><a class="reference external" href="#document-traversal-with-traversal-paths">Document Traversal with traversal paths</a></p></li>
+</ul>
+<div class="section" id="chunks">
+<h2>Chunks<a class="headerlink" href="#chunks" title="Permalink to this headline">¶</a></h2>
+<p>Each Jina Document (potentially) consists of a list of chunks. A <code class="docutils literal notranslate"><span class="pre">chunk</span></code> is a small semantic unit of a Document, like a sentence or a 64x64 pixel image patch.</p>
+<p>Think about these use cases: you want to search a document at a specific <code class="docutils literal notranslate"><span class="pre">granularity</span></code> level, e.g. a sentence or a paragraph.
+Or your query consists of multiple modalities, such as a piece of text together with an image.
+<code class="docutils literal notranslate"><span class="pre">chunk</span></code> makes it feasible!</p>
+<p>In Jina <a class="reference external" href="https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/">primitive data types</a>, <code class="docutils literal notranslate"><span class="pre">chunk</span></code> is defined as a <code class="docutils literal notranslate"><span class="pre">property</span></code> of a Document:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love? Oh baby do not hurt me.&#39;</span>
+<span class="c1"># Initialised a document as root with 0 chunks.</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
+<span class="c1"># Initialise two documents and add as chunks to root.</span>
+<span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">chunk1</span><span class="p">:</span>
+    <span class="n">chunk1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love?&#39;</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chunk1</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">chunk2</span><span class="p">:</span>
+    <span class="n">chunk1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Oh baby do not hurt me.&#39;</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chunk2</span><span class="p">)</span>
+<span class="c1"># Now the document has 2 chunks</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>What happened by adding <code class="docutils literal notranslate"><span class="pre">chunk</span></code> to <code class="docutils literal notranslate"><span class="pre">root</span></code>?</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">granularity</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span>
+<span class="n">root</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent_id</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p>This can be seen in the image below:</p>
+<p><img alt="granularity" src="../../_images/granularity.png" /></p>
+<p>The code sample and graph above demonstrates the basic idea of a <code class="docutils literal notranslate"><span class="pre">chunk</span></code> in a Document.
+In the beginning, we initialized a Document with <code class="docutils literal notranslate"><span class="pre">granularity=0</span></code> (by default).
+We then initialized two chunks and add them to the <code class="docutils literal notranslate"><span class="pre">root</span></code> document.
+Two things happened when adding the <code class="docutils literal notranslate"><span class="pre">chunk</span></code> to <code class="docutils literal notranslate"><span class="pre">root</span></code>:</p>
+<ol class="simple">
+<li><p>The granularity of the chunk has been increased by 1 (default 0).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">chunk</span></code> has been referenced to its parent: <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p></li>
+</ol>
+<p>This allows Jina (and you) to query chunks and reference back to its root document at any <code class="docutils literal notranslate"><span class="pre">granularity</span></code> level.</p>
+</div>
+<div class="section" id="matches">
+<h2>Matches<a class="headerlink" href="#matches" title="Permalink to this headline">¶</a></h2>
+<p>In a neural search system (and traditional retrieval system), matches are the expected documents returned from the system given the user query.
+In Jina, <code class="docutils literal notranslate"><span class="pre">matches</span></code> could happen at the <code class="docutils literal notranslate"><span class="pre">root</span></code> level or any <code class="docutils literal notranslate"><span class="pre">chunk</span></code> level.</p>
+<p>To fully understand the concept of <code class="docutils literal notranslate"><span class="pre">matches</span></code>, we introduce a new term, named <code class="docutils literal notranslate"><span class="pre">adjacency</span></code> (short for <code class="docutils literal notranslate"><span class="pre">a</span></code> in the diagram), which reflects the level of the document it is connected to.</p>
+<p><strong>NOTE: granularity and adjacency apply to both chunks and matches.</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
+
+<span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love? Oh baby do not hurt me.&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
+<span class="c1"># Initialise two documents and add as chunks to root.</span>
+<span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">chunk1</span><span class="p">:</span>
+    <span class="n">chunk1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love?&#39;</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chunk1</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">chunk2</span><span class="p">:</span>
+    <span class="n">chunk1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Oh baby do not hurt me.&#39;</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chunk2</span><span class="p">)</span>
+<span class="c1"># Add a match document.</span>
+<span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">match</span><span class="p">:</span>
+    <span class="c1"># a match document semantically related to our root</span>
+    <span class="n">match</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love? Oh please do not hurt me.&#39;</span>
+    <span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">match</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p><img alt="adjacency" src="../../_images/adjacency.png" /></p>
+<p>In the code snippet and diagram above, we initialized a Document as <code class="docutils literal notranslate"><span class="pre">root</span></code> with the text: <em>What is love? Oh, baby do not hurt me.</em>.
+And a Document with text <em>What is love? Oh please do not hurt me</em> was added as a match to the <code class="docutils literal notranslate"><span class="pre">root</span></code>.
+The matched document <code class="docutils literal notranslate"><span class="pre">match</span></code> is a document without any parents, so it stays at the same level as <code class="docutils literal notranslate"><span class="pre">root</span></code> with a granularity value of 0.
+Meanwhile, since <code class="docutils literal notranslate"><span class="pre">match</span></code> is the retrieved result from <code class="docutils literal notranslate"><span class="pre">root</span></code>, so the <code class="docutils literal notranslate"><span class="pre">adjacency</span></code> increased to 1.</p>
+<p>By default, the <code class="docutils literal notranslate"><span class="pre">root</span></code> node has an <code class="docutils literal notranslate"><span class="pre">adjacency</span></code> of 0, and the value increases by 1 when it hits a <code class="docutils literal notranslate"><span class="pre">match</span></code>.</p>
+</div>
+<div class="section" id="let-s-go-deeper-recursive-document-representation">
+<h2>Let’s go deeper: Recursive Document Representation<a class="headerlink" href="#let-s-go-deeper-recursive-document-representation" title="Permalink to this headline">¶</a></h2>
+<p>Till now, we’ve introduced chunks and <code class="docutils literal notranslate"><span class="pre">matches</span></code> <strong>with a depth of 1</strong>.
+While in a real-world scenario, things could be much more complicated than this.
+For instance, a <code class="docutils literal notranslate"><span class="pre">chunk</span></code> could be further divided into small chunks, and a chunk at any level might have it’s own <code class="docutils literal notranslate"><span class="pre">matches</span></code> at that level.</p>
+<p><img alt="go-deeper" src="https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/blog-post-v050-protobuf-documents.jpg" /></p>
+<p>Jina has defined a recursive structure with <strong>arbitrary width and depth</strong> instead of a trivial bi-level structure.
+Roughly speaking, chunks can have the next level chunks and the same level matches; and so do matches.
+This could go on and on. The following figure illustrates this structure <a class="reference external" href="https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/">Ref: New Features in Jina v0.5 You Should Know About</a>.</p>
+<p><img alt="recursive" src="../../_images/recursive.png" /></p>
+<p>This recursive structure provides Jina the flexibility to cover any complex use case that may require search at different semantic units.
+Besides, the recursive structure enables Jina rankers to accumulate scores from lower granularities to upper granularities, such as <code class="docutils literal notranslate"><span class="pre">Chunk2DocRankers</span></code>.
+For example, in NLP a long document is composed of semantic chapters; each chapter consists of multiple paragraphs, which can be further segmented into sentences.
+In CV, a video is composed of one or more scenes, including one or more shots (i.e. a sequence of frames taken by a single camera over a continuous period of time).
+Each shot includes one or more frames. Such hierarchical structures can be very well represented with the recursive representation.</p>
+<p>If we look from a tree view (with a depth of 3):</p>
+<p><img alt="tree-view" src="../../_images/tree.png" /></p>
+</div>
+<div class="section" id="document-traversal-with-traversal-paths">
+<h2>Document Traversal with traversal paths<a class="headerlink" href="#document-traversal-with-traversal-paths" title="Permalink to this headline">¶</a></h2>
+<p>As you already learned from <a class="reference external" href="https://docs.jina.ai/chapters/101/index.html">Jina 101</a>, you needs to apply transformation (i.e. a <code class="docutils literal notranslate"><span class="pre">callback</span></code>) on a different level of documents.
+Given the tree structure, how could we achieve that?
+The answer is <code class="docutils literal notranslate"><span class="pre">traversal</span></code>.</p>
+<p>Jina has defined a method called <code class="docutils literal notranslate"><span class="pre">traversal</span></code> within the class of Document, which looks like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+    <span class="sd">&quot;&quot;&quot;Traversal apply `:meth:callback_fn` on the recursive tree representation.&quot;&quot;&quot;</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>This allows you to apply <code class="docutils literal notranslate"><span class="pre">callback_fn</span></code> based on <code class="docutils literal notranslate"><span class="pre">traversal_path</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">traversal_path</span></code> is defined as below:</p>
+<p><img alt="nodes" src="../../_images/nodes.png" /></p>
+<p>With these pre-defined node names, you’re able to apply any callbacks (defined as <code class="docutils literal notranslate"><span class="pre">_apply_all</span></code> in the <code class="docutils literal notranslate"><span class="pre">driver</span></code>) to a specific node.
+In the below YAML configuration, the <code class="docutils literal notranslate"><span class="pre">VectorSearchDriver</span></code> was applied to node <code class="docutils literal notranslate"><span class="pre">c</span></code>, <code class="docutils literal notranslate"><span class="pre">KVSearchDriver</span></code> was applied to node <code class="docutils literal notranslate"><span class="pre">cm</span></code> (matches of chunks).</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!CompoundIndexer</span>
+<span class="nn">...</span>
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="nt">on</span><span class="p">:</span>
+    <span class="nt">SearchRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!VectorSearchDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">traversal_path</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;c&#39;</span><span class="p p-Indicator">]</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!KVSearchDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">traversal_path</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;cm&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        
+        <a href="../flow/pattern.html" class="btn btn-neutral float-right" title="Common Design Patterns"
+           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="../proto/modify.html" class="btn btn-neutral float-left" title="Update Protocol Specification"
+           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+    <div role="contentinfo">
+        <nav class="devsite-footer-linkboxes nocontent" aria-label="Footer links">
+
+            <ul class="devsite-footer-linkboxes-list">
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Stay connected</h3>
+                    <ul class="devsite-footer-linkbox-list">
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                <i class="fab fa-github"></i> GitHub
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.linkedin.com/company/jinaai/" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                <i class="fab fa-linkedin"></i> LinkedIn
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://twitter.com/JinaAI_" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-twitter"></i> Twitter
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.youtube.com/c/JinaAI" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                <i class="fab fa-youtube"></i> YouTube
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Support</h3>
+                    <ul class="devsite-footer-linkbox-list">
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://slack.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-slack"></i> Slack community
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/issues"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                Issue tracker
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/blob/master/CHANGELOG.md"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                Release notes
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://career.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                Career@Jina AI
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+
+        </nav>
+        <p>
+            
+            &copy; Copyright Jina AI Limited. All rights reserved.
+            <span class="lastupdated">
+        Last updated on Jan 11, 2021.
+      </span>
+
+        </p>
+    </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "300px";
+        z.style.left = "300px";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
