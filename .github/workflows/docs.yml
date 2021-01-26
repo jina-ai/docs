@@ -1,9 +1,10 @@
 name: Docs-Updater
 # build happens when docs changes merge to master
+# test on docs-migration branch, need to update to master later
 on:
   push:
     branches:
-      - master
+      - docs-migration
 
 jobs:
   update-doc:
@@ -15,10 +16,9 @@ jobs:
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "."
-      # commit changes
       - name: Commit documentation changes
         run: |
-          git clone https://github.com/ammaraskar/sphinx-action-test.git --branch gh-pages --single-branch gh-pages
+          git clone https://github.com/jina-ai/docs.git --branch gh-pages --single-branch gh-pages
           cp -r _build/html/* gh-pages/
           cd gh-pages
           git config --local user.email "dev-bot@jina.ai"
