@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.docker.hubio &mdash; Jina 0.9.20 documentation</title>
+  <title>jina.docker.hubio &mdash; Jina 0.0.0 documentation</title>
   
 
   
@@ -70,12 +70,9 @@
           
 
           
-            <a href="https://docs.jina.ai">
+            <a href="https://docs.jina.ai" class="icon icon-home" alt="Documentation Home"> Jina
           
 
-          
-            
-            <img src="../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -84,10 +81,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.20</button>
+            <button class="dropbtn version">0.0.0</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
+              
+              <a class="dropdown-item" href="/v0.9.20">0.9.20</a>
               
               <a class="dropdown-item" href="/v0.9.19">0.9.19</a>
               
@@ -188,10 +189,6 @@
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/RELEASE.html">Release &amp; Version Identifier</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CHANGELOG.html">Change Logs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
@@ -575,15 +572,17 @@
 
             <span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;building </span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span> <span class="k">as</span> <span class="n">tc</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_check_completeness</span><span class="p">()</span>
+                    <span class="n">dockerfile_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_completeness</span><span class="p">()[</span><span class="s1">&#39;Dockerfile&#39;</span><span class="p">]</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_freeze_jina_version</span><span class="p">()</span>
 
+                    <span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="n">_label_prefix</span> <span class="o">+</span> <span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">manifest</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
                     <span class="n">streamer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_client</span><span class="o">.</span><span class="n">build</span><span class="p">(</span>
                         <span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                         <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
                         <span class="n">tag</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span>
                         <span class="n">pull</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pull</span><span class="p">,</span>
-                        <span class="n">dockerfile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dockerfile_path_revised</span><span class="p">,</span>
+                        <span class="n">dockerfile</span><span class="o">=</span><span class="n">dockerfile_path</span><span class="p">,</span>
+                        <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
                         <span class="n">rm</span><span class="o">=</span><span class="kc">True</span>
                     <span class="p">)</span>
 
@@ -610,7 +609,8 @@
                 <span class="n">image</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
                                                        <span class="n">tag</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tag</span><span class="p">,</span>
                                                        <span class="n">pull</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pull</span><span class="p">,</span>
-                                                       <span class="n">dockerfile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dockerfile_path_revised</span><span class="p">,</span>
+                                                       <span class="n">dockerfile</span><span class="o">=</span><span class="n">dockerfile_path</span><span class="p">,</span>
+                                                       <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
                                                        <span class="n">rm</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
                 <span class="c1"># success</span>
@@ -841,7 +841,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">manifest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_manifest</span><span class="p">(</span><span class="n">manifest_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">manifest</span><span class="p">[</span><span class="s1">&#39;jina_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">jina_version</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dockerfile_path_revised</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_revised_dockerfile</span><span class="p">(</span><span class="n">dockerfile_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">manifest</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">executor_name</span> <span class="o">=</span> <span class="n">safe_url_name</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">repository</span><span class="si">}</span><span class="s1">/&#39;</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">manifest</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">manifest</span><span class="p">[</span><span class="s2">&quot;kind&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">manifest</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">manifest</span><span class="p">[</span><span class="s2">&quot;version&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">jina_version</span><span class="si">}</span><span class="s1">&#39;</span>
@@ -893,25 +892,6 @@
         <span class="c1"># show manifest key-values</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">manifest</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_get_revised_dockerfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dockerfile_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">manifest</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="c1"># modify dockerfile</span>
-        <span class="n">revised_dockerfile</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">dockerfile_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">fp</span><span class="p">:</span>
-                <span class="n">revised_dockerfile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;FROM&#39;</span><span class="p">):</span>
-                    <span class="n">revised_dockerfile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;LABEL &#39;</span><span class="p">)</span>
-                    <span class="n">revised_dockerfile</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                        <span class="s1">&#39; </span><span class="se">\\</span><span class="s1">      </span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_label_prefix</span><span class="si">}{</span><span class="n">k</span><span class="si">}</span><span class="s1">=&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">manifest</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
-
-        <span class="n">f</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="n">fp</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">revised_dockerfile</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">revised_dockerfile</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">f</span>
 
     <span class="k">def</span> <span class="nf">_write_slack_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">_expand_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
@@ -1082,7 +1062,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 22, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.optimizers.parameters &mdash; Jina 0.9.20 documentation</title>
+  <title>jina.optimizers.parameters &mdash; Jina 0.0.0 documentation</title>
   
 
   
@@ -70,12 +70,9 @@
           
 
           
-            <a href="https://docs.jina.ai">
+            <a href="https://docs.jina.ai" class="icon icon-home" alt="Documentation Home"> Jina
           
 
-          
-            
-            <img src="../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -84,10 +81,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.20</button>
+            <button class="dropbtn version">0.0.0</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
+              
+              <a class="dropdown-item" href="/v0.9.20">0.9.20</a>
               
               <a class="dropdown-item" href="/v0.9.19">0.9.19</a>
               
@@ -188,10 +189,6 @@
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/RELEASE.html">Release &amp; Version Identifier</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CHANGELOG.html">Change Logs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
@@ -273,51 +270,22 @@
   <h1>Source code for jina.optimizers.parameters</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">inspect</span>
-
-<span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAML</span>
+<span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAML</span><span class="p">,</span> <span class="n">JAMLCompatible</span>
 
 
-<div class="viewcode-block" id="OptimizationParameter"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.OptimizationParameter">[docs]</a><span class="k">class</span> <span class="nc">OptimizationParameter</span><span class="p">:</span>
+<div class="viewcode-block" id="OptimizationParameter"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.OptimizationParameter">[docs]</a><span class="k">class</span> <span class="nc">OptimizationParameter</span><span class="p">(</span><span class="n">JAMLCompatible</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">parameter_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">parameter_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">executor_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;JINA&#39;</span><span class="p">,</span>
-        <span class="n">env_var</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">jaml_variable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="k">if</span> <span class="n">env_var</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">env_var</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">executor_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">parameter_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">env_var</span> <span class="o">=</span> <span class="n">env_var</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameter_name</span> <span class="o">=</span> <span class="n">parameter_name</span>
-
-<div class="viewcode-block" id="OptimizationParameter.to_yaml"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.OptimizationParameter.to_yaml">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">representer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Required by :mod:`pyyaml` &quot;&quot;&quot;</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">_dump_instance_to_yaml</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-        <span class="n">representer</span><span class="o">.</span><span class="n">sort_base_mapping_type_on_output</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">representer</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="s1">&#39;!&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span></div>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_dump_instance_to_yaml</span><span class="p">(</span><span class="n">instance</span><span class="p">):</span>
-
-        <span class="n">attributes</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isroutine</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attributes</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">))</span>
-        <span class="p">}</span>
-
-<div class="viewcode-block" id="OptimizationParameter.from_yaml"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.OptimizationParameter.from_yaml">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Required by :mod:`pyyaml` &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_instance_from_yaml</span><span class="p">(</span><span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span></div>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_get_instance_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">constructor</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">jaml_variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jaml_variable</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">executor_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">parameter_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jaml_variable</span> <span class="o">=</span> <span class="n">jaml_variable</span></div>
 
 
 <div class="viewcode-block" id="IntegerParameter"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.IntegerParameter">[docs]</a><span class="k">class</span> <span class="nc">IntegerParameter</span><span class="p">(</span><span class="n">OptimizationParameter</span><span class="p">):</span>
@@ -341,15 +309,12 @@
 
 <div class="viewcode-block" id="IntegerParameter.to_optuna_args"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.IntegerParameter.to_optuna_args">[docs]</a>    <span class="k">def</span> <span class="nf">to_optuna_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_var</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jaml_variable</span><span class="p">,</span>
             <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span>
             <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">,</span>
             <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_size</span><span class="p">,</span>
             <span class="s1">&#39;log&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span>
         <span class="p">}</span></div></div>
-
-
-<span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">IntegerParameter</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="FloatParameter"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.FloatParameter">[docs]</a><span class="k">class</span> <span class="nc">FloatParameter</span><span class="p">(</span><span class="n">OptimizationParameter</span><span class="p">):</span>
@@ -371,15 +336,12 @@
 
 <div class="viewcode-block" id="FloatParameter.to_optuna_args"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.FloatParameter.to_optuna_args">[docs]</a>    <span class="k">def</span> <span class="nf">to_optuna_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_var</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jaml_variable</span><span class="p">,</span>
             <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span>
             <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">,</span>
             <span class="s1">&#39;step&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_size</span><span class="p">,</span>
             <span class="s1">&#39;log&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">,</span>
         <span class="p">}</span></div></div>
-
-
-<span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">FloatParameter</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="UniformParameter"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.UniformParameter">[docs]</a><span class="k">class</span> <span class="nc">UniformParameter</span><span class="p">(</span><span class="n">OptimizationParameter</span><span class="p">):</span>
@@ -391,13 +353,10 @@
 
 <div class="viewcode-block" id="UniformParameter.to_optuna_args"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.UniformParameter.to_optuna_args">[docs]</a>    <span class="k">def</span> <span class="nf">to_optuna_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_var</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jaml_variable</span><span class="p">,</span>
             <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span>
             <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">,</span>
         <span class="p">}</span></div></div>
-
-
-<span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">UniformParameter</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="LogUniformParameter"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.LogUniformParameter">[docs]</a><span class="k">class</span> <span class="nc">LogUniformParameter</span><span class="p">(</span><span class="n">OptimizationParameter</span><span class="p">):</span>
@@ -409,13 +368,10 @@
 
 <div class="viewcode-block" id="LogUniformParameter.to_optuna_args"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.LogUniformParameter.to_optuna_args">[docs]</a>    <span class="k">def</span> <span class="nf">to_optuna_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_var</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jaml_variable</span><span class="p">,</span>
             <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span>
             <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">,</span>
         <span class="p">}</span></div></div>
-
-
-<span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">LogUniformParameter</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="CategoricalParameter"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.CategoricalParameter">[docs]</a><span class="k">class</span> <span class="nc">CategoricalParameter</span><span class="p">(</span><span class="n">OptimizationParameter</span><span class="p">):</span>
@@ -427,10 +383,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">optuna_method</span> <span class="o">=</span> <span class="s1">&#39;suggest_categorical&#39;</span>
 
 <div class="viewcode-block" id="CategoricalParameter.to_optuna_args"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.CategoricalParameter.to_optuna_args">[docs]</a>    <span class="k">def</span> <span class="nf">to_optuna_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_var</span><span class="p">,</span> <span class="s1">&#39;choices&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="p">}</span></div></div>
-
-
-<span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">CategoricalParameter</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jaml_variable</span><span class="p">,</span> <span class="s1">&#39;choices&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="p">}</span></div></div>
 
 
 <div class="viewcode-block" id="DiscreteUniformParameter"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.DiscreteUniformParameter">[docs]</a><span class="k">class</span> <span class="nc">DiscreteUniformParameter</span><span class="p">(</span><span class="n">OptimizationParameter</span><span class="p">):</span>
@@ -443,23 +396,15 @@
 
 <div class="viewcode-block" id="DiscreteUniformParameter.to_optuna_args"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.DiscreteUniformParameter.to_optuna_args">[docs]</a>    <span class="k">def</span> <span class="nf">to_optuna_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">env_var</span><span class="p">,</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jaml_variable</span><span class="p">,</span>
             <span class="s1">&#39;low&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span>
             <span class="s1">&#39;high&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">,</span>
             <span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">,</span>
         <span class="p">}</span></div></div>
 
 
-<span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">DiscreteUniformParameter</span><span class="p">)</span>
-
-
 <div class="viewcode-block" id="load_optimization_parameters"><a class="viewcode-back" href="../../../api/jina.optimizers.parameters.html#jina.optimizers.parameters.load_optimization_parameters">[docs]</a><span class="k">def</span> <span class="nf">load_optimization_parameters</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">IntegerParameter</span><span class="p">)</span>
-    <span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">FloatParameter</span><span class="p">)</span>
-    <span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">UniformParameter</span><span class="p">)</span>
-    <span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">LogUniformParameter</span><span class="p">)</span>
-    <span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">CategoricalParameter</span><span class="p">)</span>
-    <span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">DiscreteUniformParameter</span><span class="p">)</span>
+
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">JAML</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span></div>
 </pre></div>
@@ -594,7 +539,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 22, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

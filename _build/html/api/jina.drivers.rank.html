@@ -49,6 +49,7 @@
         <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -316,6 +317,49 @@
 <li class="toctree-l1"><a class="reference internal" href="jina.drivers.rank.aggregate.html">jina.drivers.rank.aggregate</a></li>
 </ul>
 </div>
+<span class="target" id="module-jina.drivers.rank"></span><dl class="class">
+<dt id="jina.drivers.rank.BaseRankDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.rank.</code><code class="sig-name descname">BaseRankDriver</code><span class="sig-paren">(</span><em class="sig-param">executor=None</em>, <em class="sig-param">method='score'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/rank.html#BaseRankDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.rank.BaseRankDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.drivers.html#jina.drivers.BaseExecutableDriver" title="jina.drivers.BaseExecutableDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseExecutableDriver</span></code></a></p>
+<p>Drivers inherited from this Driver will bind <code class="xref py py-meth docutils literal notranslate"><span class="pre">rank()</span></code> by default</p>
+<p>Initialize a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExecutableDriver</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>executor</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the name of the sub-executor, only necessary when <a class="reference internal" href="jina.executors.compound.html#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a> is used</p></li>
+<li><p><strong>method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the function name of the executor that the driver feeds to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.drivers.rank.Matches2DocRankDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.rank.</code><code class="sig-name descname">Matches2DocRankDriver</code><span class="sig-paren">(</span><em class="sig-param">reverse=False</em>, <em class="sig-param">traversal_paths=('m'</em>, <em class="sig-param">)</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/rank.html#Matches2DocRankDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.rank.Matches2DocRankDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.drivers.rank.BaseRankDriver" title="jina.drivers.rank.BaseRankDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.rank.BaseRankDriver</span></code></a></p>
+<p>This driver is intended to only resort the given matches on the 0 level granularity for a document.
+It gets the scores from a Ranking Executor, which does only change the scores of matches.
+Afterwards, the Matches2DocRankDriver resorts all matches for a document.
+Input-Output</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Input</span><span class="p">:</span>
+<span class="n">document</span><span class="p">:</span> <span class="p">{</span><span class="n">granularity</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">:</span> <span class="n">k</span><span class="p">}</span>
+    <span class="o">|-</span> <span class="n">matches</span><span class="p">:</span> <span class="p">{</span><span class="n">granularity</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">:</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span>
+<span class="n">Output</span><span class="p">:</span>
+<span class="n">document</span><span class="p">:</span> <span class="p">{</span><span class="n">granularity</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">:</span> <span class="n">k</span><span class="p">}</span>
+    <span class="o">|-</span> <span class="n">matches</span><span class="p">:</span> <span class="p">{</span><span class="n">granularity</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">adjacency</span><span class="p">:</span> <span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">}</span> <span class="p">(</span><span class="n">Sorted</span> <span class="n">according</span> <span class="n">to</span> <span class="n">scores</span> <span class="kn">from</span> <span class="nn">Ranker</span> <span class="n">Executor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Initialize a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExecutableDriver</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>executor</strong> – the name of the sub-executor, only necessary when <a class="reference internal" href="jina.executors.compound.html#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a> is used</p></li>
+<li><p><strong>method</strong> – the function name of the executor that the driver feeds to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -460,7 +504,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 26, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

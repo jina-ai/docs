@@ -49,6 +49,7 @@
         <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -312,8 +313,133 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jina-executors-indexers-cache">
-<h1>jina.executors.indexers.cache<a class="headerlink" href="#jina-executors-indexers-cache" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-jina.executors.indexers.cache">
+<span id="jina-executors-indexers-cache"></span><h1>jina.executors.indexers.cache<a class="headerlink" href="#module-jina.executors.indexers.cache" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.executors.indexers.cache.BaseCache">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.cache.</code><code class="sig-name descname">BaseCache</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#BaseCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.BaseCache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.executors.indexers.html#jina.executors.indexers.BaseKVIndexer" title="jina.executors.indexers.BaseKVIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseKVIndexer</span></code></a></p>
+<p>Base class of the cache inherited <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseKVIndexer</span></code></p>
+<p>The difference between a cache and a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseKVIndexer</span></code> is the <code class="docutils literal notranslate"><span class="pre">handler_mutex</span></code> is released in cache, this allows one to query-while-indexing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_filename</strong> – the name of the file for storing the index, when not given metas.name is used.</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.executors.indexers.cache.BaseCache.post_init">
+<code class="sig-name descname">post_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#BaseCache.post_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.BaseCache.post_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>query handler and write handler can not be serialized, thus they must be put into <a class="reference internal" href="#jina.executors.indexers.cache.BaseCache.post_init" title="jina.executors.indexers.cache.BaseCache.post_init"><code class="xref py py-func docutils literal notranslate"><span class="pre">post_init()</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.indexers.cache.DocIDCache">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.cache.</code><code class="sig-name descname">DocIDCache</code><span class="sig-paren">(</span><em class="sig-param">index_filename=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.indexers.cache.BaseCache" title="jina.executors.indexers.cache.BaseCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.cache.BaseCache</span></code></a></p>
+<p>A key-value indexer that specializes in caching.
+Serializes the cache to two files, one for ids, one for the actually cached field.
+If field=`id`, then the second file is redundant. The class optimizes the process
+so that there are no duplicates.</p>
+<p>creates a new DocIDCache</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>field</strong> – to be passed as kwarg. This dictates by which Document field we cache (either <cite>id</cite> or <cite>content_hash</cite>)</p>
+</dd>
+</dl>
+<dl class="class">
+<dt id="jina.executors.indexers.cache.DocIDCache.CacheHandler">
+<em class="property">class </em><code class="sig-name descname">CacheHandler</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">logger</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache.CacheHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.CacheHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="jina.executors.indexers.cache.DocIDCache.CacheHandler.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache.CacheHandler.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.CacheHandler.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jina.executors.indexers.cache.DocIDCache.supported_fields">
+<code class="sig-name descname">supported_fields</code><em class="property"> = ['id', 'content_hash']</em><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.supported_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="jina.executors.indexers.cache.DocIDCache.default_field">
+<code class="sig-name descname">default_field</code><em class="property"> = 'id'</em><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.default_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.cache.DocIDCache.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">doc_id</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.cache.DocIDCache.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the data exists in the cache</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – either the id or the content_hash of a Document</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.cache.DocIDCache.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">values</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.update" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – list of Document.id</p></li>
+<li><p><strong>values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">any</span></code>]) – list of either <cite>id</cite> or <cite>content_hash</cite> of :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>Document</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.cache.DocIDCache.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.delete" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – list of Document.id</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.cache.DocIDCache.get_add_handler">
+<code class="sig-name descname">get_add_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache.get_add_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.get_add_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a <em>writable</em> index handler when the <code class="docutils literal notranslate"><span class="pre">index_abspath</span></code> already exist, need to be overrided</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.cache.DocIDCache.get_query_handler">
+<code class="sig-name descname">get_query_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache.get_query_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.get_query_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a <em>readable</em> index handler when the <code class="docutils literal notranslate"><span class="pre">index_abspath</span></code> already exist, need to be overrided</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jina.executors.indexers.cache.DocIDCache.CacheHandler" title="jina.executors.indexers.cache.DocIDCache.CacheHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">CacheHandler</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.cache.DocIDCache.get_create_handler">
+<code class="sig-name descname">get_create_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocIDCache.get_create_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocIDCache.get_create_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a <em>writable</em> index handler when the <code class="docutils literal notranslate"><span class="pre">index_abspath</span></code> does not exist, need to be overrided</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -458,7 +584,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 26, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

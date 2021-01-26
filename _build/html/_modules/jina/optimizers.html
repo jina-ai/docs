@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.optimizers &mdash; Jina 0.9.20 documentation</title>
+  <title>jina.optimizers &mdash; Jina 0.0.0 documentation</title>
   
 
   
@@ -70,12 +70,9 @@
           
 
           
-            <a href="https://docs.jina.ai">
+            <a href="https://docs.jina.ai" class="icon icon-home" alt="Documentation Home"> Jina
           
 
-          
-            
-            <img src="../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -84,10 +81,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.20</button>
+            <button class="dropbtn version">0.0.0</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
+              
+              <a class="dropdown-item" href="/v0.9.20">0.9.20</a>
               
               <a class="dropdown-item" href="/v0.9.19">0.9.19</a>
               
@@ -188,10 +189,6 @@
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/RELEASE.html">Release &amp; Version Identifier</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/CHANGELOG.html">Change Logs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/faq/dev.html">FAQ for Developers</a></li>
@@ -279,14 +276,26 @@
 <span class="kn">from</span> <span class="nn">..importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
 <span class="kn">from</span> <span class="nn">..logging</span> <span class="kn">import</span> <span class="n">default_logger</span> <span class="k">as</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.parameters</span> <span class="kn">import</span> <span class="n">load_optimization_parameters</span>
-
+<span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAMLCompatible</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">.flow_runner</span> <span class="kn">import</span> <span class="n">MultiFlowRunner</span>
+    <span class="kn">from</span> <span class="nn">.flow_runner</span> <span class="kn">import</span> <span class="n">FlowRunner</span>
     <span class="kn">import</span> <span class="nn">optuna</span>
 
 
-<div class="viewcode-block" id="EvaluationCallback"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.EvaluationCallback">[docs]</a><span class="k">class</span> <span class="nc">EvaluationCallback</span><span class="p">:</span>
+<div class="viewcode-block" id="OptimizerCallback"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.OptimizerCallback">[docs]</a><span class="k">class</span> <span class="nc">OptimizerCallback</span><span class="p">(</span><span class="n">JAMLCompatible</span><span class="p">):</span>
+
+<div class="viewcode-block" id="OptimizerCallback.get_empty_cops"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.OptimizerCallback.get_empty_cops">[docs]</a>    <span class="k">def</span> <span class="nf">get_empty_cops</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;OptimizerCallback&#39;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="OptimizerCallback.get_final_evaluation"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.OptimizerCallback.get_final_evaluation">[docs]</a>    <span class="k">def</span> <span class="nf">get_final_evaluation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="MeanEvaluationCallback"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.MeanEvaluationCallback">[docs]</a><span class="k">class</span> <span class="nc">MeanEvaluationCallback</span><span class="p">(</span><span class="n">OptimizerCallback</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Callback for storing and calculating evaluation metric.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -297,31 +306,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_values</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_docs</span> <span class="o">=</span> <span class="mi">0</span>
 
-<div class="viewcode-block" id="EvaluationCallback.get_fresh_callback"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.EvaluationCallback.get_fresh_callback">[docs]</a>    <span class="k">def</span> <span class="nf">get_fresh_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates a new callback&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">EvaluationCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_name</span><span class="p">)</span></div>
+<div class="viewcode-block" id="MeanEvaluationCallback.get_empty_copy"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.MeanEvaluationCallback.get_empty_copy">[docs]</a>    <span class="k">def</span> <span class="nf">get_empty_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">MeanEvaluationCallback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="EvaluationCallback.get_mean_evaluation"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.EvaluationCallback.get_mean_evaluation">[docs]</a>    <span class="k">def</span> <span class="nf">get_mean_evaluation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MeanEvaluationCallback.get_final_evaluation"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.MeanEvaluationCallback.get_final_evaluation">[docs]</a>    <span class="k">def</span> <span class="nf">get_final_evaluation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns mean evaluation value on the eval_name.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_name</span><span class="p">:</span>
-            <span class="n">evaluation</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_values</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_name</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_docs</span><span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">evaluation_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_name</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">evaluation</span> <span class="o">=</span> <span class="p">{</span><span class="n">metric</span><span class="p">:</span> <span class="n">val</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_docs</span> <span class="k">for</span> <span class="n">metric</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_values</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">evaluation_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_values</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evaluation_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;More than one evaluation metric found. Please define the right eval_name. Currently </span><span class="si">{</span><span class="n">evaluation_name</span><span class="si">}</span><span class="s1"> is used&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">evaluation</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;More than one evaluation metric found. Please use the right eval_name. Currently </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">evaluation</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> is used&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">evaluation</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_values</span><span class="p">[</span><span class="n">evaluation_name</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_docs</span></div>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_docs</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Num of docs evaluated: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_docs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">search</span><span class="o">.</span><span class="n">docs</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">evaluation</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">evaluations</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_values</span><span class="p">[</span><span class="n">evaluation</span><span class="o">.</span><span class="n">op_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">evaluation</span><span class="o">.</span><span class="n">op_name</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-                    <span class="o">+</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">value</span>
-                <span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_values</span><span class="p">[</span><span class="n">evaluation</span><span class="o">.</span><span class="n">op_name</span><span class="p">]</span> <span class="o">+=</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">value</span></div>
 
 
 <div class="viewcode-block" id="OptunaResultProcessor"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.OptunaResultProcessor">[docs]</a><span class="k">class</span> <span class="nc">OptunaResultProcessor</span><span class="p">:</span>
@@ -346,79 +350,87 @@
         <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">best_parameters</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">))</span></div></div>
 
 
-<div class="viewcode-block" id="OptunaOptimizer"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.OptunaOptimizer">[docs]</a><span class="k">class</span> <span class="nc">OptunaOptimizer</span><span class="p">:</span>
+<div class="viewcode-block" id="OptunaOptimizer"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.OptunaOptimizer">[docs]</a><span class="k">class</span> <span class="nc">OptunaOptimizer</span><span class="p">(</span><span class="n">JAMLCompatible</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Optimizer which uses Optuna to run flows and choose best parameters.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">multi_flow</span><span class="p">:</span> <span class="s1">&#39;MultiFlowRunner&#39;</span><span class="p">,</span>
+        <span class="n">flow_runner</span><span class="p">:</span> <span class="s1">&#39;FlowRunner&#39;</span><span class="p">,</span>
         <span class="n">parameter_yaml</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">evaluation_callback</span><span class="p">:</span> <span class="s1">&#39;OptimizerCallback&#39;</span><span class="p">,</span>
+        <span class="n">n_trials</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">workspace_base_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">workspace_env</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;JINA_WORKSPACE&#39;</span><span class="p">,</span>
-        <span class="n">eval_flow_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">sampler</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;TPESampler&#39;</span><span class="p">,</span>
+        <span class="n">direction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;maximize&#39;</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
+
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param multi_flow: `MultiFlowRunner` object which contains the flows to be run.</span>
+<span class="sd">        :param flow_runner: `FlowRunner` object which contains the flows to be run.</span>
 <span class="sd">        :param parameter_yaml: yaml container the parameters to be optimized</span>
-<span class="sd">        :param workspace_env: workspace env name as referred in pods and flows yaml</span>
-<span class="sd">        :param eval_flow_index: index of the evaluation flow in the sequence of flows in `MultiFlowRunner`</span>
+<span class="sd">        :param n_trials: evaluation trials to be run</span>
+<span class="sd">        :param sampler: optuna sampler</span>
+<span class="sd">        :param direction: direction of the optimization from either of `maximize` or `minimize`</span>
+<span class="sd">        :param seed: random seed for reproducibility</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">multi_flow</span> <span class="o">=</span> <span class="n">multi_flow</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow_runner</span> <span class="o">=</span> <span class="n">flow_runner</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parameter_yaml</span> <span class="o">=</span> <span class="n">parameter_yaml</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_env</span> <span class="o">=</span> <span class="n">workspace_env</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">eval_flow_index</span> <span class="o">=</span> <span class="n">eval_flow_index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">workspace_base_dir</span> <span class="o">=</span> <span class="n">workspace_base_dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_callback</span> <span class="o">=</span> <span class="n">evaluation_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_trials</span> <span class="o">=</span> <span class="n">n_trials</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">=</span> <span class="n">sampler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
 
     <span class="k">def</span> <span class="nf">_trial_parameter_sampler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">):</span>
         <span class="n">trial_parameters</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">load_optimization_parameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameter_yaml</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
-            <span class="n">trial_parameters</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">env_var</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">trial</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">optuna_method</span><span class="p">)(</span>
+            <span class="n">trial_parameters</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">jaml_variable</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">trial</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">optuna_method</span><span class="p">)(</span>
                 <span class="o">**</span><span class="n">param</span><span class="o">.</span><span class="n">to_optuna_args</span><span class="p">()</span>
             <span class="p">)</span>
 
-        <span class="n">trial_workspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_base_dir</span> <span class="o">+</span> <span class="s1">&#39;/JINA_WORKSPACE_&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">trial_parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+        <span class="n">trial</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_base_dir</span> <span class="o">+</span> <span class="s1">&#39;/JINA_WORKSPACE_&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">trial_parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
 
-        <span class="n">trial_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_env</span><span class="p">]</span> <span class="o">=</span> <span class="n">trial_workspace</span>
-        <span class="n">trial</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="n">trial_workspace</span>
         <span class="k">return</span> <span class="n">trial_parameters</span>
 
     <span class="k">def</span> <span class="nf">_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trial</span><span class="p">):</span>
-        <span class="n">eval_flow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_flow</span><span class="o">.</span><span class="n">flows</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_flow_index</span><span class="p">]</span>
-        <span class="n">eval_flow</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">eval_flow</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">get_fresh_callback</span><span class="p">()</span>
         <span class="n">trial_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trial_parameter_sampler</span><span class="p">(</span><span class="n">trial</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">multi_flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">trial_parameters</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">trial</span><span class="o">.</span><span class="n">workspace</span><span class="p">)</span>
-        <span class="n">evaluation</span> <span class="o">=</span> <span class="n">eval_flow</span><span class="o">.</span><span class="n">callback</span><span class="o">.</span><span class="n">get_mean_evaluation</span><span class="p">()</span>
-        <span class="n">op_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">evaluation</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">eval_score</span> <span class="o">=</span> <span class="n">evaluation</span><span class="p">[</span><span class="n">op_name</span><span class="p">]</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Avg </span><span class="si">{</span><span class="n">op_name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">eval_score</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">))</span>
+        <span class="n">evaluation_callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluation_callback</span><span class="o">.</span><span class="n">get_empty_copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flow_runner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">trial_parameters</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">trial</span><span class="o">.</span><span class="n">workspace</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">evaluation_callback</span><span class="p">)</span>
+        <span class="n">eval_score</span> <span class="o">=</span> <span class="n">evaluation_callback</span><span class="o">.</span><span class="n">get_final_evaluation</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Evaluation Score: </span><span class="si">{</span><span class="n">eval_score</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">eval_score</span>
 
 <div class="viewcode-block" id="OptunaOptimizer.optimize_flow"><a class="viewcode-back" href="../../api/jina.optimizers.html#jina.optimizers.OptunaOptimizer.optimize_flow">[docs]</a>    <span class="k">def</span> <span class="nf">optimize_flow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">n_trials</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">sampler</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;TPESampler&#39;</span><span class="p">,</span>
-        <span class="n">direction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;maximize&#39;</span><span class="p">,</span>
-        <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
         <span class="n">result_processor</span><span class="p">:</span> <span class="s1">&#39;OptunaResultProcessor&#39;</span> <span class="o">=</span> <span class="n">OptunaResultProcessor</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param n_trials: evaluation trials to be run</span>
-<span class="sd">        :param sampler: optuna sampler</span>
-<span class="sd">        :param direction: direction of the optimization from either of `maximize` or `minimize`</span>
-<span class="sd">        :param seed: random seed for reproducibility</span>
 <span class="sd">        :param kwargs: extra parameters for optuna sampler</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="kn">import</span> <span class="nn">optuna</span>
-        <span class="k">if</span> <span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;GridSampler&#39;</span><span class="p">:</span>
-            <span class="n">sampler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">optuna</span><span class="o">.</span><span class="n">samplers</span><span class="p">,</span> <span class="n">sampler</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">==</span> <span class="s1">&#39;GridSampler&#39;</span><span class="p">:</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">optuna</span><span class="o">.</span><span class="n">samplers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sampler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">optuna</span><span class="o">.</span><span class="n">samplers</span><span class="p">,</span> <span class="n">sampler</span><span class="p">)(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="n">direction</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">)</span>
-        <span class="n">study</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objective</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="n">n_trials</span><span class="p">)</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">optuna</span><span class="o">.</span><span class="n">samplers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="p">)(</span><span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">study</span> <span class="o">=</span> <span class="n">optuna</span><span class="o">.</span><span class="n">create_study</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span> <span class="n">sampler</span><span class="o">=</span><span class="n">sampler</span><span class="p">)</span>
+        <span class="n">study</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_objective</span><span class="p">,</span> <span class="n">n_trials</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_trials</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result_processor</span><span class="p">(</span><span class="n">study</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># def run_yaml_optimizer(yaml_file):</span>
+<span class="c1">#     optimizer = JAML.load(optimizer_yaml)</span>
+<span class="c1">#     result = optimizer.optimize_flow(n_trials=10)</span>
+
+<span class="c1">#     result_path = str(tmpdir) + &#39;/results/best_parameters.yml&#39;</span>
+<span class="c1">#     result.save_parameters(result_path)</span>
+<span class="c1">#     parameters = result.best_parameters</span>
+
 </pre></div>
 
            </div>
@@ -551,7 +563,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 22, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

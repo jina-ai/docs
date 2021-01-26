@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.flow.base &mdash; Jina 0.9.20 documentation</title>
+  <title>jina.flow.base &mdash; Jina 0.0.0 documentation</title>
   
 
   
@@ -70,12 +70,9 @@
           
 
           
-            <a href="https://docs.jina.ai">
+            <a href="https://docs.jina.ai" class="icon icon-home" alt="Documentation Home"> Jina
           
 
-          
-            
-            <img src="../../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -84,10 +81,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.20</button>
+            <button class="dropbtn version">0.0.0</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
+              
+              <a class="dropdown-item" href="/v0.9.20">0.9.20</a>
               
               <a class="dropdown-item" href="/v0.9.19">0.9.19</a>
               
@@ -188,10 +189,6 @@
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CONTRIBUTING.html">Contributing to Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/RELEASE.html">Release &amp; Version Identifier</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/CHANGELOG.html">Change Logs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
@@ -280,6 +277,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">ExitStack</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">TypeVar</span>
@@ -291,7 +289,7 @@
 <span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">FlowBuildLevel</span><span class="p">,</span> <span class="n">PodRoleType</span><span class="p">,</span> <span class="n">FlowInspectType</span>
 <span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">FlowTopologyError</span><span class="p">,</span> <span class="n">FlowMissingPodError</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">colored</span><span class="p">,</span> \
-    <span class="n">get_public_ip</span><span class="p">,</span> <span class="n">get_internal_ip</span><span class="p">,</span> <span class="n">typename</span><span class="p">,</span> <span class="n">ArgNamespace</span>
+    <span class="n">get_public_ip</span><span class="p">,</span> <span class="n">get_internal_ip</span><span class="p">,</span> <span class="n">typename</span><span class="p">,</span> <span class="n">ArgNamespace</span><span class="p">,</span> <span class="n">random_identity</span>
 <span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAML</span><span class="p">,</span> <span class="n">JAMLCompatible</span>
 <span class="kn">from</span> <span class="nn">..logging</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
 <span class="kn">from</span> <span class="nn">..parsers</span> <span class="kn">import</span> <span class="n">set_client_cli_parser</span><span class="p">,</span> <span class="n">set_gateway_parser</span><span class="p">,</span> <span class="n">set_pod_parser</span>
@@ -348,6 +346,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_changed_pod</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gateway&#39;</span><span class="p">]</span>  <span class="c1">#: default first pod is gateway, will add when build()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_env</span> <span class="o">=</span> <span class="n">env</span>  <span class="c1">#: environment vars shared by all pods in the flow</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_identity</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">JinaLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -422,7 +421,9 @@
                            <span class="n">ctrl_with_ipc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># otherwise ctrl port would be conflicted</span>
                            <span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                            <span class="n">runtime_cls</span><span class="o">=</span><span class="s1">&#39;GRPCRuntime&#39;</span><span class="p">,</span>
-                           <span class="n">pod_role</span><span class="o">=</span><span class="n">PodRoleType</span><span class="o">.</span><span class="n">GATEWAY</span><span class="p">))</span>
+                           <span class="n">pod_role</span><span class="o">=</span><span class="n">PodRoleType</span><span class="o">.</span><span class="n">GATEWAY</span><span class="p">,</span>
+                           <span class="n">identity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_identity</span> <span class="ow">or</span> <span class="n">random_identity</span><span class="p">()</span>
+                           <span class="p">))</span>
 
         <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_common_kwargs</span><span class="p">)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">ArgNamespace</span><span class="o">.</span><span class="n">kwargs2namespace</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">set_gateway_parser</span><span class="p">())</span>
@@ -1006,6 +1007,38 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">[</span><span class="s1">&#39;gateway&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">restful</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cls_client</span> <span class="o">=</span> <span class="n">WebSocketClient</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">workspace_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get all Pods&#39; ``workspace_id`` values in a dict &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">workspace_id</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;workspace_id&#39;</span><span class="p">)}</span>
+
+    <span class="nd">@workspace_id</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">workspace_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set all Pods&#39; ``workspace_id`` to ``value``</span>
+
+<span class="sd">        :param value: a hexadecimal UUID string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;workspace_id&#39;</span><span class="p">):</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">workspace_id</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get all Pods&#39; ``identity`` values in a dict &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">identity</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">}</span>
+
+    <span class="nd">@identity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set all Pods&#39; ``identity`` to ``value``</span>
+
+<span class="sd">        :param value: a hexadecimal UUID string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">identity</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_identity</span> <span class="o">=</span> <span class="n">value</span>
+
 <div class="viewcode-block" id="BaseFlow.index"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.index">[docs]</a>    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
@@ -1164,7 +1197,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 22, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

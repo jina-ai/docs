@@ -49,6 +49,7 @@
         <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -306,8 +307,182 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jina-drivers-evaluate">
-<h1>jina.drivers.evaluate<a class="headerlink" href="#jina-drivers-evaluate" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-jina.drivers.evaluate">
+<span id="jina-drivers-evaluate"></span><h1>jina.drivers.evaluate<a class="headerlink" href="#module-jina.drivers.evaluate" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.drivers.evaluate.BaseEvaluateDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.evaluate.</code><code class="sig-name descname">BaseEvaluateDriver</code><span class="sig-paren">(</span><em class="sig-param">executor=None</em>, <em class="sig-param">method='evaluate'</em>, <em class="sig-param">running_avg=False</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/evaluate.html#BaseEvaluateDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.evaluate.BaseEvaluateDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.drivers.html#jina.drivers.BaseExecutableDriver" title="jina.drivers.BaseExecutableDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseExecutableDriver</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>executor</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the name of the sub-executor, only necessary when <a class="reference internal" href="jina.executors.compound.html#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a> is used</p></li>
+<li><p><strong>method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the function name of the executor that the driver feeds to</p></li>
+<li><p><strong>running_avg</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – always return running average instead of value of the current run</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<dl class="simple">
+<dt>When <code class="docutils literal notranslate"><span class="pre">running_avg=True</span></code>, then the running mean is returned. So far at Jina 0.8.10,</dt><dd><p>there is no way to reset the running statistics. If you have a query Flow running multiple queries,
+you may want to make sure the running statistics is meaningful across multiple runs.</p>
+</dd>
+</dl>
+</div>
+<dl class="method">
+<dt id="jina.drivers.evaluate.BaseEvaluateDriver.extract">
+<code class="sig-name descname">extract</code><span class="sig-paren">(</span><em class="sig-param">doc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/evaluate.html#BaseEvaluateDriver.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.evaluate.BaseEvaluateDriver.extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracting the to-be-evaluated field from the document.
+Drivers inherit from <a class="reference internal" href="#jina.drivers.evaluate.BaseEvaluateDriver" title="jina.drivers.evaluate.BaseEvaluateDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluateDriver</span></code></a> must implement this method.</p>
+<p>This function will be invoked two times in <code class="xref py py-meth docutils literal notranslate"><span class="pre">_apply_all()</span></code>:
+once with actual doc, once with groundtruth doc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.drivers.evaluate.FieldEvaluateDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.evaluate.</code><code class="sig-name descname">FieldEvaluateDriver</code><span class="sig-paren">(</span><em class="sig-param">field</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/evaluate.html#FieldEvaluateDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.evaluate.FieldEvaluateDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.drivers.evaluate.BaseEvaluateDriver" title="jina.drivers.evaluate.BaseEvaluateDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.evaluate.BaseEvaluateDriver</span></code></a></p>
+<p>Evaluate on the values from certain field, the extraction is implemented with <code class="xref py py-meth docutils literal notranslate"><span class="pre">dunder_get()</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the field name to be extracted from the Protobuf</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.drivers.evaluate.FieldEvaluateDriver.extract">
+<code class="sig-name descname">extract</code><span class="sig-paren">(</span><em class="sig-param">doc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/evaluate.html#FieldEvaluateDriver.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.evaluate.FieldEvaluateDriver.extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracting the to-be-evaluated field from the document.
+Drivers inherit from <a class="reference internal" href="#jina.drivers.evaluate.BaseEvaluateDriver" title="jina.drivers.evaluate.BaseEvaluateDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluateDriver</span></code></a> must implement this method.</p>
+<p>This function will be invoked two times in <code class="xref py py-meth docutils literal notranslate"><span class="pre">_apply_all()</span></code>:
+once with actual doc, once with groundtruth doc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.drivers.evaluate.RankEvaluateDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.evaluate.</code><code class="sig-name descname">RankEvaluateDriver</code><span class="sig-paren">(</span><em class="sig-param">field='tags__id'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/evaluate.html#RankEvaluateDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.evaluate.RankEvaluateDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.drivers.evaluate.FieldEvaluateDriver" title="jina.drivers.evaluate.FieldEvaluateDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.evaluate.FieldEvaluateDriver</span></code></a></p>
+<p>Drivers used to pass <cite>matches</cite> from documents and groundtruths to an executor and add the evaluation value</p>
+<ul class="simple">
+<li><p>Example fields:</p></li>
+</ul>
+<p>[‘tags__id’, ‘id’, ‘score__value]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.drivers.evaluate.RankEvaluateDriver.extract">
+<code class="sig-name descname">extract</code><span class="sig-paren">(</span><em class="sig-param">doc</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/evaluate.html#RankEvaluateDriver.extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.evaluate.RankEvaluateDriver.extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracting the to-be-evaluated field from the document.
+Drivers inherit from <a class="reference internal" href="#jina.drivers.evaluate.BaseEvaluateDriver" title="jina.drivers.evaluate.BaseEvaluateDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluateDriver</span></code></a> must implement this method.</p>
+<p>This function will be invoked two times in <code class="xref py py-meth docutils literal notranslate"><span class="pre">_apply_all()</span></code>:
+once with actual doc, once with groundtruth doc.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.drivers.evaluate.NDArrayEvaluateDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.evaluate.</code><code class="sig-name descname">NDArrayEvaluateDriver</code><span class="sig-paren">(</span><em class="sig-param">field='embedding'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/evaluate.html#NDArrayEvaluateDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.evaluate.NDArrayEvaluateDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.drivers.evaluate.FieldEvaluateDriver" title="jina.drivers.evaluate.FieldEvaluateDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.evaluate.FieldEvaluateDriver</span></code></a></p>
+<p>Drivers used to pass <cite>embedding</cite> from documents and groundtruths to an executor and add the evaluation value</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Valid fields:</dt><dd><p>[‘blob’, ‘embedding’]</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the field name to be extracted from the Protobuf</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.drivers.evaluate.TextEvaluateDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.evaluate.</code><code class="sig-name descname">TextEvaluateDriver</code><span class="sig-paren">(</span><em class="sig-param">field='text'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/evaluate.html#TextEvaluateDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.evaluate.TextEvaluateDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.drivers.evaluate.FieldEvaluateDriver" title="jina.drivers.evaluate.FieldEvaluateDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.evaluate.FieldEvaluateDriver</span></code></a></p>
+<p>Drivers used to pass a content field from documents and groundtruths to an executor and add the evaluation value</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Valid fields:</dt><dd><dl class="simple">
+<dt>[‘id’,</dt><dd><p>‘level_name’,
+‘parent_id’,
+‘text’,
+‘mime_type’,
+‘uri’,
+‘modality’]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the field name to be extracted from the Protobuf</p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.drivers.evaluate.LoadGroundTruthDriver">
+<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.evaluate.</code><code class="sig-name descname">LoadGroundTruthDriver</code><span class="sig-paren">(</span><em class="sig-param">is_merge=True</em>, <em class="sig-param">traversal_paths='m'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/evaluate.html#LoadGroundTruthDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.evaluate.LoadGroundTruthDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.drivers.search.html#jina.drivers.search.KVSearchDriver" title="jina.drivers.search.KVSearchDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.search.KVSearchDriver</span></code></a></p>
+<dl class="simple">
+<dt>Driver used to search for the <cite>document key</cite> in a KVIndex to find the corresponding groundtruth.</dt><dd><p>(This driver does not use the <cite>recursive structure</cite> of jina Documents, and will not consider the <cite>traversal_path</cite> argument.
+It only retrieves <cite>groundtruth</cite> taking documents at root as key)
+This driver’s job is to fill the <cite>request</cite> groundtruth with the corresponding groundtruth for each document if found in the corresponding KVIndexer.</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The documents that are not found to have an indexed groundtruth are removed from the <cite>request</cite> so that the <cite>Evaluator</cite> only
+works with documents which have groundtruth.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>is_merge</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – when set to true the retrieved docs are merged into current message using <code class="xref py py-meth docutils literal notranslate"><span class="pre">MergeFrom()</span></code>,
+otherwise, it overrides the current message using <code class="xref py py-meth docutils literal notranslate"><span class="pre">CopyFrom()</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -452,7 +627,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 26, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

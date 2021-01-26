@@ -49,6 +49,7 @@
         <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -306,8 +307,85 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jina-types-ndarray-generic">
-<h1>jina.types.ndarray.generic<a class="headerlink" href="#jina-types-ndarray-generic" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-jina.types.ndarray.generic">
+<span id="jina-types-ndarray-generic"></span><h1>jina.types.ndarray.generic<a class="headerlink" href="#module-jina.types.ndarray.generic" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.types.ndarray.generic.NdArray">
+<em class="property">class </em><code class="sig-prename descclassname">jina.types.ndarray.generic.</code><code class="sig-name descname">NdArray</code><span class="sig-paren">(</span><em class="sig-param">proto=None</em>, <em class="sig-param">is_sparse=False</em>, <em class="sig-param">dense_cls=&lt;class 'jina.types.ndarray.dense.numpy.DenseNdArray'&gt;</em>, <em class="sig-param">sparse_cls=&lt;class 'jina.types.ndarray.sparse.scipy.SparseNdArray'&gt;</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/types/ndarray/generic.html#NdArray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.types.ndarray.generic.NdArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.types.ndarray.html#jina.types.ndarray.BaseNdArray" title="jina.types.ndarray.BaseNdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.types.ndarray.BaseNdArray</span></code></a></p>
+<p><a class="reference internal" href="#jina.types.ndarray.generic.NdArray" title="jina.types.ndarray.generic.NdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdArray</span></code></a> is one of the <strong>primitive data type</strong> in Jina.</p>
+<p>It offers a Pythonic interface to allow users access and manipulate
+<code class="xref py py-class docutils literal notranslate"><span class="pre">jina.jina_pb2.NdArrayProto</span></code> object without working with Protobuf itself.</p>
+<p>A generic view of the Protobuf NdArray, unifying the view of DenseNdArray and SparseNdArray</p>
+<p>This class should be used in nearly all the Jina context.</p>
+<p>Simple usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># start from empty proto</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">NdArray</span><span class="p">()</span>
+
+<span class="c1"># start from an existig proto</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">NdArray</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="p">)</span>
+
+<span class="c1"># set value</span>
+<span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+
+<span class="c1"># get value</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<span class="c1"># set value to a TF sparse tensor</span>
+<span class="n">a</span><span class="o">.</span><span class="n">is_sparse</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">a</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">SparseTensor</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Advanced usage:</p>
+<p><a class="reference internal" href="#jina.types.ndarray.generic.NdArray" title="jina.types.ndarray.generic.NdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdArray</span></code></a> also takes a dense NdArray and a sparse NdArray constructor
+as arguments. You can consider them as the backend for dense and sparse NdArray. The combination
+is your choice, it could be:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numpy (dense) + scipy (sparse)</span>
+<span class="kn">from</span> <span class="nn">.dense.numpy</span> <span class="kn">import</span> <span class="n">DenseNdArray</span>
+<span class="kn">from</span> <span class="nn">.sparse.scipy</span> <span class="kn">import</span> <span class="n">SparseNdArray</span>
+<span class="n">NdArray</span><span class="p">(</span><span class="n">dense_cls</span><span class="o">=</span><span class="n">DenseNdArray</span><span class="p">,</span> <span class="n">sparse_cls</span><span class="o">=</span><span class="n">SparseNdArray</span><span class="p">)</span>
+
+<span class="c1"># numpy (dense) + pytorch (sparse)</span>
+<span class="kn">from</span> <span class="nn">.dense.numpy</span> <span class="kn">import</span> <span class="n">DenseNdArray</span>
+<span class="kn">from</span> <span class="nn">.sparse.pytorch</span> <span class="kn">import</span> <span class="n">SparseNdArray</span>
+<span class="n">NdArray</span><span class="p">(</span><span class="n">dense_cls</span><span class="o">=</span><span class="n">DenseNdArray</span><span class="p">,</span> <span class="n">sparse_cls</span><span class="o">=</span><span class="n">SparseNdArray</span><span class="p">)</span>
+
+<span class="c1"># numpy (dense) + tensorflow (sparse)</span>
+<span class="kn">from</span> <span class="nn">.dense.numpy</span> <span class="kn">import</span> <span class="n">DenseNdArray</span>
+<span class="kn">from</span> <span class="nn">.sparse.tensorflow</span> <span class="kn">import</span> <span class="n">SparseNdArray</span>
+<span class="n">NdArray</span><span class="p">(</span><span class="n">dense_cls</span><span class="o">=</span><span class="n">DenseNdArray</span><span class="p">,</span> <span class="n">sparse_cls</span><span class="o">=</span><span class="n">SparseNdArray</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once you set <cite>sparse_cls</cite>, it will only accept the data type in that particular type.
+That is, you can not use a <a class="reference internal" href="#jina.types.ndarray.generic.NdArray" title="jina.types.ndarray.generic.NdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">NdArray</span></code></a> equipped with Tensorflow sparse to
+set/get Pytorch or Scipy sparse matrices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>proto</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">NdArrayProto</span></code>]) – the protobuf message, when not given then create a new one via <code class="xref py py-meth docutils literal notranslate"><span class="pre">get_null_proto()</span></code></p></li>
+<li><p><strong>is_sparse</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if the ndarray is sparse, can be changed later</p></li>
+<li><p><strong>dense_cls</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<a class="reference internal" href="jina.types.ndarray.dense.html#jina.types.ndarray.dense.BaseDenseNdArray" title="jina.types.ndarray.dense.BaseDenseNdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDenseNdArray</span></code></a>]) – the to-be-used class for DenseNdArray when <cite>is_sparse=False</cite></p></li>
+<li><p><strong>sparse_cls</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<a class="reference internal" href="jina.types.ndarray.sparse.html#jina.types.ndarray.sparse.BaseSparseNdArray" title="jina.types.ndarray.sparse.BaseSparseNdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSparseNdArray</span></code></a>]) – the to-be-used class for SparseNdArray when <cite>is_sparse=True</cite></p></li>
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.types.ndarray.generic.NdArray.null_proto">
+<code class="sig-name descname">null_proto</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/types/ndarray/generic.html#NdArray.null_proto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.types.ndarray.generic.NdArray.null_proto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the new protobuf representation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.types.ndarray.generic.NdArray.value">
+<em class="property">property </em><code class="sig-name descname">value</code><a class="headerlink" href="#jina.types.ndarray.generic.NdArray.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value of the ndarray, in numpy, scipy, tensorflow, pytorch type</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -452,7 +530,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 26, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

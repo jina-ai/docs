@@ -49,6 +49,7 @@
         <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -313,8 +314,77 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jina-executors-encoders-tfserving">
-<h1>jina.executors.encoders.tfserving<a class="headerlink" href="#jina-executors-encoders-tfserving" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-jina.executors.encoders.tfserving">
+<span id="jina-executors-encoders-tfserving"></span><h1>jina.executors.encoders.tfserving<a class="headerlink" href="#module-jina.executors.encoders.tfserving" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.executors.encoders.tfserving.BaseTFServingClientEncoder">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.encoders.tfserving.</code><code class="sig-name descname">BaseTFServingClientEncoder</code><span class="sig-paren">(</span><em class="sig-param">model_name</em>, <em class="sig-param">signature_name='serving_default'</em>, <em class="sig-param">method_name='Predict'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/encoders/tfserving.html#BaseTFServingClientEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.encoders.tfserving.BaseTFServingClientEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.executors.clients.html#jina.executors.clients.BaseTFServingClientExecutor" title="jina.executors.clients.BaseTFServingClientExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.clients.BaseTFServingClientExecutor</span></code></a>, <a class="reference internal" href="jina.executors.encoders.html#jina.executors.encoders.BaseEncoder" title="jina.executors.encoders.BaseEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.encoders.BaseEncoder</span></code></a></p>
+<dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTFServingEncoder</span></code> is the base class for the encoders that wrap up a tf serving client. The client call</dt><dd><p>the gRPC port of the tf server.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the name of the tf serving model. It must match the <cite>MODEL_NAME</cite> parameter when starting the
+tf server.</p></li>
+<li><p><strong>signature_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the name of the tf serving signature. It must match the key in the <cite>signature_def_map</cite>
+when exporting the tf serving model.</p></li>
+<li><p><strong>method_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <dl class="simple">
+<dt>the name of the tf serving method. This parameter corresponds to the <cite>method_name</cite> parameter</dt><dd><p>when building the signature map with <code class="docutils literal notranslate"><span class="pre">build_signature_def()</span></code>. Currently, only <code class="docutils literal notranslate"><span class="pre">Predict</span></code> is supported.</p>
+</dd>
+</dl>
+<p>The other methods including <code class="docutils literal notranslate"><span class="pre">Classify</span></code>, <code class="docutils literal notranslate"><span class="pre">Regression</span></code> needs users to implement the
+<cite>_fill_classify_request</cite> and <cite>_fill_regression_request</cite>, correspondingly. For the details of
+<code class="docutils literal notranslate"><span class="pre">signature_defs</span></code>, please refer to <a class="reference external" href="https://www.tensorflow.org/tfx/serving/signature_defs">https://www.tensorflow.org/tfx/serving/signature_defs</a>.</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.executors.encoders.tfserving.BaseTFServingClientEncoder.encode">
+<code class="sig-name descname">encode</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/encoders/tfserving.html#BaseTFServingClientEncoder.encode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.encoders.tfserving.BaseTFServingClientEncoder.encode" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.encoders.tfserving.UnaryTFServingClientEncoder">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.encoders.tfserving.</code><code class="sig-name descname">UnaryTFServingClientEncoder</code><span class="sig-paren">(</span><em class="sig-param">input_name</em>, <em class="sig-param">output_name</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/encoders/tfserving.html#UnaryTFServingClientEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.encoders.tfserving.UnaryTFServingClientEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.encoders.tfserving.BaseTFServingClientEncoder" title="jina.executors.encoders.tfserving.BaseTFServingClientEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.encoders.tfserving.BaseTFServingClientEncoder</span></code></a></p>
+<dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">UnaryTFServingEncoder</span></code> is an encoder that wraps up a tf serving client. This client covers the simplest</dt><dd><p>case, in which both the request and the response have a single data field.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the name of data field in the request</p></li>
+<li><p><strong>output_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the name of data field in the response</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.executors.encoders.tfserving.UnaryTFServingClientEncoder.get_input">
+<code class="sig-name descname">get_input</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/encoders/tfserving.html#UnaryTFServingClientEncoder.get_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.encoders.tfserving.UnaryTFServingClientEncoder.get_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the input data into a dict with the models input feature names as the keys and the input tensors as the
+values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.encoders.tfserving.UnaryTFServingClientEncoder.get_output">
+<code class="sig-name descname">get_output</code><span class="sig-paren">(</span><em class="sig-param">response</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/encoders/tfserving.html#UnaryTFServingClientEncoder.get_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.encoders.tfserving.UnaryTFServingClientEncoder.get_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postprocess the response from the tf server</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -459,7 +529,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 26, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

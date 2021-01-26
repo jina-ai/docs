@@ -49,6 +49,7 @@
         <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -312,8 +313,231 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jina-executors-indexers-vector">
-<h1>jina.executors.indexers.vector<a class="headerlink" href="#jina-executors-indexers-vector" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-jina.executors.indexers.vector">
+<span id="jina-executors-indexers-vector"></span><h1>jina.executors.indexers.vector<a class="headerlink" href="#module-jina.executors.indexers.vector" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.vector.</code><code class="sig-name descname">BaseNumpyIndexer</code><span class="sig-paren">(</span><em class="sig-param">compress_level=1</em>, <em class="sig-param">ref_indexer=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#BaseNumpyIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.executors.indexers.html#jina.executors.indexers.BaseVectorIndexer" title="jina.executors.indexers.BaseVectorIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseVectorIndexer</span></code></a></p>
+<p><a class="reference internal" href="#jina.executors.indexers.vector.BaseNumpyIndexer" title="jina.executors.indexers.vector.BaseNumpyIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseNumpyIndexer</span></code></a> stores and loads vector in a compresses binary file</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="xref py py-attr docutils literal notranslate"><span class="pre">compress_level</span></code> balances between time and space. By default, :classL`NumpyIndexer` has
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">compress_level</span></code> = 0.</p>
+<p>Setting <code class="xref py py-attr docutils literal notranslate"><span class="pre">compress_level</span></code>&gt;0 gives a smaller file size on the disk in the index time. However, in the query
+time it loads all data into memory at once. Not ideal for large scale application.</p>
+<p>Setting <code class="xref py py-attr docutils literal notranslate"><span class="pre">compress_level`=0</span> <span class="pre">enables</span> <span class="pre">:func:`np.memmap</span></code>, which loads data in an on-demanding way and
+gives smaller memory footprint in the query time. However, it often gives larger file size on the disk.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>compress_level</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The compresslevel argument is an integer from 0 to 9 controlling the
+level of compression; 1 is fastest and produces the least compression,
+and 9 is slowest and produces the most compression. 0 is no compression
+at all. The default is 9.</p></li>
+<li><p><strong>ref_indexer</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="#jina.executors.indexers.vector.BaseNumpyIndexer" title="jina.executors.indexers.vector.BaseNumpyIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseNumpyIndexer</span></code></a>]) – Bootstrap the current indexer from a <code class="docutils literal notranslate"><span class="pre">ref_indexer</span></code>. This enables user to switch
+the query algorithm at the query time.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.workspace_name">
+<em class="property">property </em><code class="sig-name descname">workspace_name</code><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.workspace_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.index_abspath">
+<em class="property">property </em><code class="sig-name descname">index_abspath</code><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.index_abspath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the file path of the index storage</p>
+<p>Use index_abspath</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.get_add_handler">
+<code class="sig-name descname">get_add_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#BaseNumpyIndexer.get_add_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.get_add_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a binary gzip file for adding new vectors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a gzip file stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.get_create_handler">
+<code class="sig-name descname">get_create_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#BaseNumpyIndexer.get_create_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.get_create_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new gzip file for adding new vectors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a gzip file stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">vectors</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#BaseNumpyIndexer.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new chunks and their vector representations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> in 1D-ndarray, shape B x 1</p></li>
+<li><p><strong>vectors</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – vector representations in B x D</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">values</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#BaseNumpyIndexer.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.update" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#BaseNumpyIndexer.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.delete" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.get_query_handler">
+<code class="sig-name descname">get_query_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#BaseNumpyIndexer.get_query_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.get_query_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open a gzip file and load it as a numpy ndarray</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a numpy ndarray of vectors</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.build_advanced_index">
+<code class="sig-name descname">build_advanced_index</code><span class="sig-paren">(</span><em class="sig-param">vecs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#BaseNumpyIndexer.build_advanced_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.build_advanced_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build advanced index structure based on in-memory numpy ndarray, e.g. graph, tree, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vecs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – the raw numpy ndarray</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.raw_ndarray">
+<code class="sig-name descname">raw_ndarray</code><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.raw_ndarray" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.query_by_id">
+<code class="sig-name descname">query_by_id</code><span class="sig-paren">(</span><em class="sig-param">ids</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#BaseNumpyIndexer.query_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.query_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search the index by the external key (passed during <cite>.add(</cite>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ids</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – The list of keys to be queried</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.int2ext_id">
+<code class="sig-name descname">int2ext_id</code><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.int2ext_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="jina.executors.indexers.vector.BaseNumpyIndexer.ext2int_id">
+<code class="sig-name descname">ext2int_id</code><a class="headerlink" href="#jina.executors.indexers.vector.BaseNumpyIndexer.ext2int_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.executors.indexers.vector.NumpyIndexer">
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.vector.</code><code class="sig-name descname">NumpyIndexer</code><span class="sig-paren">(</span><em class="sig-param">metric='cosine'</em>, <em class="sig-param">backend='numpy'</em>, <em class="sig-param">compress_level=0</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#NumpyIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.NumpyIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.executors.indexers.vector.BaseNumpyIndexer" title="jina.executors.indexers.vector.BaseNumpyIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.vector.BaseNumpyIndexer</span></code></a></p>
+<p>An exhaustive vector indexers implemented with numpy and scipy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metric</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The distance metric to use. <cite>braycurtis</cite>, <cite>canberra</cite>, <cite>chebyshev</cite>, <cite>cityblock</cite>, <cite>correlation</cite>,
+<cite>cosine</cite>, <cite>dice</cite>, <cite>euclidean</cite>, <cite>hamming</cite>, <cite>jaccard</cite>, <cite>jensenshannon</cite>, <cite>kulsinski</cite>,
+<cite>mahalanobis</cite>,
+<cite>matching</cite>, <cite>minkowski</cite>, <cite>rogerstanimoto</cite>, <cite>russellrao</cite>, <cite>seuclidean</cite>, <cite>sokalmichener</cite>,
+<cite>sokalsneath</cite>, <cite>sqeuclidean</cite>, <cite>wminkowski</cite>, <cite>yule</cite>.</p></li>
+<li><p><strong>backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <cite>numpy</cite> or <cite>scipy</cite>, <cite>numpy</cite> only supports <cite>euclidean</cite> and <cite>cosine</cite> distance</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Metrics other than <cite>cosine</cite> and <cite>euclidean</cite> requires <code class="docutils literal notranslate"><span class="pre">scipy</span></code> installed.</p>
+</div>
+<dl class="attribute">
+<dt id="jina.executors.indexers.vector.NumpyIndexer.batch_size">
+<code class="sig-name descname">batch_size</code><em class="property"> = 512</em><a class="headerlink" href="#jina.executors.indexers.vector.NumpyIndexer.batch_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.NumpyIndexer.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">top_k</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#NumpyIndexer.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.NumpyIndexer.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the top-k vectors with smallest <code class="docutils literal notranslate"><span class="pre">metric</span></code> and return their ids in ascending order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a tuple of two ndarray.
+The first is ids in shape B x K (<cite>dtype=int</cite>), the second is metric in shape B x K (<cite>dtype=float</cite>)</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This operation is memory-consuming.</p>
+<p>Distance (the smaller the better) is returned, not the score.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.executors.indexers.vector.NumpyIndexer.build_advanced_index">
+<code class="sig-name descname">build_advanced_index</code><span class="sig-paren">(</span><em class="sig-param">vecs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/vector.html#NumpyIndexer.build_advanced_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.vector.NumpyIndexer.build_advanced_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build advanced index structure based on in-memory numpy ndarray, e.g. graph, tree, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vecs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – the raw numpy ndarray</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -458,7 +682,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 26, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

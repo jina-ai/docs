@@ -49,6 +49,7 @@
         <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -299,8 +300,111 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jina-types-querylang">
-<h1>jina.types.querylang<a class="headerlink" href="#jina-types-querylang" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-jina.types.querylang">
+<span id="jina-types-querylang"></span><h1>jina.types.querylang<a class="headerlink" href="#module-jina.types.querylang" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.types.querylang.QueryLang">
+<em class="property">class </em><code class="sig-prename descclassname">jina.types.querylang.</code><code class="sig-name descname">QueryLang</code><span class="sig-paren">(</span><em class="sig-param">querylang=None</em>, <em class="sig-param">copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/types/querylang.html#QueryLang"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.types.querylang.QueryLang" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p><a class="reference internal" href="#jina.types.querylang.QueryLang" title="jina.types.querylang.QueryLang"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryLang</span></code></a> is one of the <strong>primitive data type</strong> in Jina.</p>
+<p>It offers a Pythonic interface to allow users access and manipulate
+<code class="xref py py-class docutils literal notranslate"><span class="pre">jina.jina_pb2.QueryLangProto</span></code> object without working with Protobuf itself.</p>
+<p>To create a <a class="reference internal" href="#jina.types.querylang.QueryLang" title="jina.types.querylang.QueryLang"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryLang</span></code></a> object from a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDriver</span></code> object, simply:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">QueryLang</span>
+<span class="kn">from</span> <span class="nn">jina.drivers.querylang.slice</span> <span class="kn">import</span> <span class="n">SliceQL</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">SliceQL</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">ql</span> <span class="o">=</span> <span class="n">QueryLang</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>One can also build a :class`QueryLang` from JSON string, bytes, dict or directly from a protobuf object.</p>
+<p>A <a class="reference internal" href="#jina.types.querylang.QueryLang" title="jina.types.querylang.QueryLang"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryLang</span></code></a> object (no matter how it is constructed) can be converted to
+protobuf object or back to driver object by using:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># to protobuf object</span>
+<span class="n">s</span><span class="o">.</span><span class="n">as_pb_object</span>
+
+<span class="c1"># to driver object</span>
+<span class="n">s</span><span class="o">.</span><span class="n">as_driver_object</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>To get the class name of the associated driver, one can use <a class="reference internal" href="#jina.types.querylang.QueryLang.driver" title="jina.types.querylang.QueryLang.driver"><code class="xref py py-attr docutils literal notranslate"><span class="pre">driver</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>querylang</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[~QueryLangSourceType]) – the query language source to construct from, acceptable types include:
+<code class="xref py py-class docutils literal notranslate"><span class="pre">jina_pb2.QueryLangProto</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDriver</span></code>.</p></li>
+<li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – when <code class="docutils literal notranslate"><span class="pre">querylang</span></code> is given as a <code class="xref py py-class docutils literal notranslate"><span class="pre">QueryLangProto</span></code> object, build a
+view (i.e. weak reference) from it or a deep copy from it.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.types.querylang.QueryLang.priority">
+<em class="property">property </em><code class="sig-name descname">priority</code><a class="headerlink" href="#jina.types.querylang.QueryLang.priority" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the priority of this query language. The query language only takes
+effect when if it has a higher priority than the internal one with the same name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.types.querylang.QueryLang.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#jina.types.querylang.QueryLang.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the name of the driver that the query language attached to</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.types.querylang.QueryLang.driver">
+<em class="property">property </em><code class="sig-name descname">driver</code><a class="headerlink" href="#jina.types.querylang.QueryLang.driver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the driver class that the query language attached to</p>
+<dl class="simple">
+<dt>..warning::</dt><dd><p>This browses all module trees and can be costly,
+do not frequently call it.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code>[<a class="reference internal" href="jina.drivers.html#jina.drivers.BaseDriver" title="jina.drivers.BaseDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDriver</span></code></a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.types.querylang.QueryLang.as_pb_object">
+<em class="property">property </em><code class="sig-name descname">as_pb_object</code><a class="headerlink" href="#jina.types.querylang.QueryLang.as_pb_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a protobuf <code class="xref py py-class docutils literal notranslate"><span class="pre">jina_pb2.QueryLangProto</span></code> object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">QueryLangProto</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.types.querylang.QueryLang.as_driver_object">
+<em class="property">property </em><code class="sig-name descname">as_driver_object</code><a class="headerlink" href="#jina.types.querylang.QueryLang.as_driver_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDriver</span></code> object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="jina.drivers.html#jina.drivers.BaseDriver" title="jina.drivers.BaseDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDriver</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -445,7 +549,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 26, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>

@@ -49,6 +49,7 @@
         <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -298,8 +299,161 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="jina-clients-asyncio">
-<h1>jina.clients.asyncio<a class="headerlink" href="#jina-clients-asyncio" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-jina.clients.asyncio">
+<span id="jina-clients-asyncio"></span><h1>jina.clients.asyncio<a class="headerlink" href="#module-jina.clients.asyncio" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="jina.clients.asyncio.AsyncClient">
+<em class="property">class </em><code class="sig-prename descclassname">jina.clients.asyncio.</code><code class="sig-name descname">AsyncClient</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/clients/asyncio.html#AsyncClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.clients.asyncio.AsyncClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="jina.clients.base.html#jina.clients.base.BaseClient" title="jina.clients.base.BaseClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.clients.base.BaseClient</span></code></a></p>
+<p><a class="reference internal" href="#jina.clients.asyncio.AsyncClient" title="jina.clients.asyncio.AsyncClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncClient</span></code></a> is the asynchronous version of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Client</span></code>. They share the same interface, except
+in <a class="reference internal" href="#jina.clients.asyncio.AsyncClient" title="jina.clients.asyncio.AsyncClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncClient</span></code></a> <a class="reference internal" href="#jina.clients.asyncio.AsyncClient.train" title="jina.clients.asyncio.AsyncClient.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a>, <a class="reference internal" href="#jina.clients.asyncio.AsyncClient.index" title="jina.clients.asyncio.AsyncClient.index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">index()</span></code></a>, <a class="reference internal" href="#jina.clients.asyncio.AsyncClient.search" title="jina.clients.asyncio.AsyncClient.search"><code class="xref py py-meth docutils literal notranslate"><span class="pre">search()</span></code></a> methods are coroutines
+(i.e. declared with the async/await syntax), simply calling them will not schedule them to be executed.
+To actually run a coroutine, user need to put them in an eventloop, e.g. via <code class="docutils literal notranslate"><span class="pre">asyncio.run()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">asyncio.create_task()</span></code>.</p>
+<p><a class="reference internal" href="#jina.clients.asyncio.AsyncClient" title="jina.clients.asyncio.AsyncClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncClient</span></code></a> can be very useful in
+the integration settings, where Jina/Flow/Client is NOT the main logic, but rather served as a part of other program.
+In this case, users often do not want to let Jina control the <code class="docutils literal notranslate"><span class="pre">asyncio.eventloop</span></code>. On contrary, <code class="xref py py-class docutils literal notranslate"><span class="pre">Client</span></code>
+is controlling and wrapping the eventloop internally, making the Client looks synchronous from outside.</p>
+<p>For example, say you have the Flow running in remote. You want to use Client to connect to it do
+some index and search, but meanwhile you have some other IO-bounded jobs and want to do them concurrently.
+You can use <a class="reference internal" href="#jina.clients.asyncio.AsyncClient" title="jina.clients.asyncio.AsyncClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncClient</span></code></a>,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.clients.asyncio</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
+
+<span class="n">ac</span> <span class="o">=</span> <span class="n">AsyncClient</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">jina_client_query</span><span class="p">():</span>
+    <span class="k">await</span> <span class="n">ac</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">heavylifting</span><span class="p">():</span>
+    <span class="k">await</span> <span class="n">other_library</span><span class="o">.</span><span class="n">download_big_files</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">concurrent_main</span><span class="p">():</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">jina_client_query</span><span class="p">(),</span> <span class="n">heavylifting</span><span class="p">())</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># under python</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">concurrent_main</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>One can think of <code class="xref py py-class docutils literal notranslate"><span class="pre">Client</span></code> as Jina-managed eventloop, whereas <a class="reference internal" href="#jina.clients.asyncio.AsyncClient" title="jina.clients.asyncio.AsyncClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncClient</span></code></a> is self-managed eventloop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Namespace</span></code>) – args provided by the CLI</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="jina.clients.asyncio.AsyncClient.train">
+<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">input_fn=None</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/clients/asyncio.html#AsyncClient.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.clients.asyncio.AsyncClient.train" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]], <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – the input function that generates the content</p></li>
+<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code> object is resolved.</p></li>
+<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code> object is rejected.</p></li>
+<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code> object is  is either resolved or rejected.</p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.clients.asyncio.AsyncClient.search">
+<code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param">input_fn=None</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/clients/asyncio.html#AsyncClient.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.clients.asyncio.AsyncClient.search" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]], <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – the input function that generates the content</p></li>
+<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code> object is resolved.</p></li>
+<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code> object is rejected.</p></li>
+<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code> object is  is either resolved or rejected.</p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="jina.clients.asyncio.AsyncClient.index">
+<code class="sig-name descname">index</code><span class="sig-paren">(</span><em class="sig-param">input_fn=None</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/clients/asyncio.html#AsyncClient.index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.clients.asyncio.AsyncClient.index" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]], <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – the input function that generates the content</p></li>
+<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code> object is resolved.</p></li>
+<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code> object is rejected.</p></li>
+<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code> object is  is either resolved or rejected.</p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="jina.clients.asyncio.AsyncWebSocketClient">
+<em class="property">class </em><code class="sig-prename descclassname">jina.clients.asyncio.</code><code class="sig-name descname">AsyncWebSocketClient</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/clients/asyncio.html#AsyncWebSocketClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.clients.asyncio.AsyncWebSocketClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.clients.asyncio.AsyncClient" title="jina.clients.asyncio.AsyncClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.clients.asyncio.AsyncClient</span></code></a>, <a class="reference internal" href="jina.clients.websockets.html#jina.clients.websockets.WebSocketClientMixin" title="jina.clients.websockets.WebSocketClientMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.clients.websockets.WebSocketClientMixin</span></code></a></p>
+<p><a class="reference internal" href="#jina.clients.asyncio.AsyncWebSocketClient" title="jina.clients.asyncio.AsyncWebSocketClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncWebSocketClient</span></code></a> is the asynchronous version of the <code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketClient</span></code>.
+They share the same interface, except in <a class="reference internal" href="#jina.clients.asyncio.AsyncWebSocketClient" title="jina.clients.asyncio.AsyncWebSocketClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncWebSocketClient</span></code></a> <code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">index()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">search()</span></code>
+methods are coroutines (i.e. declared with the async/await syntax), simply calling them will not schedule them to be executed.
+To actually run a coroutine, user need to put them in an eventloop, e.g. via <code class="docutils literal notranslate"><span class="pre">asyncio.run()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">asyncio.create_task()</span></code>.</p>
+<p><a class="reference internal" href="#jina.clients.asyncio.AsyncWebSocketClient" title="jina.clients.asyncio.AsyncWebSocketClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncWebSocketClient</span></code></a> can be very useful in the integration settings, where Jina/Flow/Client is NOT the
+main logic, but rather served as a part of other program. In this case, users often do not want to let Jina control
+the <code class="docutils literal notranslate"><span class="pre">asyncio.eventloop</span></code>. On contrary, <code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketClient</span></code> is controlling and wrapping the eventloop
+internally, making the Client looks synchronous from outside.</p>
+<p>For example, say you have the Flow running in remote. You want to use Client to connect to it do
+some index and search, but meanwhile you have some other IO-bounded jobs and want to do them concurrently.
+You can use <a class="reference internal" href="#jina.clients.asyncio.AsyncWebSocketClient" title="jina.clients.asyncio.AsyncWebSocketClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncWebSocketClient</span></code></a>,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.clients.asyncio</span> <span class="kn">import</span> <span class="n">AsyncWebSocketClient</span>
+
+<span class="n">ac</span> <span class="o">=</span> <span class="n">AsyncWebSocketClient</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">jina_client_query</span><span class="p">():</span>
+    <span class="k">await</span> <span class="n">ac</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">heavylifting</span><span class="p">():</span>
+    <span class="k">await</span> <span class="n">other_library</span><span class="o">.</span><span class="n">download_big_files</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">concurrent_main</span><span class="p">():</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">jina_client_query</span><span class="p">(),</span> <span class="n">heavylifting</span><span class="p">())</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># under python</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">concurrent_main</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>One can think of <code class="xref py py-class docutils literal notranslate"><span class="pre">WebSocketClient</span></code> as Jina-managed eventloop,
+whereas <a class="reference internal" href="#jina.clients.asyncio.AsyncWebSocketClient" title="jina.clients.asyncio.AsyncWebSocketClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncWebSocketClient</span></code></a> is self-managed eventloop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Namespace</span></code>) – args provided by the CLI</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -444,7 +598,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 26, 2021.
+        Last updated on Jan 27, 2021.
       </span>
 
         </p>
