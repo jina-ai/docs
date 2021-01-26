@@ -1,6 +1,6 @@
 # Jina Documentations
 
-![CD](https://github.com/jina-ai/jina/workflows/CD/badge.svg?branch=master)
+![CD](https://github.com/jina-ai/docs/workflows/CD/badge.svg?branch=docs-migration)
 
 Please read the documentations at https://docs.jina.ai 
 
@@ -16,8 +16,5 @@ You can read the documentations locally via:
 git clone https://github.com/jina-ai/docs.git
 
 # python 3
-python -m http.server 8080 -d docs
-
-# python 2
-cd docs && python -m SimpleHTTPServer
+python -m http.server 8080 -d _build/html
 ```
