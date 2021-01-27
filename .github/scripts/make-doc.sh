@@ -21,7 +21,7 @@ wget https://raw.githubusercontent.com/jina-ai/jina/master/jina/proto/jina.proto
 cd -
 docker pull pseudomuto/protoc-gen-doc
 docker run --rm \
-  -v $(pwd)/docs/chapters/proto:/out \
+  -v $(pwd)/chapters/proto:/out \
   -v $(pwd)/jina/proto:/protos \
   pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 
