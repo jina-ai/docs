@@ -15,6 +15,10 @@ cd -
 cd ${DOC_DIR} && rm -rf api && pip install -r requirements.txt && make clean && cd -
 
 # require docker installed https://github.com/pseudomuto/protoc-gen-doc
+mkdir -p $(pwd)/jina/proto
+cd $(pwd)/jina/proto
+wget https://raw.githubusercontent.com/jina-ai/jina/master/jina/proto/jina.proto
+cd -
 docker run --rm \
   -v $(pwd)/docs/chapters/proto:/out \
   -v $(pwd)/jina/proto:/protos \
