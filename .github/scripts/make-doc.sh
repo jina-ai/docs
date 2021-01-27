@@ -25,6 +25,8 @@ docker run --rm \
   -v $(pwd)/jina/proto:/protos \
   pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 
+ls $(pwd)/jina/proto
+
 cd ${DOC_DIR} && make html && cd -
 
 if [[ $1 == "commit" ]]; then
