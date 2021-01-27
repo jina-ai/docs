@@ -25,6 +25,13 @@ docker run --rm \
   -v $(pwd)/jina/proto:/protos \
   pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 
+# Get release.md, contributing.md and changelog.md from jina repo to chapters folder
+cd $(pwd)/chapters
+wget https://raw.githubusercontent.com/jina-ai/jina/master/CHANGELOG.md
+wget https://raw.githubusercontent.com/jina-ai/jina/master/CONTRIBUTING.md
+wget https://raw.githubusercontent.com/jina-ai/jina/master/RELEASE.md
+cd -
+
 cd ${DOC_DIR} && make html && cd -
 
 if [[ $1 == "commit" ]]; then
