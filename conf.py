@@ -67,7 +67,7 @@ html_context = {
 }
 
 html_static_path = ['_static']
-html_logo = '../.github/jina-prod-logo.svg'
+html_logo = '.github/artworks/jina-prod-logo.svg'
 html_css_files = ['main.css']
 htmlhelp_basename = slug
 html_show_sourcelink = False
