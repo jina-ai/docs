@@ -2,6 +2,10 @@ import os
 import re
 import sys
 from os import path
+import tempfile
+import shutil
+
+from git import Repo
 
 sys.path.insert(0, path.abspath('..'))
 
@@ -12,11 +16,16 @@ copyright = 'Jina AI Limited. All rights reserved.'
 source_suffix = ['.rst', '.md']
 master_doc = 'index'
 language = 'en'
+# Download Jina from github for api doc.
+# Since they're in different repos.
+git_url = 'https://github.com/jina-ai/jina.git'
+repo_dir = tempfile.mkdtemp()
+Repo.clone_from(git_url, repo_dir)
 
 try:
     if 'JINA_VERSION' not in os.environ:
         pkg_name = 'jina'
-        libinfo_py = path.join('..', pkg_name, '__init__.py')
+        libinfo_py = path.join(repo_dir, pkg_name, '__init__.py')
         libinfo_content = open(libinfo_py, 'r').readlines()
         version_line = [l.strip() for l in libinfo_content if l.startswith('__version__')][0]
         exec(version_line)
@@ -108,7 +117,7 @@ notfound_context = {
 }
 notfound_no_urls_prefix = True
 
-apidoc_module_dir = '../jina/'
+apidoc_module_dir = repo_dir
 apidoc_output_dir = 'api'
 apidoc_excluded_paths = ['tests', 'legacy', 'hub']
 apidoc_separate_modules = True
@@ -157,3 +166,6 @@ def setup(app):
             ),
         ]
     )
+
+
+shutil.rmtree(repo_dir)  # Clean up temp jina dir
