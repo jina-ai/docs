@@ -15,10 +15,10 @@ cd -
 cd ${DOC_DIR} && rm -rf api && pip install -r requirements.txt && make clean && cd -
 
 # require docker installed https://github.com/pseudomuto/protoc-gen-doc
-docker run --rm \
-  -v $(pwd)/docs/chapters/proto:/out \
-  -v $(pwd)/jina/proto:/protos \
-  pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
+#docker run --rm \
+#  -v $(pwd)/docs/chapters/proto:/out \
+#  -v $(pwd)/jina/proto:/protos \
+#  pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 
 cd ${DOC_DIR} && make html && cd -
 
@@ -27,7 +27,7 @@ if [[ $1 == "commit" ]]; then
   cp README.md jinahub.jpg jina-logo-dark.png _build/html/
   cd -
   cd ${HTML_DIR}
-  rsync -avr . docs-migration  # sync everything under the root to master/
+  rsync -avr . master  # sync everything under the root to master/
   cd -
   cd ${DOC_DIR}/bak
   rsync -avr --ignore-missing-args ./v* ../_build/html/ --ignore-existing  # revert backup back
@@ -49,9 +49,9 @@ elif [[ $1 == "release" ]]; then
   cp README.md jinahub.jpg jina-logo-dark.png _build/html/
   cd -
   cd ${HTML_DIR}
-  rsync -avr . docs-migration  # sync everything under the root to master/
-  rsync -avr --exclude=docs-migration . latest  # sync everything under the root to master/
-  rsync -avr --exclude=docs-migration --exclude=latest . "v${JINA_VERSION}"  # sync to versions
+  rsync -avr . master  # sync everything under the root to master/
+  rsync -avr --exclude=master . latest  # sync everything under the root to master/
+  rsync -avr --exclude=master --exclude=latest . "v${JINA_VERSION}"  # sync to versions
   cd -
   cd ${DOC_DIR}/bak
   rsync -avr --ignore-missing-args ./v* ../_build/html/ --ignore-existing  # revert backup back
