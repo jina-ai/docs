@@ -17,6 +17,7 @@ jina.parsers
    jina.parsers.helloworld
    jina.parsers.helper
    jina.parsers.logger
+   jina.parsers.optimizer
    jina.parsers.ping
 
 .. automodule:: jina.parsers
