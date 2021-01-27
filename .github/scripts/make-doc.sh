@@ -19,6 +19,7 @@ mkdir -p $(pwd)/jina/proto
 cd $(pwd)/jina/proto
 wget https://raw.githubusercontent.com/jina-ai/jina/master/jina/proto/jina.proto
 cd -
+docker pull pseudomuto/protoc-gen-doc
 docker run --rm \
   -v $(pwd)/docs/chapters/proto:/out \
   -v $(pwd)/jina/proto:/protos \
