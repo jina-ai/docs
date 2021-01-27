@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>Using Flow API to Compose Your Jina Workflow &mdash; Jina 0.9.22 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/main.css" type="text/css" />
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Input and Output Functions in Jina" href="../io/index.html" />
+    <link rel="prev" title="Jina 101: First Thing to Learn About Jina" href="../101/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+  <div id="showhide-navbar-btn" onclick="showhide_navbar();"></div>
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="https://docs.jina.ai">
+          
+
+          
+            
+            <img src="../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+
+          <div class="dropdown version">
+            <button class="dropbtn version">0.9.22</button>
+            <div class="dropdown-content">
+              
+              <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
+              
+              <a class="dropdown-item" href="/v0.9.20">0.9.20</a>
+              
+              <a class="dropdown-item" href="/v0.9.19">0.9.19</a>
+              
+              <a class="dropdown-item" href="/v0.9.18">0.9.18</a>
+              
+              <a class="dropdown-item" href="/v0.9.17">0.9.17</a>
+              
+              <a class="dropdown-item" href="/v0.9.16">0.9.16</a>
+              
+              <a class="dropdown-item" href="/v0.9.15">0.9.15</a>
+              
+              <a class="dropdown-item" href="/v0.9.14">0.9.14</a>
+              
+              <a class="dropdown-item" href="/v0.9.13">0.9.13</a>
+              
+              <a class="dropdown-item" href="/v0.9.12">0.9.12</a>
+              
+              <a class="dropdown-item" href="/v0.9.11">0.9.11</a>
+              
+              <a class="dropdown-item" href="/v0.9.10">0.9.10</a>
+              
+              <a class="dropdown-item" href="/v0.9.9">0.9.9</a>
+              
+              <a class="dropdown-item" href="/v0.9.8">0.9.8</a>
+              
+              <a class="dropdown-item" href="/v0.9.7">0.9.7</a>
+              
+              <a class="dropdown-item" href="/v0.9.6">0.9.6</a>
+              
+              <a class="dropdown-item" href="/v0.9.5">0.9.5</a>
+              
+              <a class="dropdown-item" href="/v0.9.3">0.9.3</a>
+              
+              <a class="dropdown-item" href="/v0.9.2">0.9.2</a>
+              
+              <a class="dropdown-item" href="/v0.9.1">0.9.1</a>
+              
+              <a class="dropdown-item" href="/v0.9.0">0.9.0</a>
+              
+              <a class="dropdown-item" href="/v0.8.22">0.8.22</a>
+              
+              <a class="dropdown-item" href="/v0.8.21">0.8.21</a>
+              
+            </div>
+          </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Get Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install/os/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../101/index.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../yaml/index.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proto/index.html">Jina Protobuf Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../traversal/index.html">Understand Jina Recursive Document Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pattern.html">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../remote/index.html">Using Jina Pod Remotely</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extensions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RELEASE.html">Release &amp; Version Identifier</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Jina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Using Flow API to Compose Your Jina Workflow</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-flow-api-to-compose-your-jina-workflow">
+<h1>Using Flow API to Compose Your Jina Workflow<a class="headerlink" href="#using-flow-api-to-compose-your-jina-workflow" title="Permalink to this headline">¶</a></h1>
+<p>In search systems, tasks such as indexing often involve multiple steps: preprocessing, encoding, storing, etc. In Jina’s architecture, each step is implemented by an Executor and wrapped by a Pod. This microservice design makes the whole pipeline flexible and scalable. Accomplishing a task is then orchestrating all these Pods to work together, either sequentially or in parallel; locally or remotely.</p>
+<p>The Flow API is a context manager for Pods. Each <code class="docutils literal notranslate"><span class="pre">Flow</span></code> object corresponds to a real-world task. It helps the user to manage the states and contexts of all Pods required in that task. The Flow API translates a workflow defined in Python code, YAML file, or interactive graph to a runtime backed by multi-thread/process, Kubernetes, Docker Swarm, etc. Users don’t need to worry about where the Pod is running or how the Pods are connected.</p>
+<p><img alt="Flow is a context manager" src="../../_images/flow-api-doc.png" /></p>
+<!-- START doctoc generated TOC please keep comment here to allow auto update --><!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE --><ul class="simple">
+<li><p><a class="reference external" href="#use-flow-api-in-python">Use Flow API in Python</a></p></li>
+<li><p><a class="reference external" href="#use-flow-api-in-yaml">Use Flow API in YAML</a></p></li>
+<li><p><a class="reference external" href="#design-a-flow-with-dashboard">Design a Flow with Dashboard</a></p></li>
+</ul>
+<!-- END doctoc generated TOC please keep comment here to allow auto update --><div class="section" id="use-flow-api-in-python">
+<h2>Use Flow API in Python<a class="headerlink" href="#use-flow-api-in-python" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="create-a-flow">
+<h3>Create a Flow<a class="headerlink" href="#create-a-flow" title="Permalink to this headline">¶</a></h3>
+<p>To create a new Flow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Flow()</span></code> accepts some arguments, see <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">flow</span> <span class="pre">--help</span></code> or <a class="reference external" href="https://docs.jina.ai">our documentation</a> for details. For example, <code class="docutils literal notranslate"><span class="pre">Flow(log_server=True)</span></code> will enable sending logs to the <a class="reference external" href="https://github.com/jina-ai/dashboard">dashboard</a>.</p>
+<p>When the arguments given to <code class="docutils literal notranslate"><span class="pre">Flow()</span></code> cannot be parsed, they are propagated to all the Flow’s <code class="docutils literal notranslate"><span class="pre">Pods</span></code> for parsing (if they are accepted, see <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">pod</span> <span class="pre">--help</span></code> for the list of arguments). For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">(</span><span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will set the <code class="docutils literal notranslate"><span class="pre">read_only</span></code> attribute of all Pods in <code class="docutils literal notranslate"><span class="pre">f</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</div>
+<div class="section" id="add-pod-into-the-flow">
+<h3>Add Pod into the Flow<a class="headerlink" href="#add-pod-into-the-flow" title="Permalink to this headline">¶</a></h3>
+<p>To add a Pod to the Flow, simply call <code class="docutils literal notranslate"><span class="pre">.add()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;mypod1.yml&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p2&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;mypod2.yml&#39;</span><span class="p">,</span> <span class="n">timeout_ready</span><span class="o">=</span><span class="mi">50000</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p3&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;mypod3.yml&#39;</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This will create a sequential workflow:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>
+<span class="n">gateway</span> <span class="o">-&gt;</span> <span class="n">p1</span> <span class="o">-&gt;</span> <span class="n">p2</span> <span class="o">-&gt;</span> <span class="n">p3</span> <span class="o">-&gt;</span> <span class="n">gateway</span>
+</pre></div>
+</div>
+<p>The input of each Pod is the output of the last Pod in sequential order. The gateway is the entrypoint of the whole Jina network. The <code class="docutils literal notranslate"><span class="pre">gateway</span></code> Pod is automatically added to every <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, of which the output is the first Pod and the input is the last Pod defined in the Flow.</p>
+<p>All accepted arguments follow the command line interface of <code class="docutils literal notranslate"><span class="pre">Pod</span></code>, which can be found in <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">pod</span> <span class="pre">--help</span></code>. Just remember to replace the dash <code class="docutils literal notranslate"><span class="pre">-</span></code> to underscore <code class="docutils literal notranslate"><span class="pre">_</span></code> in the name of the argument when referring to it in Python.</p>
+<p>Besides the file path, in Flow API <code class="docutils literal notranslate"><span class="pre">uses</span></code> can accept other types:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Type</th>
+<th>Example</th>
+<th>Remark</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YAML file path</td>
+<td><code>crafter/my.yml</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Inline YAML</td>
+<td><code>'!DataURICrafter\nwith: {mimetype: png}'</code></td>
+<td>don't forget <code>!</code> in the beginning</td>
+</tr>
+<tr>
+<td>The name of an executor <a href="../all_exec.html">listed here</a></td>
+<td><code>TransformerTorchEncoder</code></td>
+<td>only the executors that have full default values can be directly used</td>
+</tr>
+<tr>
+<td>Built-in simple executors <a href="../simple_exec.html">listed here</a></td>
+<td><code>_clear</code></td>
+<td>Always starts with <code>_</code></td>
+</tr>
+<tr>
+<td>Docker image</td>
+<td><code>docker://jinahub/pod.encoder.dummy_mwu_encoder:0.0.6-0.9.3</code></td>
+<td>Add <code>docker://</code> before the image name</td>
+</tr>
+</tbody>
+</table>
+<h4>Add a Containerized Pod into the Flow</h4><p>To run a Pod in a Docker container, simply specify the <code class="docutils literal notranslate"><span class="pre">image</span></code> argument:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p2&#39;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="s1">&#39;jinaai/hub.executors.encoders.bidaf:latest&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p3&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This will run <code class="docutils literal notranslate"><span class="pre">p2</span></code> in a Docker container equipped with the image <code class="docutils literal notranslate"><span class="pre">jinaai/hub.executors.encoders.bidaf:latest</span></code>. More information on using containerized Pod can be found <a class="reference external" href="https://docs.jina.ai/chapters/hub/index.html">here</a>.</p>
+<div class="section" id="add-a-remote-pod-into-the-flow">
+<h4>Add a Remote Pod into the Flow<a class="headerlink" href="#add-a-remote-pod-into-the-flow" title="Permalink to this headline">¶</a></h4>
+<p>To run a Pod remotely, simply specify the <code class="docutils literal notranslate"><span class="pre">host</span></code> and <code class="docutils literal notranslate"><span class="pre">port_expose</span></code> arguments. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p2&#39;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;192.168.0.100&#39;</span><span class="p">,</span> <span class="n">port_expose</span><span class="o">=</span><span class="mi">53100</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p3&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This will start <code class="docutils literal notranslate"><span class="pre">p2</span></code> remotely on <code class="docutils literal notranslate"><span class="pre">192.168.0.100</span></code>, whereas <code class="docutils literal notranslate"><span class="pre">p1</span></code> and <code class="docutils literal notranslate"><span class="pre">p3</span></code> run locally.</p>
+<p>To use remote Pods, you need to start a <code class="docutils literal notranslate"><span class="pre">gateway</span></code> on <code class="docutils literal notranslate"><span class="pre">192.168.0.100</span></code> in advance. More information on using remote Pods can be found <a class="reference external" href="https://docs.jina.ai/chapters/remote/index.html">here</a>.</p>
+</div>
+<div class="section" id="add-a-remote-containerized-pod-into-the-flow">
+<h4>Add a Remote Containerized Pod into the Flow<a class="headerlink" href="#add-a-remote-containerized-pod-into-the-flow" title="Permalink to this headline">¶</a></h4>
+<p>A very useful pattern is to combine the above two features together:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p2&#39;</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;192.168.0.100&#39;</span><span class="p">,</span> <span class="n">port_expose</span><span class="o">=</span><span class="mi">53100</span><span class="p">,</span>
+                <span class="n">image</span><span class="o">=</span><span class="s1">&#39;jinaai/hub.executors.encoders.bidaf:latest&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p3&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This will start <code class="docutils literal notranslate"><span class="pre">p2</span></code> remotely on <code class="docutils literal notranslate"><span class="pre">192.168.0.100</span></code> running a Docker container equipped with the image <code class="docutils literal notranslate"><span class="pre">jinaai/hub.executors.encoders.bidaf:latest</span></code>. Of course Docker is required on <code class="docutils literal notranslate"><span class="pre">192.168.0.100</span></code>. More information on using remote Pods can be found <a class="reference external" href="https://docs.jina.ai/chapters/remote/index.html">here</a>.</p>
+</div>
+</div>
+<div class="section" id="parallelize-the-steps">
+<h3>Parallelize the Steps<a class="headerlink" href="#parallelize-the-steps" title="Permalink to this headline">¶</a></h3>
+<p>By default, if you keep adding <code class="docutils literal notranslate"><span class="pre">.add()</span></code> to a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, it will create a long chain of sequential workflow. You can parallelize some of the steps by using <code class="docutils literal notranslate"><span class="pre">needs</span></code> argument. For example,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p3&#39;</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This creates a workflow, where <code class="docutils literal notranslate"><span class="pre">p2</span></code> and <code class="docutils literal notranslate"><span class="pre">p3</span></code> work in parallel with the output of <code class="docutils literal notranslate"><span class="pre">p1</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gateway</span> <span class="o">-&gt;</span> <span class="n">p1</span> <span class="o">-&gt;</span> <span class="n">p2</span>
+            <span class="o">|</span>
+              <span class="o">-&gt;</span> <span class="n">p3</span> <span class="o">-&gt;</span> <span class="n">gateway</span> 
+</pre></div>
+</div>
+</div>
+<div class="section" id="waiting-for-parallel-steps-to-finish">
+<h3>Waiting for Parallel Steps to Finish<a class="headerlink" href="#waiting-for-parallel-steps-to-finish" title="Permalink to this headline">¶</a></h3>
+<p>In the prior example, the message is returned to the gateway regardless of the status of <code class="docutils literal notranslate"><span class="pre">p2</span></code>. To wait for multiple parallel steps to finish before continuing, you can do:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p2&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p3&#39;</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;p2&#39;</span><span class="p">,</span> <span class="s1">&#39;p3&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>which gives</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gateway</span> <span class="o">-&gt;</span> <span class="n">p1</span> <span class="o">-&gt;</span> <span class="n">p2</span> <span class="o">-&gt;</span>
+            <span class="o">|</span>          <span class="o">|</span> <span class="o">-&gt;</span> <span class="n">wait</span> <span class="n">until</span> <span class="n">both</span> <span class="n">done</span> <span class="o">-&gt;</span> <span class="n">gateway</span>
+              <span class="o">-&gt;</span> <span class="n">p3</span> <span class="o">-&gt;</span> 
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-a-flow">
+<h3>Run a Flow<a class="headerlink" href="#run-a-flow" title="Permalink to this headline">¶</a></h3>
+<p>To run a Flow, simply use the <code class="docutils literal notranslate"><span class="pre">with</span></code> keyword:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="c1"># the flow is now running</span>
+</pre></div>
+</div>
+<p>Though you can manually call the <code class="docutils literal notranslate"><span class="pre">start()</span></code> method to run the flow, you also need to call the corresponding <code class="docutils literal notranslate"><span class="pre">close()</span></code> method to release the resource. Using <code class="docutils literal notranslate"><span class="pre">with</span></code> saves you the trouble, as the resource is automatically released when running out of the scope.</p>
+<div class="section" id="test-connectivity-with-dry-run">
+<h4>Test Connectivity with Dry Run<a class="headerlink" href="#test-connectivity-with-dry-run" title="Permalink to this headline">¶</a></h4>
+<p>You can test the whole workflow with <code class="docutils literal notranslate"><span class="pre">dry_run()</span></code>. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">dry_run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This will send a <code class="docutils literal notranslate"><span class="pre">ControRequest</span></code> to all pods following the topology you defined. You can use it to test the connectivity of all pods.</p>
+</div>
+</div>
+<div class="section" id="iterate-over-pods-in-the-flow">
+<h3>Iterate over Pods in the Flow<a class="headerlink" href="#iterate-over-pods-in-the-flow" title="Permalink to this headline">¶</a></h3>
+<p>You can iterate the Pods in a Flow like you would a list:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+           <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">...</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">build</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> in: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">socket_in</span><span class="p">)</span><span class="si">}</span><span class="s1"> out: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">socket_out</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note <code class="docutils literal notranslate"><span class="pre">f.build()</span></code> will build the underlying network context but not run the Pods. It is very useful for debugging.</p>
+</div>
+<div class="section" id="feed-data-to-the-flow">
+<h3>Feed Data to the Flow<a class="headerlink" href="#feed-data-to-the-flow" title="Permalink to this headline">¶</a></h3>
+<p>You can use <code class="docutils literal notranslate"><span class="pre">.index()</span></code>, <code class="docutils literal notranslate"><span class="pre">.search()</span></code> to feed index data and search query to a Flow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">on_done</span><span class="o">=</span><span class="nb">print</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">input_fn</span></code> is an <code class="docutils literal notranslate"><span class="pre">Iterator[bytes]</span></code>, each of which corresponds to the representation of a Document with bytes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">on_done</span></code> is the callback function after each request, and takes a <code class="docutils literal notranslate"><span class="pre">Request</span></code> protobuf as its only input.</p></li>
+</ul>
+<p>A simple <code class="docutils literal notranslate"><span class="pre">input_fn</span></code> is defined as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">input_fn</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="sa">b</span><span class="s1">&#39;s&#39;</span>
+
+<span class="c1"># or ...</span>
+<span class="n">input_fn</span> <span class="o">=</span> <span class="p">(</span><span class="sa">b</span><span class="s1">&#39;s&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>Please note that the current Flow API does not support using <code class="docutils literal notranslate"><span class="pre">index()</span></code> and <code class="docutils literal notranslate"><span class="pre">search()</span></code> together in the same <code class="docutils literal notranslate"><span class="pre">with</span></code> scope. This is because the workflow of <code class="docutils literal notranslate"><span class="pre">index()</span></code> and <code class="docutils literal notranslate"><span class="pre">search()</span></code> are usually different, and you cannot use one workflow for both tasks.</p>
+</div></blockquote>
+<div class="section" id="feed-data-to-the-flow-from-other-clients">
+<h4>Feed Data to the Flow from Other Clients<a class="headerlink" href="#feed-data-to-the-flow-from-other-clients" title="Permalink to this headline">¶</a></h4>
+<p>If you don’t use Python as a client, or your client and Flow are in different instances, you can keep a Flow running and use a client in another language to connect to it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>WARNING</strong>: don’t use a while loop to do the waiting, it is extremely inefficient:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span> <span class="c1"># &lt;- dont do that</span>
+        <span class="k">pass</span> <span class="c1"># &lt;- dont do that</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="use-flow-api-in-yaml">
+<h2>Use Flow API in YAML<a class="headerlink" href="#use-flow-api-in-yaml" title="Permalink to this headline">¶</a></h2>
+<p>You can also write a Flow in YAML:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!Flow</span>
+<span class="nt">pods</span><span class="p">:</span>
+  <span class="nt">chunk_seg</span><span class="p">:</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">craft/index-craft.yml</span>
+    <span class="nt">replicas</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$REPLICAS</span>
+    <span class="nt">read_only</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">doc_idx</span><span class="p">:</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">index/doc.yml</span>
+  <span class="nt">tf_encode</span><span class="p">:</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">encode/encode.yml</span>
+    <span class="nt">needs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk_seg</span>
+    <span class="nt">replicas</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$REPLICAS</span>
+    <span class="nt">read_only</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="nt">chunk_idx</span><span class="p">:</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">index/chunk.yml</span>
+    <span class="nt">replicas</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$SHARDS</span>
+  <span class="nt">join_all</span><span class="p">:</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">_pass</span>
+    <span class="nt">needs</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">doc_idx</span><span class="p p-Indicator">,</span> <span class="nv">chunk_idx</span><span class="p p-Indicator">]</span>
+    <span class="nt">read_only</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<p>You can use enviroment variables with <code class="docutils literal notranslate"><span class="pre">$</span></code> in YAML. More information on the Flow YAML Schema can be found in <a class="reference external" href="https://docs.jina.ai">our documentation</a>.</p>
+<div class="section" id="load-a-flow-from-yaml">
+<h3>Load a Flow from YAML<a class="headerlink" href="#load-a-flow-from-yaml" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;myflow.yml&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="start-a-flow-directly-from-the-cli">
+<h3>Start a Flow Directly from the CLI<a class="headerlink" href="#start-a-flow-directly-from-the-cli" title="Permalink to this headline">¶</a></h3>
+<p>The following command will start a Flow from the console and hold it for a client to connect.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jina flow --yaml-path myflow.yml
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="design-a-flow-with-dashboard">
+<h2>Design a Flow with Dashboard<a class="headerlink" href="#design-a-flow-with-dashboard" title="Permalink to this headline">¶</a></h2>
+<p>With Jina Dashboard, you can interactively drag and drop Pods, set their attribute and export to a Flow YAML file.</p>
+<p><img alt="Dashboard" src="../../_images/flow-demo1.gif" /></p>
+<p>More information on the dashboard can be found <a class="reference external" href="https://github.com/jina-ai/dashboard">here</a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        
+        <a href="../io/index.html" class="btn btn-neutral float-right" title="Input and Output Functions in Jina"
+           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="../101/index.html" class="btn btn-neutral float-left" title="Jina 101: First Thing to Learn About Jina"
+           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+    <div role="contentinfo">
+        <nav class="devsite-footer-linkboxes nocontent" aria-label="Footer links">
+
+            <ul class="devsite-footer-linkboxes-list">
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Stay connected</h3>
+                    <ul class="devsite-footer-linkbox-list">
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                <i class="fab fa-github"></i> GitHub
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.linkedin.com/company/jinaai/" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                <i class="fab fa-linkedin"></i> LinkedIn
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://twitter.com/JinaAI_" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-twitter"></i> Twitter
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.youtube.com/c/JinaAI" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                <i class="fab fa-youtube"></i> YouTube
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Support</h3>
+                    <ul class="devsite-footer-linkbox-list">
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://slack.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-slack"></i> Slack community
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/issues"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                Issue tracker
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/blob/master/CHANGELOG.md"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                Release notes
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://career.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                Career@Jina AI
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+
+        </nav>
+        <p>
+            
+            &copy; Copyright Jina AI Limited. All rights reserved.
+            <span class="lastupdated">
+        Last updated on Jan 27, 2021.
+      </span>
+
+        </p>
+    </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "300px";
+        z.style.left = "300px";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
