@@ -27,8 +27,6 @@ docker run --rm \
 
 cd ${DOC_DIR} && make html && cd -
 
-ls $(pwd)/_build/html
-
 if [[ $1 == "commit" ]]; then
   cd ${DOC_DIR}
   cp README.md jinahub.jpg jina-logo-dark.png _build/html/
