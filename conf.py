@@ -3,7 +3,6 @@ import re
 import sys
 from os import path
 import tempfile
-import shutil
 
 from git import Repo
 
@@ -166,6 +165,3 @@ def setup(app):
             ),
         ]
     )
-
-
-shutil.rmtree(repo_dir)  # Clean up temp jina dir
