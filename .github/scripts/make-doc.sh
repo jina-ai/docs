@@ -15,10 +15,10 @@ cd -
 cd ${DOC_DIR} && rm -rf api && pip install -r requirements.txt && make clean && cd -
 
 # require docker installed https://github.com/pseudomuto/protoc-gen-doc
-#docker run --rm \
-#  -v $(pwd)/docs/chapters/proto:/out \
-#  -v $(pwd)/jina/proto:/protos \
-#  pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
+docker run --rm \
+  -v $(pwd)/docs/chapters/proto:/out \
+  -v $(pwd)/jina/proto:/protos \
+  pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 
 cd ${DOC_DIR} && make html && cd -
 
