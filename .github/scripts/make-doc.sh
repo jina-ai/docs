@@ -42,6 +42,7 @@ if [[ $1 == "commit" ]]; then
   cp README.md jinahub.jpg jina-logo-dark.png _build/html/
   cd -
   cd ${HTML_DIR}
+  mkdir master
   rsync -avr . master  # sync everything under the root to master/
   cd -
   cd ${DOC_DIR}/bak
