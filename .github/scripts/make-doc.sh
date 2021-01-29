@@ -15,14 +15,15 @@ cd -
 cd ${DOC_DIR} && rm -rf api && pip install -r requirements.txt && make clean && cd -
 
 # require docker installed https://github.com/pseudomuto/protoc-gen-doc
-mkdir -p ${DOC_DIR}/jina/proto
-cd ${DOC_DIR}/jina/proto
+mkdir -p $(pwd)/jina/proto
+cd $(pwd)/jina/proto
 wget https://raw.githubusercontent.com/jina-ai/jina/master/jina/proto/jina.proto
+cd -
 
 docker pull pseudomuto/protoc-gen-doc
 docker run --rm \
-  -v ${DOC_DIR}/chapters/proto:/out \
-  -v ${DOC_DIR}/jina/proto:/protos \
+  -v $(pwd)/chapters/proto:/out \
+  -v $(pwd)/jina/proto:/protos \
   pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 cd -
 
@@ -31,7 +32,6 @@ wget https://raw.githubusercontent.com/jina-ai/jina/master/CONTRIBUTING.md -P ${
 wget https://github.com/jina-ai/jina/blob/master/RELEASE.md -P ${DOC_DIR}/chapters/
 wget https://raw.githubusercontent.com/jina-ai/jina/master/CHANGELOG.md -P ${DOC_DIR}/chapters/
 cd -
-
 # create markdown for List [X] drivers in Jina & List [X] executors in Jina to chapters/
 cd ${DOC_DIR} && jina check --summary-driver chapters/all_driver.md && cd -
 cd ${DOC_DIR} && jina check --summary-exec chapters/all_exec.md && cd -
