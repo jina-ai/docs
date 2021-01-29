@@ -25,6 +25,7 @@ docker run --rm \
   -v $(pwd)/jina/proto:/protos \
   pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 
+cd ${DOC_DIR} jina check --summary-exec chapters/all_exec.md --summary-driver chapters/all_driver.md
 cd ${DOC_DIR} && make html && cd -
 
 if [[ $1 == "commit" ]]; then
