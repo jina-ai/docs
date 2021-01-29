@@ -19,9 +19,9 @@ mkdir -p $(pwd)/jina/proto
 cd $(pwd)/jina/proto
 wget https://raw.githubusercontent.com/jina-ai/jina/master/jina/proto/jina.proto
 # also sync contributing, release and changelog to chapters
-wget https://raw.githubusercontent.com/jina-ai/jina/master/CONTRIBUTING.md -P $(pwd)/chapters/
-wget https://github.com/jina-ai/jina/blob/master/RELEASE.md -P $(pwd)/chapters/
-wget https://raw.githubusercontent.com/jina-ai/jina/master/CHANGELOG.md -P $(pwd)/chapters/
+wget https://raw.githubusercontent.com/jina-ai/jina/master/CONTRIBUTING.md -P ${DOC_DIR}/chapters/
+wget https://github.com/jina-ai/jina/blob/master/RELEASE.md -P ${DOC_DIR}/chapters/
+wget https://raw.githubusercontent.com/jina-ai/jina/master/CHANGELOG.md -P ${DOC_DIR}/chapters/
 cd -
 docker pull pseudomuto/protoc-gen-doc
 docker run --rm \
