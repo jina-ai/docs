@@ -29,7 +29,7 @@ cd -
 
 # sync contributing.md, release.md and changelog.md to chapters/
 wget https://raw.githubusercontent.com/jina-ai/jina/master/CONTRIBUTING.md -P $(pwd)/chapters/
-wget https://github.com/jina-ai/jina/blob/master/RELEASE.md -P $(pwd)/chapters/
+wget https://raw.githubusercontent.com/jina-ai/jina/master/RELEASE.md -P $(pwd)/chapters/
 wget https://raw.githubusercontent.com/jina-ai/jina/master/CHANGELOG.md -P $(pwd)/chapters/
 cd -
 # create markdown for List [X] drivers in Jina & List [X] executors in Jina to chapters/
