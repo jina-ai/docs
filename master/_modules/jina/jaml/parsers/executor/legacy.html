@@ -283,7 +283,9 @@
             
   <h1>Source code for jina.jaml.parsers.executor.legacy</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Type</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
 
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">VersionedYAMLParser</span>
 <span class="kn">from</span> <span class="nn">....executors</span> <span class="kn">import</span> <span class="n">BaseExecutor</span><span class="p">,</span> <span class="n">get_default_metas</span>
@@ -292,6 +294,42 @@
 
 <div class="viewcode-block" id="LegacyParser"><a class="viewcode-back" href="../../../../../api/jina.jaml.parsers.executor.legacy.html#jina.jaml.parsers.executor.legacy.LegacyParser">[docs]</a><span class="k">class</span> <span class="nc">LegacyParser</span><span class="p">(</span><span class="n">VersionedYAMLParser</span><span class="p">):</span>
     <span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;legacy&#39;</span>  <span class="c1"># the version number this parser designed for</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_all_arguments</span><span class="p">(</span><span class="n">class_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of all the arguments of all the classess from which `class_`</span>
+<span class="sd">        inherits</span>
+<span class="sd">            </span>
+<span class="sd">        :param class_: target class from which we want to retrieve arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">get_class_arguments</span><span class="p">(</span><span class="n">class_</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Retrieves a list containing the arguments from `class_`</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">signature</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">class_</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span>
+            <span class="n">class_arguments</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">signature</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+            <span class="k">return</span> <span class="n">class_arguments</span>
+
+        <span class="k">def</span> <span class="nf">accumulate_classes</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Retrieves all classes from which cls inherits from</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">def</span> <span class="nf">_accumulate_classes</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">cs</span><span class="p">):</span>
+                <span class="n">cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">cls</span> <span class="o">==</span> <span class="nb">object</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">cs</span>
+                <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">:</span>
+                    <span class="n">_accumulate_classes</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">cs</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">cs</span>
+            
+            <span class="n">classes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">_accumulate_classes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">classes</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
+
+        <span class="n">all_classes</span> <span class="o">=</span> <span class="n">accumulate_classes</span><span class="p">(</span><span class="n">class_</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">get_class_arguments</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">all_classes</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">,</span><span class="n">args</span><span class="p">))</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_dump_path_from_config</span><span class="p">(</span><span class="n">meta_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
@@ -325,7 +363,6 @@
 <span class="sd">        :param cls: target class type to parse into, must be a :class:`JAMLCompatible` type</span>
 <span class="sd">        :param data: flow yaml file loaded as python dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">_meta_config</span> <span class="o">=</span> <span class="n">get_default_metas</span><span class="p">()</span>
         <span class="n">_meta_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">,</span> <span class="p">{}))</span>
         <span class="k">if</span> <span class="n">_meta_config</span><span class="p">:</span>
@@ -360,6 +397,15 @@
                 <span class="c1"># tmp_p = {kk: expand_env_var(vv) for kk, vv in data.get(&#39;with&#39;, {}).items()}</span>
                 <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;with&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">metas</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">requests</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;requests&#39;</span><span class="p">,</span> <span class="p">{}))</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_init_from_yaml</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="c1"># check if the yaml file used to instanciate &#39;cls&#39; has arguments that are not in &#39;cls&#39;</span>
+            <span class="n">arguments_from_cls</span> <span class="o">=</span> <span class="n">LegacyParser</span><span class="o">.</span><span class="n">_get_all_arguments</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+            <span class="n">arguments_from_yaml</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;with&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+            <span class="n">difference_set</span> <span class="o">=</span> <span class="n">arguments_from_yaml</span>  <span class="o">-</span> <span class="n">arguments_from_cls</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">difference_set</span><span class="p">):</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The arguments </span><span class="si">{</span><span class="n">difference_set</span><span class="si">}</span><span class="s1"> defined in the YAML are not expected in the &#39;</span>
+                                   <span class="sa">f</span><span class="s1">&#39;class </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
             <span class="n">obj</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;successfully built </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> from a yaml config&#39;</span><span class="p">)</span>
 
         <span class="c1"># if node.tag in {&#39;!CompoundExecutor&#39;}:</span>
