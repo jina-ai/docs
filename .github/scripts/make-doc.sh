@@ -34,7 +34,7 @@ wget https://raw.githubusercontent.com/jina-ai/jina/master/CHANGELOG.md -P $(pwd
 cd -
 # create markdown for List [X] drivers in Jina & List [X] executors in Jina to chapters/
 cd ${DOC_DIR} && jina check --summary-driver chapters/all_driver.md && cd -
-cd ${DOC_DIR} && jina check --summary-exec chapters/all_exec.md && cd -
+cd ${DOC_DIR} && jina check --summary-exec chapters/all_exec.md && cat chapters/all_exec.md && cd -
 cd ${DOC_DIR} && make html && cd -
 
 if [[ $1 == "commit" ]]; then
