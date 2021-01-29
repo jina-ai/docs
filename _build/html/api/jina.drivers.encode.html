@@ -49,7 +49,6 @@
         <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -315,71 +314,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-jina.drivers.encode">
-<span id="jina-drivers-encode"></span><h1>jina.drivers.encode<a class="headerlink" href="#module-jina.drivers.encode" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="jina.drivers.encode.BaseEncodeDriver">
-<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.encode.</code><code class="sig-name descname">BaseEncodeDriver</code><span class="sig-paren">(</span><em class="sig-param">executor=None</em>, <em class="sig-param">method='encode'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/encode.html#BaseEncodeDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.encode.BaseEncodeDriver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="jina.drivers.html#jina.drivers.BaseExecutableDriver" title="jina.drivers.BaseExecutableDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseExecutableDriver</span></code></a></p>
-<p>Drivers inherited from this Driver will bind <code class="xref py py-meth docutils literal notranslate"><span class="pre">encode()</span></code> by default</p>
-<p>Initialize a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExecutableDriver</span></code></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>executor</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the name of the sub-executor, only necessary when <a class="reference internal" href="jina.executors.compound.html#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a> is used</p></li>
-<li><p><strong>method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – the function name of the executor that the driver feeds to</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="class">
-<dt id="jina.drivers.encode.EncodeDriver">
-<em class="property">class </em><code class="sig-prename descclassname">jina.drivers.encode.</code><code class="sig-name descname">EncodeDriver</code><span class="sig-paren">(</span><em class="sig-param">batch_size=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/encode.html#EncodeDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.encode.EncodeDriver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#jina.drivers.encode.BaseEncodeDriver" title="jina.drivers.encode.BaseEncodeDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.encode.BaseEncodeDriver</span></code></a></p>
-<p>Extract the content from documents and call executor and do encoding</p>
-<p>Extract from different documents.
-:type batch_size: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]
-:param batch_size: number of documents to be used simultaniously in the encoder :meth:apply_all.
-It is specially useful when the same EncoderExecutor can be used for documents of different granularities</p>
-<blockquote>
-<div><p>(chunks, chunks of chunks …)</p>
-</div></blockquote>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><p>This parameter was added to cover the case where root documents had very few chunks, and the encoder executor could</p></li>
-</ul>
-<p>then only process them in batches of the chunk size of each document, which did not lead to the full use of batching capabilities
-of the powerful Executors</p>
-</div>
-<dl class="class">
-<dt id="jina.drivers.encode.EncodeDriver.CacheDocumentSet">
-<em class="property">class </em><code class="sig-name descname">CacheDocumentSet</code><span class="sig-paren">(</span><em class="sig-param">capacity=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/encode.html#EncodeDriver.CacheDocumentSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.encode.EncodeDriver.CacheDocumentSet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Helper class to accumulate documents from differents document Set in a single DocumentSet
-to help guarantee that the encoder driver can consume documents in fixed batch sizes to allow
-the EncoderExecutors to leverage its batching abilities.</p>
-<p>It is useful to have batching even when chunks are involved</p>
-<dl class="method">
-<dt id="jina.drivers.encode.EncodeDriver.CacheDocumentSet.available_capacity">
-<em class="property">property </em><code class="sig-name descname">available_capacity</code><a class="headerlink" href="#jina.drivers.encode.EncodeDriver.CacheDocumentSet.available_capacity" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="jina.drivers.encode.EncodeDriver.CacheDocumentSet.cache">
-<code class="sig-name descname">cache</code><span class="sig-paren">(</span><em class="sig-param">docs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/encode.html#EncodeDriver.CacheDocumentSet.cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.encode.EncodeDriver.CacheDocumentSet.cache" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="jina.drivers.encode.EncodeDriver.CacheDocumentSet.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/encode.html#EncodeDriver.CacheDocumentSet.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.encode.EncodeDriver.CacheDocumentSet.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="jina-drivers-encode">
+<h1>jina.drivers.encode<a class="headerlink" href="#jina-drivers-encode" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

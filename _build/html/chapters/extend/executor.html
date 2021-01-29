@@ -49,7 +49,6 @@
         <script src="../../_static/language_data.js"></script>
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -278,7 +277,7 @@
   <div class="section" id="guideline-when-adding-new-executor">
 <h1>Guideline When Adding New Executor<a class="headerlink" href="#guideline-when-adding-new-executor" title="Permalink to this headline">¶</a></h1>
 <p>New deep learning model? New indexing algorithm? When the existing executors/drivers do not fit your requirement, and you can not find a useful one from <a class="reference external" href="https://hub.jina.ai">Jina Hub</a>, you can simply extend Jina to what you need without even touching the Jina codebase.</p>
-<p>In this chapter, we will show you the guideline of making an extension for a <a class="reference internal" href="../../api/jina.executors.html#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a>. Generally speaking, the steps are the following:</p>
+<p>In this chapter, we will show you the guideline of making an extension for a <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code>. Generally speaking, the steps are the following:</p>
 <ol class="arabic simple">
 <li><p>Decide which <code class="xref py py-class docutils literal notranslate"><span class="pre">Executor</span></code> class to inherit from;</p></li>
 <li><p>Override <code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">post_init()</span></code>;</p></li>
@@ -287,27 +286,27 @@
 </ol>
 <div class="section" id="decide-which-executor-class-to-inherit-from">
 <h2>Decide which <code class="xref py py-class docutils literal notranslate"><span class="pre">Executor</span></code> class to inherit from<a class="headerlink" href="#decide-which-executor-class-to-inherit-from" title="Permalink to this headline">¶</a></h2>
-<p>The list of executors supported by the current Jina can be found <a class="reference external" href="https://docs.jina.ai/chapters/all_exec.html">here</a>. As one can see, all executors are inherited from <a class="reference internal" href="../../api/jina.executors.html#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a>. So do you want to inherit directly from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExecutor</span></code> for your extension as well? In general you don’t. Rule of thumb, you always pick the executor that shares the similar logic to inherit.</p>
+<p>The list of executors supported by the current Jina can be found <a class="reference external" href="https://docs.jina.ai/chapters/all_exec.html">here</a>. As one can see, all executors are inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code>. So do you want to inherit directly from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExecutor</span></code> for your extension as well? In general you don’t. Rule of thumb, you always pick the executor that shares the similar logic to inherit.</p>
 <p>If your algorithm is so unique and does not fit any any of the category below, you may want to <a class="reference external" href="https://github.com/jina-ai/jina/issues/new">submit an issue for discussion</a> before you start.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Inherit from class <code class="docutils literal notranslate"><span class="pre">X</span></code> when …</p>
 <ul>
-<li><p><a class="reference internal" href="../../api/jina.executors.encoders.html#jina.executors.encoders.BaseEncoder" title="jina.executors.encoders.BaseEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.encoders.BaseEncoder</span></code></a></p>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.encoders.BaseEncoder</span></code></p>
 <p>You want to represent the chunks as vector embeddings.</p>
 <ul>
-<li><p><a class="reference internal" href="../../api/jina.executors.encoders.html#jina.executors.encoders.BaseNumericEncoder" title="jina.executors.encoders.BaseNumericEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.encoders.BaseNumericEncoder</span></code></a></p>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.encoders.BaseNumericEncoder</span></code></p>
 <p>You want to represent numpy array object (e.g. image, video, audio) as vector embeddings.</p>
 </li>
-<li><p><a class="reference internal" href="../../api/jina.executors.encoders.html#jina.executors.encoders.BaseTextEncoder" title="jina.executors.encoders.BaseTextEncoder"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.encoders.BaseTextEncoder</span></code></a></p>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.encoders.BaseTextEncoder</span></code></p>
 <p>You want to represent string object as vector embeddings.</p>
 </li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="../../api/jina.executors.indexers.html#jina.executors.indexers.BaseIndexer" title="jina.executors.indexers.BaseIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseIndexer</span></code></a></p>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseIndexer</span></code></p>
 <p>You want to save and retrieve vectors and key-value information from storage.</p>
 <ul>
-<li><p><a class="reference internal" href="../../api/jina.executors.indexers.html#jina.executors.indexers.BaseVectorIndexer" title="jina.executors.indexers.BaseVectorIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseVectorIndexer</span></code></a></p>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseVectorIndexer</span></code></p>
 <p>You want to save and retrieve vectors from storage.</p>
 <ul>
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.NumpyIndexer</span></code></p>
@@ -315,7 +314,7 @@
 </li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="../../api/jina.executors.indexers.html#jina.executors.indexers.BaseKVIndexer" title="jina.executors.indexers.BaseKVIndexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseKVIndexer</span></code></a></p>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.BaseKVIndexer</span></code></p>
 <p>You want to save and retrieve key-value pair from storage.</p>
 </li>
 </ul>
