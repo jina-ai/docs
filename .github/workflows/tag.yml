@@ -1,0 +1,43 @@
+name: Release
+on:
+  repository_dispatch:
+    types: [jina-release-event]
+
+jobs:
+  releaseJob:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to Jina core
+        uses: actions/checkout@v2
+        with:
+          repository: jina-ai/jina
+          token: ${{ secrets.JINA_DEV_BOT }}
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Get Jina version
+        run: |
+          pip install jina
+          JINA_VERSION=$(sed -n '/^__version__/p' ./jina/__init__.py | cut -d \' -f2)-master
+          echo "JINA_VERSION=${JINA_VERSION}" >> $GITHUB_ENV
+      - name: Install released version and Build docs
+        run: |
+          pip install .  --no-cache-dir
+          bash .github/scripts/make-doc.sh release "release ${{env.JINA_VERSION}} of ${{github.repository}}"
+      - name: Commit documentation changes to gh-pages
+        run: |
+          git clone https://github.com/jina-ai/docs.git --branch gh-pages --single-branch gh-pages
+          cp -r _build/html/* gh-pages/
+          cd gh-pages
+          git config --local user.email "dev-bot@jina.ai"
+          git config --local user.name "Jina Dev Bot"
+          git add .
+          git commit -m "update ${{env.JINA_VERSION}} due to ${{github.event_name}} on ${{github.repository}}" -a || true
+      - name: Push changes to gh-pages
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.JINA_DEV_BOT }}
+          force: true
