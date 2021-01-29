@@ -15,14 +15,14 @@ cd -
 cd ${DOC_DIR} && rm -rf api && pip install -r requirements.txt && make clean && cd -
 
 # require docker installed https://github.com/pseudomuto/protoc-gen-doc
-mkdir -p $(pwd)/jina/proto
-cd $(pwd)/jina/proto
+mkdir -p ${DOC_DIR}/jina/proto
+cd ${DOC_DIR}/jina/proto
 wget https://raw.githubusercontent.com/jina-ai/jina/master/jina/proto/jina.proto
 
 docker pull pseudomuto/protoc-gen-doc
 docker run --rm \
-  -v $(pwd)/chapters/proto:/out \
-  -v $(pwd)/jina/proto:/protos \
+  -v ${DOC_DIR}/chapters/proto:/out \
+  -v ${DOC_DIR}/jina/proto:/protos \
   pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 cd -
 
