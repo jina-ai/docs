@@ -1,0 +1,590 @@
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="X-UA-Compatible" content="IE=edge">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@JinaAI_">
+<meta name="twitter:creator" content="@JinaAI_">
+<meta name="description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:title" content="Jina Documentation">
+<meta property="og:description"
+      content="Jina is the cloud-native neural search solution powered by the state-of-the-art AI and deep learning">
+<meta property="og:url" content="https://opensource.jina.ai">
+<meta property="og:image" content="../../_static/banner.png">
+<meta property="og:type" content="website">
+<link rel="icon" href="../../_static/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  
+  <title>Using Jina remotely with Jina Daemon &mdash; Jina 0.9.24 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/main.css" type="text/css" />
+
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Creating a Remote Flow with jinad" href="create-remote-flow.html" />
+    <link rel="prev" title="Creating a Remote Jina Pod from Console" href="run-remote-pod-console.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+  <div id="showhide-navbar-btn" onclick="showhide_navbar();"></div>
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="https://docs.jina.ai">
+          
+
+          
+            
+            <img src="../../_static/jina-prod-logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+
+          <div class="dropdown version">
+            <button class="dropbtn version">0.9.24</button>
+            <div class="dropdown-content">
+              
+              <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v0.9.23">0.9.23</a>
+              
+              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
+              
+              <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
+              
+              <a class="dropdown-item" href="/v0.9.20">0.9.20</a>
+              
+              <a class="dropdown-item" href="/v0.9.19">0.9.19</a>
+              
+              <a class="dropdown-item" href="/v0.9.18">0.9.18</a>
+              
+              <a class="dropdown-item" href="/v0.9.17">0.9.17</a>
+              
+              <a class="dropdown-item" href="/v0.9.16">0.9.16</a>
+              
+              <a class="dropdown-item" href="/v0.9.15">0.9.15</a>
+              
+              <a class="dropdown-item" href="/v0.9.14">0.9.14</a>
+              
+              <a class="dropdown-item" href="/v0.9.13">0.9.13</a>
+              
+              <a class="dropdown-item" href="/v0.9.12">0.9.12</a>
+              
+              <a class="dropdown-item" href="/v0.9.11">0.9.11</a>
+              
+              <a class="dropdown-item" href="/v0.9.10">0.9.10</a>
+              
+              <a class="dropdown-item" href="/v0.9.9">0.9.9</a>
+              
+              <a class="dropdown-item" href="/v0.9.8">0.9.8</a>
+              
+              <a class="dropdown-item" href="/v0.9.7">0.9.7</a>
+              
+              <a class="dropdown-item" href="/v0.9.6">0.9.6</a>
+              
+              <a class="dropdown-item" href="/v0.9.5">0.9.5</a>
+              
+              <a class="dropdown-item" href="/v0.9.3">0.9.3</a>
+              
+              <a class="dropdown-item" href="/v0.9.2">0.9.2</a>
+              
+              <a class="dropdown-item" href="/v0.9.1">0.9.1</a>
+              
+              <a class="dropdown-item" href="/v0.9.0">0.9.0</a>
+              
+              <a class="dropdown-item" href="/v0.8.22">0.8.22</a>
+              
+              <a class="dropdown-item" href="/v0.8.21">0.8.21</a>
+              
+            </div>
+          </div>
+            
+          
+
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Get Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install/os/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helloworld/index.html">Jina “Hello, World!” 👋🌍</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../101/index.html">Jina 101: First Thing to Learn About Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../io/index.html">Input and Output Functions in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cli/exit.html">Gracefully Exit Jina</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cli/index.html">Jina Command-Line Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/jina.html">Jina Python API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../yaml/index.html">Jina YAML Syntax Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../proto/index.html">Jina Protobuf Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced Usage</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../traversal/index.html">Understand Jina Recursive Document Representation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flow/pattern.html">Common Design Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/index.html">Using Jina Pod with Docker Container</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Using Jina Pod Remotely</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="run-remote-pod-console.html">Creating a Remote Jina Pod from Console</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Using Jina remotely with Jina Daemon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-remote-flow.html">Creating a Remote Flow with jinad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-remote-pod-console-jinad.html">Creating a Remote Jina Pod from Console with jinad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="create-remote-pod-flow.html">Creating a Remote Jina Pod from Flow APIs with jinad</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../crud/index.html">CRUD Operations</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Extensions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extend/executor.html">Guideline When Adding New Executor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/mwu.html">A Minimum Working Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Community</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing to Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html#join-us-on-slack">Join Us on Slack!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../RELEASE.html">Release &amp; Version Identifier</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Change Logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jep/index.html">Jina Enhancement Proposals (JEP)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Jina</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation" class="nav-bar-header">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Using Jina Pod Remotely</a> &raquo;</li>
+        
+      <li>Using Jina remotely with Jina Daemon</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  
+<div role="search" class="nav-bar-search">
+  <form id="rtd-search-form" class="wy-form doc-searchbox" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs (Press / to focus)" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+</div>
+<hr/>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-jina-remotely-with-jina-daemon">
+<h1>Using Jina remotely with Jina Daemon<a class="headerlink" href="#using-jina-remotely-with-jina-daemon" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">jinad</span></code>, aka <code class="docutils literal notranslate"><span class="pre">Jina</span> <span class="pre">Daemon</span></code>, is a persistent process for deploying and managing Jina Flow, Pods, and Peas in a distributed system.</p>
+<div class="section" id="terminologies">
+<h2>Terminologies<a class="headerlink" href="#terminologies" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><em>Workflow</em>: a set of connected pods for accomplishing certain task, e.g. indexing, searching, extracting.</p></li>
+<li><p><em>Flow API</em>: a pythonic way for users to construct workflows in Jina with clean, readable idioms.</p></li>
+<li><p><em>Remote</em>, <em>remote instance</em>, <em>remote machine</em>: the place where you want to run the pod, the place offers better computational capability or larger storage. For example, one may want to run an encode pod on the remote GPU instance.</p></li>
+<li><p><em>Local</em>, <em>local instance</em>, <em>local machine</em>: the place of your entrypoint and the rest parts of your workflow.</p></li>
+</ul>
+</div>
+<div class="section" id="design">
+<h2>Design<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">jinad</span></code> is designed to maintain bookkeeping for the running Flows, Pods and Peas on the remote machines. <code class="docutils literal notranslate"><span class="pre">jinad</span></code> can also spawn Pods and Peas to other remote machines that have <code class="docutils literal notranslate"><span class="pre">jinad</span></code> running. <a class="reference external" href="https://github.com/fluent/fluentd"><code class="docutils literal notranslate"><span class="pre">fluentd</span></code></a> is used to collect logs from different Processes and ensure the logs belonging to the same Flow are stored consistently.</p>
+<p><img alt="jinad design" src="../../_images/jinad_design.png" /></p>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-docker-images-recommended">
+<h3>Using Docker Images (Recommended)<a class="headerlink" href="#using-docker-images-recommended" title="Permalink to this headline">¶</a></h3>
+<p>The simplest way to use <code class="docutils literal notranslate"><span class="pre">jinad</span></code> is via Docker. There is no need to worry about <a class="reference external" href="https://github.com/fluent/fluentd"><code class="docutils literal notranslate"><span class="pre">fluentd</span></code></a> installation. You only need to have <a class="reference external" href="https://docs.docker.com/install/">Docker installed</a> first.</p>
+<p>In the command below, we use the tag <code class="docutils literal notranslate"><span class="pre">latest-daemon</span></code> which uses the latest release version of <code class="docutils literal notranslate"><span class="pre">jinad</span></code>. Of course, you can switch to other versions, and you can find all the available versions at <a class="reference external" href="https://hub.docker.com/repository/docker/jinaai/jina/tags?page=1&amp;ordering=last_updated&amp;name=daemon">hub.docker.com</a>. You can found more information about the versioning at <a class="reference external" href="https://github.com/jina-ai/jina/blob/master/RELEASE">github.com/jina-ai/jina</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker pull jinaai/jina:latest-daemon
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-pypi-package">
+<h3>Using PyPi package<a class="headerlink" href="#using-pypi-package" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Notes: As one part of the jina package, <code class="docutils literal notranslate"><span class="pre">jinad</span></code> follows the same <a class="reference external" href="https://docs.jina.ai/chapters/install/via-pip.html">installation instructions of jina</a> and you only need to cherry pick <code class="docutils literal notranslate"><span class="pre">[daemon]</span></code></p>
+</div></blockquote>
+<p>On Linux/Mac, simply run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="s2">&quot;jina[daemon]&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="install-from-the-master-branch">
+<h3>Install from the Master Branch<a class="headerlink" href="#install-from-the-master-branch" title="Permalink to this headline">¶</a></h3>
+<p>If you want to keep track of the master branch of our development repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="s2">&quot;git+https://github.com/jina-ai/jina.git#egg=jina[daemon]&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="install-from-your-local-fork-clone">
+<h3>Install from Your Local Fork/Clone<a class="headerlink" href="#install-from-your-local-fork-clone" title="Permalink to this headline">¶</a></h3>
+<p>If you are a developer and want to test your changes on-the-fly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/jina-ai/jina
+<span class="nb">cd</span> jina <span class="o">&amp;&amp;</span> pip install -e <span class="s2">&quot;.[daemon]&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
+<p>Run <code class="docutils literal notranslate"><span class="pre">jinad</span></code> on the remote machine. We assume the remote is in the intranet and its IP address is <code class="docutils literal notranslate"><span class="pre">12.34.56.78</span></code>. By default, <code class="docutils literal notranslate"><span class="pre">jinad</span></code> will use the port <code class="docutils literal notranslate"><span class="pre">8000</span></code> for receiving requests. Make sure <code class="docutils literal notranslate"><span class="pre">8000</span></code> port is publicly accessible.</p>
+<p>After having <code class="docutils literal notranslate"><span class="pre">jinad</span></code> running on the remote, you can open the browser the visit <code class="docutils literal notranslate"><span class="pre">http://3.16.166.3:8000/alive</span></code> to check whether <code class="docutils literal notranslate"><span class="pre">jinad</span></code> is properly set up. If everythong works well, you will see the following response.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;status_code&quot;</span><span class="p">:</span><span class="mi">200</span><span class="p">,</span><span class="nt">&quot;jina_version&quot;</span><span class="p">:</span><span class="s2">&quot;0.9.12&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="using-docker-container">
+<h4>Using Docker Container<a class="headerlink" href="#using-docker-container" title="Permalink to this headline">¶</a></h4>
+<p>We start a Docker container under the <code class="docutils literal notranslate"><span class="pre">host</span></code> mode so that it will connect all the ports to the host machine. <code class="docutils literal notranslate"><span class="pre">-d</span></code> option is to keep the container running in the background</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -d --network host jinaai/jina:latest-daemon
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-native-python">
+<h4>Using Native Python<a class="headerlink" href="#using-native-python" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jinad
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="creating-a-remote-pod-from-console">
+<h3><a class="reference external" href="https://docs.jina.ai/chapters/remote/create-remote-pod-console-jinad.html">Creating a Remote Pod from Console</a><a class="headerlink" href="#creating-a-remote-pod-from-console" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="creating-a-remote-pod-via-flow-apis">
+<h3><a class="reference external" href="https://docs.jina.ai/chapters/remote/create-remote-pod-flow.html">Creating a Remote Pod via Flow APIs</a><a class="headerlink" href="#creating-a-remote-pod-via-flow-apis" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="creating-a-remote-flow">
+<h3><a class="reference external" href="https://docs.jina.ai/chapters/remote/create-remote-flow.html">Creating a Remote Flow</a><a class="headerlink" href="#creating-a-remote-flow" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        
+        <a href="create-remote-flow.html" class="btn btn-neutral float-right" title="Creating a Remote Flow with jinad"
+           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="run-remote-pod-console.html" class="btn btn-neutral float-left" title="Creating a Remote Jina Pod from Console"
+           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
+    
+
+    <hr/>
+
+    <div role="contentinfo">
+        <nav class="devsite-footer-linkboxes nocontent" aria-label="Footer links">
+
+            <ul class="devsite-footer-linkboxes-list">
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Stay connected</h3>
+                    <ul class="devsite-footer-linkbox-list">
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                <i class="fab fa-github"></i> GitHub
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.linkedin.com/company/jinaai/" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                <i class="fab fa-linkedin"></i> LinkedIn
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://twitter.com/JinaAI_" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-twitter"></i> Twitter
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://www.youtube.com/c/JinaAI" class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                <i class="fab fa-youtube"></i> YouTube
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="devsite-footer-linkbox ">
+                    <h3 class="devsite-footer-linkbox-heading no-link">Support</h3>
+                    <ul class="devsite-footer-linkbox-list">
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://slack.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 3)">
+
+                                <i class="fab fa-slack"></i> Slack community
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/issues"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 1)">
+
+                                Issue tracker
+
+                            </a>
+
+                        </li>
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://github.com/jina-ai/jina/blob/master/CHANGELOG.md"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 2)">
+
+                                Release notes
+
+                            </a>
+
+                        </li>
+
+
+
+                        <li class="devsite-footer-linkbox-item">
+
+                            <a href="https://career.jina.ai"
+                               class="devsite-footer-linkbox-link gc-analytics-event"
+                               data-category="Site-Wide Custom Events" data-label="Footer Link (index 4)">
+
+                                Career@Jina AI
+
+                            </a>
+
+                        </li>
+
+
+                    </ul>
+                </li>
+
+            </ul>
+
+        </nav>
+        <p>
+            
+            &copy; Copyright Jina AI Limited. All rights reserved.
+            <span class="lastupdated">
+        Last updated on Jan 31, 2021.
+      </span>
+
+        </p>
+    </div> 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+
+      function showhide_navbar() {
+      var x = document.getElementsByClassName("wy-nav-side")[0];
+      var y = document.getElementsByClassName("wy-nav-content-wrap")[0];
+      var z = document.getElementById("showhide-navbar-btn");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        y.style.marginLeft = "300px";
+        z.style.left = "300px";
+      } else {
+        x.style.display = "none";
+        y.style.marginLeft = "0";
+        z.style.left = "0px";
+      }
+    }
+
+  </script>
+
+  <!-- Search box becomes active when you press the slash(/) key anywhere on the page-->
+  <script>
+    const body = document.querySelector('body');
+    const searchBox = document.querySelector('form').querySelector('input[type="text"]');
+
+    body.addEventListener('keyup', event => {
+      event.preventDefault()
+      if (event.key === '/') {
+        searchBox.focus();
+      }
+    });
+  </script>
+
+  
+  
+    
+    <!-- Theme Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-164627626-3', 'auto');
+    ga('send', 'pageview');
+    </script>
+
+    
+   
+
+</body>
+</html>
