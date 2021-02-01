@@ -49,7 +49,7 @@ Rule of thumb, for an individual Pod/Pea, when you see the following output from
     BasePea@7317[S]:terminated
 
 
-For Flow, when you see the following output from the console, then it is shutdown already.
+For Flow, when you see the following output from the console, then it is shut down already.
 
 .. highlight:: bash
 .. code-block:: bash
