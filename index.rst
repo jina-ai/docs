@@ -71,7 +71,7 @@ Welcome to Jina!
    :maxdepth: 1
    :caption: Indices and Tables
 
-   cghapters/all_exec
+   chapters/all_exec
    chapters/all_driver
 
 * :ref:`genindex`
