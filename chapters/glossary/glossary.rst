@@ -13,10 +13,10 @@ The following terminology is commonly used within the Jina framework. Jina is an
         A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
     Crafter
         Crafters are a class of Executor whose purpose is to alter a Document to match a certain requirement. This could include tasks such as resizing images or reducing all text in a document to lowercase.
-    Driver
-        Drivers wrap an Executor and interprets network traffic into a format the Executor can understand. All Executors must have at least one driver. A Driver is further wrapped by a Pea.
     Document
         Documents are the most basic data types available within Jina. Anything you want to search for within Jina is considered a document, this could include images, sounds clips or text documents.
+    Driver
+            Drivers wrap an Executor and interprets network traffic into a format the Executor can understand. All Executors must have at least one driver. A Driver is further wrapped by a Pea.
     Embedding space
         Embedding space is the vector space in which the data is embedded after dimensionality reduction. Depending on how the space is created, semantically similar items are put together and dissimilar items are kept far apart. Position (distance and direction) in the vector space can encode semantics in a good embedding. `reference_1 <https://link.springer.com/referenceworkentry/10.1007%2F978-0-387-73003-5_573#:~:text=Embedding%20space%20is%20the%20space,than%20of%20the%20ambient%20space.>`_
     Encoder
