@@ -14,7 +14,7 @@ The following terminology is commonly used within the Jina framework. Jina is an
         A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
     Crafter
         Crafters are a class of Executor whose purpose is to alter a Document to match a certain requirement. This could include tasks such as resizing images or reducing all text in a document to lowercase.
-Document
+    Document
         Documents are the most basic data types available within Jina. Anything you want to search for within Jina is considered a document, this could include images, sounds clips or text documents.
     Driver
         Drivers wrap an Executor and interprets network traffic into a format the Executor can understand. All Executors must have at least one driver. A Driver is further wrapped by a Pea.
@@ -36,6 +36,8 @@ Document
         JAML is a Jina YAML parser that supports loading, dumping and substituting variables.
     Jina Box
         Jina Box is a light-weight, highly customizable JavaScript-based front-end tool that enables devs to easily create front-end applications and GUIs for their end-users.
+    Jina Dashboard
+        Jina Dashboard is a low code environment to create, deploy, manage and monitor Jina flows. It is also tightly integrated with our Hub to create a seamless end-to-end experience with Jina.
     Jina Hub
         Jina Hub is a centralized repository that hosts key Jina executors and integrations contributed by the community or the Jina Dev team, the components (pods) or full flows (apps) are offered on an accessible, easy to use and navigate platform.
     JinaD
