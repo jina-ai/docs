@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.rankers &mdash; Jina 0.9.24-master documentation</title>
+  <title>jina.executors.rankers &mdash; Jina 0.9.25-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.24-master</button>
+            <button class="dropbtn version">0.9.25-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -313,12 +313,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">required_keys</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;text&#39;</span><span class="p">}</span>  <span class="c1">#: a set of ``str``, key-values to extracted from the chunk-level protobuf message</span>
-    <span class="n">COL_MATCH_PARENT_HASH</span> <span class="o">=</span> <span class="s1">&#39;match_parent_hash&#39;</span>
-    <span class="n">COL_MATCH_PARENT_ID</span> <span class="o">=</span> <span class="s1">&#39;match_parent_hash&#39;</span>
-    <span class="n">COL_MATCH_HASH</span> <span class="o">=</span> <span class="s1">&#39;match_hash&#39;</span>
-    <span class="n">COL_MATCH_ID</span> <span class="o">=</span> <span class="s1">&#39;match_hash&#39;</span>
-    <span class="n">COL_DOC_CHUNK_HASH</span> <span class="o">=</span> <span class="s1">&#39;doc_chunk_hash&#39;</span>
-    <span class="n">COL_DOC_CHUNK_ID</span> <span class="o">=</span> <span class="s1">&#39;doc_chunk_hash&#39;</span>
+    <span class="n">COL_MATCH_PARENT_ID</span> <span class="o">=</span> <span class="s1">&#39;match_parent_id&#39;</span>
+    <span class="n">COL_MATCH_ID</span> <span class="o">=</span> <span class="s1">&#39;match_id&#39;</span>
+    <span class="n">COL_DOC_CHUNK_ID</span> <span class="o">=</span> <span class="s1">&#39;doc_chunk_id&#39;</span>
     <span class="n">COL_SCORE</span> <span class="o">=</span> <span class="s1">&#39;score&#39;</span>
 
 <div class="viewcode-block" id="Chunk2DocRanker.score"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.Chunk2DocRanker.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_idx</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">query_chunk_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">match_chunk_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
@@ -351,7 +348,7 @@
 <span class="sd">        Group the ``match_idx`` by ``doc_id``</span>
 <span class="sd">        :return: an iterator over the groups</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_by</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_HASH</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_by</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_group_by</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
@@ -371,13 +368,13 @@
 <span class="sd">        :return: an `np.ndarray` in the shape of [N x 2], where `N` in the length of the input list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-            <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
             <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)]</span>
                      <span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Chunk2DocRanker.get_doc_id"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.Chunk2DocRanker.get_doc_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_doc_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_with_same_doc_id</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">match_with_same_doc_id</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_HASH</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="n">match_with_same_doc_id</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">]</span></div></div>
 
 
 <div class="viewcode-block" id="Match2DocRanker"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.Match2DocRanker">[docs]</a><span class="k">class</span> <span class="nc">Match2DocRanker</span><span class="p">(</span><span class="n">BaseRanker</span><span class="p">):</span>
@@ -390,8 +387,7 @@
 <span class="sd">        - BucketShuffleRanker (first buckets matches and then sort each bucket)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">COL_MATCH_HASH</span> <span class="o">=</span> <span class="s1">&#39;match_hash&#39;</span>
-    <span class="n">COL_MATCH_ID</span> <span class="o">=</span> <span class="s1">&#39;match_hash&#39;</span>
+    <span class="n">COL_MATCH_ID</span> <span class="o">=</span> <span class="s1">&#39;match_id&#39;</span>
     <span class="n">COL_SCORE</span> <span class="o">=</span> <span class="s1">&#39;score&#39;</span>
 
 <div class="viewcode-block" id="Match2DocRanker.score"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.Match2DocRanker.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">old_match_scores</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">match_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
@@ -539,7 +535,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 01, 2021.
       </span>
 
         </p>

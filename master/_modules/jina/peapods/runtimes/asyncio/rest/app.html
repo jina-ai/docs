@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.runtimes.asyncio.rest.app &mdash; Jina 0.9.24-master documentation</title>
+  <title>jina.peapods.runtimes.asyncio.rest.app &mdash; Jina 0.9.25-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.24-master</button>
+            <button class="dropbtn version">0.9.25-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -284,18 +284,23 @@
   <h1>Source code for jina.peapods.runtimes.asyncio.rest.app</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToDict</span>
 
 <span class="kn">from</span> <span class="nn">..grpc.async_call</span> <span class="kn">import</span> <span class="n">AsyncPrefetchCall</span>
 <span class="kn">from</span> <span class="nn">....zmq</span> <span class="kn">import</span> <span class="n">AsyncZmqlet</span>
+<span class="kn">from</span> <span class="nn">.....</span> <span class="kn">import</span> <span class="n">__version__</span>
 <span class="kn">from</span> <span class="nn">.....clients.request</span> <span class="kn">import</span> <span class="n">request_generator</span>
 <span class="kn">from</span> <span class="nn">.....enums</span> <span class="kn">import</span> <span class="n">RequestType</span>
+<span class="kn">from</span> <span class="nn">.....helper</span> <span class="kn">import</span> <span class="n">get_full_version</span>
 <span class="kn">from</span> <span class="nn">.....importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
-<span class="kn">from</span> <span class="nn">.....logging</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
+<span class="kn">from</span> <span class="nn">.....logging</span> <span class="kn">import</span> <span class="n">JinaLogger</span><span class="p">,</span> <span class="n">default_logger</span>
+<span class="kn">from</span> <span class="nn">.....logging.profile</span> <span class="kn">import</span> <span class="n">used_memory_readable</span>
 <span class="kn">from</span> <span class="nn">.....types.message</span> <span class="kn">import</span> <span class="n">Message</span>
 <span class="kn">from</span> <span class="nn">.....types.request</span> <span class="kn">import</span> <span class="n">Request</span>
+
 
 <div class="viewcode-block" id="get_fastapi_app"><a class="viewcode-back" href="../../../../../../api/jina.peapods.runtimes.asyncio.rest.app.html#jina.peapods.runtimes.asyncio.rest.app.get_fastapi_app">[docs]</a><span class="k">def</span> <span class="nf">get_fastapi_app</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="s1">&#39;JinaLogger&#39;</span><span class="p">):</span>
     <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -305,8 +310,14 @@
         <span class="kn">from</span> <span class="nn">starlette.endpoints</span> <span class="kn">import</span> <span class="n">WebSocketEndpoint</span>
         <span class="kn">from</span> <span class="nn">starlette</span> <span class="kn">import</span> <span class="n">status</span>
         <span class="kn">from</span> <span class="nn">starlette.types</span> <span class="kn">import</span> <span class="n">Receive</span><span class="p">,</span> <span class="n">Scope</span><span class="p">,</span> <span class="n">Send</span>
+        <span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">StreamingResponse</span>
+        <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">JinaStatusModel</span><span class="p">,</span> <span class="n">JinaIndexRequestModel</span><span class="p">,</span> <span class="n">JinaDeleteRequestModel</span><span class="p">,</span> <span class="n">JinaUpdateRequestModel</span><span class="p">,</span> <span class="n">JinaSearchRequestModel</span>
 
-    <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;RESTRuntime&#39;</span><span class="p">)</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Jina&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;REST interface for Jina&#39;</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="n">__version__</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span>
         <span class="n">CORSMiddleware</span><span class="p">,</span>
         <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;*&#39;</span><span class="p">],</span>
@@ -319,12 +330,32 @@
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">reason</span><span class="p">,</span> <span class="n">status_code</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status_code</span><span class="p">)</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/ready&#39;</span><span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">is_ready</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s1">&#39;startup&#39;</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">startup</span><span class="p">():</span>
+        <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">    Jina REST interface</span>
+<span class="s1">    💬 Swagger UI:</span><span class="se">\t</span><span class="s1">http://localhost:</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">/docs</span>
+<span class="s1">    📚 Redoc     :</span><span class="se">\t</span><span class="s1">http://localhost:</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">/redoc</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">__ready_msg__</span>
+        <span class="n">default_logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">__ready_msg__</span><span class="p">)</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/api/</span><span class="si">{mode}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/status&#39;</span><span class="p">,</span>
+             <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get the status of the daemon&#39;</span><span class="p">,</span>
+             <span class="n">response_model</span><span class="o">=</span><span class="n">JinaStatusModel</span><span class="p">,</span>
+             <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;jina&#39;</span><span class="p">]</span>
+             <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_status</span><span class="p">():</span>
+        <span class="n">_info</span> <span class="o">=</span> <span class="n">get_full_version</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;jina&#39;</span><span class="p">:</span> <span class="n">_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s1">&#39;envs&#39;</span><span class="p">:</span> <span class="n">_info</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="s1">&#39;used_memory&#39;</span><span class="p">:</span> <span class="n">used_memory_readable</span><span class="p">()</span>
+        <span class="p">}</span>
+
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/api/</span><span class="si">{mode}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">deprecated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">api</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this interface will be retired soon&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">error</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;unsupported mode </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">405</span><span class="p">)</span>
 
@@ -340,6 +371,50 @@
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get_result_in_json</span><span class="p">(</span><span class="n">req_iter</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">MessageToDict</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">async</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">servicer</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">request_iterator</span><span class="o">=</span><span class="n">req_iter</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)]</span>
+
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/index&#39;</span><span class="p">,</span>
+              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Index documents into Jina&#39;</span><span class="p">,</span>
+              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+              <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaIndexRequestModel</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
+        <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
+
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/search&#39;</span><span class="p">,</span>
+              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Search documents from Jina&#39;</span><span class="p">,</span>
+              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+              <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaSearchRequestModel</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
+        <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
+
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span>
+              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update documents in Jina&#39;</span><span class="p">,</span>
+              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+              <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaUpdateRequestModel</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
+        <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
+
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/delete&#39;</span><span class="p">,</span>
+              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete documents in Jina&#39;</span><span class="p">,</span>
+              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+              <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaDeleteRequestModel</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
+        <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">result_in_stream</span><span class="p">(</span><span class="n">req_iter</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">servicer</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">request_iterator</span><span class="o">=</span><span class="n">req_iter</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">MessageToDict</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">websocket_route</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/stream&#39;</span><span class="p">)</span>
     <span class="k">class</span> <span class="nc">StreamingEndpoint</span><span class="p">(</span><span class="n">WebSocketEndpoint</span><span class="p">):</span>
@@ -576,7 +651,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 01, 2021.
       </span>
 
         </p>

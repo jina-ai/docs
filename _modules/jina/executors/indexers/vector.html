@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers.vector &mdash; Jina 0.9.24-master documentation</title>
+  <title>jina.executors.indexers.vector &mdash; Jina 0.9.25-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.24-master</button>
+            <button class="dropbtn version">0.9.25-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -317,6 +317,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">compress_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                  <span class="n">ref_indexer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;BaseNumpyIndexer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">key_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param compress_level: The compresslevel argument is an integer from 0 to 9 controlling the</span>
@@ -332,7 +333,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span> <span class="o">=</span> <span class="n">compress_level</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">key_dtype</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span> <span class="o">=</span> <span class="n">key_length</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_indexer_workspace_name</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -342,7 +343,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">ref_indexer</span><span class="o">.</span><span class="n">dtype</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span> <span class="o">=</span> <span class="n">ref_indexer</span><span class="o">.</span><span class="n">compress_level</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span> <span class="o">=</span> <span class="n">ref_indexer</span><span class="o">.</span><span class="n">key_bytes</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">key_dtype</span> <span class="o">=</span> <span class="n">ref_indexer</span><span class="o">.</span><span class="n">key_dtype</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span> <span class="o">=</span> <span class="n">ref_indexer</span><span class="o">.</span><span class="n">key_length</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">ref_indexer</span><span class="o">.</span><span class="n">_size</span>
             <span class="c1"># point to the ref_indexer.index_filename</span>
             <span class="c1"># so that later in `post_init()` it will load from the referred index_filename</span>
@@ -404,16 +405,12 @@
                 <span class="sa">f</span><span class="s1">&#39;vectors</span><span class="se">\&#39;</span><span class="s1"> dtype </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> does not match with indexers</span><span class="se">\&#39;</span><span class="s1">s dtype: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;number of key </span><span class="si">{</span><span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> not equal to number of vectors </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_dtype</span> <span class="o">!=</span> <span class="n">keys</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;keys</span><span class="se">\&#39;</span><span class="s1"> dtype </span><span class="si">{</span><span class="n">keys</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> does not match with indexers keys</span><span class="se">\&#39;</span><span class="s1">s dtype: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">key_dtype</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseNumpyIndexer.add"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.vector.html#jina.executors.indexers.vector.BaseNumpyIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_key_vector_shapes</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">vectors</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="kc">True</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span> <span class="o">+=</span> <span class="n">keys</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">key_dtype</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="BaseNumpyIndexer.update"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.vector.html#jina.executors.indexers.vector.BaseNumpyIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -425,7 +422,7 @@
             <span class="c1"># expects np array for computing shapes</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">keys_precomputed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">keys_precomputed</span><span class="p">):</span>
         <span class="c1"># could be empty</span>
@@ -504,8 +501,8 @@
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">int2ext_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Convert internal ids (0,1,2,3,4,...) to external ids (random index) &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_dtype</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">key_dtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">))</span>
             <span class="c1"># `==` is required. `is False` does not work in np</span>
             <span class="n">deleted_keys</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">==</span> <span class="kc">False</span><span class="p">])</span>  <span class="c1"># noqa</span>
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">deleted_keys</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
@@ -785,7 +782,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 01, 2021.
       </span>
 
         </p>

@@ -13,6 +13,7 @@ jina.drivers
    jina.drivers.control
    jina.drivers.convert
    jina.drivers.craft
+   jina.drivers.delete
    jina.drivers.encode
    jina.drivers.evaluate
    jina.drivers.index
