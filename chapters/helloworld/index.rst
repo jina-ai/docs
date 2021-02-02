@@ -2,7 +2,7 @@
 Jina "Hello, World!" 👋🌍
 *************************
 
-As a starter, we invite you to try Jina's "Hello, World" - a simple demo of image neural search for `Fashion-MNIST <https://hanxiao.io/2018/09/28/Fashion-MNIST-Year-In-Review/>`_. No extra dependencies needed, simply run:
+As a starter, we invite you to try Jina's **Hello, World** - a simple demo of image neural search for `Fashion-MNIST <https://hanxiao.io/2018/09/28/Fashion-MNIST-Year-In-Review/>`_. You don't need any extra dependencies, simply run:
 
 .. highlight:: bash
 .. code-block:: bash
@@ -10,7 +10,7 @@ As a starter, we invite you to try Jina's "Hello, World" - a simple demo of imag
     jina hello-world
 
 
-Or even easier for Docker users, *no install required*, simply for MacOS:
+For Docker users it's even easier, *no install required*, simply for MacOS:
 
 
 .. highlight:: bash
@@ -31,7 +31,7 @@ On Linux:
    :align: center
 
 
-This downloads the Fashion-MNIST training and test data and tells Jina to *index* 60,000 images from the training set. Then, it randomly samples images from the test set as *queries*, and asks Jina to retrieve relevant results. After about 1 minute, it opens a web page and show results like this:
+With this script you will download the **Fashion-MNIST** training and test data. Once you have the data, Jina will *index* 60,000 images from the training set. And will use random sample images from the test set as *queries*. Jina will then retrieve the relevant results. After around 1 minute, a web page will open and show results like this:
 
 
 .. image:: hello-world.gif
