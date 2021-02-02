@@ -7,23 +7,21 @@ jobs:
   releaseJob:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
       - name: Checkout to Jina core
         uses: actions/checkout@v2
         with:
           repository: jina-ai/jina
           token: ${{ secrets.JINA_DEV_BOT }}
-      - name: Setup Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
-      - name: Get Jina version
-        run: |
-          pip install jina
-          JINA_VERSION=$(sed -n '/^__version__/p' ./jina/__init__.py | cut -d \' -f2)-master
-          echo "JINA_VERSION=${JINA_VERSION}" >> $GITHUB_ENV
       - name: Install released version and Build docs
         run: |
           pip install .  --no-cache-dir
+          JINA_VERSION=$(sed -n '/^__version__/p' ./jina/__init__.py | cut -d \' -f2)-master
+          echo "JINA_VERSION=${JINA_VERSION}" >> $GITHUB_ENV
+          echo -e "${JINA_VERSION}" >> versions
           bash .github/scripts/make-doc.sh release "release ${{env.JINA_VERSION}} of ${{github.repository}}"
       - name: Commit documentation changes to gh-pages
         run: |
