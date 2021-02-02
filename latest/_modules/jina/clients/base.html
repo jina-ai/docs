@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.clients.base &mdash; Jina 0.9.23 documentation</title>
+  <title>jina.clients.base &mdash; Jina 0.9.28-master documentation</title>
   
 
   
@@ -84,12 +84,12 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.23</button>
+            <button class="dropbtn version">0.9.28-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
               
-              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
+              <a class="dropdown-item" href="/v0.9.28-master">0.9.28-master</a>
               
               <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
               
@@ -203,6 +203,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
+</ul>
 
             
           
@@ -294,7 +299,7 @@
 <span class="kn">from</span> <span class="nn">..logging</span> <span class="kn">import</span> <span class="n">default_logger</span><span class="p">,</span> <span class="n">JinaLogger</span>
 <span class="kn">from</span> <span class="nn">..logging.profile</span> <span class="kn">import</span> <span class="n">TimeContext</span><span class="p">,</span> <span class="n">ProgressBar</span>
 <span class="kn">from</span> <span class="nn">..proto</span> <span class="kn">import</span> <span class="n">jina_pb2_grpc</span>
-<span class="kn">from</span> <span class="nn">..types.request</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">..types.request</span> <span class="kn">import</span> <span class="n">Request</span>
 
 <span class="n">InputFnType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">GeneratorSourceType</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">GeneratorSourceType</span><span class="p">]]</span>
 <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]</span>
@@ -404,7 +409,6 @@
                            <span class="n">on_done</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
                            <span class="n">on_error</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                            <span class="n">on_always</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[&#39;Response&#39;]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_fn</span> <span class="o">=</span> <span class="n">input_fn</span>
             <span class="n">tname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_task_name</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -415,10 +419,9 @@
                 <span class="n">stub</span> <span class="o">=</span> <span class="n">jina_pb2_grpc</span><span class="o">.</span><span class="n">JinaRPCStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;connected to the gateway at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">!&#39;</span><span class="p">)</span>
                 <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="n">tname</span><span class="p">)</span> <span class="k">as</span> <span class="n">p_bar</span><span class="p">,</span> <span class="n">TimeContext</span><span class="p">(</span><span class="n">tname</span><span class="p">):</span>
-                    <span class="k">async</span> <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">stub</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">req_iter</span><span class="p">):</span>
-                        <span class="n">resp</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">to_response</span><span class="p">()</span>
-                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">return_results</span><span class="p">:</span>
-                            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+                    <span class="k">async</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">stub</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">req_iter</span><span class="p">):</span>
+                        <span class="n">resp</span><span class="o">.</span><span class="n">as_typed_request</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">request_type</span><span class="p">)</span>
+                        <span class="n">resp</span><span class="o">.</span><span class="n">as_response</span><span class="p">()</span>
                         <span class="n">callback_exec</span><span class="p">(</span><span class="n">response</span><span class="o">=</span><span class="n">resp</span><span class="p">,</span>
                                       <span class="n">on_error</span><span class="o">=</span><span class="n">on_error</span><span class="p">,</span>
                                       <span class="n">on_done</span><span class="o">=</span><span class="n">on_done</span><span class="p">,</span>
@@ -426,6 +429,7 @@
                                       <span class="n">continue_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">continue_on_error</span><span class="p">,</span>
                                       <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
                         <span class="n">p_bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">request_size</span><span class="p">)</span>
+                        <span class="k">yield</span> <span class="n">resp</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;user cancel the process&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">_call</span><span class="o">.</span><span class="n">AioRpcError</span> <span class="k">as</span> <span class="n">rpc_ex</span><span class="p">:</span>
@@ -446,8 +450,6 @@
                                      <span class="s1">&#39;please double check your input iterator&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">rpc_ex</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">BadClient</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">rpc_ex</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">return_results</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="BaseClient.index"><a class="viewcode-back" href="../../../api/jina.clients.base.html#jina.clients.base.BaseClient.index">[docs]</a>    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
@@ -603,7 +605,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 02, 2021.
       </span>
 
         </p>

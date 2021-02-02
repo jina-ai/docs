@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document.uid &mdash; Jina 0.9.23 documentation</title>
+  <title>jina.types.document.uid &mdash; Jina 0.9.28-master documentation</title>
   
 
   
@@ -84,12 +84,12 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.23</button>
+            <button class="dropbtn version">0.9.28-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
               
-              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
+              <a class="dropdown-item" href="/v0.9.28-master">0.9.28-master</a>
               
               <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
               
@@ -203,6 +203,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/faq/user.html">FAQ for End-Users</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
+</ul>
 
             
           
@@ -278,15 +283,11 @@
             
   <h1>Source code for jina.types.document.uid</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-
 <span class="sd">Remarks on the ``id``, we have three views for it</span>
-
 <span class="sd">- ``id``: ``str`` is a hex string, for non-binary environment such as HTTP, CLI, HTML and also human-readable. it will be used as the major view.</span>
 <span class="sd">- ``bytes``: ``bytes`` is the binary format of str, it has 8 bytes fixed length, so it can be used in the dense file storage, e.g. BinaryPbIndexer, as it requires the key has to be fixed length.</span>
-<span class="sd">- ``int``:``int64`` (formerly names ``hash``) is the integer form of bytes, as 8 bytes map to int64 . This is useful when sometimes you want to use key along with other numeric values together in one ndarray, such as ranker and Numpyindexer</span>
-
+<span class="sd">- ``int``:``int`` (formerly names ``hash``) is the integer form of bytes. This is useful when sometimes you want to use key along with other numeric values together in one ndarray, such as ranker and Numpyindexer</span>
 <span class="sd">.. note:</span>
-
 <span class="sd">    Customized ``id`` is acceptable as long as</span>
 <span class="sd">    - it only contains the symbols &quot;0&quot;–&quot;9&quot; to represent values 0 to 9,</span>
 <span class="sd">    and &quot;A&quot;–&quot;F&quot; (or alternatively &quot;a&quot;–&quot;f&quot;).</span>
@@ -298,7 +299,6 @@
 
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">binascii</span> <span class="kn">import</span> <span class="n">unhexlify</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -306,12 +306,12 @@
 <span class="kn">from</span> <span class="nn">...excepts</span> <span class="kn">import</span> <span class="n">BadDocID</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">typename</span>
 
-<span class="n">_digest_size</span> <span class="o">=</span> <span class="mi">8</span>
-<span class="n">_id_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[0-9a-fA-F]</span><span class="si">{16}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">DIGEST_SIZE</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">_id_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;([0-9a-fA-F][0-9a-fA-F])+&#39;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="int2bytes"><a class="viewcode-back" href="../../../../api/jina.types.document.uid.html#jina.types.document.uid.int2bytes">[docs]</a><span class="k">def</span> <span class="nf">int2bytes</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">_digest_size</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">DIGEST_SIZE</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">byteorder</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="bytes2int"><a class="viewcode-back" href="../../../../api/jina.types.document.uid.html#jina.types.document.uid.bytes2int">[docs]</a><span class="k">def</span> <span class="nf">bytes2int</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -331,10 +331,6 @@
 
 <div class="viewcode-block" id="int2id"><a class="viewcode-back" href="../../../../api/jina.types.document.uid.html#jina.types.document.uid.int2id">[docs]</a><span class="k">def</span> <span class="nf">int2id</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">bytes2id</span><span class="p">(</span><span class="n">int2bytes</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="id2hash"><a class="viewcode-back" href="../../../../api/jina.types.document.uid.html#jina.types.document.uid.id2hash">[docs]</a><span class="k">def</span> <span class="nf">id2hash</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="k">return</span> <span class="n">bytes2int</span><span class="p">(</span><span class="n">id2bytes</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="id2int"><a class="viewcode-back" href="../../../../api/jina.types.document.uid.html#jina.types.document.uid.id2int">[docs]</a><span class="k">def</span> <span class="nf">id2int</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -370,14 +366,6 @@
 <span class="sd">        This is useful when sometimes you want to use key along with other numeric values together in one ndarray,</span>
 <span class="sd">        such as ranker and Numpyindexer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">id2int</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The document id in the integer form of bytes, as 8 bytes map to int64.</span>
-<span class="sd">        This is useful when sometimes you want to use key along with other numeric values together in one ndarray,</span>
-<span class="sd">        such as ranker and Numpyindexer</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Please use `int(doc_id)` instead.&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">id2int</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__bytes__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -518,7 +506,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 02, 2021.
       </span>
 
         </p>

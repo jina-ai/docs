@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.rank.aggregate &mdash; Jina 0.9.23 documentation</title>
+  <title>jina.drivers.rank.aggregate &mdash; Jina 0.9.28-master documentation</title>
   
 
   
@@ -84,12 +84,12 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.23</button>
+            <button class="dropbtn version">0.9.28-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
               
-              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
+              <a class="dropdown-item" href="/v0.9.28-master">0.9.28-master</a>
               
               <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
               
@@ -203,6 +203,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/faq/user.html">FAQ for End-Users</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
+</ul>
 
             
           
@@ -291,6 +296,7 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseRankDriver</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">....types.document.uid</span> <span class="kn">import</span> <span class="n">UniqueId</span>
     <span class="kn">from</span> <span class="nn">....types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
 
 
@@ -317,9 +323,9 @@
     <span class="n">QueryMatchInfo</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;QueryMatchInfo&#39;</span><span class="p">,</span> <span class="s1">&#39;match_parent_id match_id query_id score&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_extract_query_match_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="n">Document</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">Document</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">QueryMatchInfo</span><span class="p">(</span><span class="n">match_parent_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">parent_id</span><span class="p">),</span>
-                                   <span class="n">match_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
-                                   <span class="n">query_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">QueryMatchInfo</span><span class="p">(</span><span class="n">match_parent_id</span><span class="o">=</span><span class="n">match</span><span class="o">.</span><span class="n">parent_id</span><span class="p">,</span>
+                                   <span class="n">match_id</span><span class="o">=</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                   <span class="n">query_id</span><span class="o">=</span><span class="n">query</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
                                    <span class="n">score</span><span class="o">=</span><span class="n">match</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_insert_query_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -336,12 +342,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">op_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="k">for</span> <span class="n">int_doc_id</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">docs_scores</span><span class="p">:</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">int_doc_id</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">docs_scores</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">doc_id</span><span class="p">)</span>
             <span class="n">m</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span><span class="n">op_name</span><span class="o">=</span><span class="n">op_name</span><span class="p">,</span>
                                  <span class="n">value</span><span class="o">=</span><span class="n">score</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_source_matches_as_chunks</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">match_chunk_id</span> <span class="ow">in</span> <span class="n">parent_id_chunk_id_map</span><span class="p">[</span><span class="n">int_doc_id</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">match_chunk_id</span> <span class="ow">in</span> <span class="n">parent_id_chunk_id_map</span><span class="p">[</span><span class="n">doc_id</span><span class="p">]:</span>
                     <span class="n">m</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk_matches_by_id</span><span class="p">[</span><span class="n">match_chunk_id</span><span class="p">])</span>
             <span class="n">query</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
 
@@ -385,26 +391,26 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">match_idx</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[Tuple[int, int, int, float]]</span>
-        <span class="n">query_meta</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[int, Dict]</span>
-        <span class="n">match_meta</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[int, Dict]</span>
+        <span class="n">match_idx</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[Tuple[UniqueId, UniqueId, UniqueId, float]]</span>
+        <span class="n">query_meta</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[UniqueId, Dict]</span>
+        <span class="n">match_meta</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[UniqueId, Dict]</span>
         <span class="n">parent_id_chunk_id_map</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="n">matches_by_id</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">Document</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-            <span class="n">query_meta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">chunk</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
+            <span class="n">query_meta</span><span class="p">[</span><span class="n">chunk</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">matches</span><span class="p">:</span>
                 <span class="n">match_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_query_match_info</span><span class="p">(</span><span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">chunk</span><span class="p">)</span>
                 <span class="n">match_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match_info</span><span class="p">)</span>
-                <span class="n">match_meta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
-                <span class="n">parent_id_chunk_id_map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
-                <span class="n">matches_by_id</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">match</span>
+                <span class="n">match_meta</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
+                <span class="n">parent_id_chunk_id_map</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">parent_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">matches_by_id</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">match</span>
 
         <span class="k">if</span> <span class="n">match_idx</span><span class="p">:</span>
             <span class="n">match_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span>
                                  <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
                                      <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
                                  <span class="p">]</span>
                                  <span class="p">)</span>
@@ -424,7 +430,7 @@
 <span class="sd">        Input:</span>
 <span class="sd">        document: {granularity: k}</span>
 <span class="sd">            |- matches: {granularity: k}</span>
-<span class="sd">            </span>
+
 <span class="sd">        Output:</span>
 <span class="sd">        document: {granularity: k}</span>
 <span class="sd">            |- matches: {granularity: k-1} (Sorted according to Ranker Executor)</span>
@@ -468,20 +474,20 @@
         <span class="n">match_meta</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">parent_id_chunk_id_map</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="n">matches_by_id</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">Document</span><span class="p">)</span>
-        <span class="n">query_meta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">context_doc</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">context_doc</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
+        <span class="n">query_meta</span><span class="p">[</span><span class="n">context_doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">context_doc</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
             <span class="n">match_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_query_match_info</span><span class="p">(</span><span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">context_doc</span><span class="p">)</span>
             <span class="n">match_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match_info</span><span class="p">)</span>
-            <span class="n">match_meta</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
-            <span class="n">parent_id_chunk_id_map</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
-            <span class="n">matches_by_id</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">match</span>
+            <span class="n">match_meta</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
+            <span class="n">parent_id_chunk_id_map</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">parent_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">matches_by_id</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">match</span>
 
         <span class="k">if</span> <span class="n">match_idx</span><span class="p">:</span>
             <span class="n">match_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span>
                                  <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_HASH</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
                                      <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
                                  <span class="p">]</span>
                                  <span class="p">)</span>
@@ -625,7 +631,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 02, 2021.
       </span>
 
         </p>

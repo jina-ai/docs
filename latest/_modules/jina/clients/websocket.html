@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.clients.websocket &mdash; Jina 0.9.23 documentation</title>
+  <title>jina.clients.websocket &mdash; Jina 0.9.28-master documentation</title>
   
 
   
@@ -84,12 +84,12 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.23</button>
+            <button class="dropbtn version">0.9.28-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
               
-              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
+              <a class="dropdown-item" href="/v0.9.28-master">0.9.28-master</a>
               
               <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
               
@@ -203,6 +203,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
+</ul>
 
             
           
@@ -279,13 +284,13 @@
   <h1>Source code for jina.clients.websocket</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">BaseClient</span>
 <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">callback_exec</span>
 <span class="kn">from</span> <span class="nn">..importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
 <span class="kn">from</span> <span class="nn">..logging.profile</span> <span class="kn">import</span> <span class="n">TimeContext</span><span class="p">,</span> <span class="n">ProgressBar</span>
-<span class="kn">from</span> <span class="nn">..types.request</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">..types.request</span> <span class="kn">import</span> <span class="n">Request</span>
 
 
 <div class="viewcode-block" id="WebSocketClientMixin"><a class="viewcode-back" href="../../../api/jina.clients.websocket.html#jina.clients.websocket.WebSocketClientMixin">[docs]</a><span class="k">class</span> <span class="nc">WebSocketClientMixin</span><span class="p">(</span><span class="n">BaseClient</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
@@ -311,7 +316,6 @@
         <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="kn">import</span> <span class="nn">websockets</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[&#39;Response&#39;]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_fn</span> <span class="o">=</span> <span class="n">input_fn</span>
 
         <span class="n">tname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_task_name</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -348,16 +352,17 @@
                         <span class="c1"># we need to traverse through the websocket to recv messages.</span>
                         <span class="c1"># https://websockets.readthedocs.io/en/stable/faq.html#why-does-the-server-close-the-connection-after-processing-one-message</span>
 
-                        <span class="n">response</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">response_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">to_response</span><span class="p">()</span>
-                        <span class="n">callback_exec</span><span class="p">(</span><span class="n">response</span><span class="o">=</span><span class="n">response</span><span class="p">,</span>
+                        <span class="n">resp</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">response_bytes</span><span class="p">)</span>
+                        <span class="n">resp</span><span class="o">.</span><span class="n">as_typed_request</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">request_type</span><span class="p">)</span>
+                        <span class="n">resp</span><span class="o">.</span><span class="n">as_response</span><span class="p">()</span>
+                        <span class="n">callback_exec</span><span class="p">(</span><span class="n">response</span><span class="o">=</span><span class="n">resp</span><span class="p">,</span>
                                       <span class="n">on_error</span><span class="o">=</span><span class="n">on_error</span><span class="p">,</span>
                                       <span class="n">on_done</span><span class="o">=</span><span class="n">on_done</span><span class="p">,</span>
                                       <span class="n">on_always</span><span class="o">=</span><span class="n">on_always</span><span class="p">,</span>
                                       <span class="n">continue_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">continue_on_error</span><span class="p">,</span>
                                       <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
                         <span class="n">p_bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">request_size</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">return_results</span><span class="p">:</span>
-                            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+                        <span class="k">yield</span> <span class="n">resp</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">num_responses</span> <span class="o">+=</span> <span class="mi">1</span>
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_requests</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_responses</span><span class="p">:</span>
                             <span class="k">break</span>
@@ -365,10 +370,7 @@
         <span class="k">except</span> <span class="n">websockets</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">ConnectionClosedOK</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client got disconnected from the websocket server&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">websockets</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">WebSocketException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Got following error while streaming requests via websocket: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">finally</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">return_results</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">result</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Got following error while streaming requests via websocket: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -501,7 +503,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Jan 29, 2021.
+        Last updated on Feb 02, 2021.
       </span>
 
         </p>
