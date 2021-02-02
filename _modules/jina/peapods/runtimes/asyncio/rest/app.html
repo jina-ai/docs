@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.runtimes.asyncio.rest.app &mdash; Jina 0.9.25-master documentation</title>
+  <title>jina.peapods.runtimes.asyncio.rest.app &mdash; Jina 0.9.27-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.25-master</button>
+            <button class="dropbtn version">0.9.27-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -311,7 +311,8 @@
         <span class="kn">from</span> <span class="nn">starlette</span> <span class="kn">import</span> <span class="n">status</span>
         <span class="kn">from</span> <span class="nn">starlette.types</span> <span class="kn">import</span> <span class="n">Receive</span><span class="p">,</span> <span class="n">Scope</span><span class="p">,</span> <span class="n">Send</span>
         <span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">StreamingResponse</span>
-        <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">JinaStatusModel</span><span class="p">,</span> <span class="n">JinaIndexRequestModel</span><span class="p">,</span> <span class="n">JinaDeleteRequestModel</span><span class="p">,</span> <span class="n">JinaUpdateRequestModel</span><span class="p">,</span> <span class="n">JinaSearchRequestModel</span>
+        <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">JinaStatusModel</span><span class="p">,</span> <span class="n">JinaIndexRequestModel</span><span class="p">,</span> <span class="n">JinaDeleteRequestModel</span><span class="p">,</span> <span class="n">JinaUpdateRequestModel</span><span class="p">,</span> \
+            <span class="n">JinaSearchRequestModel</span>
 
     <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Jina&#39;</span><span class="p">,</span>
@@ -379,6 +380,7 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaIndexRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">INDEX</span>
         <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
@@ -389,26 +391,29 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaSearchRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">SEARCH</span>
         <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span>
-              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update documents in Jina&#39;</span><span class="p">,</span>
-              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
-              <span class="p">)</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span>
+             <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update documents in Jina&#39;</span><span class="p">,</span>
+             <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+             <span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaUpdateRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">UPDATE</span>
         <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/delete&#39;</span><span class="p">,</span>
-              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete documents in Jina&#39;</span><span class="p">,</span>
-              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
-              <span class="p">)</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/delete&#39;</span><span class="p">,</span>
+                <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete documents in Jina&#39;</span><span class="p">,</span>
+                <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+                <span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaDeleteRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">DELETE</span>
         <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 

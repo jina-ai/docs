@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.search &mdash; Jina 0.9.25-master documentation</title>
+  <title>jina.drivers.search &mdash; Jina 0.9.27-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.25-master</button>
+            <button class="dropbtn version">0.9.27-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -362,7 +362,7 @@
     <span class="sd">&quot;&quot;&quot; Fill in the embedding by their doc id</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;query_by_id&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;query_by_key&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -381,7 +381,7 @@
 
 <span class="sd">        :param top_k: top-k doc id to retrieve</span>
 <span class="sd">        :param fill_embedding: fill in the embedding of the corresponding doc,</span>
-<span class="sd">                this requires the executor to implement :meth:`query_by_id`</span>
+<span class="sd">                this requires the executor to implement :meth:`query_by_key`</span>
 <span class="sd">        :param args:</span>
 <span class="sd">        :param kwargs:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -395,9 +395,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_pts</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">fill_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;query_by_id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">fill_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;query_by_key&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_embedding</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">fill_fn</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;fill_embedding=True&quot; but </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="si">}</span><span class="s1"> does not have &quot;query_by_id&quot; method&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;fill_embedding=True&quot; but </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="si">}</span><span class="s1"> does not have &quot;query_by_key&quot; method&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">bad_docs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;these bad docs can not be added: </span><span class="si">{</span><span class="n">bad_docs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>

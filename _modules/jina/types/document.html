@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document &mdash; Jina 0.9.25-master documentation</title>
+  <title>jina.types.document &mdash; Jina 0.9.27-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.25-master</button>
+            <button class="dropbtn version">0.9.27-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -279,17 +279,20 @@
             
   <h1>Source code for jina.types.document</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">mimetypes</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">urllib.parse</span>
 <span class="kn">import</span> <span class="nn">urllib.request</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">blake2b</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
 <span class="kn">from</span> <span class="nn">google.protobuf.field_mask_pb2</span> <span class="kn">import</span> <span class="n">FieldMask</span>
 
-<span class="kn">from</span> <span class="nn">.converters</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.uid</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.converters</span> <span class="kn">import</span> <span class="n">png_to_buffer</span><span class="p">,</span> <span class="n">to_datauri</span><span class="p">,</span> <span class="n">guess_mime</span>
+<span class="kn">from</span> <span class="nn">.uid</span> <span class="kn">import</span> <span class="n">DIGEST_SIZE</span><span class="p">,</span> <span class="n">UniqueId</span>
 <span class="kn">from</span> <span class="nn">..ndarray.generic</span> <span class="kn">import</span> <span class="n">NdArray</span>
 <span class="kn">from</span> <span class="nn">..score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
 <span class="kn">from</span> <span class="nn">..sets.chunk</span> <span class="kn">import</span> <span class="n">ChunkSet</span>
@@ -491,7 +494,7 @@
         <span class="k">elif</span> <span class="n">exclude_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">exclude_fields</span><span class="p">)</span><span class="o">.</span><span class="n">MergeMessage</span><span class="p">(</span><span class="n">empty_doc</span><span class="p">,</span> <span class="n">masked_d</span><span class="p">,</span> <span class="n">replace_repeated_field</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">content_hash</span> <span class="o">=</span> <span class="n">blake2b</span><span class="p">(</span><span class="n">masked_d</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">(),</span> <span class="n">digest_size</span><span class="o">=</span><span class="n">uid</span><span class="o">.</span><span class="n">_digest_size</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">content_hash</span> <span class="o">=</span> <span class="n">blake2b</span><span class="p">(</span><span class="n">masked_d</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">(),</span> <span class="n">digest_size</span><span class="o">=</span><span class="n">DIGEST_SIZE</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;UniqueId&#39;</span><span class="p">:</span>
