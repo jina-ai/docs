@@ -6,6 +6,7 @@ In Python
 
 If you use ``with`` scope to start a Flow, then all resources (including Pods of all kinds) of the Flow will be released after your move out from the scope.
 
+.. highlight:: python
 .. code:: python
 
     from jina.flow import Flow
@@ -17,6 +18,7 @@ If you use ``with`` scope to start a Flow, then all resources (including Pods of
 
 If you use :meth:`start` method to start the Flow, then you have to call :meth:`close` to shut down the Flow when you don't use it anymore.
 
+.. highlight:: python
 .. code:: python
 
     from jina.flow import Flow
