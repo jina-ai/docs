@@ -2,7 +2,15 @@
 Jina "Hello, World!" 👋🌍
 *************************
 
-As a starter, we invite you to try Jina's **Hello, World** - a simple demo of image neural search for `Fashion-MNIST <https://hanxiao.io/2018/09/28/Fashion-MNIST-Year-In-Review/>`_. You don't need any extra dependencies, simply run:
+
+As a starter, we invite you to try Jina's **Hello, World** - a simple demo of image neural search for `Fashion-MNIST <https://hanxiao.io/2018/09/28/Fashion-MNIST-Year-In-Review/>`_. You will see how to index and query the downloaded dataset. And you will see the retrieved results in a new webpage.
+
+There are 2 ways to run this example:
+
+* With Docker
+* With Jina installed
+
+If you have Jina installed you don't need any extra dependencies, simply run:
 
 .. highlight:: bash
 .. code-block:: bash
@@ -10,7 +18,9 @@ As a starter, we invite you to try Jina's **Hello, World** - a simple demo of im
     jina hello-world
 
 
-For Docker users it's even easier, *no install required*, simply for MacOS:
+If you have Docker you don't even Jina installed for this example, simply run:
+
+On MacOS:
 
 
 .. highlight:: bash
