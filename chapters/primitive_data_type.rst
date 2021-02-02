@@ -10,6 +10,34 @@ Jina introduced the new ``jina.types`` module since ``v0.8``.
 Primitive data types complete Jina’s design by clarifying the low-level data representation in Jina, yielding a much simpler, safer, and faster interface on the high-level.
 More importantly, they ensure the universality and extensibility for Jina in the long-term.
 
+.. contents:: Table of Contents
+    :depth: 1
+
+Motivation
+====================
+
+Before you start
+====================
+
+Overview
+====================
+
+Jina Types in Action
+====================
+
+Design Decisions
+====================
+
+Final Words
+====================
+
+What's Next
+====================
+
+
+
+
+
 
 
 
