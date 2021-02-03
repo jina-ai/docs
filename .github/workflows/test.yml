@@ -22,10 +22,12 @@ jobs:
         run: |
           pip install .  --no-cache-dir
           JINA_VERSION=$(sed -n '/^__version__/p' ./jina/__init__.py | cut -d \' -f2)-master
+          RELEASE_VER=$(sed -n '/^__version__/p' ./jina/__init__.py | cut -d \' -f2)
           echo "JINA_VERSION=${JINA_VERSION}" >> $GITHUB_ENV
+          echo "RELEASE_VER=${RELEASE_VER}" >> $GITHUB_ENV
       - name: Checkout to docs repo
         uses: actions/checkout@v2
       - name: Build docs
         run: |
-          echo -e "${{env.JINA_VERSION}}" >> versions
-          echo ${{env.JINA_VERSION}}
+          echo -e "${{env.RELEASE_VER}}" >> versions
+          echo ${{env.RELEASE_VER}}
