@@ -71,6 +71,17 @@ You can use all the `Sphinx directives <https://www.sphinx-doc.org/en/master/usa
 * *.. math::* [latex markup]
 
 
+Deprecation warning
+----------------------------------------------------
+
+You should warn the user if an object (class, function, method) is deprecated.
+
+* Specify in which version the object has been deprecated.
+* Specify when this will be removed
+* Recommend a proposed way to do it
+
+To show this warning you can do it with the  *.. deprecated::* directive
+
 Commonly used python field directives
 ----------------------------------------------------
 
@@ -80,6 +91,15 @@ In our classes/functions we can have the following:
 * Return: *:return:* [ReturnDescription]
 * Return types: *:rtype:* [ReturnType]
 * Raises: *:raises:* [ExceptionType]
+
+
+You should warn the user if an object (class, function, method) has been deprecated.
+
+* Specify in which version the object has been deprecated.
+* Specify when this will be removed
+* Recommend a proposed way to do it
+
+To show this warning you can do it with the  *.. deprecated::* directive
 
 
 Commonly used directives for cross-referencing
@@ -106,20 +126,14 @@ You need to match exactly the term as in the Glossary. If you want to show diffe
 *:term:* ` Another type of Magic <Magic> `
 
 
-Deprecation warning
+Documenting classes
 ----------------------------------------------------
 
-You should warn the user if an object (class, function, method) is deprecated.
-
-* Specify in which version the object has been deprecated.
-* Specify when this will be removed
-* Recommend a proposed way to do it
-
-To show this warning you can do it with the  *.. deprecated::* directive
+In classes you don't need to specify a return type. But here you should document the constructor. Use the parameters to document the constructor parameters under **__init__**
 
 
 *****************************************************
-Multi-line Docstrings Example
+Multi-line docstrings example of a function
 *****************************************************
 
 .. highlight:: python
@@ -143,8 +157,39 @@ Multi-line Docstrings Example
     :raises KeyError: raises an exception
     """
 
+*****************************************************
+Multi-line docstrings example of a class
+*****************************************************
+
+.. highlight:: python
+.. code-block:: python
+
+    class Magic:
+    """
+    :class:`Magic` is one of an example class
+
+    It offers super cool enchanted elements
+    You can specify how to create an object of this class, for example:
+
+    To create a :class:`Magic` object, simply:
+
+        .. highlight:: python
+        .. code-block:: python
+            magic_cat = Magic()
+    """
+
+    def __init__(self, param1: int, param2: str):
+    """
+    Specify what the contructor does
+
+    :param param1: This is an example of a param1
+    :param param1: This is an example of a param1
+    """
 
 
-Documenting classes
-----------------------------------------------------
+
+
+
+
+
 
