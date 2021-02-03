@@ -101,6 +101,120 @@ Besides, we created several **derived types**, such as :class:`MultimodalDocumen
 Jina Types in Action
 ====================
 
+In this section, we will introduce how to use Jina types.
+More specifically, we will be focus on jina :class:`Document` primitive data type.
+Since as a user, you might use :class:`Document` primitive type on a daily basis.
+Besides, the other types shares the same design rational as :class:`Document` primitive data type.
+
+We have three properties designed to access a :class:`Document`, include :meth:`text`, :meth:`blob` and :meth:`buffer`.
+A Jina :class:`Document` object is expected to have **one of** these three properties as the :meth:`content` of a :class:`Document`.
+For example:
+
+.. highlight:: python
+.. code-block:: python
+
+    import numpy as np
+    from jina import Document
+
+    d = Document()
+    # set content to text, same as d.text = ...
+    d.content = 'hello jina'
+    # set content to buffer, same as d.buffer = ...
+    d.content = b'1e2f2c'
+    # set content to blob, same as `d.blob = ...
+    d.content = np.random.random([3,4,5])
+
+Jina will automatically infer to MIME type based on the :meth:`content` of the :class:`Document`.
+The use case of the :class:`Document` is dependent on your data:
+
+* Use :meth:`text` if you want to index/query textual data.
+* Use :meth:`blob` if you want to index/query image/video/audio.
+* Use :meth:`buffer` if you are not sure about the exact data format.
+
+To create a document from constructor:
+
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Document
+
+    # Create a document from constructor
+    d0 = Document('hello jina!') # from string
+    d1 = Document({'text': 'hello jina!'}) # from dict
+    d2 = Document(b'j\x0chello jina!') # from buffer
+    d3 = Document('{"text": "hello jina!"}') # from json
+
+    # Create a document from protobuf
+    from jina.proto import jina_pb2
+    d = jina_pb2.DocumentProto()
+    d.text = 'hello jina!'
+    d4 = Document(d)
+
+As was introduced before, a :class:`DocumentSet` is a mutable sequence of :class:`Document`.
+To create & access a :class:`DocumentSet`:
+
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Document
+    from jina.types.sets.document import DocumentSet
+
+    # First, create 2 documents
+    d0 = Document(content='doc0')
+    d1 = Document(content='doc1')
+    # Initialize a document set
+    ds = DocumentSet([d0, d1])
+    # Add a new document.
+    d2 = Document(content='doc2')
+    ds.add(d2)
+
+Once you create an instance of :class:`DocumentSet`, Jina offers you a Pythonic interface to manipulate the set, for example:
+
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Document
+    from jina.types.sets.document import DocumentSet
+
+    # First, create 2 documents
+    d0 = Document(content='doc0')
+    d1 = Document(content='doc1')
+    # Initialize a document set
+    ds = DocumentSet([d0, d1])
+    # Get the number of docs inside the set.
+    print(len(ds))
+    # Get document by index
+    print(ds[0])
+    # Reverse a documentset
+    ds.reverse()
+    # Remove all contents from a document set
+    ds.clear()
+
+You might be wondering *why do we need a document set*?
+The answer is Jina's recursive data structure.
+To put it simple, Jina offers a way to represent documents in a recursive manner.
+A Jina :class:`Document` might contain a list of child :class:`Document`.
+This recursive data structure allow us to query :class:`Document` at different granularity level.
+Such as match at paragraph level, or even at sentence level. For example:
+
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Document
+
+    # First, create 2 documents
+    chunk0 = Document(content='sentence0')
+    chunk1 = Document(content='sentence1')
+    document = Document()
+    # Add chunks to the document
+    document.chunks.append(chunk0)
+    document.chunks.append(chunk1)
+    # Check the type of chunks
+    print(type(document.chunks))
+
+If you print the type of :attr:`chunks`, you will find out it's called ``<class 'jina.types.sets.chunk.ChunkSet'>``.
+
+
 
 
 Design Decisions
@@ -116,14 +230,14 @@ The objective of Jina primitive data type is to provide an enhanced **view** of 
 **Delegate, not replicate**
 
 Protobuf object provides attribute access already.
-For simple data types such as :atrr:``str``, :atrr:``float``, :atrr:``int``, the experience is good enough.
+For simple data types such as :attr:`str`, :attr:`float`, :attr:`int`, the experience is good enough.
 We do not want to replicate every attribute defined in Protobuf again in the Jina data type, but really focus on the ones that need unique logic or particular attention.
 
 **More than a Pythonic interface**
 
 Jina data type is compatible with the Python idiom.
 Moreover, it summarizes common patterns used in the drivers and the client and makes those patterns safer and easier to use.
-For example, :atrr:``doc_id`` conversion is previously implemented inside different drivers, which is error-prone.
+For example, :attr:`doc_id` conversion is previously implemented inside different drivers, which is error-prone.
 
 Reference to the design decisions can be find `here <https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/#design-decisions>`_ .
 
