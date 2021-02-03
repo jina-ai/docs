@@ -27,6 +27,13 @@ jobs:
           echo "RELEASE_VER=${RELEASE_VER}" >> $GITHUB_ENV
       - name: Checkout to docs repo
         uses: actions/checkout@v2
+      - name: Commit release version
+        run: |
+          echo -e "${{env.RELEASE_VER}}" >> versions
+          git config --local user.email "dev-bot@jina.ai"
+          git config --local user.name "Jina Dev Bot"
+          git add .
+          git commit -m "update ${{env.RELEASE_VER}} on ${{github.repository}}" -a || true
       - name: Build docs
         run: |
           echo -e "${{env.RELEASE_VER}}" >> versions
