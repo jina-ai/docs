@@ -10,7 +10,7 @@ Typically, the following files are required:
 | File             | Descriptions                                                                                        |
 |------------------|-----------------------------------------------------------------------------------------------------|
 | `Dockerfile`     | describes the dependency setup and exposes the entry point                                          |
-| `manifest.yml`   | metadata of the image, author, tags, etc. helps the Hub to index and classify your image            |
+| `manifest.yml`   | metadata info like image, author, tags, etc. helps the Hub to index and classify the image          |
 | `README.md`      | an instruction guide describing the image usage                                                     | 
 | `*.py`           | describes the executor logic written in Python, if applicable                                       |
 | `*.yml`          | a YAML file describes the executor arguments and configs, if you want users to use your config      |
