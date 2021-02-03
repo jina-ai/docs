@@ -11,27 +11,18 @@ In Jina, we are aware that documentation is an important part of Sofware, but we
 What are docstrings?
 ----------------------------------------------------
 
-First, we should define what are we talking about. A docstring is a string literal that we use to document elements of our code, such as functions, methods, modules, and classes. We do this to have a clear understanding about what are the details of each part of our code. For us in Jina we recommend the following:
+First, we should define what are we talking about. A docstring is a string literal that we use to document elements of our code, such as functions, methods, modules, and classes. We do this to have a clear understanding about what are the details of each part of our code. We can see it more in detail in `PEP 257 <https://www.python.org/dev/peps/pep-0257/>`_. and we in Jina we recommend the following:
 
 * Write docstrings for **public** *functions* and *classes*
 * Optionally you can write docstrings for **private** *functions* and *classes*, but it's not mandatory
 
-
-Docstring format
-----------------------------------------------------
-
-In Jina we use **ReStructuredText** (reST), which is the default markup language used by `Sphinx <https://www.sphinx-doc.org/>`_. You can use *Markdown* too but we encourage you to use reST since *Markdown* doesn't contain rich markup.
+In Jina, we use **ReStructuredText** (reST), which is the default markup language used by `Sphinx <https://www.sphinx-doc.org/>`_. You can use *Markdown* too but we encourage you to use reST since *Markdown* doesn't contain rich markup.
 
 
 One-line Docstrings
 ----------------------------------------------------
 
 Use one-line docstrings when the description of the class/module/function fits in one line
-
-
-*****************************************************
-One-line Docstrings Guidelines
-*****************************************************
 
 We suggest the following guidelines:
 
@@ -56,15 +47,28 @@ One-line Docstrings Example
 Multi-line Docstrings
 ----------------------------------------------------
 
+We use multi-line docstring for more complex functions or classes. And we suggest the following:
 
-*****************************************************
-Multi-line Docstrings Guidelines
-*****************************************************
+* Define the Dosctrings with triple-double quotes (""")
+* Don't leave blank lines before your Docstring
+* Start your text one line after the triple-double quotes
+* Write the Docstring as a command, not as a description (*Start Flow* instead of *This will start a flow*). We should have a more detailed description here as compared to the one-line docstrings
+* Use the same indentation line as with the triple-double quotes
+* Leave a blank line after the docstring and before the rest of the function/class/method
 
 
-*****************************************************
-Multi-line Docstrings Example
-*****************************************************
+Commonly used directives
+----------------------------------------------------
+
+You can use all the `Sphinx directives <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html>`_. And here is an example of the most used ones:
+
+* *.. note::* [description]
+* *.. warning::* [description]
+* *.. deprecated::* [version]
+* *.. seealso::* [description]
+* *.. highlight::* [language]
+* *.. code-block::* [langage] [description]
+* *.. math::* [latex markup]
 
 
 Commonly used python field directives
@@ -72,13 +76,57 @@ Commonly used python field directives
 
 In our classes/functions we can have the following:
 
-* Parameters: :code:`:param:[ParamName]:[ParamDescription]`
-* Return: :code:`:return: [ReturnDescription]`
-* Return types: :code:`:rtype: [ReturnType]`
-* Raises: :code:`:raises: [ExceptionType]`
+* Parameters: *:param[ParamName]:* [ParamDescription]
+* Return: *:return:* [ReturnDescription]
+* Return types: *:rtype:* [ReturnType]
+* Raises: *:raises:* [ExceptionType]
 
 
+Commonly used directives for cross-referencing
+----------------------------------------------------
+
+You can use the following for cross-referencing
+
+* For classes: *:class:* [ClassName]
+* For methods: *:meth:* [MethodName]
+* For attributes: *:attr:* [AttributeName]
+* For exceptions: *:exc:* [ExceptionName]
+* For data: *:data:* [ModuleLevelVariable]
 
 
+Use terms from a glossary
+----------------------------------------------------
+
+You can reference a term that is defined in the Glossary. You can do it like this:
+
+*:term:* ` Magic `
+
+You need to match exactly the term as in the Glossary. If you want to show different text in the topic, you can do it by including the term in angle brackets. You can do it like this:
+
+*:term:* ` Another type of Magic <Magic> `
 
 
+*****************************************************
+Multi-line Docstrings Example
+*****************************************************
+
+.. highlight:: python
+.. code-block:: python
+
+    def does_complex_magic(param1: Document, param2: str):
+    """
+    Do complex magic
+
+    .. note::
+        This is an example note
+    .. warning::
+        This is a warning example
+    .. highlight:: python
+    .. code-block:: python
+        print('This is a print example')
+
+    :param param1: This is an example of a param1 of type :class:`Document`
+    :param param2: This is an example of a param2
+    :returns: This is an example of what will be returned
+    :raises KeyError: raises an exception
+    """
