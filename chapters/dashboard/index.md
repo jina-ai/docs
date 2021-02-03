@@ -1,15 +1,18 @@
-# Using Dashboard to Monitor Logs and View Flow
+# Jina Dashboard
 
-**Dashboard** (beta) offers the insight of running tasks in Jina. With dashboard, one can analyze logs, design flows and view Jina Hub images.
+**Jina Dashboard** is the visual interface for Development with Jina. It allows monitoring of logs, interactive designing and starting of flows and browsing hub images
 
-![flow demo](flow-demo.gif)
+In order do use the Dashboard visit https://dashboard.jina.ai
+
+
+![flow demo](overview.gif)
 
 🌟 **Features:**
 
-- Log streaming, real-time chart on log-level.
-- Grouping logs by Pods, Executors. Full text search on logs.
-- Drag & drop flow design, setting properties of each Pod via a webform.
-- Flow can be imported from/exported to YAML.
+- Monitoring of logs
+- Design and start Flows with Drag & Drop
+- Browse Hub images 
+- Import/Export Flows
 
 
 
