@@ -106,10 +106,27 @@ Jina Types in Action
 Design Decisions
 ====================
 
-The design decisions made in the designing of Jina primitive data types are:
+While designing and implementing Jina primitive data types, we have been always keep the following principles in mind:
 
-**View, not copy**.
+**View, not copy**
 
+We do not want to another storage layer upon Protobuf.
+The objective of Jina primitive data type is to provide an enhanced **view**
+ of the protobuf **storage** by maintaining a reference.
+
+**Delegate, not replicate**
+
+Protobuf object provides attribute access already.
+For simple data types such as ``str``, ``float``, ``int``, the experience is good enough.
+We do not want to replicate every attribute defined in Protobuf again in the Jina data type, but really focus on the ones that need unique logic or particular attention.
+
+**More than a Pythonic interface**
+
+Jina data type is compatible with the Python idiom.
+Moreover, it summarizes common patterns used in the drivers and the client and makes those patterns safer and easier to use.
+For example, ``doc_id`` conversion is previously implemented inside different drivers, which is error-prone.
+
+Reference to the design decisions can be find `here <https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/#design-decisions>`_ .
 
 
 Final Words
@@ -118,7 +135,7 @@ Final Words
 In this guide, we introduced why we need Jina Primitive data types,
 how we organize Jina primitive data types.
 Apart from that, we gave some concrete examples on how to use Jina primitive data types.
-Finally, we recapped the design decisions makde while designing Jina primitive data types.
+Finally, we recapped the design decisions made while designing Jina primitive data types.
 We hope now you have a better understanding of Jina primitive data types.
 
 
@@ -129,13 +146,3 @@ Thanks for your time & effort while reading this guide!
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
 
 To gain a deeper knowledge on the implementation of Jina primitive data types, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/types>`_.
-
-
-
-
-
-
-
-
-
-
