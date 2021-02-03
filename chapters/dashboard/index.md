@@ -38,7 +38,7 @@ docker pull jinaai/jina:master-daemon
 docker run -p 8000:8000 -p 5555:5555 jinaai/jina:master-daemon
 ```
 
-![img.png](jinaD_run.png)
+![img.png](jinaD_run_docker.png)
 
 4. Visit https://dashboard.jina.ai/#/settings
 
@@ -64,6 +64,6 @@ You should now see the log-streaming and flow visualization.
 jinad
 ```
 
-![img.png](img.png)
+![img.png](jinaD_run_cli.png)
 
 3. Follow steps 4. - 6. above
