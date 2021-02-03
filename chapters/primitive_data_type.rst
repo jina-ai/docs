@@ -46,7 +46,10 @@ WIth Jina installed on your machine:
 Overview
 ====================
 
-
+Jina primitive data types can be categorised into **basic types**, **composite types** and **derived types**.
+A **basic data type** represents a single object, such as ``Document``, ``Querylang``, ``NdArray``.
+To enable a Pythonic interface and keeps the data safe, we introduced **composite data types**, such as ``DocumentSet``, ``QueryLangSet``, ``Request``.
+Besides, we created several **derived types**, such as ``MultimodalDocument``.
 
 Jina Types in Action
 ====================
