@@ -1,6 +1,6 @@
 ## Using Flow API to Compose Your Jina Workflow
 
-##### Summary: In this section, you will get to know how to construct the flow via different approaches. 
+##### Summary: In this section, you will get to know how to construct the flow using different approaches. 
 
 ### Feature description and expected outcome
 In search systems, tasks such as indexing often involve multiple steps: preprocessing, encoding, storing, etc. In Jina's architecture, each step is implemented by an Executor and wrapped by a Pod. This microservice design makes the whole pipeline flexible and scalable. Accomplishing a task is then orchestrating all these Pods to work together, either sequentially or in parallel; locally or remotely. 
@@ -36,7 +36,7 @@ from jina.flow import Flow
 f = Flow()
 ```
 
-`Flow()` accepts some arguments, see `jina flow --help` or check [here](https://docs.jina.ai/chapters/cli/jina-flow.html) for details. 
+`Flow()` accepts some arguments. See `jina flow --help` or check [here](https://docs.jina.ai/chapters/cli/jina-flow.html) for details. 
 
 When the arguments given to `Flow()` cannot be parsed, they are propagated to all the Flow's `Pods` for parsing (if they are accepted, see `jina pod --help` for the list of arguments). For example:
 
@@ -48,7 +48,7 @@ will set the `read_only` attribute of all Pods in `f` to `True`.
 
 ##### Add Pod into the Flow
 
-To add a Pod to the Flow, simply call `.add()`, syntax of Yaml file can be found [here](https://docs.jina.ai/chapters/yaml/index.html):
+To add a Pod to the Flow, simply call `.add()`, syntax of YAML file can be found [here](https://docs.jina.ai/chapters/yaml/index.html):
 
 ```python
 f = (Flow().add(name='p1', uses='mypod1.yml')
@@ -123,7 +123,7 @@ This will start `p2` remotely on `192.168.0.100` running a Docker container equi
 
 ##### Parallelize the Steps
 
-By default, if you keep adding `.add()` to a `Flow`, it will create a long chain of sequential workflow. You can parallelize some of the steps by using `needs` argument. For example,
+By default, if you keep adding `.add()` to a `Flow`, it will create a sequential workflow chain. You can parallelize some of the steps by using `needs` argument. For example,
 
 ```python
 f = (Flow().add(name='p1')
