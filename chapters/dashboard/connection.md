@@ -1,57 +1,4 @@
-## Start the Log Server
-
-Log server is a helper thread in Jina flow. It exposes HTTP endpoints to the public which the dashboard can use to fetch logs, visualize the flow. 
-
-By default the log server is disabled. To enable it you can,
-
-<table>
-<tr>
-<td> If you use Flow API in Python, </td>
-<td>
-
-```python
-from jina.flow import Flow
-
-f = (Flow(logserver=True)
-        .add(...)
-        .add(...))
-
-with f:
-    f.index(...)
-```
-
-</td>
-</tr>
-<tr>
-<td> ...or write a Flow from YAML </td>
-<td>
-
-```yaml
-# myflow.yml
-
-!Flow
-with:
-  logserver: true
-pods:
-  ...
-```
-
-```python
-f = Flow.load_config('myflow.yml')
-
-with f:
-    f.index(...)
-```
-
-</td>
-</tr>
-
-<tr>
-<td>...or start a Flow from CLI</td>
-<td>
-
-```bash
-jina flow --logserver --yaml-path myflow.yml## Connect the Dashboard to Your Log Server
+## Connect the Dashboard to Your Log Server
 
 Go to: [https://dashboard.jina.ai/](https://dashboard.jina.ai/)
 
@@ -132,14 +79,3 @@ jina flow --logserver --logserver-config mylogserver.yml ...
 Don't forget to update endpoint in the dashboard accordingly.
 
 ![log server settings](35e39bdd.png)
-```
-
-
-</td>
-</tr>
-</table>
-
-
-Either way, if you see the following logs show up in the console, then your log server is successfully running. You can now move to the next step.
-
-![logserver success started](logserver.png)
