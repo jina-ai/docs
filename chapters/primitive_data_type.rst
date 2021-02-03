@@ -9,7 +9,7 @@ A guide on Jina Primitive Data Types
 .. note:: This guide expect you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
 
 A primitive data type is a data type for which the programming language provides built-in support.
-For example, when writing a Numpy or Tensorflow program, uses perform matrix manipulation on mutl-dimensional
+For example, when writing a Numpy or Tensorflow program, uses perform matrix manipulation on multi-dimensional
 arrays, such as ``np.ndarray`` or ``tensor``.
 
 Jina introduced the new ``jina.types`` module since ``v0.8``.
@@ -26,8 +26,8 @@ Following a progressive manner of software design principle, Jina is shipped wit
 Each layer targets a specific developer group.
 As a consequence, developers can choose different levels of API to interact with Jina and accomplish their tasks.
 
-Before we introduce the Jina primitive data types, ``drivers`` helps the ``executors`` to handle the network traffic by directly interacting with the Protobuf messages.
-Thus our back-end engineers have to generate or parse stream of bytes in the network layer.
+Before we introduce the Jina primitive data types, ``drivers`` help the ``executors`` to handle the network traffic by directly interacting with the Protobuf messages.
+Thus our back-end engineers have to generate or parse a stream of bytes in the network layer.
 This is not aligned with the design principle of Jina.
 
 
@@ -35,12 +35,12 @@ Before you start
 ====================
 
 We expect you have a clean Python 3.7/3.8/3.9 (virtual) build.
-WIth Jina installed on your machine:
+With Jina installed on your machine:
 
 .. highlight:: bash
 .. code-block:: bash
 
-    pip install -U jina>=0.8
+    pip install -U jina
 
 
 Overview
@@ -94,7 +94,7 @@ Besides, we created several **derived types**, such as :class:`MultimodalDocumen
    * - Request
      - basic
      - A Pythonic interface to access and manipulate :class:`RequestProto`.
-   * - NameScore
+   * - NamedScore
      - basic
      - A Pythonic interface to access and manipulate :class:`NamedScoreProto`.
 
@@ -102,9 +102,9 @@ Jina Types in Action
 ====================
 
 In this section, we will introduce how to use Jina types.
-More specifically, we will be focus on jina :class:`Document` primitive data type.
-Since as a user, you might use :class:`Document` primitive type on a daily basis.
-Besides, the other types shares the same design rational as :class:`Document` primitive data type.
+More specifically, we will be focusing on jina :class:`Document` primitive data type.
+Since as a user, you might use :class:`Document` primitive type daily.
+Besides, the other types shares the same design rationale as :class:`Document` primitive data type.
 
 We have three properties designed to access a :class:`Document`, include :meth:`text`, :meth:`blob` and :meth:`buffer`.
 A Jina :class:`Document` object is expected to have **one of** these three properties as the :meth:`content` of a :class:`Document`.
@@ -168,7 +168,8 @@ To create & access a :class:`DocumentSet`:
     d2 = Document(content='doc2')
     ds.add(d2)
 
-Once you create an instance of :class:`DocumentSet`, Jina offers you a Pythonic interface to manipulate the set, for example:
+Once you create an instance of :class:`DocumentSet`, Jina offers you a Pythonic interface to manipulate the set.
+For example:
 
 .. highlight:: python
 .. code-block:: python
@@ -192,10 +193,11 @@ Once you create an instance of :class:`DocumentSet`, Jina offers you a Pythonic 
 
 You might be wondering *why do we need a document set*?
 The answer is Jina's recursive data structure.
-To put it simple, Jina offers a way to represent documents in a recursive manner.
+To put it simply, Jina offers a way to represent documents in a recursive manner.
 A Jina :class:`Document` might contain a list of child :class:`Document`.
-This recursive data structure allow us to query :class:`Document` at different granularity level.
-Such as match at paragraph level, or even at sentence level. For example:
+This recursive data structure allows us to query :class:`Document` at different granularity levels.
+Such as match at the paragraph level, or even at the sentence level.
+For example:
 
 .. highlight:: python
 .. code-block:: python
@@ -212,11 +214,11 @@ Such as match at paragraph level, or even at sentence level. For example:
     # Check the type of chunks
     print(type(document.chunks))
 
-If you print the type of :attr:`chunks`, you will find out it's called ``<class 'jina.types.sets.chunk.ChunkSet'>``, a derived data type based on :class:`DocumentSet`.
+If you print the type of :attr:`chunks`, you will find out it's named ``<class 'jina.types.sets.chunk.ChunkSet'>``, a derived data type based on :class:`DocumentSet`.
 :class:`ChunkSet` added extra logic to handle logics such as  :meth:`granularity` and :meth:`adjacency`.
 Similarly, we have :class:`MatchSet` manage the matched documents given a user query.
 
-Last but now least, if you are working on document with different modalities, :class:`MultimodalDocument` is the right Jina data type to use.
+Last but now least, if you are working on the document with different modalities, :class:`MultimodalDocument` is the right Jina data type to use.
 For example:
 
 .. highlight:: python
@@ -243,14 +245,14 @@ While designing and implementing Jina primitive data types, we have been always 
 
 **View, not copy**
 
-We do not want to another storage layer upon Protobuf.
+We do not want another storage layer upon Protobuf.
 The objective of Jina primitive data type is to provide an enhanced **view** of the protobuf **storage** by maintaining a reference.
 
 **Delegate, not replicate**
 
 Protobuf object provides attribute access already.
 For simple data types such as :attr:`str`, :attr:`float`, :attr:`int`, the experience is good enough.
-We do not want to replicate every attribute defined in Protobuf again in the Jina data type, but really focus on the ones that need unique logic or particular attention.
+We do not want to replicate every attribute defined in Protobuf again in the Jina data type, but focus on the ones that need unique logic or particular attention.
 
 **More than a Pythonic interface**
 
@@ -264,9 +266,9 @@ Reference to the design decisions can be find `here <https://hanxiao.io/2020/11/
 Final Words
 ====================
 
-In this guide, we introduced why we need Jina Primitive data types,
+In this guide, we introduced why we need Jina primitive data types,
 how we organize Jina primitive data types.
-Apart from that, we gave some concrete examples on how to use Jina primitive data types.
+Apart from that, we gave some concrete examples of how to use Jina primitive data types.
 Finally, we recapped the design decisions made while designing Jina primitive data types.
 We hope now you have a better understanding of Jina primitive data types.
 
