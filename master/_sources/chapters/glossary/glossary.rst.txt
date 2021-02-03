@@ -8,7 +8,7 @@ The following terminology is commonly used within the Jina framework. Jina is an
     Chunk
         Chunks are semantic units from a larger parent Document. A Chunk is a Document itself. Subdividing parent Documents into Chunks is performed by the Segmenter class of Executors. Examples of individual units would be sentences from large documents or pixel patches from an image.  `For further information see the Understand Jina Recursive Document Representation guide. <https://docs.jina.ai/chapters/traversal/index.html?highlight=recursive>`_
     Client
-        A Python client that connects to aJina gateway.
+        A Python client that connects to Jina gateway.
     Container
         A container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. Jina Peas and Pods can be deployed within containers to avail of these features.
     Crafter
