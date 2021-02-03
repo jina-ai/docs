@@ -23,8 +23,11 @@ The following terminology is commonly used within the Jina framework. Jina is an
         Encoders are a class of Executors. Their purpose is to generate *meaningful* vector representations from high dimensional data. This is achieved by passing the input to a pretrained model which returns a fixed length vector.
     Evaluator
         Evaluators are a class of Executors. Evaluators provide advanced evaluation metrics on the performance of a search system. Therefore, they compare a Document against a ground truth Document. Evaluators provide several kinds of metrics:
-        * Distance metrics, such as cosine and euclidean distance.
-        * Evaluation metrics, such as precision and recall.
+
+        - Distance metrics, such as cosine and euclidean distance.
+
+        - Evaluation metrics, such as precision and recall.
+
     Executor
         Executors represent an algorithmic class within the Jina framework. Examples include Ranker classes, Evaluator classes etc.
     Flow
@@ -33,8 +36,11 @@ The following terminology is commonly used within the Jina framework. Jina is an
         `gRPC <https://en.wikipedia.org/wiki/GRPC>`_ is a modern open source high performance RPC (add wikipedia link) framework that can run in any environment. It can efficiently connect services in and across data centers with pluggable support for load balancing, tracing, health checking and authentication.
     HeadPea
         There are two possible reasons for a HeadPea to exist:
-        * `uses_before` is defined in a Pod or
-        * `parallel > 1` for a given Pod.
+
+        - `uses_before` is defined in a Pod or
+
+        - `parallel > 1` for a given Pod.
+
         In both cases, traffic directed to a Pod arrives at the HeadPea and it distributes it afterwards to the Peas in the Pod. Its counterpart it the TailPea
     Indexer
         Indexers are a stateful class of Executors. Indexers save/retrieve vectors and key-value information to/from storage.
@@ -86,8 +92,11 @@ The following terminology is commonly used within the Jina framework. Jina is an
         A section of the data stored or processed in separate Peas inside a single Pod.
     TailPea
         There are two possible reasons for a TailPea to exist:
-        * `uses_after` is defined in a Pod or
-        * `parallel > 1` for a given Pod.
+
+        - `uses_after` is defined in a Pod or
+
+        - `parallel > 1` for a given Pod.
+
         In both cases, the TailPea collects the calculated results from the Peas in the Pod and forwards it to the next Pod. For example, when using sharding with indexers, the TailPea merges the retrieval results. This is achieved by adding `uses_after`.
     Vector embedding
         Vector embedding is a vector representation of the semantic meaning of a single document.
