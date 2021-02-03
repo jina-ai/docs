@@ -69,10 +69,10 @@ Besides, we created several **derived types**, such as :class:`MultimodalDocumen
      - A mutable sequence of :class:`Document`.
    * - ChunkSet
      - derived
-     - A view of a sequence of :class:`Document` at a higher granularity level derived from :class:`DocumentSet`.
+     - A view of a sequence of :class:`DocumentSet` at a higher granularity level derived from :class:`DocumentSet`.
    * - MatchSet
      - derived
-     - A view of a sequence of matched :class:`Document` derived from :class:`DocumentSet`.
+     - A view of a sequence of matched :class:`DocumentSet` derived from :class:`DocumentSet`.
    * - Message
      - composite
      - A Pythonic interface to access and manipulate :class:`MessageProto`.
@@ -212,9 +212,28 @@ Such as match at paragraph level, or even at sentence level. For example:
     # Check the type of chunks
     print(type(document.chunks))
 
-If you print the type of :attr:`chunks`, you will find out it's called ``<class 'jina.types.sets.chunk.ChunkSet'>``.
+If you print the type of :attr:`chunks`, you will find out it's called ``<class 'jina.types.sets.chunk.ChunkSet'>``, a derived data type based on :class:`DocumentSet`.
+:class:`ChunkSet` added extra logic to handle logics such as  :meth:`granularity` and :meth:`adjacency`.
+Similarly, we have :class:`MatchSet` manage the matched documents given a user query.
 
+Last but now least, if you are working on document with different modalities, :class:`MultimodalDocument` is the right Jina data type to use.
+For example:
 
+.. highlight:: python
+.. code-block:: python
+
+    import numpy as np
+    from jina.types.document.multimodal import MultimodalDocument
+
+    visual_content = np.random.random([3,4,5])
+    textual_content = 'hello jina!'
+    multimodal_document = MultimodalDocument(
+        modality_content_map={'visual': visual_content, 'textual': textual_content}
+    )
+    # Check the modalities of the document
+    print(multimodal_document.modalities)
+    # Get the content of document by modality name
+    content = multimodal_document['visual']
 
 
 Design Decisions
