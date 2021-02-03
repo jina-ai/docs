@@ -16,6 +16,13 @@ API References
    yaml/index
 
 .. toctree::
+      :titlesonly:
+      :glob:
+      :caption: Jina API Schema for 3rd-Party Applications
+
+      api_schema 
+
+.. toctree::
    :titlesonly:
    :glob:
    :caption: Jina Command Line Interface Syntax Reference
@@ -27,7 +34,7 @@ API References
    :glob:
    :caption: Jina Protobuf Specification
 
-   proto/*
+   proto/index
 
 .. toctree::
    :maxdepth: 2
