@@ -34,6 +34,11 @@ jobs:
           git config --local user.name "Jina Dev Bot"
           git add .
           git commit -m "update ${{env.RELEASE_VER}} on ${{github.repository}}" -a || true
+      - name: Push versions to the current branch
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.JINA_DEV_BOT }}
+          branch: ${{ github.ref }}
       - name: Build docs
         run: |
           echo -e "${{env.RELEASE_VER}}" >> versions
