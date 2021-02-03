@@ -60,25 +60,22 @@ Besides, we created several **derived types**, such as ``MultimodalDocument``.
      - Description
    * - Document
      - basic
-     - Offers a Pythonic interface to access and manipulate :class:`DocumentProto` object.
-   * - DocumentSet
-     - composite
-     - A mutable sequence of :class:`Document`
-   * - ChunkSet
-     - derived
-     - | A derived type based on :class:`DocumentSet`.
-       | Offer a view of a sequence of :class:`Document` at a higher granularity level.
-   * - MatchSet
-     - derived
-     - | A derived type based on :class:`DocumentSet`.
-       | Offer a view of a sequence of matched :class:`Document`.
+     - A Pythonic interface to access and manipulate :class:`DocumentProto`.
    * - MultimodalDocument
      - derived
-     - | A derived type based on :class:`Document`.
-       | Offer a Pythonic interface to access and manipulate modalities at chunk level.
+     - A Pythonic interface to access and manipulate modalities at chunk level derived from :class:`Document`.
+   * - DocumentSet
+     - composite
+     - A mutable sequence of :class:`Document`.
+   * - ChunkSet
+     - derived
+     - A view of a sequence of :class:`Document` at a higher granularity level derived from :class:`DocumentSet`.
+   * - MatchSet
+     - derived
+     - A view of a sequence of matched :class:`Document` derived from :class:`DocumentSet`.
    * - Message
      - composite
-     - Offers a Pythonic interface to access and manipulate :class:`MessageProto` object.
+     - A Pythonic interface to access and manipulate :class:`MessageProto`.
    * - NdArray
      - basic
      - Representing fixed-size multidimensional items.
@@ -90,16 +87,16 @@ Besides, we created several **derived types**, such as ``MultimodalDocument``.
      - A derived type based on :class:`NdArray` which stores non-zero entries.
    * - QueryLang
      - basic
-     - test
+     - A Pythonic interface to access and manipulate :class:`QueryLangProto`.
    * - QueryLangSet
      - composite
-     - test
+     - A mutable sequence of :class:`QueryLang`.
    * - Request
      - basic
-     - test
+     - A Pythonic interface to access and manipulate :class:`RequestProto`.
    * - NameScore
      - basic
-     - test
+     - A Pythonic interface to access and manipulate :class:`NamedScoreProto`.
 
 Jina Types in Action
 ====================
