@@ -48,7 +48,7 @@ will set the `read_only` attribute of all Pods in `f` to `True`.
 
 ##### Add Pod into the Flow
 
-To add a Pod to the Flow, simply call `.add()`:
+To add a Pod to the Flow, simply call `.add()`, syntax of Yaml file can be found [here](https://docs.jina.ai/chapters/yaml/index.html):
 
 ```python
 f = (Flow().add(name='p1', uses='mypod1.yml')
