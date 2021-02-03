@@ -26,7 +26,8 @@ Following a progressive manner of software design principle, Jina is shipped wit
 Each layer targets a specific developer group.
 As a consequence, developers can choose different levels of API to interact with Jina and accomplish their tasks.
 
-Before the introduction of Jina primitive data types, drivers helps the executors to handle the network traffic by directly interacting with the Protobuf messages.
+Before we introduce the Jina primitive data types, ``drivers`` helps the ``executors`` to handle the network traffic by directly interacting with the Protobuf messages.
+Thus our back-end engineers have to generate or parse stream of bytes in the network layer.
 This is not aligned with the design principle of Jina.
 
 
@@ -36,11 +37,16 @@ Before you start
 We expect you have a clean Python 3.7/3.8/3.9 (virtual) environment.
 WIth Jina installed on your machine:
 
+.. highlight:: bash
 .. code-block:: bash
+
     pip install -U jina>=0.8
+
 
 Overview
 ====================
+
+
 
 Jina Types in Action
 ====================
