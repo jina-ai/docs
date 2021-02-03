@@ -2,12 +2,12 @@
 Gracefully Exit Jina
 ====================
 ---------------------------------------------------------------------------------
-Summary: In this section you will learn the ways to shut down Flow and exit Jina.
+Summary: In this section, you will learn best practices to shut down a Flow and exit Jina correctly.
 ---------------------------------------------------------------------------------
 
 Feature description and expected outcome
 ----------------------------------------
-Jina provide several ways including Python and console to help you exit gracefully.
+Jina provides several methods to exit gracefully.
 
 Through these ways the Flow will terminate and release all resources.
 
