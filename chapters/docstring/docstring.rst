@@ -106,6 +106,18 @@ You need to match exactly the term as in the Glossary. If you want to show diffe
 *:term:* ` Another type of Magic <Magic> `
 
 
+Deprecation warning
+----------------------------------------------------
+
+You should warn the user if an object (class, function, method) is deprecated.
+
+* Specify in which version the object has been deprecated.
+* Specify when this will be removed
+* Recommend a proposed way to do it
+
+To show this warning you can do it with the  *.. deprecated::* directive
+
+
 *****************************************************
 Multi-line Docstrings Example
 *****************************************************
@@ -130,3 +142,9 @@ Multi-line Docstrings Example
     :returns: This is an example of what will be returned
     :raises KeyError: raises an exception
     """
+
+
+
+Documenting classes
+----------------------------------------------------
+
