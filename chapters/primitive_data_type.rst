@@ -106,11 +106,30 @@ Jina Types in Action
 Design Decisions
 ====================
 
+The design decisions made in the designing of Jina primitive data types are:
+
+**View, not copy**.
+
+
+
 Final Words
 ====================
 
+In this guide, we introduced why we need Jina Primitive data types,
+how we organize Jina primitive data types.
+Apart from that, we gave some concrete examples on how to use Jina primitive data types.
+Finally, we recapped the design decisions makde while designing Jina primitive data types.
+We hope now you have a better understanding of Jina primitive data types.
+
+
 What's Next
 ====================
+
+Thanks for your time & effort while reading this guide!
+If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
+
+To gain a deeper knowledge on the implementation of Jina primitive data types, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/types>`_.
+
 
 
 
