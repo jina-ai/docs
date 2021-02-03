@@ -30,8 +30,7 @@ API References
    proto/*
 
 .. toctree::
-   :titlesonly:
-   :glob:
+   :maxdepth: 2
    :caption: Jina Python API Specification
 
    ../../../api/jina
