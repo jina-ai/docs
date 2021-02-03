@@ -60,31 +60,34 @@ Besides, we created several **derived types**, such as ``MultimodalDocument``.
      - Description
    * - Document
      - basic
-     - offers a Pythonic interface to allow users access and manipulate ``jina.jina_pb2.DocumentProto`` object
+     - Offers a Pythonic interface to access and manipulate :class:`DocumentProto` object.
    * - DocumentSet
      - composite
-     - test
+     - A mutable sequence of :class:`Document`
    * - ChunkSet
      - derived
-     - test
+     - | A derived type based on :class:`DocumentSet`.
+       | Offer a view of a sequence of :class:`Document` at a higher granularity level.
    * - MatchSet
      - derived
-     - test
+     - | A derived type based on :class:`DocumentSet`.
+       | Offer a view of a sequence of matched :class:`Document`.
    * - MultimodalDocument
      - derived
-     - test
+     - | A derived type based on :class:`Document`.
+       | Offer a Pythonic interface to access and manipulate modalities at chunk level.
    * - Message
      - composite
-     - test
+     - Offers a Pythonic interface to access and manipulate :class:`MessageProto` object.
    * - NdArray
      - basic
-     - test
+     - Representing fixed-size multidimensional items.
    * - DenseNdArray
      - derived
-     - test
+     - A derived type based on :class:`NdArray` which supports quantization.
    * - SparseNdArray
      - derived
-     - test
+     - A derived type based on :class:`NdArray` which stores non-zero entries.
    * - QueryLang
      - basic
      - test
