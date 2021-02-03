@@ -60,15 +60,15 @@ Besides, we created several **derived types**, such as ``MultimodalDocument``.
      - Description
    * - Document
      - basic
-     - test
+     - offers a Pythonic interface to allow users access and manipulate ``jina.jina_pb2.DocumentProto`` object
    * - DocumentSet
      - composite
      - test
    * - ChunkSet
-     - composite
+     - derived
      - test
    * - MatchSet
-     - composite
+     - derived
      - test
    * - MultimodalDocument
      - derived
@@ -100,6 +100,8 @@ Besides, we created several **derived types**, such as ``MultimodalDocument``.
 
 Jina Types in Action
 ====================
+
+
 
 Design Decisions
 ====================
