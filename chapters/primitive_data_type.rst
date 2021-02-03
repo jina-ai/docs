@@ -34,7 +34,7 @@ This is not aligned with the design principle of Jina.
 Before you start
 ====================
 
-We expect you have a clean Python 3.7/3.8/3.9 (virtual) environment.
+We expect you have a clean Python 3.7/3.8/3.9 (virtual) build.
 WIth Jina installed on your machine:
 
 .. highlight:: bash
@@ -47,9 +47,56 @@ Overview
 ====================
 
 Jina primitive data types can be categorised into **basic types**, **composite types** and **derived types**.
-A **basic data type** represents a single object, such as ``Document``, ``Querylang``, ``NdArray``.
+A **basic data type** represents a single real-world object, such as ``Document``, ``Querylang``, ``NdArray``.
 To enable a Pythonic interface and keeps the data safe, we introduced **composite data types**, such as ``DocumentSet``, ``QueryLangSet``, ``Request``.
 Besides, we created several **derived types**, such as ``MultimodalDocument``.
+
+.. list-table:: List of Jina Data Types
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Name
+     - Type
+     - Description
+   * - Document
+     - basic
+     - test
+   * - DocumentSet
+     - composite
+     - test
+   * - ChunkSet
+     - composite
+     - test
+   * - MatchSet
+     - composite
+     - test
+   * - MultimodalDocument
+     - derived
+     - test
+   * - Message
+     - composite
+     - test
+   * - NdArray
+     - basic
+     - test
+   * - DenseNdArray
+     - derived
+     - test
+   * - SparseNdArray
+     - derived
+     - test
+   * - QueryLang
+     - basic
+     - test
+   * - QueryLangSet
+     - composite
+     - test
+   * - Request
+     - basic
+     - test
+   * - NameScore
+     - basic
+     - test
 
 Jina Types in Action
 ====================
