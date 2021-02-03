@@ -11,7 +11,7 @@ In Jina, we are aware that documentation is an important part of Sofware, but we
 What are docstrings?
 ----------------------------------------------------
 
-First, we should define what are we talking about. A docstring is a string literal that we use to document elements of our code, such as functions, methods, modules, and classes. We do this to have a clear understanding about what are the details of each part of our code. We can see it more in detail in `PEP 257 <https://www.python.org/dev/peps/pep-0257/>`_. and we in Jina we recommend the following:
+First, we should define what are we talking about. A docstring is a string literal that we use to document elements of our code, such as functions, methods, modules, and classes. We do this to have a clear understanding about what are the details of each part of our code. We can see it more in detail in `PEP 257 <https://www.python.org/dev/peps/pep-0257/>`_. Jina recommends the following:
 
 * Write docstrings for **public** *functions* and *classes*
 * Optionally you can write docstrings for **private** *functions* and *classes*, but it's not mandatory
