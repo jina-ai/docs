@@ -1,7 +1,7 @@
 
 # Publish Your Pod Image to Jina Hub
 
-You can contribute your executor into this repository and it will be automatically built into an image and published to the Jina Hub via our CI/CD pipeline.
+You can publish your custom executor pod to `jina` hub by simply contributing your pod files to the `jina` repository. This can be done by raising a PR with all the relevant pod files bundled as described below. Jina's CI/CD pipeline will automatically use the PR to build an image and publish it to Jina Hub.
 
 ## What Files Need to be Uploaded?
 
@@ -9,11 +9,11 @@ Typically, the following files are required:
 
 | File             | Descriptions                                                                                        |
 |------------------|-----------------------------------------------------------------------------------------------------|
-| `Dockerfile`     | describes the dependency setup and expose the entry point;                                          |
-| `manifest.yml`   | metadata of the image, author, tags, etc. help the Hub to index and classify your image             |
-| `README.md`      | a instruction for guiding users to use your image                                                   | 
-| `*.py`           | describes the executor logic written in Python, if applicable;                                      |
-| `*.yml`          | a YAML file describes the executor arguments and configs, if you want users to use your config;     |
+| `Dockerfile`     | describes the dependency setup and exposes the entry point                                          |
+| `manifest.yml`   | metadata of the image, author, tags, etc. helps the Hub to index and classify your image            |
+| `README.md`      | an instruction guide describing the image usage                                                     | 
+| `*.py`           | describes the executor logic written in Python, if applicable                                       |
+| `*.yml`          | a YAML file describes the executor arguments and configs, if you want users to use your config      |
 
 Note, large binary files (such as pretrained model, auxiliary data) are **not** recommended to upload to this repository. You can use `RUN wget ...` or `RUN curl` inside the `Dockerfile` to download it from the web during the build.
 
@@ -40,7 +40,7 @@ Your image will be published as `jinaai/hub.executors.encoders.awesomeness`.
 
 `manifest.yml` must exist if you want to publish your Pod image to Jina Hub.
 
-`manifest.yml` annotates your image so that it can be managed by Jina Hub. To get better appealing on Jina Hub, you should carefully set `manifest.yml` to the correct values.
+`manifest.yml` annotates your image so that it can be managed by Jina Hub. To ensure better compatibility with Jina Hub, you should carefully set `manifest.yml` to use correct values.
 
 | Key | Description | Default |
 | --- | --- | --- |
@@ -59,7 +59,7 @@ Please refer to [hub/examples/mwu_encoder/manifest.yml](hub/examples/mwu_encoder
 
 ## Steps to Publish Your Image
 
-All you need is to publish your bundle into this repo, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline. 
+All you need is to publish your file bundle into this repo. Subsequently, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline. 
 
 1. Let's say your organize [all files mentioned in here](#what-files-need-to-be-uploaded) in a folder called `awesomeness`. Depending on what you are contributing, you can put it into `hub/executors/indexers/awesomeness`.
 2. Make a Pull Request and commit your changes into this repository, remember to follow the commit lint style.
@@ -70,12 +70,12 @@ The CICD pipeline will work on building, uploading and tagging the image on the 
 
 The image will be available at `jinaai/hub.executors.indexers.awesomeness:0.0.0` assuming your version number is defined as `0.0.0` in `manifest.yml`.
 
-You can use the image as [the ways we described here](./use-your-pod.html#use-your-pod-image).  
+You can use the image with [the ways described here](./use-your-pod.html#use-your-pod-image).  
 
 
 ## Why My Upload Fails on the CICD?
 
-Here is the checklist to help you locate the problem.
+Common causes why your pod upload could fail:
 
 - [ ] Required file `Dockerfile`, `manifest.yml`, `README.md` is missing. 
 - [ ] The required field in `manifest.yml` is missing.
