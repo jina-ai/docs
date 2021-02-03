@@ -20,12 +20,25 @@ jobs:
         run: |
           pip install .  --no-cache-dir
           JINA_VERSION=$(sed -n '/^__version__/p' ./jina/__init__.py | cut -d \' -f2)-master
+          RELEASE_VER=$(sed -n '/^__version__/p' ./jina/__init__.py | cut -d \' -f2)
           echo "JINA_VERSION=${JINA_VERSION}" >> $GITHUB_ENV
+          echo "RELEASE_VER=${RELEASE_VER}" >> $GITHUB_ENV
       - name: Checkout to docs repo
         uses: actions/checkout@v2
+      - name: Commit release version to the current branch
+        run: |
+          echo -e "${{env.RELEASE_VER}}" >> versions
+          git config --local user.email "dev-bot@jina.ai"
+          git config --local user.name "Jina Dev Bot"
+          git add .
+          git commit -m "update ${{env.RELEASE_VER}} on ${{github.repository}}" -a || true
+      - name: Push versions to the current branch
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.JINA_DEV_BOT }}
+          branch: ${{ github.ref }}
       - name: Build docs
         run: |
-          echo -e "${{env.JINA_VERSION}}" >> versions
           bash .github/scripts/make-doc.sh release "release ${{env.JINA_VERSION}} of ${{github.repository}}"
       - name: Commit documentation changes to gh-pages
         run: |
@@ -35,7 +48,7 @@ jobs:
           git config --local user.email "dev-bot@jina.ai"
           git config --local user.name "Jina Dev Bot"
           git add .
-          git commit -m "update ${{env.JINA_VERSION}} due to ${{github.event_name}} on ${{github.repository}}" -a || true
+          git commit -m "update ${{env.JINA_VERSION}} on ${{github.repository}}" -a || true
       - name: Push changes to gh-pages
         uses: ad-m/github-push-action@master
         with:
