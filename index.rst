@@ -51,6 +51,12 @@ Welcome to Jina!
 
 .. toctree::
    :maxdepth: 1
+   :caption: Glossary
+
+   chapters/glossary/glossary
+
+.. toctree::
+   :maxdepth: 1
    :caption: Community
 
    chapters/CONTRIBUTING

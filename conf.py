@@ -110,8 +110,12 @@ notfound_context = {
     'title': 'Page Not Found',
     'body': '''
 <h1>Page Not Found</h1>
-<p>Sorry, we couldn't find that page.</p>
-<p>Try using the search box or go to the homepage.</p>
+<p>Sorry, we couldn't find that page. Error code 404. </p>
+<p>You can try using the search box above or some of the handy links below:</p>
+<ol>
+  <li><a href="https://docs.jina.ai/chapters/CONTRIBUTING.html#">Contributing to Jina</a></li>
+  <li><a href="https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack">Join us on Slack</a><</li>
+</ol>
 ''',
 }
 notfound_no_urls_prefix = True

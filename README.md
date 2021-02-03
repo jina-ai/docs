@@ -13,8 +13,16 @@ All doc-related issues should be [submitted to here](https://github.com/jina-ai/
 You can read the documentations locally via:
 
 ```bash
+# Clone the code.
 git clone https://github.com/jina-ai/docs.git
 
-# python 3
+# Install dependencies.
+pip install -r requirements.txt
+
+# Clean & build docs locally
+make clean
+make html
+
+# Serve the docs website with Python 3
 python -m http.server 8080 -d _build/html
 ```
