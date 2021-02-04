@@ -64,9 +64,9 @@ with:
 class SimpleEncoder(BaseEncoder):
 
     ENCODE_LOOKUP = {
-        'cat': [1, 3, 5],
-        'pokemon': [2, 4, 7],
-        'dog': [0, 2, 5],
+        '🐲': [1, 3, 5],
+        '🐦': [2, 4, 7],
+        '🐢': [0, 2, 5],
     }
 
     def __init__(self, layer=0, *args, **kwargs):
@@ -78,22 +78,22 @@ class SimpleEncoder(BaseEncoder):
 ```
 
 The `SimpleEncoder` is not doing any computation.
-It rather illustrates the output a real encoder would have on different layers (the second layer for 'pokemon' would result in the encoding `[4]`).
+It rather illustrates the output a real encoder would have on different layers (the second layer for '🐦' would result in the encoding `[4]`).
 
 As the next step we need some ground truth data.
 
 ```python
 documents = [
-    (Document(content='cat'), Document(embedding=np.array([2]))),
-    (Document(content='pokemon'), Document(embedding=np.array([3]))),
-    (Document(content='dog'), Document(embedding=np.array([3])))
+    (Document(content='🐲'), Document(embedding=np.array([2]))),
+    (Document(content='🐦'), Document(embedding=np.array([3]))),
+    (Document(content='🐢'), Document(embedding=np.array([3])))
 ]
 ```
 
 Documents will be send in pairs `(doc, groundtruth)` to the Flow.
 The _doc_ represents a Document that should be encoded.
 The _groundtruth_ contains the ideal encoding.
-The perfect semantic encoding for `cat` would be `2`.
+The perfect semantic encoding for `🐲` would be `2`.
 
 *Note*: In a real world example the groundtruth would rather be documents, that should be retrieved after querying.
 For the sake of simplicity we omitted the indexing step in this example.
