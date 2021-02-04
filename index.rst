@@ -11,6 +11,7 @@ Welcome to Jina!
    chapters/flow/index
    chapters/io/index
    chapters/cli/exit
+   chapters/project-guide/project-guide
 
 
 .. toctree::
@@ -47,6 +48,12 @@ Welcome to Jina!
    chapters/extend/driver
    chapters/hub/publish-your-pod-image
    chapters/api_schema
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Glossary
+
+   chapters/glossary/glossary
 
 .. toctree::
    :maxdepth: 1
