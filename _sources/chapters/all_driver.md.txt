@@ -6,13 +6,36 @@ This version of Jina includes 63 Drivers.
 - `JAMLCompatible`
    - `BaseDriver`
       - `BaseRecursiveDriver`
+         - `QuerySetReader`
+            - `ReverseQL`
+            - `SortQL`
+            - `ExcludeQL`
+               - `ExcludeReqQL`
+                  - `SelectReqQL`
+               - `SelectQL`
+            - `FilterQL`
+            - `SliceQL`
          - `BaseExecutableDriver`
-            - `BasePredictDriver`
-               - `BaseLabelPredictDriver`
-                  - `BinaryPredictDriver`
-                  - `OneHotPredictDriver`
-                     - `MultiLabelPredictDriver`
-               - `Prediction2DocBlobDriver`
+            - `BaseIndexDriver`
+               - `BaseCacheDriver`
+                  - `TaggingCacheDriver`
+               - `KVIndexDriver`
+               - `VectorIndexDriver`
+            - `BaseRankDriver`
+               - `Matches2DocRankDriver`
+               - `BaseAggregateMatchesRanker`
+                  - `AggregateMatches2DocRankDriver`
+                  - `Chunk2DocRankDriver`
+            - `BaseEncodeDriver`
+               - `MultiModalDriver`
+               - `EncodeDriver`
+            - `DeleteDriver`
+            - `BaseSearchDriver`
+               - `KVSearchDriver`
+                  - `LoadGroundTruthDriver`
+               - `QuerySetReader`
+                  - `VectorFillDriver`
+                  - `VectorSearchDriver`
             - `CraftDriver`
             - `SegmentDriver`
             - `BaseEvaluateDriver`
@@ -20,35 +43,12 @@ This version of Jina includes 63 Drivers.
                   - `NDArrayEvaluateDriver`
                   - `RankEvaluateDriver`
                   - `TextEvaluateDriver`
-            - `BaseSearchDriver`
-               - `KVSearchDriver`
-                  - `LoadGroundTruthDriver`
-               - `QuerySetReader`
-                  - `VectorFillDriver`
-                  - `VectorSearchDriver`
-            - `BaseEncodeDriver`
-               - `MultiModalDriver`
-               - `EncodeDriver`
-            - `BaseRankDriver`
-               - `BaseAggregateMatchesRanker`
-                  - `AggregateMatches2DocRankDriver`
-                  - `Chunk2DocRankDriver`
-               - `Matches2DocRankDriver`
-            - `BaseIndexDriver`
-               - `BaseCacheDriver`
-                  - `TaggingCacheDriver`
-               - `KVIndexDriver`
-               - `VectorIndexDriver`
-            - `DeleteDriver`
-         - `QuerySetReader`
-            - `SortQL`
-            - `SliceQL`
-            - `ReverseQL`
-            - `ExcludeQL`
-               - `ExcludeReqQL`
-                  - `SelectReqQL`
-               - `SelectQL`
-            - `FilterQL`
+            - `BasePredictDriver`
+               - `BaseLabelPredictDriver`
+                  - `BinaryPredictDriver`
+                  - `OneHotPredictDriver`
+                     - `MultiLabelPredictDriver`
+               - `Prediction2DocBlobDriver`
          - `ConvertDriver`
             - `Blob2PngURI`
             - `Buffer2URI`
@@ -72,19 +72,19 @@ This version of Jina includes 63 Drivers.
 | Class | Module |
 | --- | --- |
 | `AggregateMatches2DocRankDriver` | `jina.drivers.rank.aggregate` |
-| `BaseAggregateMatchesRanker` | `jina.drivers.rank` |
+| `BaseAggregateMatchesRanker` | `jina.drivers.rank.aggregate` |
 | `BaseCacheDriver` | `jina.drivers.index` |
 | `BaseControlDriver` | `jina.drivers.control` |
 | `BaseDriver` |   |
-| `BaseEncodeDriver` | `jina.drivers.rank` |
-| `BaseEvaluateDriver` | `jina.drivers.rank` |
-| `BaseExecutableDriver` | `jina.drivers.querylang.filter` |
-| `BaseIndexDriver` | `jina.drivers.rank` |
+| `BaseEncodeDriver` | `jina.drivers.encode` |
+| `BaseEvaluateDriver` | `jina.drivers.encode` |
+| `BaseExecutableDriver` | `jina.drivers.reduce` |
+| `BaseIndexDriver` | `jina.drivers.encode` |
 | `BaseLabelPredictDriver` | `jina.drivers.predict` |
-| `BasePredictDriver` | `jina.drivers.rank` |
-| `BaseRankDriver` | `jina.drivers.rank` |
+| `BasePredictDriver` | `jina.drivers.encode` |
+| `BaseRankDriver` | `jina.drivers.encode` |
 | `BaseRecursiveDriver` | `jina.drivers.control` |
-| `BaseSearchDriver` | `jina.drivers.rank` |
+| `BaseSearchDriver` | `jina.drivers.encode` |
 | `BinaryPredictDriver` | `jina.drivers.predict` |
 | `Blob2PngURI` | `jina.drivers.convert` |
 | `Buffer2URI` | `jina.drivers.convert` |
@@ -92,9 +92,9 @@ This version of Jina includes 63 Drivers.
 | `CollectEvaluationDriver` | `jina.drivers.reduce` |
 | `ConcatEmbedDriver` | `jina.drivers.reduce` |
 | `ControlReqDriver` | `jina.drivers.control` |
-| `ConvertDriver` | `jina.drivers.querylang.filter` |
-| `CraftDriver` | `jina.drivers.rank` |
-| `DeleteDriver` | `jina.drivers.rank` |
+| `ConvertDriver` | `jina.drivers.reduce` |
+| `CraftDriver` | `jina.drivers.encode` |
+| `DeleteDriver` | `jina.drivers.encode` |
 | `EncodeDriver` | `jina.drivers.encode` |
 | `ExcludeQL` |   |
 | `ExcludeReqQL` | `jina.drivers.querylang.select` |
@@ -104,22 +104,22 @@ This version of Jina includes 63 Drivers.
 | `JAMLCompatible` |   |
 | `KVIndexDriver` | `jina.drivers.index` |
 | `KVSearchDriver` | `jina.drivers.search` |
-| `LoadGroundTruthDriver` | `jina.drivers.search` |
+| `LoadGroundTruthDriver` | `jina.drivers.evaluate` |
 | `LogInfoDriver` | `jina.drivers.control` |
-| `Matches2DocRankDriver` | `jina.drivers.rank` |
+| `Matches2DocRankDriver` | `jina.drivers.rank.aggregate` |
 | `MultiLabelPredictDriver` | `jina.drivers.predict` |
 | `MultiModalDriver` | `jina.drivers.encode` |
 | `NDArrayEvaluateDriver` | `jina.drivers.evaluate` |
 | `OneHotPredictDriver` | `jina.drivers.predict` |
 | `Prediction2DocBlobDriver` | `jina.drivers.predict` |
-| `QuerySetReader` | `jina.drivers.querylang.filter` |
+| `QuerySetReader` | `jina.drivers.reduce` |
 | `QuerySetReader` | `jina.drivers.search` |
 | `RankEvaluateDriver` | `jina.drivers.evaluate` |
-| `ReduceAllDriver` | `jina.drivers.querylang.filter` |
+| `ReduceAllDriver` | `jina.drivers.reduce` |
 | `ReduceDriver` | `jina.drivers.control` |
 | `ReverseQL` |   |
 | `RouteDriver` | `jina.drivers.control` |
-| `SegmentDriver` | `jina.drivers.rank` |
+| `SegmentDriver` | `jina.drivers.encode` |
 | `SelectQL` | `jina.drivers.querylang.select` |
 | `SelectReqQL` | `jina.drivers.querylang.select` |
 | `SliceQL` |   |
