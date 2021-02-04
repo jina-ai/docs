@@ -13,18 +13,20 @@ A common principle when building a Flow in Jina is:
   b. Index some data
   c. Query some data and look at the results
 
-Step 3 is time consuming and often the user has no idea, which values to test.
+Step 3 is time consuming and often the user has no idea, which parameters to test.
 Flow Optimization automates exactly these steps.
-It can be done via python code or `.yml` definitions as commonly used around Jina.
+It can be done via python code or JAML definitions as commonly used around Jina.
 
 ### Before you start
 
 Make sure you install Jina via `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_ with `jina[optimizer]`.
 
+Furthermore it is recommended to read *TODO: ADD LINK TO EVALUATOR SECTION*
+
 ### Using FlowOptimization
 
 In this toy example, we choose the optimal layer of an encoder for the final embedding.
-This is a common practice in ML.
+This is a common practice in machine learning.
 The best semantic representation for a given problem might not be the last layer of a given model.
 
 Flow Optimization requires the following components:
@@ -46,6 +48,9 @@ pods:
   - uses: encoder.yml
   - uses: EuclideanEvaluator
 ```
+
+The optimizer will change the value of `JINA_ENCODER_LAYER` later on.
+The Flow passes it on to the `encoder.yml` via the `JINA_ENCODER_LAYER_VAR`.
 
 The `EuclideanEvaluator` is used for calculating the distance between the encoded and an expected vector.
 Furthermore, we need the corresponding `encoder.yml`:
@@ -113,9 +118,15 @@ This is done via a `parameter.yml` file:
   step_size: 1
 ```
 
-Here we say, the variable can take `int` values in the range `[0, 2]`.
-Jina leverages the optuna optimizer under the hood.
-For a detailed description of all possible choices see (TODO: INSERT LINK TO PARAMETER DOCSTRING).
+The variable `JINA_ENCODER_LAYER` can take `int` values in the range `[0, 2]`.
+
+Possible choices for variables are:
+
+- [IntegerParameter](https://docs.jina.ai/api/jina.optimizers.parameters.html#jina.optimizers.parameters.IntegerParameter) and [DiscreteUniformParameter](https://docs.jina.ai/api/jina.optimizers.parameters.html#jina.optimizers.parameters.DiscreteUniformParameter) for `int` based python variables (e.g. layer of a model)
+- [UniformParameter](https://docs.jina.ai/api/jina.optimizers.parameters.html#jina.optimizers.parameters.UniformParameter) and [LogUniformParameter](https://docs.jina.ai/api/jina.optimizers.parameters.html#jina.optimizers.parameters.LogUniformParameter) for `float` based python variables (e.g. confidence threshold in object detection)
+- [CategoricalParameter](https://docs.jina.ai/api/jina.optimizers.parameters.html#jina.optimizers.parameters.CategoricalParameter) for python variables which can be categorized (e.g. model names)
+
+Under the hood, Jina leverages the [optuna](https://optuna.org/) optimizer.
 
 Finally, we can define the FlowOptimizer and run it:
 
