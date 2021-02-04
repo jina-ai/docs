@@ -55,7 +55,13 @@ Overview
 ====================
 
 
-With this script you will download the **Fashion-MNIST** training and test data. Once you have the data, Jina will :term:`index<indexing>` 60,000 images from the training set. And will use random images from the test set as *queries*. Jina will then retrieve the relevant results. After around 1 minute, a web page will open and show results like this:
+With this script you will:
+
+#. Download the **Fashion-MNIST** training and test data
+#. :term:`Index<indexing>` 60,000 images from the training set
+#. Use random images from the test set as *queries*
+#. Retrieve the relevant results
+#. After around 1 minute, a web page will open and show results like this:
 
 
 .. image:: hello-world.gif
@@ -96,7 +102,7 @@ And the implementation behind it? It's simple:
     .. image:: hello-world-flow.png
        :align: center
 
-All the big words you can name: computer vision, :term:`neural search, microservice, message queue, elastic, and :term:`shards` all happened in just one minute!
+All the big words you can name: computer vision, :term:`neural search`, microservices, :term:`indexing`, :term:`querying<searching>`, and :term:`shards` all happened in just one minute!
 
 View "Hello World" in Jina Dashboard
 ====================================
