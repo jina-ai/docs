@@ -140,7 +140,7 @@ Possible choices for variables are:
 
 Under the hood, Jina leverages the `optuna <https://optuna.org/>`_ optimizer.
 
-Finally, we can define the FlowOptimizer and run it:
+Finally, we can define the ``FlowOptimizer`` and run it:
 
 .. code-block:: python
 
