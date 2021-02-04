@@ -4,9 +4,7 @@
 
 Use Jina Dashboard by visiting the [website](https://dashboard.jina.ai) or cloning it from [GitHub](https://github.com/jina-ai/dashboard) 
 
-
 ![flow demo](overview.gif)
-
 
 # Features
 
@@ -19,5 +17,5 @@ Use Jina Dashboard by visiting the [website](https://dashboard.jina.ai) or cloni
 -  ##  [Jina Hub](hub.md)
     Share and discover custom and community driven Jina Pods and Apps tailored to specific use cases of neural search.
 
-### In order to use the dashboard it has to be  [ connected to JinaD first](connect_jinaD.md)
+### In order to use the dashboard it has to be [ connected to JinaD first](connect-jinaD.md)
 
