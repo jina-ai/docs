@@ -10,15 +10,35 @@ Project set up guide
 
 Here you will see the suggested structure for a project structure in Jina.
 
-
-* What is the standard project structure?
-* What are the requirements for Jina set-up?
-
 *********
 Implementation
 *********
 
+====================
+Jina Set-up
+====================
 
+The first thing you need is to have Jina installed and ready to run. There are different ways you can do this, but here we'll see the easiest one. With Linux/Mac, you just need to install with pip using the following command:
+
+.. highlight:: bash
+.. code-block:: bash
+
+    pip install jina
+
+If you want to see other ways to install Jina, we have an `installation guide<https://docs.jina.ai/chapters/install/os/index.html>`_. here.
+
+====================
+Cookiecutter
+====================
+
+.. highlight:: bash
+.. code-block:: bash
+
+    pip install -U cookiecutter && cookiecutter gh:jina-ai/cookiecutter-jina
+
+We use `cookiecutter<https://github.com/cookiecutter/cookiecutter>`_ to spin up a basic Jina app and save you having to do a lot of typing and setup. So you just need to run the previous command and follow the guide that you'll see. But don't worry, we will still see how's the basic folder structure and what you should have at the end.
+
+====================
 Folder structure
 ====================
 
@@ -42,8 +62,6 @@ Let's start by seeing a folder structure example. The actual structure of your f
 | ├── get_data.sh
 | ├── README.md
 | ├── requirements.txt
-|
-|
 
 
 Folder structure elements
@@ -68,8 +86,7 @@ The first thing you should take care of is the requirements. Create a **requirem
 
     pip install -r requirements.txt
 
-
-Get and save data
+Prepare and save data
 ---------
 
 This can be optional depending on if you need extra data on your project or not. If you need to download data the best practice is to have a script that will download the data. This script should live directly under the main folder.
@@ -80,7 +97,6 @@ Now you need someplace where to store the data you just downloaded. For this, yo
 
 ``/your-cool-project/data/super-important-data.txt``
 
-
 Flows
 ---------
 
@@ -88,14 +104,12 @@ Flows
 
 You will most likely need at least one :term:`Flow`, and it's good practice to have all your Flows in one dedicated folder. To try to be the most explicit as possible, we call this folder also **flows**. In this example, we have two flows, one for index **index.yml** and one for search **query.yml**, but you can have more or less.
 
-
 Pods
 ---------
 
-``/flows``
+``/pods``
 
 Our Flows will need some :term:`Pods<Pod>`, so we also create a dedicated folder for them. And you guessed right, the folder is called **pods**. Here we have 4 pods, but in your project, you might have a different number.
-
 
 App.py
 ---------
@@ -104,15 +118,12 @@ App.py
 
 And of course, we need our main app, we have this file living directly under the main directory.
 
-
 Workspace
 ---------
 
 ``/workspace``
 
 This :term:`workspace is a special folder. You will **not** create this folder yourself. You should design your **app.py** in a way that when you run it for the first, this folder is created during the :term:`indexing`. And this workspace folder should be created under the main directory.
-
-
 
 Dockerfile
 ---------
@@ -121,7 +132,6 @@ Dockerfile
 
 
 This is another optional element, but if you want to have a Docker image you can have one under the main directory
-
 
 README
 ---------
