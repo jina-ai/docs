@@ -57,7 +57,7 @@ Furthermore, we need the corresponding `encoder.yml`:
 ```yaml
 !SimpleEncoder
 with:
-  index: ${{JINA_ENCODER_LAYER_VAR}}
+  layer: ${{JINA_ENCODER_LAYER_VAR}}
 ```
 
 ```python
