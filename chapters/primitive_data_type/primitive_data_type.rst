@@ -6,7 +6,7 @@ A guide on Jina Primitive Data Types
    :description: A guide on Jina Primitive Data Types
    :keywords: Jina, primitive data types
 
-.. note:: This guide expect you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
+.. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
 
 A primitive data type is a data type for which the programming language provides built-in support.
 For example, when writing a Numpy or Tensorflow program, users perform matrix manipulation on multi-dimensional
@@ -241,7 +241,7 @@ For example:
 Design Decisions
 ====================
 
-While designing and implementing Jina primitive data types, we have been always keep the following principles in mind:
+While designing and implementing Jina primitive data types, we have been always kept the following principles in mind:
 
 **View, not copy**
 
