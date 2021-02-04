@@ -2,19 +2,18 @@
 
 ##### Flow Optimization eases the process of rerunning Flows with different parameter sets. It allows out of the box hyperparameter tuning inside Jina.
 
-### Flow Optimization is hyperparameter tuning on steroids
+### Flow Optimization is hyperparameter tuning
 
-A common principle when building a Flow in Jina is:
+A common pattern when building a Flow in Jina is:
 
 1. Design the high level `flow.yml`
 2. Define several `pods.yml` files for all needed Executors
-3. Repeat until happy with results:
+3. Repeat until the evaluation metric suits your use case:
   a. Change variable values in different Executors (e.g. used model, used model layer, details of the segmenter)
   b. Index some data
   c. Query some data and look at the results
 
-Step 3 is time consuming and often the user has no idea, which parameters to test.
-Flow Optimization automates exactly these steps.
+Flow Optimization automates step 3.
 It can be done via python code or JAML definitions as commonly used around Jina.
 
 ### Before you start
@@ -25,15 +24,15 @@ Furthermore it is recommended to read *TODO: ADD LINK TO EVALUATOR SECTION*
 
 ### Using FlowOptimization
 
-In this toy example, we choose the optimal layer of an encoder for the final embedding.
+In this toy example, we try to find the optimal layer of an encoder for the final embedding.
 This is a common practice in machine learning.
 The best semantic representation for a given problem might not be the last layer of a given model.
 
-Flow Optimization requires the following components:
+A Flow Optimization requires the following components:
 
 - At least one Flow and the corresponding Pod definitions via JAML
 - An Evaluator Executor in at least one of the Flows
-- Documents, which are send to each Flow
+- A datasource containting Documents, which are send to each Flow
 - A `parameter.yml` file describing the optimization scenario
 - A `FlowRunner` object, which allows repeatedly running the same Flow with different configurations.
 
@@ -52,7 +51,7 @@ pods:
 The optimizer will change the value of `JINA_ENCODER_LAYER` later on.
 The Flow passes it on to the `encoder.yml` via the `JINA_ENCODER_LAYER_VAR`.
 
-The `EuclideanEvaluator` is used for calculating the distance between the encoded and an expected vector.
+The `EuclideanEvaluator` is used for calculating the distance between the calculated encoding and the expected one.
 Furthermore, we need the corresponding `encoder.yml`:
 
 ```yaml
@@ -143,7 +142,7 @@ result = optimizer.optimize_flow()
 ```
 
 The `MeanEvaluationCallback` takes the results of the last Evaluator inside a Flow and averages the results.
-In the above defined Flow it is the solemn `EuclideanEvaluator`.
+In the above defined Flow it is the single `EuclideanEvaluator`.
 
 Finally, we can write the optimal parameters into a file:
 
