@@ -102,7 +102,7 @@ And the implementation behind it? It's simple:
     .. image:: hello-world-flow.png
        :align: center
 
-All the big words you can name: computer vision, :term:`neural search`, microservices, :term:`indexing`, :term:`querying<searching>`, and :term:`shards` all happened in just one minute!
+All the big words you can name: computer vision, :term:`neural search`, microservices, :term:`indexing`, :term:`querying/searching<searching>`, and :term:`shards` all happened in just one minute!
 
 View "Hello World" in Jina Dashboard
 ====================================
