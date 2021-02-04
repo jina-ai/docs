@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.cache &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.drivers.cache &mdash; Jina 0.9.29-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.29-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -301,13 +301,12 @@
 
 
 <div class="viewcode-block" id="BaseCacheDriver"><a class="viewcode-back" href="../../../api/jina.drivers.cache.html#jina.drivers.cache.BaseCacheDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseCacheDriver</span><span class="p">(</span><span class="n">BaseIndexDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The driver related to :class:`BaseCache`</span>
+    <span class="sd">&quot;&quot;&quot;A driver related to :class:`BaseCache`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_serialization</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param with_serialization: feed serialized doc to the CacheIndexer</span>
+<span class="sd">        :param with_serialization: feed serialized Document to the CacheIndexer</span>
 <span class="sd">        :param args:</span>
 <span class="sd">        :param kwargs:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -331,17 +330,20 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">on_hit</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BaseCacheDriver.on_miss"><a class="viewcode-back" href="../../../api/jina.drivers.cache.html#jina.drivers.cache.BaseCacheDriver.on_miss">[docs]</a>    <span class="k">def</span> <span class="nf">on_miss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Function to call when doc is missing, the default behavior is add to cache when miss</span>
-<span class="sd">        :param doc: the document in the request but missed in the cache</span>
+<div class="viewcode-block" id="BaseCacheDriver.on_miss"><a class="viewcode-back" href="../../../api/jina.drivers.cache.html#jina.drivers.cache.BaseCacheDriver.on_miss">[docs]</a>    <span class="k">def</span> <span class="nf">on_miss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Function to call when document is missing, the default behavior is to add to cache when miss.</span>
+
+<span class="sd">        :param req_doc: the document in the request but missed in the cache</span>
+<span class="sd">        :param data: the data besides the `req_doc.id` to be passed through to the executors</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_serialization</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">doc</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">(),</span> <span class="o">**</span><span class="p">{</span><span class="n">DATA_FIELD</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">req_doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">req_doc</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">(),</span> <span class="o">**</span><span class="p">{</span><span class="n">DATA_FIELD</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">DATA_FIELD</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">req_doc</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">DATA_FIELD</span><span class="p">:</span> <span class="n">data</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="BaseCacheDriver.on_hit"><a class="viewcode-back" href="../../../api/jina.drivers.cache.html#jina.drivers.cache.BaseCacheDriver.on_hit">[docs]</a>    <span class="k">def</span> <span class="nf">on_hit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">hit_result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot; Function to call when doc is hit</span>
+        <span class="sd">&quot;&quot;&quot;Function to call when document is hit.</span>
+
 <span class="sd">        :param req_doc: the document in the request and hitted in the cache</span>
 <span class="sd">        :param hit_result: the hit result returned by the cache</span>
 <span class="sd">        :return:</span>
@@ -350,7 +352,8 @@
 
 
 <div class="viewcode-block" id="TaggingCacheDriver"><a class="viewcode-back" href="../../../api/jina.drivers.cache.html#jina.drivers.cache.TaggingCacheDriver">[docs]</a><span class="k">class</span> <span class="nc">TaggingCacheDriver</span><span class="p">(</span><span class="n">BaseCacheDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Label the hit-cache docs with certain tags &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A driver for labelling the hit-cache docs with certain tags</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -493,7 +496,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 03, 2021.
+        Last updated on Feb 04, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers.cache &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.executors.indexers.cache &mdash; Jina 0.9.29-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.29-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -294,7 +294,7 @@
   <h1>Source code for jina.executors.indexers.cache</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">from</span> <span class="nn">jina.executors.indexers</span> <span class="kn">import</span> <span class="n">BaseKVIndexer</span>
 
@@ -347,20 +347,25 @@
     <span class="n">supported_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">ID_KEY</span><span class="p">,</span> <span class="n">CONTENT_HASH_KEY</span><span class="p">]</span>
     <span class="n">default_field</span> <span class="o">=</span> <span class="n">ID_KEY</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; creates a new DocCache</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create a new DocCache</span>
 
-<span class="sd">        :param field: to be passed as kwarg. This dictates by which Document field we cache (either `id` or `content_hash`)</span>
+<span class="sd">        :param index_filename: file name for storing the cache data</span>
+<span class="sd">        :param field: field to cache on (ID_KEY or CONTENT_HASH_KEY)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">index_filename</span><span class="p">:</span>
             <span class="c1"># create a new temp file if not exist</span>
             <span class="n">index_filename</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">index_filename</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_field</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_field</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">supported_fields</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; not in supported list of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">supported_fields</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DocCache.add"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_id</span><span class="p">:</span> <span class="s1">&#39;UniqueId&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a document to the cache depending on `self.field`.</span>
+
+<span class="sd">        :param doc_id: document id to be added</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc_id</span><span class="p">)</span>
 
         <span class="c1"># optimization. don&#39;t duplicate ids</span>
@@ -372,10 +377,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="DocCache.query"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check whether the data exists in the cache</span>
+        <span class="sd">&quot;&quot;&quot;Check whether the data exists in the cache.</span>
 
 <span class="sd">        :param data: either the id or the content_hash of a Document</span>
+<span class="sd">        :return: status</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># FIXME this shouldn&#39;t happen</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -388,8 +393,8 @@
 
         <span class="k">return</span> <span class="n">status</span></div>
 
-<div class="viewcode-block" id="DocCache.update"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;UniqueId&#39;</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">any</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DocCache.update"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;UniqueId&#39;</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">any</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update cached documents.</span>
 <span class="sd">        :param keys: list of Document.id</span>
 <span class="sd">        :param values: list of either `id` or `content_hash` of :class:`Document`&quot;&quot;&quot;</span>
         <span class="c1"># if we don&#39;t cache anything else, no need</span>
@@ -402,8 +407,8 @@
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">!=</span> <span class="n">ID_KEY</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">content_hash</span><span class="p">[</span><span class="n">key_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">cached_field</span></div>
 
-<div class="viewcode-block" id="DocCache.delete"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;UniqueId&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DocCache.delete"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;UniqueId&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete documents from the cache.</span>
 <span class="sd">        :param keys: list of Document.id</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_abspath</span><span class="p">)</span>
@@ -560,7 +565,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 03, 2021.
+        Last updated on Feb 04, 2021.
       </span>
 
         </p>

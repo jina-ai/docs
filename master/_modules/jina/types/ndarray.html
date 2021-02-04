@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.ndarray &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.types.ndarray &mdash; Jina 0.9.29-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.29-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -290,6 +290,7 @@
   <h1>Source code for jina.types.ndarray</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
 
+<span class="kn">from</span> <span class="nn">..mixin</span> <span class="kn">import</span> <span class="n">ProtoTypeMixin</span>
 <span class="kn">from</span> <span class="nn">...proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
 
 <span class="n">PbMessageType</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">_reflection</span><span class="o">.</span><span class="n">GeneratedProtocolMessageType</span>
@@ -299,7 +300,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BaseNdArray&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="BaseNdArray"><a class="viewcode-back" href="../../../api/jina.types.ndarray.html#jina.types.ndarray.BaseNdArray">[docs]</a><span class="k">class</span> <span class="nc">BaseNdArray</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseNdArray"><a class="viewcode-back" href="../../../api/jina.types.ndarray.html#jina.types.ndarray.BaseNdArray">[docs]</a><span class="k">class</span> <span class="nc">BaseNdArray</span><span class="p">(</span><span class="n">ProtoTypeMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A base class for containing the protobuf message of NdArray. It defines interfaces</span>
 <span class="sd">    for easier get/set value.</span>
 
@@ -313,9 +314,9 @@
 <span class="sd">        :param proto: the protobuf message, when not given then create a new one via :meth:`get_null_proto`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">proto</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">proto</span><span class="p">),</span> <span class="n">PbMessageType</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">proto</span> <span class="o">=</span> <span class="n">proto</span>  <span class="c1"># a weak ref/copy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span> <span class="o">=</span> <span class="n">proto</span>  <span class="c1"># a weak ref/copy</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">proto</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">null_proto</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">null_proto</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">proto</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># casting using the subclass :attr:`value` interface</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">proto</span>
@@ -337,7 +338,7 @@
 
 <div class="viewcode-block" id="BaseNdArray.copy_to"><a class="viewcode-back" href="../../../api/jina.types.ndarray.html#jina.types.ndarray.BaseNdArray.copy_to">[docs]</a>    <span class="k">def</span> <span class="nf">copy_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto</span><span class="p">:</span> <span class="s1">&#39;PbMessageType&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseNdArray&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Copy itself to another protobuf message, return a view of the copied message&quot;&quot;&quot;</span>
-        <span class="n">proto</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span>
+        <span class="n">proto</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">proto</span><span class="p">)</span></div></div>
 </pre></div>
 
@@ -471,7 +472,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 03, 2021.
+        Last updated on Feb 04, 2021.
       </span>
 
         </p>

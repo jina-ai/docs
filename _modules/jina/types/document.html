@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.types.document &mdash; Jina 0.9.29-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.29-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -294,21 +294,22 @@
 <span class="kn">import</span> <span class="nn">urllib.parse</span>
 <span class="kn">import</span> <span class="nn">urllib.request</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">blake2b</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
 <span class="kn">from</span> <span class="nn">google.protobuf.field_mask_pb2</span> <span class="kn">import</span> <span class="n">FieldMask</span>
 
 <span class="kn">from</span> <span class="nn">.converters</span> <span class="kn">import</span> <span class="n">png_to_buffer</span><span class="p">,</span> <span class="n">to_datauri</span><span class="p">,</span> <span class="n">guess_mime</span>
 <span class="kn">from</span> <span class="nn">.uid</span> <span class="kn">import</span> <span class="n">DIGEST_SIZE</span><span class="p">,</span> <span class="n">UniqueId</span>
+<span class="kn">from</span> <span class="nn">..mixin</span> <span class="kn">import</span> <span class="n">ProtoTypeMixin</span>
 <span class="kn">from</span> <span class="nn">..ndarray.generic</span> <span class="kn">import</span> <span class="n">NdArray</span>
 <span class="kn">from</span> <span class="nn">..score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
 <span class="kn">from</span> <span class="nn">..sets.chunk</span> <span class="kn">import</span> <span class="n">ChunkSet</span>
 <span class="kn">from</span> <span class="nn">..sets.match</span> <span class="kn">import</span> <span class="n">MatchSet</span>
 <span class="kn">from</span> <span class="nn">...excepts</span> <span class="kn">import</span> <span class="n">BadDocType</span>
-<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_url</span><span class="p">,</span> <span class="n">typename</span>
+<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_url</span><span class="p">,</span> <span class="n">typename</span><span class="p">,</span> <span class="n">random_identity</span>
 <span class="kn">from</span> <span class="nn">...importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
 <span class="kn">from</span> <span class="nn">...proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
 
@@ -319,7 +320,7 @@
                              <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">:</span>
+<div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">ProtoTypeMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :class:`Document` is one of the **primitive data type** in Jina.</span>
 
@@ -395,17 +396,17 @@
 <span class="sd">                view (i.e. weak reference) from it or a deep copy from it.</span>
 <span class="sd">        :param kwargs: other parameters to be set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_document</span> <span class="o">=</span> <span class="n">document</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span> <span class="o">=</span> <span class="n">document</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">json_format</span><span class="o">.</span><span class="n">ParseDict</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">)</span>
+                <span class="n">json_format</span><span class="o">.</span><span class="n">ParseDict</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">json_format</span><span class="o">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">)</span>
+                <span class="n">json_format</span><span class="o">.</span><span class="n">Parse</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
                 <span class="c1"># directly parsing from binary string gives large false-positive</span>
                 <span class="c1"># fortunately protobuf throws a warning when the parsing seems go wrong</span>
@@ -416,14 +417,14 @@
                                             <span class="s1">&#39;Unexpected end-group tag&#39;</span><span class="p">,</span>
                                             <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">ParseFromString</span><span class="p">(</span><span class="n">document</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">RuntimeWarning</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                         <span class="k">raise</span> <span class="n">BadDocType</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;fail to construct a document from </span><span class="si">{</span><span class="n">document</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">document</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">as_pb_object</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">document</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_document</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">as_pb_object</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span> <span class="o">=</span> <span class="n">document</span><span class="o">.</span><span class="n">proto</span>
             <span class="k">elif</span> <span class="n">document</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># note ``None`` is not considered as a bad type</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">document</span><span class="p">)</span><span class="si">}</span><span class="s1"> is not recognizable&#39;</span><span class="p">)</span>
@@ -432,31 +433,24 @@
                              <span class="sa">f</span><span class="s1">&#39;if you are trying to set the content &#39;</span>
                              <span class="sa">f</span><span class="s1">&#39;you may use &quot;Document(content=your_content)&quot;&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">random</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">random_identity</span><span class="p">(</span><span class="n">use_uuid1</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_attrs</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">as_pb_object</span><span class="si">}</span><span class="s1">&#39;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="c1"># TODO(Han): rename this to siblings as this shadows the built-in `length`</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">length</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">length</span>
 
     <span class="nd">@length</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">weight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the weight of the document &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">weight</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">weight</span>
 
     <span class="nd">@weight</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
@@ -464,21 +458,21 @@
 
 <span class="sd">        :param value: the float weight of the document.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">modality</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the modality of the document &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">modality</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">modality</span>
 
     <span class="nd">@modality</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">modality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set the modality of the document&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">modality</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">modality</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">content_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">content_hash</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">content_hash</span>
 
 <div class="viewcode-block" id="Document.update_content_hash"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.update_content_hash">[docs]</a>    <span class="k">def</span> <span class="nf">update_content_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                             <span class="n">exclude_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
@@ -493,7 +487,7 @@
 <span class="sd">            &quot;exclude_fields&quot; and &quot;include_fields&quot; are mutually exclusive, use one only</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">masked_d</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span>
-        <span class="n">masked_d</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">)</span>
+        <span class="n">masked_d</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">)</span>
         <span class="n">empty_doc</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">include_fields</span> <span class="ow">and</span> <span class="n">exclude_fields</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;exclude_fields&quot; and &quot;exclude_fields&quot; are mutually exclusive, use one only&#39;</span><span class="p">)</span>
@@ -504,21 +498,21 @@
         <span class="k">elif</span> <span class="n">exclude_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">exclude_fields</span><span class="p">)</span><span class="o">.</span><span class="n">MergeMessage</span><span class="p">(</span><span class="n">empty_doc</span><span class="p">,</span> <span class="n">masked_d</span><span class="p">,</span> <span class="n">replace_repeated_field</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">content_hash</span> <span class="o">=</span> <span class="n">blake2b</span><span class="p">(</span><span class="n">masked_d</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">(),</span> <span class="n">digest_size</span><span class="o">=</span><span class="n">DIGEST_SIZE</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">content_hash</span> <span class="o">=</span> <span class="n">blake2b</span><span class="p">(</span><span class="n">masked_d</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">(),</span> <span class="n">digest_size</span><span class="o">=</span><span class="n">DIGEST_SIZE</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;UniqueId&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The document id in hex string, for non-binary environment such as HTTP, CLI, HTML and also human-readable.</span>
 <span class="sd">        it will be used as the major view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">UniqueId</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">id</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">parent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;UniqueId&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">parent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;The document&#39;s parent id in hex string, for non-binary environment such as HTTP, CLI, HTML and also human-readable.</span>
 <span class="sd">        it will be used as the major view.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">UniqueId</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">parent_id</span>
 
     <span class="nd">@id</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
@@ -534,7 +528,12 @@
 <span class="sd">        :param value: restricted string value</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">UniqueId</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;expecting a string as ID, receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">. &#39;</span>
+                          <span class="sa">f</span><span class="s1">&#39;Note this type will be deprecated soon&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">UniqueId</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@parent_id</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">parent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]):</span>
@@ -550,7 +549,12 @@
 <span class="sd">        :param value: restricted string value</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="n">UniqueId</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;expecting a string as ID, receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">. &#39;</span>
+                          <span class="sa">f</span><span class="s1">&#39;Note this type will be deprecated soon&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="n">UniqueId</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">blob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
@@ -559,7 +563,7 @@
 <span class="sd">        .. note::</span>
 <span class="sd">            Use :attr:`content` to return the content of a Document</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">NdArray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">NdArray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">blob</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
 
     <span class="nd">@blob</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">blob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.NdArrayProto&#39;</span><span class="p">,</span> <span class="s1">&#39;NdArray&#39;</span><span class="p">]):</span>
@@ -569,7 +573,7 @@
     <span class="k">def</span> <span class="nf">embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return ``embedding`` of the content of a Document.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">NdArray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">embedding</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">NdArray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">embedding</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
 
     <span class="nd">@embedding</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.NdArrayProto&#39;</span><span class="p">,</span> <span class="s1">&#39;NdArray&#39;</span><span class="p">]):</span>
@@ -577,24 +581,24 @@
 
     <span class="k">def</span> <span class="nf">_update_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">NdArrayProto</span><span class="p">):</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">NdArray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="n">NdArray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">NdArray</span><span class="p">):</span>
-            <span class="n">NdArray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">is_sparse</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">is_sparse</span>
-            <span class="n">NdArray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">NdArray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">is_sparse</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">is_sparse</span>
+            <span class="n">NdArray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">value</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1"> is in unsupported type </span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">matches</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MatchSet&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get all matches of the current document &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">MatchSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">matches</span><span class="p">,</span> <span class="n">reference_doc</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">MatchSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">matches</span><span class="p">,</span> <span class="n">reference_doc</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ChunkSet&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get all chunks of the current document &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ChunkSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">chunks</span><span class="p">,</span> <span class="n">reference_doc</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ChunkSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">chunks</span><span class="p">,</span> <span class="n">reference_doc</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Document.set_attrs"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.set_attrs">[docs]</a>    <span class="k">def</span> <span class="nf">set_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Bulk update Document fields with key-value specified in kwargs</span>
@@ -605,18 +609,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">ClearField</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;chunks&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;matches&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">ClearField</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                    <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">ClearField</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">ClearField</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span> <span class="nb">property</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Document</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">fset</span><span class="p">:</span>
                     <span class="c1"># if class property has a setter</span>
                     <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
                     <span class="c1"># no property setter, but proto has this attribute so fallback to proto</span>
-                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1"> is not recognized&#39;</span><span class="p">)</span></div>
 
@@ -630,21 +639,17 @@
         <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)}</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">as_pb_object</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;jina_pb2.DocumentProto&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return ``buffer``, one of the content form of a Document.</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            Use :attr:`content` to return the content of a Document</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">buffer</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">buffer</span>
 
     <span class="nd">@buffer</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                   <span class="n">pkg_name</span><span class="o">=</span><span class="s1">&#39;python-magic&#39;</span><span class="p">,</span>
@@ -652,7 +657,7 @@
                                             <span class="sa">f</span><span class="s1">&#39;MIME sniffing requires brew install &#39;</span>
                                             <span class="sa">f</span><span class="s1">&#39;libmagic (Mac)/ apt-get install libmagic1 (Linux)&#39;</span><span class="p">):</span>
                 <span class="kn">import</span> <span class="nn">magic</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">magic</span><span class="o">.</span><span class="n">from_buffer</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">magic</span><span class="o">.</span><span class="n">from_buffer</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">mime</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -661,16 +666,16 @@
 <span class="sd">        .. note::</span>
 <span class="sd">            Use :attr:`content` to return the content of a Document</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">text</span>
 
     <span class="nd">@text</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="s1">&#39;text/plain&#39;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">uri</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">uri</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">uri</span>
 
     <span class="nd">@uri</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -687,7 +692,7 @@
                 <span class="ow">or</span> <span class="p">(</span><span class="n">scheme</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">})</span>
                 <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">)):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">guess_mime</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> is not a valid URI&#39;</span><span class="p">)</span>
@@ -695,7 +700,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mime_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get MIME type of the document&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">mime_type</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">mime_type</span>
 
     <span class="nd">@mime_type</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">mime_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -705,12 +710,12 @@
 <span class="sd">                recognizable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">types_map</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">elif</span> <span class="n">value</span><span class="p">:</span>
             <span class="c1"># given but not recognizable, do best guess</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;*.</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">r</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">r</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> is not a valid MIME type&#39;</span><span class="p">)</span>
 
@@ -723,7 +728,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return the content type of the document, possible values: text, blob, buffer&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">content</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DocumentContentType</span><span class="p">:</span>
@@ -763,22 +768,22 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">granularity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">granularity</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">granularity</span>
 
     <span class="nd">@granularity</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">granularity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">granularity_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">granularity</span> <span class="o">=</span> <span class="n">granularity_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">granularity</span> <span class="o">=</span> <span class="n">granularity_value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">score</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">score</span>
 
     <span class="nd">@score</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">jina_pb2</span><span class="o">.</span><span class="n">NamedScoreProto</span><span class="p">,</span> <span class="n">NamedScore</span><span class="p">]):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">NamedScoreProto</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">NamedScore</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">_score</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;score is in unsupported type </span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -875,10 +880,10 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Document.MergeFrom"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.MergeFrom">[docs]</a>    <span class="k">def</span> <span class="nf">MergeFrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">MergeFrom</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">as_pb_object</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">MergeFrom</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Document.CopyFrom"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.CopyFrom">[docs]</a>    <span class="k">def</span> <span class="nf">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_document</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">as_pb_object</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Document.traverse"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.traverse">[docs]</a>    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Traverse leaves of the document.&quot;&quot;&quot;</span>
@@ -1035,7 +1040,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 03, 2021.
+        Last updated on Feb 04, 2021.
       </span>
 
         </p>

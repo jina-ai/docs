@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.executors.indexers &mdash; Jina 0.9.29-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.29-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -294,7 +294,7 @@
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -304,7 +304,7 @@
 
 
 <div class="viewcode-block" id="BaseIndexer"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseIndexer">[docs]</a><span class="k">class</span> <span class="nc">BaseIndexer</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; base class for storing and searching any kind of data structure</span>
+    <span class="sd">&quot;&quot;&quot;Base class for storing and searching any kind of data structure.</span>
 
 <span class="sd">    The key functions here are :func:`add` and :func:`query`.</span>
 <span class="sd">    One can decorate them with :func:`jina.decorator.require_train`,</span>
@@ -343,8 +343,40 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">index_filename</span> <span class="o">=</span> <span class="n">index_filename</span>  <span class="c1">#: the file name of the stored index, no path is required</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key_length</span> <span class="o">=</span> <span class="mi">16</span>  <span class="c1">#: the default minimum length of the key, will be expanded one time on the first batch</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">key_length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_length</span>
+
+    <span class="nd">@key_length</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">key_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the max key length. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_length</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_length</span> <span class="o">&lt;</span> <span class="n">val</span><span class="p">:</span>
+            <span class="c1"># expand once</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_key_length</span> <span class="o">=</span> <span class="n">val</span>
+        <span class="k">elif</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_length</span><span class="p">:</span>
+            <span class="c1"># just padding, no big deal</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;key padding is triggered. this indexer allows only keys at length </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_length</span><span class="si">}</span><span class="s1">, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;but your max key length is </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_length</span><span class="p">:</span>
+            <span class="c1"># panic</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;this indexer allows only keys at length </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_length</span><span class="si">}</span><span class="s1">, but yours is </span><span class="si">{</span><span class="n">val</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseIndexer.add"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add documents to the index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BaseIndexer.update"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update documents on the index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BaseIndexer.delete"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseIndexer.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete documents from the index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="BaseIndexer.post_init"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseIndexer.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -354,6 +386,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">is_handler_loaded</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="BaseIndexer.query"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Query documents from the index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="nd">@property</span>
@@ -430,7 +464,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The number of vectors/chunks indexed &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;The number of vectors or documents indexed &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -454,7 +488,7 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span></div>
 
-    <span class="k">def</span> <span class="nf">_filter_nonexistent_keys_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">existent_keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">_filter_nonexistent_keys_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">existent_keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
                                         <span class="n">check_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
         <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
@@ -465,13 +499,13 @@
         <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indices_to_drop</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">keys</span><span class="p">,</span> <span class="n">values</span>
 
-    <span class="k">def</span> <span class="nf">_filter_nonexistent_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">existent_keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">check_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_filter_nonexistent_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">existent_keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">check_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
         <span class="n">indices_to_drop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_indices_to_drop</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">existent_keys</span><span class="p">,</span> <span class="n">check_path</span><span class="p">)</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indices_to_drop</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">keys</span>
 
-    <span class="k">def</span> <span class="nf">_get_indices_to_drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">existent_keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">check_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_indices_to_drop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">existent_keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">check_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">indices_to_drop</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">key_index</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existent_keys</span><span class="p">:</span>
@@ -490,20 +524,18 @@
 <span class="sd">    It can be used to tell whether an indexer is vector indexer, via ``isinstance(a, BaseVectorIndexer)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="BaseVectorIndexer.query_by_key"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseVectorIndexer.query_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">query_by_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseVectorIndexer.query_by_key"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseVectorIndexer.query_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">query_by_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Get the vectors by id, return a subset of indexed vectors</span>
 
 <span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
-<span class="sd">        :param args:</span>
-<span class="sd">        :param kwargs:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: subset of indexed vectors</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="BaseVectorIndexer.add"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseVectorIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseVectorIndexer.add"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseVectorIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add new chunks and their vector representations</span>
 
-<span class="sd">        :param keys: ``chunk_id`` in 1D-ndarray, shape B x 1</span>
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
 <span class="sd">        :param vectors: vector representations in B x D</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
@@ -518,10 +550,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="BaseVectorIndexer.update"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseVectorIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseVectorIndexer.update"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseVectorIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update vectors on the index.</span>
+
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
+<span class="sd">        :param values: vector representations in B x D</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="BaseVectorIndexer.delete"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseVectorIndexer.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseVectorIndexer.delete"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseVectorIndexer.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete vectors from the index.</span>
+
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
 
@@ -533,21 +574,35 @@
 <span class="sd">    It can be used to tell whether an indexer is key-value indexer, via ``isinstance(a, BaseKVIndexer)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="BaseKVIndexer.add"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseKVIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+<div class="viewcode-block" id="BaseKVIndexer.add"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseKVIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add the serialized documents to the index via document ids.</span>
 
-<div class="viewcode-block" id="BaseKVIndexer.query"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseKVIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot; Find the protobuf chunk/doc using id</span>
-
-<span class="sd">        :param key: ``id``</span>
-<span class="sd">        :return: protobuf chunk or protobuf document</span>
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
+<span class="sd">        :param values: serialized documents</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="BaseKVIndexer.update"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseKVIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseKVIndexer.query"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseKVIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Find the serialized document to the index via document id.</span>
+
+<span class="sd">        :param key: document id</span>
+<span class="sd">        :return: serialized documents</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="BaseKVIndexer.delete"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseKVIndexer.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterator</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseKVIndexer.update"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseKVIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the serialized documents on the index via document ids.</span>
+
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
+<span class="sd">        :param values: serialized documents</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BaseKVIndexer.delete"><a class="viewcode-back" href="../../../api/jina.executors.indexers.html#jina.BaseKVIndexer.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete the serialized documents from the index via document ids.</span>
+
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
@@ -569,7 +624,7 @@
 <span class="sd">        - In the query time</span>
 <span class="sd">            - 1. Find the knn using the vector via :class:`BaseVectorIndexer`</span>
 <span class="sd">            - 2. remove all vector information (embedding, buffer, blob, text)</span>
-<span class="sd">            - 3. Fill in the meta information of the chunk via :class:`BaseKVIndexer`</span>
+<span class="sd">            - 3. Fill in the meta information of the document via :class:`BaseKVIndexer`</span>
 
 <span class="sd">    One can use the :class:`ChunkIndexer` via</span>
 
@@ -763,7 +818,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 03, 2021.
+        Last updated on Feb 04, 2021.
       </span>
 
         </p>

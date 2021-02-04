@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.search &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.drivers.search &mdash; Jina 0.9.29-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.29-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -323,24 +323,26 @@
 
 
 <div class="viewcode-block" id="KVSearchDriver"><a class="viewcode-back" href="../../../api/jina.drivers.search.html#jina.drivers.search.KVSearchDriver">[docs]</a><span class="k">class</span> <span class="nc">KVSearchDriver</span><span class="p">(</span><span class="n">BaseSearchDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Fill in the doc/chunk-level top-k results using the :class:`jina.executors.indexers.meta.BinaryPbIndexer`</span>
+    <span class="sd">&quot;&quot;&quot;Fill in the results using the :class:`jina.executors.indexers.meta.BinaryPbIndexer`</span>
 
 <span class="sd">    .. warning::</span>
-<span class="sd">        This driver loops over all chunk/chunk&#39;s top-K results, each step fires a query.</span>
-<span class="sd">        This may not be very efficient, as the total number of queries depends on ``level``</span>
+<span class="sd">        This driver runs a query for each document.</span>
+<span class="sd">        This may not be very efficient, as the total number of queries grows cubic with the number of documents, chunks</span>
+<span class="sd">        per document and top-k.</span>
 
-<span class="sd">             - ``level=chunk``: D x C x K</span>
-<span class="sd">             - ``level=doc``: D x K</span>
-<span class="sd">             - ``level=all``: D x C x K</span>
+<span class="sd">            - traversal_paths = [&#39;m&#39;] =&gt; D x K</span>
+<span class="sd">            - traversal_paths = [&#39;r&#39;] =&gt; D</span>
+<span class="sd">            - traversal_paths = [&#39;cm&#39;] =&gt; D x C x K</span>
+<span class="sd">            - traversal_paths = [&#39;m&#39;, &#39;cm&#39;] =&gt; D x K + D x C x K</span>
 
 <span class="sd">        where:</span>
 <span class="sd">            - D is the number of queries</span>
-<span class="sd">            - C is the number of chunks per query/doc</span>
+<span class="sd">            - C is the number of chunks per document</span>
 <span class="sd">            - K is the top-k</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">is_merge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;m&#39;</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Construct the driver.</span>
 
 <span class="sd">        :param is_merge: when set to true the retrieved docs are merged into current message using :meth:`MergeFrom`,</span>
 <span class="sd">            otherwise, it overrides the current message using :meth:`CopyFrom`</span>
@@ -369,7 +371,7 @@
 
 
 <div class="viewcode-block" id="VectorFillDriver"><a class="viewcode-back" href="../../../api/jina.drivers.search.html#jina.drivers.search.VectorFillDriver">[docs]</a><span class="k">class</span> <span class="nc">VectorFillDriver</span><span class="p">(</span><span class="n">QuerySetReader</span><span class="p">,</span> <span class="n">BaseSearchDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Fill in the embedding by their doc id</span>
+    <span class="sd">&quot;&quot;&quot;Fill in the embedding by their document id.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;query_by_key&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -382,14 +384,13 @@
 
 
 <div class="viewcode-block" id="VectorSearchDriver"><a class="viewcode-back" href="../../../api/jina.drivers.search.html#jina.drivers.search.VectorSearchDriver">[docs]</a><span class="k">class</span> <span class="nc">VectorSearchDriver</span><span class="p">(</span><span class="n">QuerySetReader</span><span class="p">,</span> <span class="n">BaseSearchDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Extract chunk-level embeddings from the request and use the executor to query it</span>
-
+    <span class="sd">&quot;&quot;&quot;Extract embeddings from the request for the executor to query.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">fill_embedding</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Construct the driver.</span>
 
-<span class="sd">        :param top_k: top-k doc id to retrieve</span>
+<span class="sd">        :param top_k: top-k document ids to retrieve</span>
 <span class="sd">        :param fill_embedding: fill in the embedding of the corresponding doc,</span>
 <span class="sd">                this requires the executor to implement :meth:`query_by_key`</span>
 <span class="sd">        :param args:</span>
@@ -558,7 +559,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 03, 2021.
+        Last updated on Feb 04, 2021.
       </span>
 
         </p>

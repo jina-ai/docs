@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers.cache &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.executors.indexers.cache &mdash; Jina 0.9.29-master documentation</title>
   
 
   
@@ -86,7 +86,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.29-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -362,16 +362,19 @@
 
 <dl class="class">
 <dt id="jina.executors.indexers.cache.DocCache">
-<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.cache.</code><code class="sig-name descname">DocCache</code><span class="sig-paren">(</span><em class="sig-param">index_filename=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocCache" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">jina.executors.indexers.cache.</code><code class="sig-name descname">DocCache</code><span class="sig-paren">(</span><em class="sig-param">index_filename=None</em>, <em class="sig-param">field=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocCache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#jina.executors.indexers.cache.BaseCache" title="jina.executors.indexers.cache.BaseCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.cache.BaseCache</span></code></a></p>
 <p>A key-value indexer that specializes in caching.
 Serializes the cache to two files, one for ids, one for the actually cached field.
 If field=`id`, then the second file is redundant. The class optimizes the process
 so that there are no duplicates.</p>
-<p>creates a new DocCache</p>
+<p>Create a new DocCache</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>field</strong> – to be passed as kwarg. This dictates by which Document field we cache (either <cite>id</cite> or <cite>content_hash</cite>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index_filename</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – file name for storing the cache data</p></li>
+<li><p><strong>field</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – field to cache on (ID_KEY or CONTENT_HASH_KEY)</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="class">
@@ -398,12 +401,18 @@ so that there are no duplicates.</p>
 <dl class="method">
 <dt id="jina.executors.indexers.cache.DocCache.add">
 <code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param">doc_id</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocCache.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocCache.add" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Add a document to the cache depending on <cite>self.field</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>doc_id</strong> (<a class="reference internal" href="jina.types.document.uid.html#jina.types.document.uid.UniqueId" title="jina.types.document.uid.UniqueId"><em>UniqueId</em></a>) – document id to be added</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="jina.executors.indexers.cache.DocCache.query">
 <code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocCache.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocCache.query" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check whether the data exists in the cache</p>
+<dd><p>Check whether the data exists in the cache.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> – either the id or the content_hash of a Document</p>
@@ -411,30 +420,28 @@ so that there are no duplicates.</p>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</p>
 </dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>status</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="jina.executors.indexers.cache.DocCache.update">
 <code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">values</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocCache.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocCache.update" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – list of Document.id</p></li>
-<li><p><strong>values</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">any</span></code>]) – list of either <cite>id</cite> or <cite>content_hash</cite> of <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></p></li>
-</ul>
-</dd>
-</dl>
+<dd><p>Update cached documents.
+:type keys: <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]
+:param keys: list of Document.id
+:type values: <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">any</span></code>]
+:param values: list of either <cite>id</cite> or <cite>content_hash</cite> of <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="jina.executors.indexers.cache.DocCache.delete">
 <code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">keys</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/indexers/cache.html#DocCache.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.indexers.cache.DocCache.delete" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>keys</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]) – list of Document.id</p>
-</dd>
-</dl>
+<dd><p>Delete documents from the cache.
+:type keys: <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ForwardRef</span></code>]
+:param keys: list of Document.id</p>
 </dd></dl>
 
 <dl class="method">
@@ -606,7 +613,7 @@ so that there are no duplicates.</p>
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 03, 2021.
+        Last updated on Feb 04, 2021.
       </span>
 
         </p>

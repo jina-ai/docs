@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.search &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.drivers.search &mdash; Jina 0.9.29-master documentation</title>
   
 
   
@@ -86,7 +86,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.29-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -352,27 +352,30 @@
 <dt id="jina.drivers.search.KVSearchDriver">
 <em class="property">class </em><code class="sig-prename descclassname">jina.drivers.search.</code><code class="sig-name descname">KVSearchDriver</code><span class="sig-paren">(</span><em class="sig-param">is_merge=True</em>, <em class="sig-param">traversal_paths='m'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/search.html#KVSearchDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.search.KVSearchDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#jina.drivers.search.BaseSearchDriver" title="jina.drivers.search.BaseSearchDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.search.BaseSearchDriver</span></code></a></p>
-<p>Fill in the doc/chunk-level top-k results using the <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.meta.BinaryPbIndexer</span></code></p>
+<p>Fill in the results using the <code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.meta.BinaryPbIndexer</span></code></p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This driver loops over all chunk/chunk’s top-K results, each step fires a query.
-This may not be very efficient, as the total number of queries depends on <code class="docutils literal notranslate"><span class="pre">level</span></code></p>
+<p>This driver runs a query for each document.
+This may not be very efficient, as the total number of queries grows cubic with the number of documents, chunks
+per document and top-k.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">level=chunk</span></code>: D x C x K</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">level=doc</span></code>: D x K</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">level=all</span></code>: D x C x K</p></li>
+<li><p>traversal_paths = [‘m’] =&gt; D x K</p></li>
+<li><p>traversal_paths = [‘r’] =&gt; D</p></li>
+<li><p>traversal_paths = [‘cm’] =&gt; D x C x K</p></li>
+<li><p>traversal_paths = [‘m’, ‘cm’] =&gt; D x K + D x C x K</p></li>
 </ul>
 </div></blockquote>
 <dl class="simple">
 <dt>where:</dt><dd><ul class="simple">
 <li><p>D is the number of queries</p></li>
-<li><p>C is the number of chunks per query/doc</p></li>
+<li><p>C is the number of chunks per document</p></li>
 <li><p>K is the top-k</p></li>
 </ul>
 </dd>
 </dl>
 </div>
+<p>Construct the driver.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>is_merge</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – when set to true the retrieved docs are merged into current message using <code class="xref py py-meth docutils literal notranslate"><span class="pre">MergeFrom()</span></code>,
@@ -385,18 +388,19 @@ otherwise, it overrides the current message using <code class="xref py py-meth d
 <dt id="jina.drivers.search.VectorFillDriver">
 <em class="property">class </em><code class="sig-prename descclassname">jina.drivers.search.</code><code class="sig-name descname">VectorFillDriver</code><span class="sig-paren">(</span><em class="sig-param">executor=None</em>, <em class="sig-param">method='query_by_key'</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/search.html#VectorFillDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.search.VectorFillDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="jina.drivers.html#jina.drivers.QuerySetReader" title="jina.drivers.QuerySetReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.QuerySetReader</span></code></a>, <a class="reference internal" href="#jina.drivers.search.BaseSearchDriver" title="jina.drivers.search.BaseSearchDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.search.BaseSearchDriver</span></code></a></p>
-<p>Fill in the embedding by their doc id</p>
+<p>Fill in the embedding by their document id.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="jina.drivers.search.VectorSearchDriver">
 <em class="property">class </em><code class="sig-prename descclassname">jina.drivers.search.</code><code class="sig-name descname">VectorSearchDriver</code><span class="sig-paren">(</span><em class="sig-param">top_k=50</em>, <em class="sig-param">fill_embedding=False</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/search.html#VectorSearchDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.search.VectorSearchDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="jina.drivers.html#jina.drivers.QuerySetReader" title="jina.drivers.QuerySetReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.QuerySetReader</span></code></a>, <a class="reference internal" href="#jina.drivers.search.BaseSearchDriver" title="jina.drivers.search.BaseSearchDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.search.BaseSearchDriver</span></code></a></p>
-<p>Extract chunk-level embeddings from the request and use the executor to query it</p>
+<p>Extract embeddings from the request for the executor to query.</p>
+<p>Construct the driver.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>top_k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – top-k doc id to retrieve</p></li>
+<li><p><strong>top_k</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – top-k document ids to retrieve</p></li>
 <li><p><strong>fill_embedding</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – fill in the embedding of the corresponding doc,
 this requires the executor to implement <code class="xref py py-meth docutils literal notranslate"><span class="pre">query_by_key()</span></code></p></li>
 <li><p><strong>args</strong> – </p></li>
@@ -550,7 +554,7 @@ this requires the executor to implement <code class="xref py py-meth docutils li
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 03, 2021.
+        Last updated on Feb 04, 2021.
       </span>
 
         </p>
