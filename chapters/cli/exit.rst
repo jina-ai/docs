@@ -1,27 +1,27 @@
 ====================
 Gracefully Exit Jina
 ====================
----------------------------------------------------------------------------------
-Summary: In this section, you will learn best practices to shut down a Flow and exit Jina correctly.
----------------------------------------------------------------------------------
+In this section, you will learn best practices to shut down a Flow and exit Jina correctly.
+
+.. contents:: Table of Contents
+    :depth: 4
 
 Feature description and expected outcome
 ----------------------------------------
 Jina provides several methods to exit gracefully.
-
 Through these ways the Flow will terminate and release all resources.
 
-Before you start:
+Before you start
 -----------------
 Make sure you install Jina via `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_.
 
-Implementation:
+Implementation
 ---------------
 
 In Python
 ^^^^^^^^^
 
-If you use ``with`` scope to start a Flow, then all resources (including Pods of all kinds) of the Flow will be released after your move out from the scope.
+If you use ``with`` scope to start a Flow, then all resources (including Pods of all kinds) of the Flow will be released after you move out from the scope.
 
 .. highlight:: python
 .. code:: python
