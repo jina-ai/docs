@@ -24,7 +24,7 @@ The first thing you need is to have Jina installed and ready to run. There are d
 
     pip install jina
 
-To see other ways to install Jina, we have an `installation guide<https://docs.jina.ai/chapters/install/os/index.html>`_. here.
+To see other ways to install Jina, we have an `installation guide <https://docs.jina.ai/chapters/install/os/index.html>`_. here.
 
 Set-up with Jina Jub
 ====================
@@ -106,7 +106,7 @@ Pods
 
 ``/pods``
 
-Our Flows will need some :term:`Pods<Pod>`, so we also create a dedicated pods folder for them.
+Our Flows will need some :term:`Pods<Pod>`, so we also create a dedicated `pods` folder for them.
 
 App.py
 ---------
@@ -124,18 +124,18 @@ This :term:`workspace` is a special folder. You will **not** create this folder 
 
 Dockerfile
 ---------
-`
+
 ``/Dockerfile``
 
 
-This is another optional element, but if you want to have one you can have one under the main directory
+This is another optional element. It should be stored in the main directory.
 
 .dockerignore
 ---------
 
 ``/.dockerignore``
 
-Don't forget to add here all the files that you don't want to include in your initial build context. The Docker daemon will skip those files for the **docker build**
+Don't forget to add here all the files that you don't want to include in your initial build context. The Docker daemon will skip those files for the :code:`docker build`
 
 
 .gitignore
@@ -143,7 +143,7 @@ Don't forget to add here all the files that you don't want to include in your in
 
 ``/.gitignore``
 
-Add here whatever files you don't want to commit. The **.gitignore** is usually placed under the main directory and we follow that convention in Jina.
+Add here whatever files you don't want to commit.
 
 README
 ---------
