@@ -63,9 +63,9 @@ the version will increment following `semantic versioning`. For instance, `0.0.9
 
 ## Publish Your image
 
-All you need is to publish your file bundle into this repo. Subsequently, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline. 
+All you need to do is to publish your file bundle into this repo. Subsequently, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline. 
 
-1. Let's say your organize [all files mentioned in here](#what-files-need-to-be-uploaded) in a folder called `awesomeness`. Depending on what you are contributing, you can put it into `hub/executors/indexers/awesomeness`.
+1. Let's say you organize [all files mentioned in here](#what-files-need-to-be-uploaded) in a folder called `awesomeness`. Depending on what you are contributing, you can put it into `hub/executors/indexers/awesomeness`.
 2. Make a Pull Request and commit your changes into this repository, remember to follow the commit lint style.
 3. Wait until the CICD finish and you get at least one reviewer's approval.
 4. Merge it! 
