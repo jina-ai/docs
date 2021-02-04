@@ -1,11 +1,9 @@
 
 # Publish Your Pod Image to Jina Hub
 
-You can publish your custom executor pod to `jina` hub by simply contributing your pod files to the `jina` repository. This can be done by raising a PR with all the relevant pod files bundled as described below. Jina's CI/CD pipeline will automatically use the PR to build an image and publish it to Jina Hub.
+You can publish your custom Executor Pod to Jina Hub by contributing your Pod files to the Jina repository. You can raise a PR with all the relevant Pod files bundled as described below. Jina's CI/CD pipeline will automatically use the PR to build an image and publish it to Jina Hub.
 
-## What Files Need to be Uploaded?
-
-Typically, the following files are required:
+## Required files
 
 | File             | Descriptions                                                                                        |
 |------------------|-----------------------------------------------------------------------------------------------------|
@@ -15,10 +13,13 @@ Typically, the following files are required:
 | `*.py`           | describes the executor logic written in Python, if applicable                                       |
 | `*.yml`          | a YAML file describes the executor arguments and configs, if you want users to use your config      |
 
-Note, large binary files (such as pretrained model, auxiliary data) are **not** recommended to upload to this repository. You can use `RUN wget ...` or `RUN curl` inside the `Dockerfile` to download it from the web during the build.
+Note, large binary files (such as pretrained models, auxiliary data) are **not** recommended to upload to this repository. You can use `RUN wget ...` or `RUN curl` inside the `Dockerfile` to download it from the web during the build.
 
+## File structure and schema for Pods:
 
-Your file bundle `awesomeness` should be uploaded to:
+Your custom `Pod` file bundle needs to follow a structure and certain schema rules for annotating the image successfully.
+For instance, your pod is a kind of `encoder` named `awesomeness`. The file bundle should be uploaded to the Hub `executors` under kind `encoders`
+with the following structure:
 ```text
 hub/
   |
@@ -38,8 +39,6 @@ Your image will be published as `jinaai/hub.executors.encoders.awesomeness`.
 
 ## Schema of `manifest.yml`
 
-`manifest.yml` must exist if you want to publish your Pod image to Jina Hub.
-
 `manifest.yml` annotates your image so that it can be managed by Jina Hub. To ensure better compatibility with Jina Hub, you should carefully set `manifest.yml` to use correct values.
 
 | Key | Description | Default |
@@ -57,7 +56,12 @@ Your image will be published as `jinaai/hub.executors.encoders.awesomeness`.
 
 Please refer to [hub/examples/mwu_encoder/manifest.yml](hub/examples/mwu_encoder/manifest.yml) for the example.
 
-## Steps to Publish Your Image
+## Updating schema of Pods
+
+If you have made code changes to a Pod, you must update the appropriate fields like `version` inside `manifest.yml` for updating the schema. With every change,
+the version will increment following `semantic versioning`. For instance, `0.0.9` becomes `0.0.10` on an update
+
+## Publish Your image
 
 All you need is to publish your file bundle into this repo. Subsequently, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline. 
 
@@ -73,9 +77,9 @@ The image will be available at `jinaai/hub.executors.indexers.awesomeness:0.0.0`
 You can use the image with [the ways described here](./use-your-pod.html#use-your-pod-image).  
 
 
-## Why My Upload Fails on the CICD?
+## Why does my upload fail on CI/CD?
 
-Common causes why your pod upload could fail:
+Common causes why your upload could fail:
 
 - [ ] Required file `Dockerfile`, `manifest.yml`, `README.md` is missing. 
 - [ ] The required field in `manifest.yml` is missing.
