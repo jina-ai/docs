@@ -1,23 +1,35 @@
 ## Using Flow API to Compose Your Jina Workflow
 
-##### Summary: In this section, you will get to know how to construct the flow using different approaches. 
+In this section, you will get to know how to construct the flow using different approaches. 
 
+Table of Contents
+- [Using Flow API to Compose Your Jina Workflow](#using-flow-api-to-compose-your-jina-workflow)
+  * [Feature description and expected outcome](#feature-description-and-expected-outcome)
+  * [Before you start](#before-you-start)
+  * [Implementation](#implementation)
+    + [Use Flow API in Python](#use-flow-api-in-python)
+      - [Create a Flow](#create-a-flow)
+      - [Add Pod into the Flow](#add-pod-into-the-flow)
+      - [Add a Containerized Pod into the Flow](#add-a-containerized-pod-into-the-flow)
+      - [Add a Remote Pod into the Flow](#add-a-remote-pod-into-the-flow)
+      - [Add a Remote Containerized Pod into the Flow](#add-a-remote-containerized-pod-into-the-flow)
+      - [Parallelize the Steps](#parallelize-the-steps)
+      - [Waiting for Parallel Steps to Finish](#waiting-for-parallel-steps-to-finish)
+      - [Run a Flow](#run-a-flow)
+      - [Test Connectivity with Dry Run](#test-connectivity-with-dry-run)
+      - [Iterate over Pods in the Flow](#iterate-over-pods-in-the-flow)
+      - [Feed Data to the Flow](#feed-data-to-the-flow)
+      - [Feed Data to the Flow from Other Clients](#feed-data-to-the-flow-from-other-clients)
+    + [Use Flow API in YAML](#use-flow-api-in-yaml)
+      - [Load a Flow from YAML](#load-a-flow-from-yaml)
+    + [Design a Flow with Dashboard](#design-a-flow-with-dashboard)
+    
 ### Feature description and expected outcome
 In search systems, tasks such as indexing often involve multiple steps: preprocessing, encoding, storing, etc. In Jina's architecture, each step is implemented by an Executor and wrapped by a Pod. This microservice design makes the whole pipeline flexible and scalable. Accomplishing a task is then linking all these Pods to work together, either sequentially or in parallel; locally or remotely. 
 
 The Flow API is a context manager for Pods. Each `Flow` object corresponds to a real-world task. It helps the user to manage the states and contexts of all Pods required in that task. The Flow API translates a workflow defined in Python code, YAML file, or interactive graph to a runtime backed by multi-thread/process, Kubernetes, Docker Swarm, etc. Users don't need to worry about where the Pod is running or how the Pods are connected.
 
 ![Flow is a context manager](flow-api-doc.png)
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-
-- [Use Flow API in Python](#use-flow-api-in-python)
-- [Use Flow API in YAML](#use-flow-api-in-yaml)
-- [Design a Flow with Dashboard](#design-a-flow-with-dashboard)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ### Before you start
 Make sure you install latest version of Jina via [Installation](https://docs.jina.ai/chapters/install/os/index.html).
