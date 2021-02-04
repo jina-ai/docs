@@ -73,7 +73,7 @@ Besides the file path, in Flow API `uses` can accept other types:
 | Type | Example | Remark |
 | --- | --- | --- |
 | YAML file path | `crafter/my.yml` | |
-| Inline YAML | `- !Buffer2URI \| {mimetype: png}` | Don't forget `- !` in the beginning |
+| Inline YAML | `- !Buffer2URI | {mimetype: png}` | Don't forget `- !` in the beginning |
 | The name of an executor [listed here](../all_exec.html) | `NumpyIndexer` | Only the executors that have full default values can be directly used |
 | Built-in simple executors [listed here](../simple_exec.html) | `_clear` | Always starts with `_` |
 | Docker image | `docker://jinahub/pod.encoder.dummy_mwu_encoder:0.0.6-0.9.3` | Add `docker://` before the image name and set timeout_ready to -1 to avoid timeout error |
@@ -164,8 +164,11 @@ gateway -> p1 -> p2 ->
 To run a Flow, simply use the `with` keyword:
 
 ```python
-f = (Flow().add(...)
-           .add(...))
+
+f = (Flow().add(name='p1')
+           .add(name='p2')
+           .add(name='p3', needs='p1')
+           .join(['p2', 'p3']))
 
 with f:
     # the flow is now running
@@ -185,7 +188,22 @@ with f:
 
 ```
 
-This will send a `ControRequest` to all pods following the topology you defined. You can use it to test the connectivity of all pods. 
+##### Iterate over Pods in the Flow
+
+You can iterate the Pods in a Flow like you would a list. For example:
+
+```python
+
+f = (Flow().add(name='p1')
+           .add(name='p2')
+           .add(name='p3', needs='p1')
+           .join(['p2', 'p3']))
+
+for p in f.build():
+    print(f'name: {p[0]} in: {str(p[1].args.socket_in)} out: {str(p[1].args.socket_out)}')
+
+```
+Note f.build() will build the underlying network context but not run the Pods. It is very useful for debugging.
 
 ##### Feed Data to the Flow
 
