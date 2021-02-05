@@ -122,11 +122,11 @@ Use terms from a glossary
 
 You can reference a term that is defined in the Glossary. You can do it like this:
 
-*:term:*` Magic`
+*:term:* ` Magic`
 
 You need to match exactly the term as in the Glossary. If you want to show different text in the topic, you can do it by including the term in angle brackets. You can do it like this:
 
-*:term:*` Another type of Magic <Magic>`
+*:term:* ` Another type of Magic <Magic>`
 
 
 Documenting classes
