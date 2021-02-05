@@ -58,41 +58,8 @@ Then we define a simple crafter which will just forward the data.
             return {'id': id}
 
 
-Next we define the data generator.
-
-.. highlight:: python
-.. code-block:: python
-
-    def random_docs(num_docs, chunks_per_doc=5, embed_dim=10, jitter=1, start_id=0, embedding=True) -> Iterator['Document']:
-        next_chunk_doc_id = start_id + num_docs
-        for j in range(num_docs):
-            doc_id = start_id + j
-
-            d = Document(id=doc_id)
-            d.text = b'hello world'
-            d.tags['id'] = doc_id
-            if embedding:
-                d.embedding = np.random.random([embed_dim + np.random.randint(0, jitter)])
-            d.update_content_hash()
-
-            for _ in range(chunks_per_doc):
-                chunk_doc_id = next_chunk_doc_id
-
-                c = Document(id=chunk_doc_id)
-                c.text = 'i\'m chunk %d from doc %d' % (chunk_doc_id, doc_id)
-                if embedding:
-                    c.embedding = np.random.random([embed_dim + np.random.randint(0, jitter)])
-                c.tags['parent_id'] = doc_id
-                c.tags['id'] = chunk_doc_id
-                c.update_content_hash()
-                d.chunks.append(c)
-                next_chunk_doc_id += 1
-
-            yield d
-
-
-For this example, we will index 100 documents and use 10 parallel crafters. The ``request_size``
-is set as 20. So the 100 documents will be divided into 5 parts and then distributed to the crafters.
+For this example, we will index 100 documents and use 10 parallel ``Crafters``. The ``request_size``
+is set as 20. So the 100 ``Documents`` will be divided into 5 parts and each ``Request`` contains 20 ``Documents``.
 
 .. highlight:: python
 .. code-block:: python
@@ -107,7 +74,7 @@ is set as 20. So the 100 documents will be divided into 5 parts and then distrib
             uses='SimpleCrafter',
             parallel=10)
         with f:
-            f.index(input_fn=random_docs(100), request_size=request_size)
+            f.index_ndarray(np.random.random([100, 10]), request_size=request_size)
 
         end_time = time.time()
 
@@ -123,9 +90,10 @@ Choose different request size
 --------------------
 Different setting of ``request_size`` may influence the running performance.
 A higher value means large size data will be fed into the ``Pea`` and will demand more memory.
-A lower value will decrease the cost of memory but may increase the running time.
+A lower value will decrease the cost of memory but may increase the running time since we need to send more ``requests``.
 
 An simple extension of the above example generate a box plot showing the relationship between ``request_size`` and running time
+when we have 100 number of ``Documents`` to be indexed.
 which may help you to get more insights on choosing the ``request_size``.
 
 .. image:: request_size_runtime.png
