@@ -32,7 +32,7 @@ Make sure you intall latest version of Jina on your local machine.
 
 Implementation
 --------------------
-In order to have a better understanding of the influence of ``request_size`` and how it works, let's take the following
+In order to have a better understanding of the influence of ``request_size`` and how it is used, let's take the following
 codes as example.
 
 We first import the necessary modules.
@@ -48,7 +48,7 @@ We first import the necessary modules.
     from jina.executors.crafters import BaseCrafter
     from jina.flow import Flow
 
-Then we define a simple crafter which will just forward the data.
+Then we define a  ``SimpleCrafter`` which will just forward the data.
 
 .. highlight:: python
 .. code-block:: python
@@ -68,16 +68,13 @@ is set as 20. So the 100 ``Documents`` will be divided into 5 parts and each ``R
 
         request_size=20
         start_time = time.time()
-
         f = Flow(runtime='process').add(
             name='simple_crafter',
             uses='SimpleCrafter',
             parallel=10)
         with f:
             f.index_ndarray(np.random.random([100, 10]), request_size=request_size)
-
         end_time = time.time()
-
         seconds_elapsed = end_time - start_time
         print(seconds_elapsed)
 
