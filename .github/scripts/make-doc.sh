@@ -43,7 +43,8 @@ if [[ $1 == "commit" ]]; then
   cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/html/
   cd -
   cd ${HTML_DIR}
-  mkdir master
+  rm -rf master
+  mkdir -p master
   rsync -avr --ignore-missing-args . master  # sync everything under the root to master/
   cd -
   cd ${DOC_DIR}/bak
