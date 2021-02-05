@@ -4,27 +4,17 @@ on:
   pull_request:
 
 jobs:
-  build-doc:
+  build-doc-and-doc-test:
     runs-on: ubuntu-latest
     env:
       HTML_DIR: ./_build/html
     steps:
-      - name: Checkout to Jina core
-        uses: actions/checkout@v2
-        with:
-          repository: jina-ai/jina
-          token: ${{ secrets.JINA_DEV_BOT }}
       - name: Setup Python
         uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - name: Get Jina version
-        run: |
-          pip install jina
-          JINA_VERSION=$(sed -n '/^__version__/p' ./jina/__init__.py | cut -d \' -f2)-master
-          echo "JINA_VERSION=${JINA_VERSION}" >> $GITHUB_ENV
       - name: Checkout to docs repo
         uses: actions/checkout@v2
-      - name: Build docs
+      - name: Build docs and run doctest
         run: |
           bash .github/scripts/make-doc.sh test
