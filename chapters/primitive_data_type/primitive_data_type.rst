@@ -112,6 +112,7 @@ For example:
 
 .. highlight:: python
 .. code-block:: python
+.. testcode:: python
 
     import numpy as np
     from jina import Document
@@ -135,6 +136,7 @@ To create a document from constructor:
 
 .. highlight:: python
 .. code-block:: python
+.. testcode:: python
 
     from jina import Document
 
@@ -155,6 +157,7 @@ To create & access a :class:`DocumentSet`:
 
 .. highlight:: python
 .. code-block:: python
+.. testcode:: python
 
     from jina import Document
     from jina.types.sets.document import DocumentSet
@@ -173,6 +176,7 @@ For example:
 
 .. highlight:: python
 .. code-block:: python
+.. testcode:: python
 
     from jina import Document
     from jina.types.sets.document import DocumentSet
@@ -183,9 +187,9 @@ For example:
     # Initialize a document set
     ds = DocumentSet([d0, d1])
     # Get the number of docs inside the set.
-    print(len(ds))
+    len(ds)
     # Get document by index
-    print(ds[0])
+    ds[0]
     # Reverse a documentset
     ds.reverse()
     # Remove all contents from a document set
@@ -201,6 +205,7 @@ For example:
 
 .. highlight:: python
 .. code-block:: python
+.. testcode:: python
 
     from jina import Document
 
@@ -212,7 +217,7 @@ For example:
     document.chunks.append(chunk0)
     document.chunks.append(chunk1)
     # Check the type of chunks
-    print(type(document.chunks))
+    type(document.chunks)
 
 If you print the type of :attr:`chunks`, you will find out it's named ``<class 'jina.types.sets.chunk.ChunkSet'>``, a derived data type based on :class:`DocumentSet`.
 :class:`ChunkSet` added extra logic to handle logics such as  :meth:`granularity` and :meth:`adjacency`.
@@ -223,6 +228,7 @@ For example:
 
 .. highlight:: python
 .. code-block:: python
+.. testcode:: python
 
     import numpy as np
     from jina.types.document.multimodal import MultimodalDocument
@@ -233,7 +239,7 @@ For example:
         modality_content_map={'visual': visual_content, 'textual': textual_content}
     )
     # Check the modalities of the document
-    print(multimodal_document.modalities)
+    multimodal_document.modalities
     # Get the content of document by modality name
     content = multimodal_document['visual']
 
