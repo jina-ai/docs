@@ -12,26 +12,19 @@ Welcome to Jina!
    :maxdepth: 1
    :caption: Jina Dashboard
 
-   chapters/dashboard/introduction/index
+
    chapters/dashboard/guides/index
-   chapters/dashboard/api_references/index
+
 
 .. toctree::
    :maxdepth: 1
    :caption: Jina Hub
 
-   chapters/hub/introduction/index
+
    chapters/hub/guides/index
-   chapters/hub/api_references/index
 
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Jina Box
 
-   chapters/box/introduction/index
-   chapters/box/guides/index
-   chapters/box/api_references/index
 
 
 .. toctree::
