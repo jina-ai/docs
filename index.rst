@@ -12,6 +12,7 @@ Welcome to Jina!
    chapters/io/index
    chapters/cli/exit
    chapters/docstring/docstring
+   chapters/project-guide/project-guide
 
 
 .. toctree::
