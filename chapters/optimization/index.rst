@@ -29,8 +29,6 @@ Before you start
 
 Make sure you install Jina via `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_ with ``jina[optimizer]``.
 
-Furthermore it is recommended to read *TODO: ADD LINK TO EVALUATOR SECTION*
-
 Using the FlowOptimizer
 -----------------------
 
@@ -73,6 +71,9 @@ Furthermore, we need the corresponding ``encoder.yml``:
 
 .. code-block:: python
 
+  import numpy as np
+  from jina.executors.encoders import BaseEncoder
+
   class SimpleEncoder(BaseEncoder):
 
       ENCODE_LOOKUP = {
@@ -96,6 +97,8 @@ As the next step we need some ground truth data.
 
 .. code-block:: python
 
+  from jina import Document
+
   documents = [
       (Document(content='🐲'), Document(embedding=np.array([2]))),
       (Document(content='🐦'), Document(embedding=np.array([3]))),
@@ -114,6 +117,8 @@ The ``FlowRunner`` wraps the Flow and the Documents for rerunnability.
 This ensures no side effects between different Flow runs during optimization.
 
 .. code-block:: python
+
+  from jina.optimizers.flow_runner import SingleFlowRunner
 
   runner = SingleFlowRunner('flow.yml', documents, 1, 'search', overwrite_workspace=True)
 
@@ -143,6 +148,8 @@ Under the hood, Jina leverages the `optuna <https://optuna.org/>`_ optimizer.
 Finally, we can define the ``FlowOptimizer`` and run it:
 
 .. code-block:: python
+
+  from jina.optimizers import FlowOptimizer, MeanEvaluationCallback
 
   optimizer = FlowOptimizer(
       flow_runner=runner,
