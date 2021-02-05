@@ -3,7 +3,9 @@ Request Size
 =================
 
 ``request_size`` is the parameter that we could set for the Flow.
-It defines the number of ``Document`` a single ``Request`` will contain, so every ``Pea`` will receive requests containing this amount of documents.
+It defines the number of ``Documents`` a single ``Request`` will contain,
+so ``Peas`` will receive requests containing this amount of ``Documents`` according to different
+scheduling policies.
 
 .. contents:: Table of Contents
     :depth: 2
