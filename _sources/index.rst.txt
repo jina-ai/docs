@@ -11,6 +11,7 @@ Welcome to Jina!
    chapters/flow/index
    chapters/io/index
    chapters/cli/exit
+   chapters/docstring/docstring
    chapters/project-guide/project-guide
 
 
