@@ -2,7 +2,25 @@
 Jina "Hello, World!" 👋🌍
 *************************
 
-As a starter, we invite you to try Jina's "Hello, World" - a simple demo of image neural search for `Fashion-MNIST <https://hanxiao.io/2018/09/28/Fashion-MNIST-Year-In-Review/>`_. No extra dependencies needed, simply run:
+.. meta::
+   :description: Jina "Hello, World!"s
+   :keywords: Jina, hello world
+
+.. note:: This guide expects you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
+
+.. contents:: Table of Contents
+    :depth: 2
+
+
+Run the example
+====================
+
+There are 2 ways to run this example:
+
+* With Docker
+* With Jina installed
+
+If you have Jina installed you don't need any extra dependencies, simply run:
 
 .. highlight:: bash
 .. code-block:: bash
@@ -10,7 +28,9 @@ As a starter, we invite you to try Jina's "Hello, World" - a simple demo of imag
     jina hello-world
 
 
-Or even easier for Docker users, *no install required*, simply for MacOS:
+If you have Docker you don't even Jina installed for this example, simply run:
+
+On MacOS:
 
 
 .. highlight:: bash
@@ -31,7 +51,17 @@ On Linux:
    :align: center
 
 
-This downloads the Fashion-MNIST training and test data and tells Jina to *index* 60,000 images from the training set. Then, it randomly samples images from the test set as *queries*, and asks Jina to retrieve relevant results. After about 1 minute, it opens a web page and show results like this:
+Overview
+====================
+
+
+With this script you will:
+
+#. Download the **Fashion-MNIST** training and test data
+#. :term:`Index<indexing>` 60,000 images from the training set
+#. Use random images from the test set as *queries*
+#. Retrieve the relevant results
+#. After around 1 minute, a web page will open and show results like this:
 
 
 .. image:: hello-world.gif
@@ -72,7 +102,7 @@ And the implementation behind it? It's simple:
     .. image:: hello-world-flow.png
        :align: center
 
-All the big words you can name: computer vision, neural IR, microservice, message queue, elastic, replicas, and shards all happened in just one minute!
+All the big words you can name: computer vision, :term:`neural search`, microservices, :term:`indexing`, :term:`querying/searching<searching>`, and :term:`shards` all happened in just one minute!
 
 View "Hello World" in Jina Dashboard
 ====================================
@@ -87,7 +117,6 @@ View "Hello World" in Jina Dashboard
 
 
 Or if you use Docker:
-
 
 
 .. highlight:: bash
@@ -108,7 +137,6 @@ Intrigued? Play with different options via:
 .. code-block:: bash
 
     jina hello-world --help
-
 
 
 .. argparse::

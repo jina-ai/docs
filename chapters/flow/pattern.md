@@ -37,7 +37,7 @@ The `VectorIndexer`:
 
 ## Text Document Segmentation
 
-A common search pattern is storing long text documents in an index to retrieve them later using short sentences. A single embedding vector per long text document is not the proper way to do this: It makes it hard to extract a single semantically-meaningful vector from a long document. Jina solves this by introducing [Chunks](https://github.com/jina-ai/jina/tree/master/docs/chapters/101#document--chunk). The common scenario is to have a `crafter` segmenting the document into smaller parts (typically short sentences) followed by an NLP-based encoder. 
+A common search pattern is storing long text documents in an index to retrieve them later using short sentences. A single embedding vector per long text document is not the proper way to do this: It makes it hard to extract a single semantically-meaningful vector from a long document. Jina solves this by introducing [Chunks](https://github.com/jina-ai/jina/tree/master/docs/chapters/101#document--chunk). The common scenario is to have a `segmenter` segmenting the document into smaller parts (typically short sentences) followed by an NLP-based encoder. 
 
 ```yaml
 !Sentencizer
@@ -48,7 +48,6 @@ with:
 ```yaml
 !TransformerTorchEncoder
 with:
-  pooling_strategy: auto
   pretrained_model_name_or_path: distilbert-base-cased
   max_length: 96
 ```
@@ -66,14 +65,14 @@ This lets us retrieve the Document from different `input` sentences that match a
 - He is amazed` -> John looks surprised.
 - a similar look -> his face seems familiar.
 
-## Indexers at Different Depth Levels
+## Indexers at Different Granularity Levels
 
 In a configuration like the one for *Text Document Segmentation*, we need different levels of indexing. The system needs to keep the data related to the Chunks as well as the information of the original documents. This way: 
 
 1. The actual search is performed at the Chunk level following the `CompoundIndexer` pattern.
 2. Then the Document indexer works as a final step to extract the actual Documents expected by the user.
  
-To implement this, two common structures appear in `index` and `query`. In an `index` flow, these two indexers work in parallel:
+To implement this, two common structures appear in `index` and `query`. In an `index` flow, these two indexers work in parallel (requests are sent to both indexes at the same time):
 
 * The `chunk indexer` gets messages from an `encoder`
 * The `doc indexer` can get the documents even from the `gateway`.
@@ -176,16 +175,14 @@ components:
       metric: cosine
     metas:
       name: vecidx
-      workspace: $JINA_DIR
   - !BinaryPbIndexer
     with:
       index_filename: doc.gz
     metas:
       name: docidx
-      workspace: $JINA_DIR
 metas:
   name: chunk_indexer
-  workspace: $JINA_DIR
+  workspace: $JINA_WORKSPACE
 requests:
   on:
     IndexRequest:
