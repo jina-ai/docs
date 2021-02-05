@@ -1,6 +1,6 @@
 # Jina Hub API Reference
 
-Jina Hub API allows users to `list`, `build` and `push` Hub images with configurable parameters. This guide covers installing and setting up the API for a seamless experience with the Hub.
+Jina Hub API allows users to :`login`: to Hub, :`list`:, :`build`:, :`push`: and create :`new`: Hub images with configurable parameters. This guide covers installing and setting up the API for a seamless experience with the Hub.
 
 
 ## Install:
