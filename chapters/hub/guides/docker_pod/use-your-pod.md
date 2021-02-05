@@ -61,8 +61,11 @@ Finally, one can use it via Flow API as well, e.g.
 from jina.flow import Flow
 
 f = (Flow()
-        .add(name='my-encoder', image='jinaai/hub.examples.mwu_encoder',
-             volumes='./abc', uses='hub/examples/mwu-encoder/mwu_encoder_ext.yml', 
+        .add(name='my-encoder', volumes='./abc', uses='hub/examples/mwu-encoder/mwu_encoder_ext.yml', 
              port_in=55555, port_out=55556)
         .add(name='my-indexer', uses='indexer.yml'))
 ```
+
+`uses` could also point to an existing `docker-image` url for the Hub Encoder, i.e. `uses="docker://..."`
+Note that the `image` argument is a depracated parameter, that's no longer injected in the `add` method. Earlier usage:
+`image='jinaai/hub.examples.mwu_encoder'`
