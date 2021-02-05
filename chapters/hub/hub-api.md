@@ -1,27 +1,26 @@
-# Hub API
+# Jina Hub API Reference
 
-Jina Hub exposes several handy commands, namely `list`, `build` and `push` with configurable parameters. These APIs constitute the user’s experience using `jina cli` for a seamless experience with the Hub.
+Jina Hub API allows users to `list`, `build` and `push` Hub images with configurable parameters. This guide covers installing and setting up the API for a seamless experience with the Hub.
 
 
-## `jina hub` installation:
-`hub cli` can be installed using pip, run `pip install "jina[hub]"`
+## Install:
+Run `pip install "jina[hub]"`
 
 ## `jina hub list`:
-`hub list` interface helps the user to retrieve information related to executor images in the Hub.
-It accepts filters like:
+`hub list` interface helps the user to retrieve information related to Executor images in the Hub.
+The following filters are accepted:
  `name` corresponding to image name
- `kind` corresponding to the kind of hub image (indexer / encoder / segmenter / crafter / evaluator / ranker etc)
- `type` indicating either pod or app
+ `kind` corresponding to the kind of hub image (Indexer / Encoder / Segmenter / Crafter / Evaluator / Ranker etc)
+ `type` indicating either Pod or app
  `keywords` for filtering on specific terms like `sklearn`,  etc.
 
 `list` could be used for listing both local as well as remote images.
 
-
 ## `jina hub new`:
-Jina provides an easy to use interface for spinning up an executor or an app
+Jina provides an easy-to-use interface for spinning up an Executor or an app
 ### Create a new executor
 `jina hub new --type pod`
-It will start a wizard in CLI to guide you create your first executor. The resulted file structure should look like the following:
+It will start a wizard in the CLI to guide you in creating your first executor. The resulting file structure should look like the following:
 ```
 MyAwesomeExecutor/
 ├── Dockerfile
@@ -37,20 +36,20 @@ MyAwesomeExecutor/
 
 ### Create a new app
 `jina hub new --type app`
-It will start a wizard in CLI to guide you create your app.
+It will start a wizard in the CLI to guide you in creating your app.
 
 ## `jina hub login`
 
-Login to Jina Hub using your Github credentials. This is required for pushing your executor to Jina Hub.
+Login to Jina Hub using your GitHub credentials. This is required for pushing your executor to Jina Hub.
 Usage:
 `jina hub login` : 
 Copy/paste the token into GitHub to verify your account
 
 ## `jina hub build`
-To test your pod/app locally, use the `build` command as follows:
+To test your Pod/app locally, use the `build` command as follows:
 
-jina hub build /MyAwesomeExecutor/
-More Hub CLI usage can be found via jina hub build --help
+`jina hub build /MyAwesomeExecutor/`
+More Hub CLI usage can be found via `jina hub build --help`
  
 ## `jina hub push`
 `push` is the command for publishing your Pod to the Hub
@@ -61,7 +60,7 @@ All apps and executors should follow the naming convention:
 `jinahub/type.kind.jina-image-name:image-jina_version`
  
 For example:
-`jinahub/app.app.jina-wikipedia-sentences-30k:0.2.0-0.8.2`
+`jinahub/app.app.wikipedia-sentences:0.0.1-1.0.0` (use default jina hub new version, and stable Jina version) 
  
-For detailed information, please refer to the [jina-hub repository here].(https://github.com/jina-ai/jina-hub)
+For detailed information, please refer to the [Jina Hub repository].(https://github.com/jina-ai/jina-hub)
  
