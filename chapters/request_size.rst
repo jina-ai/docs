@@ -3,7 +3,7 @@ Request Size
 =================
 
 ``request_size`` is the parameter that we could set for the Flow.
-It defines the number of data sent into parallel ``Peas``.
+It defines the number of ``Document`` a single ``Request`` will contain, so every ``Pea`` will receive requests containing this amount of documents.
 
 .. contents:: Table of Contents
     :depth: 2
@@ -11,7 +11,7 @@ It defines the number of data sent into parallel ``Peas``.
 Request Size
 ------------
 Jina defines the ``request_size`` as the parameter at client side. By setting the ``request_size`` in Flow's API
-we could define the number of data sent to each ``Peas``.
+we could define the number of ``Documents`` contained in every ``Request``.
 
 Batch Size
 ------------
@@ -23,12 +23,11 @@ we align the usage of machine learning terms for ``batch_size``.
 
 Before you start
 ------------------
-Make sure you intall Numpy and latest version of Jina on your local machine.
+Make sure you intall latest version of Jina on your local machine.
 
 .. highlight:: bash
 .. code-block:: bash
 
-    pip install numpy
     pip install -U jina
 
 Implementation
