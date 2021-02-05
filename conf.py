@@ -93,6 +93,7 @@ extensions = [
     'sphinx_autodoc_typehints',
     'sphinx.ext.viewcode',
     'sphinx.ext.coverage',
+    'sphinx.ext.doctest',
     'sphinxcontrib.apidoc',
     'sphinxarg.ext',
     'sphinx_rtd_theme',

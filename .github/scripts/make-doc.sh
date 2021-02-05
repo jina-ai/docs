@@ -89,5 +89,5 @@ elif [[ $1 == "release" ]]; then
 elif [[ $1 == "serve" ]]; then
     python -m http.server $2 -d ${HTML_DIR}
 elif [[ $1 == "test" ]]; then
-    :
+    make doctest
 fi
