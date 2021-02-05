@@ -1,9 +1,9 @@
 # Jina Hub Builder
 
-Jina’s hub-builder is a simple interface for building & validating Jina Hub executors. It is built on top of jina hub interface. It can be used as a Github action in the CICD workflow, or via CLI.
+Jina’s hub-builder is a simple interface for building & validating Jina Hub Executors. It is built on top of Jina Hub interface. It can be used as a GitHub action in the CI/CD workflow, or via CLI.
 
 ## Github action usage:
-One can use the `hub builder` as a part of the CI pipeline, to build and test images in the Pull Request. The following YAML could be directly used in the workflow `.github/workflows/hub-builder.yml`.
+You can use the `hub builder` as a part of the CI pipeline, to build and test images in the Pull Request. The following YAML can be directly used in the workflow `.github/workflows/hub-builder.yml`.
 ```
 name: Hub Builder
 
@@ -18,16 +18,16 @@ jobs:
       - name: Jina Hub Image Builder
         uses: jina-ai/hub-builder@master
 ```
-On every new PR, the builder finds modifications in `manifest.yml` recursively and tries to build a Hub image from it, one by one. That means, when you update an image, you must change manifest.yml to trigger the build, e.g. you can simply bump version field in `manifest.yml`.
+On every new PR, the builder finds modifications in `manifest.yml` recursively and tries to build a Hub image using the latest files. That means, when you update an image, you must change `manifest.yml` to trigger the build, i.e. you can simply bump the version field in `manifest.yml`. This is done one by one for each modified Executor.
 
-### Hub builder action accepts following parameters:
+### Hub builder action accepts the following parameters:
 1. `push` (boolean): if push to Docker Hub and MongoDB
-2. `dockerhub_username` and `dockerhub_password`: user-name and password of docker registry
+2. `dockerhub_username` and `dockerhub_password`: username and password of Docker registry
 3. `dockerhub_registry`: URL to the registry
 4. `slack_webhook`: webhook for Slack notification
-5. `jina_version`: version of Jina for building hub image
+5. `jina_version`: version of Jina for building Hub image
  
-Note: the input argument jina_version is different from the version of jina for running the pod in the container. The later should be set in your`_jina_pod/requirements.txt`. The jina_version is the version of jina when building the pod image.
+Note: the input argument `jina_version` can be different from the version of Jina for running the Pod in the container. The latter should be set in your `_jina_pod/requirements.txt`. The `jina_version` is the version of jina when building the Pod image.
 
 ### Output of the Action
 There are two outputs you can use in the post-action:
