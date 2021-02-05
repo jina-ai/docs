@@ -1,3 +1,4 @@
+==================================
 Docstring guide
 ==================================
 
@@ -183,13 +184,5 @@ Multi-line docstrings example of a class
     Specify what the contructor does
 
     :param param1: This is an example of a param1
-    :param param1: This is an example of a param1
+    :param param2: This is an example of a param2
     """
-
-
-
-
-
-
-
-
