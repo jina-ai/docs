@@ -41,8 +41,8 @@ One-line Docstrings Example
 .. code-block:: python
 
     def does_magic():
-    """ Do magic """
-        print('Magic happens here')
+        """ Do magic """
+            print('Magic happens here')
 
 
 Multi-line Docstrings
@@ -88,7 +88,7 @@ Commonly used python field directives
 This are the most common python field directives:
 
 * Parameters:
-    - *:param[ParamName]:* [ParamDescription]
+    - *:param [ParamName]:* [ParamDescription]
     - *:type [ParamName]:* [ParamType](, optional)
 * Return:
     - *:return:* [ReturnDescription]
@@ -143,25 +143,25 @@ Multi-line docstrings example of a function
 .. code-block:: python
 
     def does_complex_magic(param1: Document, param2: str):
-    """
-    Do complex magic
+        """
+        Do complex magic
 
-    .. note::
-        This is an example note
-    .. warning::
-        This is a warning example
-    .. highlight:: python
-    .. code-block:: python
-        print('This is a print example')
+        .. note::
+            This is an example note
+        .. warning::
+            This is a warning example
+        .. highlight:: python
+        .. code-block:: python
+            print('This is a print example')
 
-    :param param1: This is an example of a param1
-    :type param1: :class:`Document`
-    :param param2: This is an example of a param2
-    :type param2: int
-    :returns: This is an example of what will be returned
-    :rytpe: int
-    :raises KeyError: raises an exception
-    """
+        :param param1: This is an example of a param1
+        :type param1: :class:`Document`
+        :param param2: This is an example of a param2
+        :type param2: int
+        :returns: This is an example of what will be returned
+        :rytpe: int
+        :raises KeyError: raises an exception
+        """
 
 *****************************************************
 Multi-line docstrings example of a class
@@ -171,25 +171,25 @@ Multi-line docstrings example of a class
 .. code-block:: python
 
     class Magic:
-    """
-    :class:`Magic` is one of an example class
+        """
+        :class:`Magic` is one of an example class
 
-    It offers super cool enchanted elements
-    You can specify how to create an object of this class, for example:
+        It offers super cool enchanted elements
+        You can specify how to create an object of this class, for example:
 
-    To create a :class:`Magic` object, simply:
+        To create a :class:`Magic` object, simply:
 
-        .. highlight:: python
-        .. code-block:: python
-            magic_cat = Magic()
-    """
+            .. highlight:: python
+            .. code-block:: python
+                magic_cat = Magic()
+        """
 
-    def __init__(self, param1: int, param2: str):
-    """
-    Specify what the contructor does
+        def __init__(self, param1: int, param2: str):
+            """
+            Specify what the contructor does
 
-    :param param1: This is an example of a param1
-    :type param1: int
-    :param param2: This is an example of a param2
-    :type param2: str
-    """
+            :param param1: This is an example of a param1
+            :type param1: int
+            :param param2: This is an example of a param2
+            :type param2: str
+            """
