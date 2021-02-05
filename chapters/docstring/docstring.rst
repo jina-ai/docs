@@ -6,7 +6,9 @@ Docstring guide
 
     — Guido van Rossum
 
+
 In Jina, we are aware that documentation is an important part of sofware, but we also think it is especially important for OpenSource. And for this reason, we try extra hard to have clear and extensive documentation for all of our source code. But, at the same time, we know this also takes time and effort, so we want to make things as easy as possible with this guide for you. In Jina we use the `Sphinx style <https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html>`_ and here are the guidelines you should follow:
+
 
 
 What are docstrings?
