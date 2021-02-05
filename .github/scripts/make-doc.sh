@@ -44,7 +44,7 @@ if [[ $1 == "commit" ]]; then
   cd -
   cd ${HTML_DIR}
   mkdir master
-  rsync -avr . master  # sync everything under the root to master/
+  rsync -avr --ignore-missing-args . master  # sync everything under the root to master/
   cd -
   cd ${DOC_DIR}/bak
   rsync -avr --ignore-missing-args ./v* ../_build/html/ --ignore-existing  # revert backup back
