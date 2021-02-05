@@ -42,7 +42,7 @@ One-line Docstrings Example
 
     def does_magic():
         """ Do magic """
-            print('Magic happens here')
+        print('Magic happens here')
 
 
 Multi-line Docstrings
