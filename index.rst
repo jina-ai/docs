@@ -1,31 +1,53 @@
 Welcome to Jina!
 ================
-.. toctree::
-   :maxdepth: 1
-   :caption: Jina Core
-
-   chapters/core/introduction/index
-   chapters/core/guides/index
-   chapters/core/api_references/index
 
 .. toctree::
    :maxdepth: 1
-   :caption: Jina Dashboard
+   :caption: Get Started
 
-
-   chapters/dashboard/guides/index
+   chapters/install/os/index
+   chapters/helloworld/index
+   chapters/101/index
+   chapters/flow/index
+   chapters/io/index
+   chapters/cli/exit
+   chapters/project-guide/project-guide
 
 
 .. toctree::
    :maxdepth: 1
-   :caption: Jina Hub
+   :caption: API Reference
 
+   chapters/cli/index
+   api/jina
+   chapters/yaml/index
+   chapters/proto/index
 
-   chapters/hub/guides/index
+.. toctree::
+   :maxdepth: 1
+   :caption: Advanced Usage
 
+   chapters/traversal/index
+   chapters/flow/pattern
+   chapters/cross-multi-modality/index
+   chapters/hub/index
+   chapters/remote/index
+   chapters/logging/index
+   chapters/dashboard/index
+   chapters/simple_exec
+   chapters/restapi/index
+   chapters/envs
+   chapters/prevent_duplicate_indexing/index
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Extensions
 
-
+   chapters/extend/executor
+   chapters/extend/mwu
+   chapters/extend/driver
+   chapters/hub/publish-your-pod-image
+   chapters/api_schema
 
 .. toctree::
    :maxdepth: 1
