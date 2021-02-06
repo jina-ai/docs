@@ -9,7 +9,7 @@ In Jina 101, you will learn about the basic components of Jina. Before you start
 
 ![Document Cartoon](images/document.svg)
 
-Documents are pieces of data in any dataset you want to search, and the input queries you use to find what you want. Basically, they are the input and output data for your search Flows.
+Documents are pieces of data in any dataset you want to search, and the input queries you use to find what you want. Basically, they are the input and output data for your search workflows.
 
 A good example is the text we type into a search engine like Google. Documents can also be video clips, genetic sequences, MP3 files, scientific papers, funny GIFs, or many other things.
 
@@ -72,7 +72,7 @@ Rankers sort and rank search results. They are frequently used in a querying Flo
 
 ![Classifier Cartoon](images/classifier.svg)
 
-Classifiers sort input Documents into categories and output the predicted hard/soft labels. Classifiers are optional, but may be useful depending on the use case.
+Classifiers classify input Documents into categories and output the predicted hard/soft labels. Classifiers are optional, but may be useful depending on the use case.
 
 
 ### Evaluator
