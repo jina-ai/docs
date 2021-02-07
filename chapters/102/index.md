@@ -30,12 +30,11 @@ Here, we’ll use the indexing Flow as an example:
 
 ![](images/flow_pods.svg)
 
-In our Flow, different Pods perform different tasks. Documents (in this case a book) are:
+In this Flow, different Pods perform different tasks:
 
-1. Segmented into chunks (sentences)
-2. Transformed into vector embeddings
-3. Indexed in key-value pairs
-4. Saved to storage
+1. Input Documents segmented into chunks (sentences)
+2. Chunks transformed into vector embeddings
+3. Chunks indexed in key-value pairs and saved to storage
 
 ### Inside a Pod
 
