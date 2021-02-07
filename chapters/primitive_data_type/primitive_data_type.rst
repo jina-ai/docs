@@ -112,7 +112,6 @@ For example:
 
 .. highlight:: python
 .. code-block:: python
-.. testcode:: python
 
     import numpy as np
     from jina import Document
@@ -132,32 +131,11 @@ The use case of the :class:`Document` is dependent on your data:
 * Use :meth:`blob` if you want to index/query image/video/audio.
 * Use :meth:`buffer` if you are not sure about the exact data format.
 
-To create a document from constructor:
-
-.. highlight:: python
-.. code-block:: python
-.. testcode:: python
-
-    from jina import Document
-
-    # Create a document from constructor
-    d0 = Document('hello jina!') # from string
-    d1 = Document({'text': 'hello jina!'}) # from dict
-    d2 = Document(b'j\x0chello jina!') # from buffer
-    d3 = Document('{"text": "hello jina!"}') # from json
-
-    # Create a document from protobuf
-    from jina.proto import jina_pb2
-    d = jina_pb2.DocumentProto()
-    d.text = 'hello jina!'
-    d4 = Document(d)
-
 As was introduced before, a :class:`DocumentSet` is a mutable sequence of :class:`Document`.
 To create & access a :class:`DocumentSet`:
 
 .. highlight:: python
 .. code-block:: python
-.. testcode:: python
 
     from jina import Document
     from jina.types.sets.document import DocumentSet
@@ -176,7 +154,6 @@ For example:
 
 .. highlight:: python
 .. code-block:: python
-.. testcode:: python
 
     from jina import Document
     from jina.types.sets.document import DocumentSet
@@ -205,7 +182,6 @@ For example:
 
 .. highlight:: python
 .. code-block:: python
-.. testcode:: python
 
     from jina import Document
 
@@ -228,7 +204,6 @@ For example:
 
 .. highlight:: python
 .. code-block:: python
-.. testcode:: python
 
     import numpy as np
     from jina.types.document.multimodal import MultimodalDocument
