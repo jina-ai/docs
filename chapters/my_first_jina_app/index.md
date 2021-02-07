@@ -1,23 +1,5 @@
 # Build your first Jina app
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
-
-- [Build Your First Jina App](#build-your-first-jina-app)
-  - [👋 Introduction](#-introduction)
-  - [🗝️ Key Concepts](#-key-concepts)
-  - [🧪 Try it Out!](#-try-it-out)
-  - [🐍 Install](#-install)
-  - [🏃 Run the Flows](#-run-the-flows)
-  - [🤔 How Does it Actually Work?](#-how-does-it-actually-work)
-  - [⏭️  Next Steps](#-next-steps)
-  - [🤕 Troubleshooting](#troubleshooting)
-  - [🎁 Wrap Up](#-wrap-up)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-
 ## 👋 Introduction
 
 This tutorial guides you through building your own neural search app using the [Jina framework](https://github.com/jina-ai/jina/). Don't worry if you're new to machine learning or search. We'll spell it all out right here.
