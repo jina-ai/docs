@@ -15,20 +15,19 @@ Before you start, you have to [launch JinaD and connect it to the Dashboard](con
 
 ### Composing a flow
 
-gif
+![compose flow](flowCompose.gif)
 
-### Loading flows
-
-gif
 
 ### Starting and stopping a flow
 
-gif
+![start stop flow](startStopFlow.gif)
 
-### Importing a a flow
 
-gif
+### Importing a flow
+
+![import flow](importYML.gif)
 
 ### Exporting a flow
 
-gif
+![export flow](exportFlow.gif)
+
