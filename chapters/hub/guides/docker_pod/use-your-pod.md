@@ -55,7 +55,7 @@ See `jina pod --help` for more usage.
 
 ## Use the Pod image via Flow API
 
-Pod image can be used in the Flow API as well. For instance:
+A Pod image can also be used in the Flow API as well:
 
 ```python
 from jina.flow import Flow
