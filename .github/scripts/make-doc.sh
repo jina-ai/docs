@@ -43,9 +43,8 @@ if [[ $1 == "commit" ]]; then
   cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/html/
   cd -
   cd ${HTML_DIR}
-  rm -rf master
-  mkdir -p master
-  rsync -avr --ignore-missing-args . master  # sync everything under the root to master/
+  mkdir master
+  rsync -avr . master  # sync everything under the root to master/
   cd -
   cd ${DOC_DIR}/bak
   rsync -avr --ignore-missing-args ./v* ../_build/html/ --ignore-existing  # revert backup back
@@ -65,6 +64,7 @@ if [[ $1 == "commit" ]]; then
 elif [[ $1 == "release" ]]; then
   cd ${DOC_DIR}
   cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/html/
+  echo -e "${RELEASE_VER}" >> versions
   cd -
   cd ${HTML_DIR}
   rsync -avr . master  # sync everything under the root to master/
