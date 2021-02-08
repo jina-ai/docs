@@ -27,7 +27,7 @@ On every new PR, the builder finds modifications in `manifest.yml` recursively a
 4. `slack_webhook`: webhook for Slack notification
 5. `jina_version`: version of Jina for building Hub image
  
-Note: the input argument `jina_version` can be different from the version of Jina for running the Pod in the container. The latter should be set in your `_jina_pod/requirements.txt`. The `jina_version` is the version of jina when building the Pod image.
+Note: the input argument `jina_version` can be different from the version of Jina for running the Pod in the container. The latter should be set in your `_jina_pod/requirements.txt`. The `jina_version` is the version of Jina when building the Pod image.
 
 ### Output of the Action
 There are two outputs you can use in the post-action:
