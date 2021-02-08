@@ -1,6 +1,6 @@
 Jina Daemon API Specification
 =============================
 
-Link to Jina Daemon OpenAPI Specification <https://api.jina.ai/daemon/>
+Use this link to find the Jina Daemon OpenAPI Specification <https://api.jina.ai/daemon/>
 
-This is a REST interface for managing distributed Jina
+This is a REST interface for managing distributed Jina.

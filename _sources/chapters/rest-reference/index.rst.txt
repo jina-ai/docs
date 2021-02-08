@@ -1,4 +1,4 @@
 Jina OpenAPI Specification
 =============================
 
-Link to Jina OpenAPI API reference <https://api.jina.ai/rest/>
+Use this link to find the Jina OpenAPI API reference <https://api.jina.ai/rest/>
