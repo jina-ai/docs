@@ -18,7 +18,8 @@ The Flow object now supports a `delete` and `update` method, with a signature si
         f.update(input_fn=random_docs(10))
 
     with f:
-        f.delete(input_fn=[d.id for d in random_docs(10)])
+        delete_ids = [d.id for d in random_docs(10)]
+        f.delete(delete_ids)
 ```
 
 Note: deletion and update will happen by `id` of the document.
