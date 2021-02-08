@@ -1,6 +1,6 @@
 ## Flow Design GUI
 
-##### Our GUI is a visual interface that makes composing flows as easy as browsing Facebook. Design, configure and deploy your flows right from the browser!
+##### Our GUI is a visual interface that makes composing flows as easy as browsing social media. Design, configure and deploy your flows right from the browser!
 
 ### Features
 
