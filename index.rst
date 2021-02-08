@@ -11,7 +11,6 @@ Welcome to Jina!
    chapters/flow/index
    chapters/io/index
    chapters/cli/exit
-   chapters/docstring/docstring
    chapters/project-guide/project-guide
 
 
@@ -67,6 +66,7 @@ Welcome to Jina!
    chapters/troubleshooting
    chapters/faq/dev
    chapters/faq/user
+   chapters/docstring/docstring
 
 
 .. toctree::
