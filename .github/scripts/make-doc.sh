@@ -43,9 +43,8 @@ if [[ $1 == "commit" ]]; then
   cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/html/
   cd -
   cd ${HTML_DIR}
-  rm -rf master
-  mkdir -p master
-  rsync -avr --ignore-missing-args . master  # sync everything under the root to master/
+  mkdir  master
+  rsync -avr . master  # sync everything under the root to master/
   cd -
   cd ${DOC_DIR}/bak
   rsync -avr --ignore-missing-args ./v* ../_build/html/ --ignore-existing  # revert backup back
@@ -77,6 +76,7 @@ elif [[ $1 == "release" ]]; then
   cd ${HTML_DIR}
   rm -rf bak
   echo docs.jina.ai > CNAME
+  echo -e "${RELEASE_VER}" >> versions
   git init
   git config --local user.email "dev-bot@jina.ai"
   git config --local user.name "Jina Dev Bot"
