@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.optimizers.flow_runner &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.optimizers.flow_runner &mdash; Jina 0.9.33-master documentation</title>
   
 
   
@@ -84,12 +84,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.33-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
               
-              <a class="dropdown-item" href="/v0.9.28-master">0.9.28-master</a>
+              <a class="dropdown-item" href="/v0.9.28">0.9.28</a>
+              
+              <a class="dropdown-item" href="/v0.9.23">0.9.23</a>
+              
+              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
               
               <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
               
@@ -162,6 +166,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/project-guide/project-guide.html">Project set up guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -178,11 +183,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/logging/index.html">Logging configuration in jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/crud/index.html">CRUD Operations</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Extensions</span></p>
 <ul>
@@ -191,6 +198,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Glossary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/glossary/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -202,6 +213,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring/docstring.html">Docstring guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
@@ -285,7 +297,7 @@
 <span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Iterable</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">..flow</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">colored</span>
@@ -303,54 +315,58 @@
         <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Runs the defined flow(s).</span>
-<span class="sd">        :param trial_parameters: parameters to be used as context</span>
-<span class="sd">        :param workspace: directory to be used for the flows</span>
-<span class="sd">        :param callback: callback that will be called by the flows. Should store the evaluation results.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the defined Flow(s).</span>
+
+<span class="sd">        :param trial_parameters: Parameters to be used as context</span>
+<span class="sd">        :param workspace: Directory to be used for the flows</span>
+<span class="sd">        :param callback: Callback that will be called by the Flows. Should store the evaluation results.</span>
+<span class="sd">        :param **kwargs: Further arguments passed to the Flow(s) as `context`</span>
+<span class="sd">        :raises NotImplementedError: :class:`FlowRunner` is just an interface. Please use any implemented subclass.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
 
 <div class="viewcode-block" id="SingleFlowRunner"><a class="viewcode-back" href="../../../api/jina.optimizers.flow_runner.html#jina.optimizers.flow_runner.SingleFlowRunner">[docs]</a><span class="k">class</span> <span class="nc">SingleFlowRunner</span><span class="p">(</span><span class="n">FlowRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Module to define and run a flow.</span>
-<span class="sd">       `documents` maps to a parameter of the `execution_method`, depending on the method.</span>
-<span class="sd">       If you use a generator function/list as documents, the default will work out of the box.</span>
-<span class="sd">       Otherwise, the following settings will work:</span>
-
-<span class="sd">       indexing + jsonlines file: `execution_methos=&#39;index_lines&#39;, documents_parameter_name=&#39;filepath&#39;`</span>
-<span class="sd">       search + jsonlines file: `execution_methos=&#39;search_lines&#39;, documents_parameter_name=&#39;filepath&#39;`</span>
-
-<span class="sd">       indexing + file pattern: `execution_methos=&#39;index_files&#39;, documents_parameter_name=&#39;pattern&#39;`</span>
-<span class="sd">       search + file pattern: `execution_methos=&#39;search_files&#39;, documents_parameter_name=&#39;pattern&#39;`</span>
-
-<span class="sd">       For more reasonable values, have a look at the `Flow`.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;:class:`SingleFlowRunner` enables running a flow repeadetly with different `context`.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">flow_yaml</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">documents</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">documents</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">request_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">execution_method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">documents_parameter_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;input_fn&#39;</span><span class="p">,</span>
         <span class="n">overwrite_workspace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param flow_yaml: path to Flow yaml</span>
-<span class="sd">        :param documents: input parameter for `execution_method` for iterating documents.</span>
-<span class="sd">        (e.g. a list of documents for `index` or a .jsonlines file for `index_lines`)</span>
-<span class="sd">        :param request_size: request size used in the flow</span>
-<span class="sd">        :param execution_method: one of the methods of the Jina :py:class:`Flow` (e.g. `index_lines`)</span>
-<span class="sd">        :param documents_parameter_name: to which parameter of the `execution_function` the `documents` will be mapped.</span>
-<span class="sd">        See `jina/flow/__init__.py::Flow` for more details.</span>
-<span class="sd">        :param overwrite_workspace: True, means workspace created by the Flow will be overwriten</span>
+<span class="sd">        `documents` maps to a parameter of the `execution_method`, depending on the method.</span>
+<span class="sd">        If you use a generator function/list as `documents`, the default will work out of the box.</span>
+<span class="sd">        Otherwise, the following settings will work:</span>
+
+<span class="sd">        indexing + jsonlines file: `execution_methos=&#39;index_lines&#39;, documents_parameter_name=&#39;filepath&#39;`</span>
+<span class="sd">        search + jsonlines file: `execution_methos=&#39;search_lines&#39;, documents_parameter_name=&#39;filepath&#39;`</span>
+
+<span class="sd">        indexing + file pattern: `execution_methos=&#39;index_files&#39;, documents_parameter_name=&#39;pattern&#39;`</span>
+<span class="sd">        search + file pattern: `execution_methos=&#39;search_files&#39;, documents_parameter_name=&#39;pattern&#39;`</span>
+
+<span class="sd">        For more reasonable values, have a look at the :class:`Flow`.</span>
+
+<span class="sd">        :param flow_yaml: Path to Flow yaml</span>
+<span class="sd">        :param documents: Input parameter for `execution_method` for iterating documents.</span>
+<span class="sd">            (e.g. a list of documents for `index` or a .jsonlines file for `index_lines`)</span>
+<span class="sd">        :param request_size: Request size used in the flow</span>
+<span class="sd">        :param execution_method: One of the methods of the Jina :py:class:`Flow` (e.g. `index_lines`)</span>
+<span class="sd">        :param documents_parameter_name: The `documents` will be mapped to `documents_parameter_name` in the function `execution_function`.</span>
+<span class="sd">            See `jina/flow/__init__.py::Flow` for more details.</span>
+<span class="sd">        :param overwrite_workspace: True, means workspace created by the Flow will be overwriten with each execution.</span>
+<span class="sd">        :raises TypeError: When the documents are neither a `str` nor an `Iterable`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_flow_yaml</span> <span class="o">=</span> <span class="n">flow_yaml</span>
 
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_documents</span> <span class="o">=</span> <span class="n">documents</span>
-
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -387,12 +403,6 @@
         <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Runs a Flow according to the definition of the `FlowRunner`.</span>
-
-<span class="sd">        :param trial_parameters: context for the Flow</span>
-<span class="sd">        :param workspace: directory to be used for artifacts generated</span>
-<span class="sd">        :param callback: The callback function, which should store results comming from evaluation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_workspace</span><span class="p">(</span><span class="n">workspace</span><span class="p">)</span>
         <span class="n">additional_arguments</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_documents_parameter_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_documents</span><span class="p">}</span>
@@ -406,11 +416,14 @@
 
 
 <div class="viewcode-block" id="MultiFlowRunner"><a class="viewcode-back" href="../../../api/jina.optimizers.flow_runner.html#jina.optimizers.flow_runner.MultiFlowRunner">[docs]</a><span class="k">class</span> <span class="nc">MultiFlowRunner</span><span class="p">(</span><span class="n">FlowRunner</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Chain and run multiple Flows. It is an interface for common patterns like IndexFlow -&gt; SearchFlow&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :class:`MultiFlowRunner` chains and runs multiple Flows.</span>
+<span class="sd">    It is an interface for common patterns like IndexFlow -&gt; SearchFlow.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flows</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FlowRunner</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param flows: Flows to be executed in sequence</span>
+<span class="sd">        :param flows: Flows to be executed in sequence.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flows</span> <span class="o">=</span> <span class="n">flows</span>
@@ -422,11 +435,6 @@
         <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param trial_parameters: parameters to be used as environment variables</span>
-<span class="sd">        :param workspace: directory to be used for the flows</span>
-<span class="sd">        :param callback: will be forwarded to every single Flow.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">flow</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">:</span>
             <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">trial_parameters</span><span class="p">,</span> <span class="n">workspace</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
@@ -561,7 +569,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 02, 2021.
+        Last updated on Feb 08, 2021.
       </span>
 
         </p>

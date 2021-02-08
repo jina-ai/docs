@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Gracefully Exit Jina &mdash; Jina 0.9.28-master documentation</title>
+  <title>Gracefully Exit Jina &mdash; Jina 0.9.33-master documentation</title>
   
 
   
@@ -56,7 +56,7 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Jina Command-Line Interface" href="index.html" />
+    <link rel="next" title="Project set up guide" href="../project-guide/project-guide.html" />
     <link rel="prev" title="Input and Output Functions in Jina" href="../io/index.html" /> 
 </head>
 
@@ -86,12 +86,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.33-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
               
-              <a class="dropdown-item" href="/v0.9.28-master">0.9.28-master</a>
+              <a class="dropdown-item" href="/v0.9.28">0.9.28</a>
+              
+              <a class="dropdown-item" href="/v0.9.23">0.9.23</a>
+              
+              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
               
               <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
               
@@ -164,6 +168,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../io/index.html">Input and Output Functions in Jina</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Gracefully Exit Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project-guide/project-guide.html">Project set up guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -180,11 +185,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Jina Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../crud/index.html">CRUD Operations</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Extensions</span></p>
 <ul>
@@ -193,6 +200,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Glossary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../glossary/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -204,6 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docstring/docstring.html">Docstring guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
@@ -282,10 +294,39 @@
            <div itemprop="articleBody">
             
   <div class="section" id="gracefully-exit-jina">
-<h1>Gracefully Exit Jina<a class="headerlink" href="#gracefully-exit-jina" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id1">Gracefully Exit Jina</a><a class="headerlink" href="#gracefully-exit-jina" title="Permalink to this headline">¶</a></h1>
+<p>In this section, you will learn best practices to shut down a Flow and exit Jina correctly.</p>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#gracefully-exit-jina" id="id1">Gracefully Exit Jina</a></p>
+<ul>
+<li><p><a class="reference internal" href="#feature-description-and-expected-outcome" id="id2">Feature description and expected outcome</a></p></li>
+<li><p><a class="reference internal" href="#before-you-start" id="id3">Before you start</a></p></li>
+<li><p><a class="reference internal" href="#implementation" id="id4">Implementation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#in-python" id="id5">In Python</a></p></li>
+<li><p><a class="reference internal" href="#in-the-console" id="id6">In the Console</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="feature-description-and-expected-outcome">
+<h2><a class="toc-backref" href="#id2">Feature description and expected outcome</a><a class="headerlink" href="#feature-description-and-expected-outcome" title="Permalink to this headline">¶</a></h2>
+<p>Jina provides several methods to exit gracefully.
+Through these ways the Flow will terminate and release all resources.</p>
+</div>
+<div class="section" id="before-you-start">
+<h2><a class="toc-backref" href="#id3">Before you start</a><a class="headerlink" href="#before-you-start" title="Permalink to this headline">¶</a></h2>
+<p>Make sure you install Jina via <a class="reference external" href="https://docs.jina.ai/chapters/install/os/index.html">Installation</a>.</p>
+</div>
+<div class="section" id="implementation">
+<h2><a class="toc-backref" href="#id4">Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="in-python">
-<h2>In Python<a class="headerlink" href="#in-python" title="Permalink to this headline">¶</a></h2>
-<p>If you use <code class="docutils literal notranslate"><span class="pre">with</span></code> scope to start a Flow, then all resources (including Pods of all kinds) of the Flow will be released after your move out from the scope.</p>
+<h3><a class="toc-backref" href="#id5">In Python</a><a class="headerlink" href="#in-python" title="Permalink to this headline">¶</a></h3>
+<p>If you use <code class="docutils literal notranslate"><span class="pre">with</span></code> scope to start a Flow, then all resources (including Pods of all kinds) of the Flow will be released after you move out from the scope.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
 
 <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
@@ -299,13 +340,15 @@
 
 <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
          <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p2&#39;</span><span class="p">))</span>
-<span class="n">f</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="in-the-console">
-<h2>In the Console<a class="headerlink" href="#in-the-console" title="Permalink to this headline">¶</a></h2>
+<h3><a class="toc-backref" href="#id6">In the Console</a><a class="headerlink" href="#in-the-console" title="Permalink to this headline">¶</a></h3>
 <p>If you are running Jina locally (e.g. <strong class="command">jina flow</strong>), you can <kbd class="kbd docutils literal notranslate">Control-c</kbd> or <kbd class="kbd docutils literal notranslate">Command-c</kbd> to terminate it at any time. All <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePod</span></code> will receive this signal and shut down accordingly.</p>
 <p>Container Pods and remote Pods sometimes take longer to shut down. When you open many replicas or many Pods, it may also take some time to release all resources.</p>
 <p>Rule of thumb, for an individual Pod/Pea, when you see the following output from the console, then it is already shut down.</p>
@@ -331,6 +374,7 @@ Flow@6331<span class="o">[</span>S<span class="o">]</span>:flow is closed and al
 </div>
 </div>
 </div>
+</div>
 
 
            </div>
@@ -340,7 +384,7 @@ Flow@6331<span class="o">[</span>S<span class="o">]</span>:flow is closed and al
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="index.html" class="btn btn-neutral float-right" title="Jina Command-Line Interface"
+        <a href="../project-guide/project-guide.html" class="btn btn-neutral float-right" title="Project set up guide"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
@@ -474,7 +518,7 @@ Flow@6331<span class="o">[</span>S<span class="o">]</span>:flow is closed and al
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 02, 2021.
+        Last updated on Feb 08, 2021.
       </span>
 
         </p>

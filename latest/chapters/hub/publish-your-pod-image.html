@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Publish Your Pod Image to Jina Hub &mdash; Jina 0.9.28-master documentation</title>
+  <title>Publish Your Pod Image to Jina Hub &mdash; Jina 0.9.33-master documentation</title>
   
 
   
@@ -86,12 +86,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.33-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
               
-              <a class="dropdown-item" href="/v0.9.28-master">0.9.28-master</a>
+              <a class="dropdown-item" href="/v0.9.28">0.9.28</a>
+              
+              <a class="dropdown-item" href="/v0.9.23">0.9.23</a>
+              
+              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
               
               <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
               
@@ -164,6 +168,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../io/index.html">Input and Output Functions in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli/exit.html">Gracefully Exit Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project-guide/project-guide.html">Project set up guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -180,11 +185,13 @@
 <li class="toctree-l1"><a class="reference internal" href="index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Jina Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../crud/index.html">CRUD Operations</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Extensions</span></p>
 <ul class="current">
@@ -193,6 +200,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Publish Your Pod Image to Jina Hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Glossary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../glossary/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -204,6 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docstring/docstring.html">Docstring guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
@@ -285,10 +297,9 @@
             
   <div class="section" id="publish-your-pod-image-to-jina-hub">
 <h1>Publish Your Pod Image to Jina Hub<a class="headerlink" href="#publish-your-pod-image-to-jina-hub" title="Permalink to this headline">¶</a></h1>
-<p>You can contribute your executor into this repository and it will be automatically built into an image and published to the Jina Hub via our CI/CD pipeline.</p>
-<div class="section" id="what-files-need-to-be-uploaded">
-<h2>What Files Need to be Uploaded?<a class="headerlink" href="#what-files-need-to-be-uploaded" title="Permalink to this headline">¶</a></h2>
-<p>Typically, the following files are required:</p>
+<p>You can publish your custom Executor Pod to Jina Hub by contributing your Pod files to the Jina repository. You can raise a PR with all the relevant Pod files bundled as described below. Jina’s CI/CD pipeline will automatically use the PR to build an image and publish it to Jina Hub.</p>
+<div class="section" id="required-files">
+<h2>Required files<a class="headerlink" href="#required-files" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <thead>
 <tr>
@@ -299,27 +310,32 @@
 <tbody>
 <tr>
 <td><code>Dockerfile</code></td>
-<td>describes the dependency setup and expose the entry point;</td>
+<td>describes the dependency setup and exposes the entry point</td>
 </tr>
 <tr>
 <td><code>manifest.yml</code></td>
-<td>metadata of the image, author, tags, etc. help the Hub to index and classify your image</td>
+<td>metadata info like image, author, tags, etc. helps the Hub to index and classify the image</td>
 </tr>
 <tr>
 <td><code>README.md</code></td>
-<td>a instruction for guiding users to use your image</td>
+<td>an instruction guide describing the image usage</td>
 </tr>
 <tr>
 <td><code>*.py</code></td>
-<td>describes the executor logic written in Python, if applicable;</td>
+<td>describes the executor logic written in Python, if applicable</td>
 </tr>
 <tr>
 <td><code>*.yml</code></td>
-<td>a YAML file describes the executor arguments and configs, if you want users to use your config;</td>
+<td>a YAML file describes the executor arguments and configs, if you want users to use your config</td>
 </tr>
 </tbody>
-</table><p>Note, large binary files (such as pretrained model, auxiliary data) are <strong>not</strong> recommended to upload to this repository. You can use <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">wget</span> <span class="pre">...</span></code> or <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">curl</span></code> inside the <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code> to download it from the web during the build.</p>
-<p>Your file bundle <code class="docutils literal notranslate"><span class="pre">awesomeness</span></code> should be uploaded to:</p>
+</table><p>Note, large binary files (such as pretrained models, auxiliary data) are <strong>not</strong> recommended to upload to this repository. You can use <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">wget</span> <span class="pre">...</span></code> or <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">curl</span></code> inside the <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code> to download it from the web during the build.</p>
+</div>
+<div class="section" id="file-structure-and-schema-for-pods">
+<h2>File structure and schema for Pods:<a class="headerlink" href="#file-structure-and-schema-for-pods" title="Permalink to this headline">¶</a></h2>
+<p>Your custom <code class="docutils literal notranslate"><span class="pre">Pod</span></code> file bundle needs to follow a structure and certain schema rules for annotating the image successfully.
+For instance, your pod is a kind of <code class="docutils literal notranslate"><span class="pre">encoder</span></code> named <code class="docutils literal notranslate"><span class="pre">awesomeness</span></code>. The file bundle should be uploaded to the Hub <code class="docutils literal notranslate"><span class="pre">executors</span></code> under kind <code class="docutils literal notranslate"><span class="pre">encoders</span></code>
+with the following structure:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>hub/
   |
    - executors/
@@ -338,8 +354,7 @@
 </div>
 <div class="section" id="schema-of-manifest-yml">
 <h2>Schema of <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code><a class="headerlink" href="#schema-of-manifest-yml" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> must exist if you want to publish your Pod image to Jina Hub.</p>
-<p><code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> annotates your image so that it can be managed by Jina Hub. To get better appealing on Jina Hub, you should carefully set <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> to the correct values.</p>
+<p><code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> annotates your image so that it can be managed by Jina Hub. To ensure better compatibility with Jina Hub, you should carefully set <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> to use correct values.</p>
 <table border="1" class="docutils">
 <thead>
 <tr>
@@ -402,22 +417,27 @@
 </tbody>
 </table><p>Please refer to <a class="reference external" href="hub/examples/mwu_encoder/manifest.yml">hub/examples/mwu_encoder/manifest.yml</a> for the example.</p>
 </div>
-<div class="section" id="steps-to-publish-your-image">
-<h2>Steps to Publish Your Image<a class="headerlink" href="#steps-to-publish-your-image" title="Permalink to this headline">¶</a></h2>
-<p>All you need is to publish your bundle into this repo, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline.</p>
+<div class="section" id="updating-schema-of-pods">
+<h2>Updating schema of Pods<a class="headerlink" href="#updating-schema-of-pods" title="Permalink to this headline">¶</a></h2>
+<p>If you have made code changes to a Pod, you must update the appropriate fields like <code class="docutils literal notranslate"><span class="pre">version</span></code> inside <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> for updating the schema. With every change,
+the version will increment following <code class="docutils literal notranslate"><span class="pre">semantic</span> <span class="pre">versioning</span></code>. For instance, <code class="docutils literal notranslate"><span class="pre">0.0.9</span></code> becomes <code class="docutils literal notranslate"><span class="pre">0.0.10</span></code> on an update</p>
+</div>
+<div class="section" id="publish-your-image">
+<h2>Publish your image<a class="headerlink" href="#publish-your-image" title="Permalink to this headline">¶</a></h2>
+<p>All you need to do is to publish your file bundle into the Jina Hub repo. Subsequently, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline.</p>
 <ol class="simple">
-<li><p>Let’s say your organize <a class="reference external" href="#what-files-need-to-be-uploaded">all files mentioned in here</a> in a folder called <code class="docutils literal notranslate"><span class="pre">awesomeness</span></code>. Depending on what you are contributing, you can put it into <code class="docutils literal notranslate"><span class="pre">hub/executors/indexers/awesomeness</span></code>.</p></li>
+<li><p>Let’s say you organize <a class="reference external" href="#what-files-need-to-be-uploaded">all files mentioned in here</a> in a folder called <code class="docutils literal notranslate"><span class="pre">awesomeness</span></code>. Depending on what you are contributing, you can put it into <code class="docutils literal notranslate"><span class="pre">hub/executors/indexers/awesomeness</span></code>.</p></li>
 <li><p>Make a Pull Request and commit your changes into this repository, remember to follow the commit lint style.</p></li>
 <li><p>Wait until the CICD finish and you get at least one reviewer’s approval.</p></li>
 <li><p>Merge it!</p></li>
 </ol>
 <p>The CICD pipeline will work on building, uploading and tagging the image on the Jina Hub.</p>
 <p>The image will be available at <code class="docutils literal notranslate"><span class="pre">jinaai/hub.executors.indexers.awesomeness:0.0.0</span></code> assuming your version number is defined as <code class="docutils literal notranslate"><span class="pre">0.0.0</span></code> in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code>.</p>
-<p>You can use the image as <a class="reference external" href="./use-your-pod.html#use-your-pod-image">the ways we described here</a>.</p>
+<p>You can use the image with <a class="reference external" href="./use-your-pod.html#use-your-pod-image">the ways described here</a>.</p>
 </div>
-<div class="section" id="why-my-upload-fails-on-the-cicd">
-<h2>Why My Upload Fails on the CICD?<a class="headerlink" href="#why-my-upload-fails-on-the-cicd" title="Permalink to this headline">¶</a></h2>
-<p>Here is the checklist to help you locate the problem.</p>
+<div class="section" id="why-does-my-upload-fail-on-ci-cd">
+<h2>Why does my upload fail on CI/CD?<a class="headerlink" href="#why-does-my-upload-fail-on-ci-cd" title="Permalink to this headline">¶</a></h2>
+<p>Common causes why your upload could fail:</p>
 <ul class="simple">
 <li><p>[ ] Required file <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code>, <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">README.md</span></code> is missing.</p></li>
 <li><p>[ ] The required field in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> is missing.</p></li>
@@ -572,7 +592,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 02, 2021.
+        Last updated on Feb 08, 2021.
       </span>
 
         </p>

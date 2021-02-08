@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.pods &mdash; Jina 0.9.32-master documentation</title>
+  <title>jina.peapods.pods &mdash; Jina 0.9.33-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.32-master</button>
+            <button class="dropbtn version">0.9.33-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -217,7 +217,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -317,7 +317,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
-        <span class="n">BasePod</span><span class="o">.</span><span class="n">_set_conditional_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_conditional_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">needs</span> <span class="o">=</span> <span class="n">needs</span> <span class="k">if</span> <span class="n">needs</span> <span class="k">else</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1">#: used in the :class:`jina.flow.Flow` to build the graph</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">peas</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[&#39;BasePea&#39;]</span>
@@ -331,9 +331,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="p">:</span>
-            <span class="n">BasePod</span><span class="o">.</span><span class="n">_set_conditional_args</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">role</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;PodRoleType&#39;</span><span class="p">:</span>
@@ -489,13 +486,36 @@
 <span class="sd">            If one of the :class:`BasePea` fails to start, make sure that all of them</span>
 <span class="sd">            are properly closed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;noblock_on_start&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="p">:</span>
+                <span class="n">_args</span><span class="o">.</span><span class="n">noblock_on_start</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="n">BasePea</span><span class="p">(</span><span class="n">_args</span><span class="p">))</span>
+            <span class="c1"># now rely on higher level to call `wait_start_success`</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="n">BasePea</span><span class="p">(</span><span class="n">_args</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">raise</span>
+            <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="BasePod.wait_start_success"><a class="viewcode-back" href="../../../api/jina.peapods.pods.html#jina.peapods.pods.BasePod.wait_start_success">[docs]</a>    <span class="k">def</span> <span class="nf">wait_start_success</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Block until all peas starts successfully.</span>
+
+<span class="sd">        If not success, it will raise an error hoping the outer function to catch it</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">noblock_on_start</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_start_success</span><span class="si">!r}</span><span class="s1"> should only be called when `noblock_on_start` is set to True&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">wait_start_success</span><span class="p">()</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">raise</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
+            <span class="k">raise</span></div>
 
     <span class="k">def</span> <span class="nf">_enter_pea</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pea</span><span class="p">:</span> <span class="s1">&#39;BasePea&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pea</span><span class="p">)</span>

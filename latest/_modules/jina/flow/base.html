@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.flow.base &mdash; Jina 0.9.28-master documentation</title>
+  <title>jina.flow.base &mdash; Jina 0.9.33-master documentation</title>
   
 
   
@@ -84,12 +84,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.33-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
               
-              <a class="dropdown-item" href="/v0.9.28-master">0.9.28-master</a>
+              <a class="dropdown-item" href="/v0.9.28">0.9.28</a>
+              
+              <a class="dropdown-item" href="/v0.9.23">0.9.23</a>
+              
+              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
               
               <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
               
@@ -162,6 +166,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/project-guide/project-guide.html">Project set up guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -178,11 +183,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/logging/index.html">Logging configuration in jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/crud/index.html">CRUD Operations</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Extensions</span></p>
 <ul>
@@ -191,6 +198,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/extend/driver.html">Guideline When Adding New Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Glossary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/glossary/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -202,6 +213,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring/docstring.html">Docstring guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
@@ -294,25 +306,22 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">ExitStack</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">TypeVar</span>
-<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TextIO</span>
 
 <span class="kn">from</span> <span class="nn">.builder</span> <span class="kn">import</span> <span class="n">build_required</span><span class="p">,</span> <span class="n">_build_flow</span><span class="p">,</span> <span class="n">_optimize_flow</span><span class="p">,</span> <span class="n">_hanging_pods</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__default_host__</span>
 <span class="kn">from</span> <span class="nn">..clients</span> <span class="kn">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">WebSocketClient</span>
 <span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">FlowBuildLevel</span><span class="p">,</span> <span class="n">PodRoleType</span><span class="p">,</span> <span class="n">FlowInspectType</span>
-<span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">FlowTopologyError</span><span class="p">,</span> <span class="n">FlowMissingPodError</span><span class="p">,</span> <span class="n">RuntimeFailToStart</span>
+<span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">FlowTopologyError</span><span class="p">,</span> <span class="n">FlowMissingPodError</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">colored</span><span class="p">,</span> \
-    <span class="n">get_public_ip</span><span class="p">,</span> <span class="n">get_internal_ip</span><span class="p">,</span> <span class="n">typename</span><span class="p">,</span> <span class="n">ArgNamespace</span>
+    <span class="n">get_public_ip</span><span class="p">,</span> <span class="n">get_internal_ip</span><span class="p">,</span> <span class="n">typename</span><span class="p">,</span> <span class="n">ArgNamespace</span><span class="p">,</span> <span class="n">download_mermaid_url</span>
 <span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAML</span><span class="p">,</span> <span class="n">JAMLCompatible</span>
 <span class="kn">from</span> <span class="nn">..logging</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
 <span class="kn">from</span> <span class="nn">..parsers</span> <span class="kn">import</span> <span class="n">set_client_cli_parser</span><span class="p">,</span> <span class="n">set_gateway_parser</span><span class="p">,</span> <span class="n">set_pod_parser</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BaseFlow&#39;</span><span class="p">,</span> <span class="s1">&#39;FlowLike&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BaseFlow&#39;</span><span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">..peapods</span> <span class="kn">import</span> <span class="n">BasePod</span>
-
-<span class="n">FlowLike</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;FlowLike&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;BaseFlow&#39;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">FlowType</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">ExitStack</span><span class="p">),</span> <span class="nb">type</span><span class="p">(</span><span class="n">JAMLCompatible</span><span class="p">)):</span>
@@ -391,7 +400,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">endpoint</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">endpoint</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">pod_name</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">FlowTopologyError</span><span class="p">(</span><span class="s1">&#39;the income/output of a pod can not be itself&#39;</span><span class="p">)</span>
@@ -444,7 +453,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">[</span><span class="n">pod_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">BasePod</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">needs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseFlow.needs"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.needs">[docs]</a>    <span class="k">def</span> <span class="nf">needs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">needs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
-              <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;joiner&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowLike</span><span class="p">:</span>
+              <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;joiner&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseFlow&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a blocker to the flow, wait until all peas defined in **needs** completed.</span>
 
@@ -456,10 +465,10 @@
             <span class="k">raise</span> <span class="n">FlowTopologyError</span><span class="p">(</span><span class="s1">&#39;no need to wait for a single service, need len(needs) &gt; 1&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="n">needs</span><span class="p">,</span> <span class="n">pod_role</span><span class="o">=</span><span class="n">PodRoleType</span><span class="o">.</span><span class="n">JOIN</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BaseFlow.needs_all"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.needs_all">[docs]</a>    <span class="k">def</span> <span class="nf">needs_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;joiner&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowLike</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseFlow.needs_all"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.needs_all">[docs]</a>    <span class="k">def</span> <span class="nf">needs_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;joiner&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseFlow&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Collect all hanging Pod so far and add a blocker to the flow, wait until all handing peas completed.</span>
-<span class="sd">        :param copy_flow: when set to true, then always copy the current flow and do the modification on top of it then return, otherwise, do in-line modification</span>
+<span class="sd">        </span>
 <span class="sd">        :param name: the name of this joiner, by default is ``joiner``</span>
 <span class="sd">        :return: the modified flow</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -473,7 +482,7 @@
             <span class="n">needs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">copy_flow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
             <span class="n">pod_role</span><span class="p">:</span> <span class="s1">&#39;PodRoleType&#39;</span> <span class="o">=</span> <span class="n">PodRoleType</span><span class="o">.</span><span class="n">POD</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowLike</span><span class="p">:</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseFlow&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a pod to the current flow object and return the new modified flow object.</span>
 <span class="sd">        The attribute of the pod can be later changed with :py:meth:`set` or deleted with :py:meth:`remove`</span>
@@ -540,7 +549,7 @@
 
         <span class="k">return</span> <span class="n">op_flow</span></div>
 
-<div class="viewcode-block" id="BaseFlow.inspect"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.inspect">[docs]</a>    <span class="k">def</span> <span class="nf">inspect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;inspect&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowLike</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseFlow.inspect"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.inspect">[docs]</a>    <span class="k">def</span> <span class="nf">inspect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;inspect&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseFlow&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add an inspection on the last changed Pod in the Flow</span>
 
 <span class="sd">        Internally, it adds two pods to the flow. But no worry, the overhead is minimized and you</span>
@@ -611,7 +620,7 @@
             <span class="c1"># no inspect node is in the graph, return the current graph</span>
             <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="BaseFlow.build"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy_flow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowLike</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseFlow.build"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy_flow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseFlow&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build the current flow and make it ready to use</span>
 
@@ -693,6 +702,7 @@
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">unsetenv</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gateway&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_level</span> <span class="o">=</span> <span class="n">FlowBuildLevel</span><span class="o">.</span><span class="n">EMPTY</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;flow is closed and all resources are released, current build level is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_level</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -716,8 +726,12 @@
                 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">noblock_on_start</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">wait_start_success</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s1"> can not be started due to </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">, Flow is aborted&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -739,7 +753,7 @@
         <span class="sd">&quot;&quot;&quot;Get the number of peas (parallel count) in this flow&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">num_peas</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FlowLike</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;BaseFlow&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Comparing the topology of a flow with another flow.</span>
 <span class="sd">        Identification is defined by whether two flows share the same set of edges.</span>
@@ -837,7 +851,7 @@
              <span class="n">vertical_layout</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
              <span class="n">inline_display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
              <span class="n">build</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-             <span class="n">copy_flow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlowLike</span><span class="p">:</span>
+             <span class="n">copy_flow</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseFlow&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Visualize the flow up to the current point</span>
 <span class="sd">        If a file name is provided it will create a jpg image with that name,</span>
@@ -890,7 +904,7 @@
                 <span class="k">pass</span>
 
         <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
-            <span class="n">op_flow</span><span class="o">.</span><span class="n">_download_mermaid_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+            <span class="n">download_mermaid_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">showed</span><span class="p">:</span>
             <span class="n">op_flow</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;flow visualization: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -912,20 +926,6 @@
         <span class="n">encoded_str</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">mermaid_str</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;https://mermaid.ink/</span><span class="si">{</span><span class="n">img_type</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">encoded_str</span><span class="si">}</span><span class="s1">&#39;</span>
-
-    <span class="k">def</span> <span class="nf">_download_mermaid_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mermaid_url</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Rendering the current flow as a jpg image, this will call :py:meth:`to_mermaid` and it needs internet connection</span>
-<span class="sd">        :param path: the file path of the image</span>
-<span class="sd">        :param kwargs: keyword arguments of :py:meth:`to_mermaid`</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">mermaid_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">:</span> <span class="s1">&#39;Mozilla/5.0&#39;</span><span class="p">})</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;can not download image, please check your graph and the network connections&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseFlow.to_swarm_yaml"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.to_swarm_yaml">[docs]</a>    <span class="nd">@build_required</span><span class="p">(</span><span class="n">FlowBuildLevel</span><span class="o">.</span><span class="n">GRAPH</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">to_swarm_yaml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
@@ -1002,13 +1002,17 @@
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="BaseFlow.use_grpc_gateway"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.use_grpc_gateway">[docs]</a>    <span class="k">def</span> <span class="nf">use_grpc_gateway</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseFlow.use_grpc_gateway"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.use_grpc_gateway">[docs]</a>    <span class="k">def</span> <span class="nf">use_grpc_gateway</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Change to use gRPC gateway for IO &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_common_kwargs</span><span class="p">[</span><span class="s1">&#39;rest_api&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_common_kwargs</span><span class="p">[</span><span class="s1">&#39;restful&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">port</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_common_kwargs</span><span class="p">[</span><span class="s1">&#39;port_expose&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">port</span></div>
 
-<div class="viewcode-block" id="BaseFlow.use_rest_gateway"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.use_rest_gateway">[docs]</a>    <span class="k">def</span> <span class="nf">use_rest_gateway</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseFlow.use_rest_gateway"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.use_rest_gateway">[docs]</a>    <span class="k">def</span> <span class="nf">use_rest_gateway</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Change to use REST gateway for IO &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_common_kwargs</span><span class="p">[</span><span class="s1">&#39;rest_api&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_common_kwargs</span><span class="p">[</span><span class="s1">&#39;restful&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">port</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_common_kwargs</span><span class="p">[</span><span class="s1">&#39;port_expose&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">port</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -1061,30 +1065,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">JinaLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">identity</span> <span class="o">=</span> <span class="n">value</span>
-
-<div class="viewcode-block" id="BaseFlow.index"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.index">[docs]</a>    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="BaseFlow.search"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.search">[docs]</a>    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="BaseFlow.index_ndarray"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.index_ndarray">[docs]</a>    <span class="k">def</span> <span class="nf">index_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="BaseFlow.index_lines"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.index_lines">[docs]</a>    <span class="k">def</span> <span class="nf">index_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="BaseFlow.index_files"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.index_files">[docs]</a>    <span class="k">def</span> <span class="nf">index_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="BaseFlow.search_ndarray"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.search_ndarray">[docs]</a>    <span class="k">def</span> <span class="nf">search_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="BaseFlow.search_lines"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.search_lines">[docs]</a>    <span class="k">def</span> <span class="nf">search_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="BaseFlow.search_files"><a class="viewcode-back" href="../../../api/jina.flow.base.html#jina.flow.base.BaseFlow.search_files">[docs]</a>    <span class="k">def</span> <span class="nf">search_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="c1"># for backward support</span>
     <span class="n">join</span> <span class="o">=</span> <span class="n">needs</span></div>
@@ -1220,7 +1200,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 02, 2021.
+        Last updated on Feb 08, 2021.
       </span>
 
         </p>

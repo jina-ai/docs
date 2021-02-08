@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Common Design Patterns &mdash; Jina 0.9.28-master documentation</title>
+  <title>Common Design Patterns &mdash; Jina 0.9.33-master documentation</title>
   
 
   
@@ -86,12 +86,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.28-master</button>
+            <button class="dropbtn version">0.9.33-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
               
-              <a class="dropdown-item" href="/v0.9.28-master">0.9.28-master</a>
+              <a class="dropdown-item" href="/v0.9.28">0.9.28</a>
+              
+              <a class="dropdown-item" href="/v0.9.23">0.9.23</a>
+              
+              <a class="dropdown-item" href="/v0.9.22">0.9.22</a>
               
               <a class="dropdown-item" href="/v0.9.21">0.9.21</a>
               
@@ -164,6 +168,7 @@
 <li class="toctree-l1"><a class="reference internal" href="index.html">Using Flow API to Compose Your Jina Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../io/index.html">Input and Output Functions in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli/exit.html">Gracefully Exit Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../project-guide/project-guide.html">Project set up guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -180,11 +185,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Using Dashboard to Monitor Logs and View Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Jina Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../crud/index.html">CRUD Operations</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Extensions</span></p>
 <ul>
@@ -193,6 +200,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../extend/driver.html">Guideline When Adding New Driver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hub/publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_schema.html">Jina API Schema for 3rd-Party Applications</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Glossary</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../glossary/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -204,6 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docstring/docstring.html">Docstring guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
@@ -318,7 +330,7 @@
 </div>
 <div class="section" id="text-document-segmentation">
 <h2>Text Document Segmentation<a class="headerlink" href="#text-document-segmentation" title="Permalink to this headline">¶</a></h2>
-<p>A common search pattern is storing long text documents in an index to retrieve them later using short sentences. A single embedding vector per long text document is not the proper way to do this: It makes it hard to extract a single semantically-meaningful vector from a long document. Jina solves this by introducing <a class="reference external" href="https://github.com/jina-ai/jina/tree/master/docs/chapters/101#document--chunk">Chunks</a>. The common scenario is to have a <code class="docutils literal notranslate"><span class="pre">crafter</span></code> segmenting the document into smaller parts (typically short sentences) followed by an NLP-based encoder.</p>
+<p>A common search pattern is storing long text documents in an index to retrieve them later using short sentences. A single embedding vector per long text document is not the proper way to do this: It makes it hard to extract a single semantically-meaningful vector from a long document. Jina solves this by introducing <a class="reference external" href="https://github.com/jina-ai/jina/tree/master/docs/chapters/101#document--chunk">Chunks</a>. The common scenario is to have a <code class="docutils literal notranslate"><span class="pre">segmenter</span></code> segmenting the document into smaller parts (typically short sentences) followed by an NLP-based encoder.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!Sentencizer</span>
 <span class="nt">with</span><span class="p">:</span>
   <span class="nt">min_sent_len</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
@@ -327,7 +339,6 @@
 </div>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!TransformerTorchEncoder</span>
 <span class="nt">with</span><span class="p">:</span>
-  <span class="nt">pooling_strategy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">auto</span>
   <span class="nt">pretrained_model_name_or_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">distilbert-base-cased</span>
   <span class="nt">max_length</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">96</span>
 </pre></div>
@@ -343,14 +354,14 @@
 <li><p>a similar look -&gt; his face seems familiar.</p></li>
 </ul>
 </div>
-<div class="section" id="indexers-at-different-depth-levels">
-<h2>Indexers at Different Depth Levels<a class="headerlink" href="#indexers-at-different-depth-levels" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="indexers-at-different-granularity-levels">
+<h2>Indexers at Different Granularity Levels<a class="headerlink" href="#indexers-at-different-granularity-levels" title="Permalink to this headline">¶</a></h2>
 <p>In a configuration like the one for <em>Text Document Segmentation</em>, we need different levels of indexing. The system needs to keep the data related to the Chunks as well as the information of the original documents. This way:</p>
 <ol class="simple">
 <li><p>The actual search is performed at the Chunk level following the <code class="docutils literal notranslate"><span class="pre">CompoundIndexer</span></code> pattern.</p></li>
 <li><p>Then the Document indexer works as a final step to extract the actual Documents expected by the user.</p></li>
 </ol>
-<p>To implement this, two common structures appear in <code class="docutils literal notranslate"><span class="pre">index</span></code> and <code class="docutils literal notranslate"><span class="pre">query</span></code>. In an <code class="docutils literal notranslate"><span class="pre">index</span></code> flow, these two indexers work in parallel:</p>
+<p>To implement this, two common structures appear in <code class="docutils literal notranslate"><span class="pre">index</span></code> and <code class="docutils literal notranslate"><span class="pre">query</span></code>. In an <code class="docutils literal notranslate"><span class="pre">index</span></code> flow, these two indexers work in parallel (requests are sent to both indexes at the same time):</p>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">chunk</span> <span class="pre">indexer</span></code> gets messages from an <code class="docutils literal notranslate"><span class="pre">encoder</span></code></p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">doc</span> <span class="pre">indexer</span></code> can get the documents even from the <code class="docutils literal notranslate"><span class="pre">gateway</span></code>.</p></li>
@@ -444,16 +455,14 @@
       <span class="nt">metric</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cosine</span>
     <span class="nt">metas</span><span class="p">:</span>
       <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vecidx</span>
-      <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$JINA_DIR</span>
   <span class="p p-Indicator">-</span> <span class="kt">!BinaryPbIndexer</span>
     <span class="nt">with</span><span class="p">:</span>
       <span class="nt">index_filename</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">doc.gz</span>
     <span class="nt">metas</span><span class="p">:</span>
       <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docidx</span>
-      <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$JINA_DIR</span>
 <span class="nt">metas</span><span class="p">:</span>
   <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">chunk_indexer</span>
-  <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$JINA_DIR</span>
+  <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$JINA_WORKSPACE</span>
 <span class="nt">requests</span><span class="p">:</span>
   <span class="nt">on</span><span class="p">:</span>
     <span class="nt">IndexRequest</span><span class="p">:</span>
@@ -653,7 +662,7 @@ message NamedScore {
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 02, 2021.
+        Last updated on Feb 08, 2021.
       </span>
 
         </p>

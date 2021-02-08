@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.peas &mdash; Jina 0.9.32-master documentation</title>
+  <title>jina.peapods.peas &mdash; Jina 0.9.33-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.32-master</button>
+            <button class="dropbtn version">0.9.33-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -217,7 +217,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -396,12 +396,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>  <span class="c1">#: required here to call process/thread method</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">noblock_on_start</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wait_start_success</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="BasePea.wait_start_success"><a class="viewcode-back" href="../../../api/jina.peapods.peas.html#jina.peapods.peas.BasePea.wait_start_success">[docs]</a>    <span class="k">def</span> <span class="nf">wait_start_success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Block until all peas starts successfully.</span>
+
+<span class="sd">        If not success, it will raise an error hoping the outer function to catch it</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_timeout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">timeout_ready</span>
         <span class="k">if</span> <span class="n">_timeout</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">_timeout</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">_timeout</span> <span class="o">/=</span> <span class="mf">1e3</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ready_or_shutdown</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">_timeout</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_shutdown</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
                 <span class="c1"># return too early and the shutdown is set, means something fails!!</span>
@@ -416,9 +425,7 @@
                                 <span class="sa">f</span><span class="s1">&#39;if your executor takes time to load, you may increase --timeout-ready&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> can not be initialized after </span><span class="si">{</span><span class="n">_timeout</span> <span class="o">*</span> <span class="mf">1e3</span><span class="si">}</span><span class="s1">ms&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span></div>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> can not be initialized after </span><span class="si">{</span><span class="n">_timeout</span> <span class="o">*</span> <span class="mf">1e3</span><span class="si">}</span><span class="s1">ms&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BasePea.close"><a class="viewcode-back" href="../../../api/jina.peapods.peas.html#jina.peapods.peas.BasePea.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot; Close the Pea</span>
