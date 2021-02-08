@@ -1,27 +1,21 @@
-=================
-Request Size
-=================
+=============================================
+ Understanding the Request Size parameter?
+=============================================
 
-``request_size`` is the parameter that we could set for the Flow.
-It defines the number of ``Documents`` a single ``Request`` will contain,
-so ``Peas`` will receive requests containing this amount of ``Documents`` according to different
-scheduling policies.
+In some use cases, you may wish to vary the number of ``Documents`` a single Request will receive. You can achieve this by adjusting the ``request_size`` parameter when setting the Flow. This guide covers the different configuration options Jina offers.
 
 .. contents:: Table of Contents
     :depth: 2
 
 Request Size
 ------------
-Jina defines the ``request_size`` as the parameter at client side. By setting the ``request_size`` in Flow's API
-we could define the number of ``Documents`` contained in every ``Request``.
+Jina defines the ``request_size`` as the parameter on client side. By adjusting the ``request_size`` in the Flow's API you could define the number of ``Documents`` contained in every ``Request``.
 
 Batch Size
 ------------
-Batch size, commonly used in machine learning, often refers to the number of data that we feed into
-the model in one iteration.
+Batch size, commonly used in machine learning, often refers to the number of datapoints that we feed into the model in one iteration.
 
-In Jina ``batch_size`` is used by ``Drivers`` and ``Executors`` to guarantee that the ``Executor`` processes
-data in pieces of a specific size.
+In Jina ``batch_size`` is used by ``Drivers`` and ``Executors`` to guarantee that the ``Executor`` processes data in pieces of a specific size.
 
 Before you start
 ------------------
@@ -34,8 +28,7 @@ Make sure you intall latest version of Jina on your local machine.
 
 Implementation
 --------------------
-In order to have a better understanding of the influence of ``request_size`` and how it is used, let's take the following
-codes as example.
+In order to have a better understanding of the influence of ``request_size`` and how it is used, let's take the following code snippets as examples.
 
 We first import the necessary modules.
 
@@ -50,7 +43,7 @@ We first import the necessary modules.
     from jina.executors.crafters import BaseCrafter
     from jina.flow import Flow
 
-Then we define a  ``SimpleCrafter`` which will just forward the data.
+Then we define a ``SimpleCrafter`` which will just forward the data.
 
 .. highlight:: python
 .. code-block:: python
@@ -60,8 +53,7 @@ Then we define a  ``SimpleCrafter`` which will just forward the data.
             return {'id': id}
 
 
-For this example, we will index 100 documents and use 10 parallel ``Crafters``. The ``request_size``
-is set as 20. So the 100 ``Documents`` will be divided into 5 parts and each ``Request`` contains 20 ``Documents``.
+For this example, we will index 100 documents and use 10 parallel ``Crafters``. The ``request_size`` is set to 20. So the 100 ``Documents`` will be divided into 5 parts and each ``Request`` contains 20 ``Documents``.
 
 .. highlight:: python
 .. code-block:: python
@@ -85,15 +77,11 @@ is set as 20. So the 100 ``Documents`` will be divided into 5 parts and each ``R
         main()
 
 
-Choose different request size
+Choosing different request size
 ------------------------------
-Different setting of ``request_size`` may influence the running performance.
-A higher value means large size data will be fed into the ``Pea`` and will demand more memory.
-A lower value will decrease the cost of memory but may increase the running time since we need to send more ``requests``.
+Different settings of ``request_size`` may influence the running performance. A higher value means a large number ``Documents`` will be fed into the ``Pea`` and will demand more memory. A lower value will decrease the cost of memory but may increase the running time since we need to send more ``requests``.
 
-An simple extension of the above example generate a box plot showing the relationship between ``request_size`` and running time
-when we have 100 number of ``Documents`` to be indexed.
-which may help you to get more insights on choosing the ``request_size``.
+A simple extension of the above example generates a box plot showing the relationship between ``request_size`` and running time when we have 100 ``Documents`` to be indexed. This may help you to get more insights on choosing the ``request_size``.
 
 .. image:: request_size_runtime.png
     :alt: request_size vs running time
