@@ -55,7 +55,9 @@
 
     
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Guideline When Adding New Executor" href="../extend/executor.html" />
+    <link rel="prev" title="Prevent Indexing Duplicates" href="../prevent_duplicate_indexing/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -176,7 +178,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../proto/index.html">Jina Protobuf Specification</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Advanced Usage</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../flow/pattern.html">Common Design Patterns</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
@@ -189,6 +191,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CRUD Operations</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Extensions</span></p>
 <ul>
@@ -294,8 +297,8 @@
 <h1>CRUD Operations<a class="headerlink" href="#crud-operations" title="Permalink to this headline">¶</a></h1>
 <p>CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is <em>not</em> a database engine, it does provide these methods of interacting with the data stored in the indexers.</p>
 <p>Until now, Jina has only supported indexing (creating) and querying (reading) documents. To update or delete a document, you’d have to edit your dataset, and then re-build the Flow and indexers. Needless to say, this could create problems if you had large datasets.</p>
-<p>With the release of version <code class="docutils literal notranslate"><span class="pre">1.0</span></code> we’re introducing <strong>update</strong> and <strong>delete</strong> operations. These are implemented across our executors and drivers and will allow you to update and delete documents by their ids.</p>
-<p>A basic example of this can be found in the <code class="docutils literal notranslate"><span class="pre">test_crud.py</span></code> file under <code class="docutils literal notranslate"><span class="pre">tests/integration/crud/simple</span></code>:</p>
+<p>With the release of version <code class="docutils literal notranslate"><span class="pre">1.0.0</span></code> we’re introducing <strong>update</strong> and <strong>delete</strong> operations. These are implemented across our executors and drivers and will allow you to update and delete documents by their ids.</p>
+<p>A basic example of this can be found in the <a class="reference external" href="https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py"><code class="docutils literal notranslate"><span class="pre">test_crud.py</span></code></a>:</p>
 <p>The Flow object now supports a <code class="docutils literal notranslate"><span class="pre">delete</span></code> and <code class="docutils literal notranslate"><span class="pre">update</span></code> method, with a signature similar to index:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
@@ -304,7 +307,8 @@
         <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
 
     <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+        <span class="n">delete_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">delete_ids</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note: deletion and update will happen by <code class="docutils literal notranslate"><span class="pre">id</span></code> of the document.</p>
@@ -340,6 +344,17 @@
            
           </div>
           <footer>
+    
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        
+        <a href="../extend/executor.html" class="btn btn-neutral float-right" title="Guideline When Adding New Executor"
+           accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        
+        
+        <a href="../prevent_duplicate_indexing/index.html" class="btn btn-neutral float-left" title="Prevent Indexing Duplicates"
+           accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        
+    </div>
     
 
     <hr/>
