@@ -8,11 +8,25 @@
 
 Configuration of machines.
 
-### Dataset
+### Datasets
 
-Image
+To run these tests for Jina, we have prepared 2 scenarios:
 
-Text
+## Image
+
+The first scenario simulates an image search application. Images are randomly generated and indexed using the flow with this
+default structure.
+
+![Image Index Flow](image_index_flow.png)
+
+At query time, the Flow looks like this one.
+
+![Image Query Flow](image_query_flow.png)
+
+In the Image Search scenario, there is no `Segmentation` involved and no `Reranking` of the results is used.
+The results are returned according to the `distance` in embedding space returned by the `VectorIndexers`. In these tests,
+no quality is assessed and therefore only the amount of returned matches is validated.
+
 
 ### Configuration of Flows and Pods
 
