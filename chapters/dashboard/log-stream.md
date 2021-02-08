@@ -2,6 +2,8 @@
 
 ##### Jina’s LogStream lets you monitor and debug your flows easily. You can audit your running flow live and  filter, group and search based on component (Pod) or log level / message.
 
+![logging](logging.gif)
+
 ### Table View:
 
 In Table View you can check out all your logs in chronological order
