@@ -1,5 +1,5 @@
 =================
-Flow Optmization
+Flow Optimization
 =================
 -----------------------------------------------------------------------------------------------------------------------
 The FlowOptimizer runs Flows with different parameter sets. It allows out of the box hyperparameter tuning inside Jina.
