@@ -160,7 +160,7 @@ Multi-line docstrings example of a function
         :type param1: :class:`Document`
         :param param2: This is an example of a param2
         :type param2: int
-        :returns: This is an example of what will be returned
+        :return: This is an example of what will be returned
         :rytpe: int
         :raises KeyError: raises an exception
         """
