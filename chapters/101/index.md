@@ -108,6 +108,6 @@ A Driver “translates” input and output messages for an Executor. Each Execut
 
 Jina is a happy family. You can feel the harmony when you use Jina.
 
-You can design at the micro-level and scale up to the macro-level. YAMLs becomes algorithms, threads become processes, Pods become Flows. The patterns and logic always remain the same. This is the beauty of Jina.
+You can design at the micro-level and scale up to the macro-level. YAML becomes algorithms, Pods become Flows. The patterns and logic always remain the same. This is the beauty of Jina.
 
 Now, continue to [Jina 102](https://docs.jina.ai/chapters/102/index.html) to learn how these components work together! 
