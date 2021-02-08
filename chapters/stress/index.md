@@ -2,9 +2,25 @@
 
 [comment]: <> (TODO how do we sell this?)
 
-## Purpose: Showcase how Jina scales and how you can deploy to AWS
+#### Purpose: Showcase how Jina scales and how you can deploy to AWS
 
-## Preparations and AWS
+---
+
+#### Table of Contents
+
+  * [Infrastructure](#infrastructure)
+  * [Datasets](#datasets)
+    + [Image search](#image-search)
+    + [Text search](#text-search)
+  * [Configuration](#configuration)
+    + [Sharding parameters](#sharding-parameters)
+    + [Functional/Indexers parameter](#functional-indexers-parameter)
+    + [Client](#client)
+  * [Results](#results)
+  * [Test it yourself](#test-it-yourself)
+  * [Learnings](#learnings)
+
+## Infrastructure
 
 This example benchmark prioritizes a real-world scenario, where a user hosts Jina in the cloud. We use six machines in AWS, of instace size `c5.2xlarge` (8 vCPUs, 16GB RAM). We also add 100GB gp2 ssd.
 
@@ -43,94 +59,38 @@ The text search topology is similar to the one above, but with a `Segmenter` (`S
 
 The full indexing Flow can be seen below:
 
-[comment]: <> (TODO)
+![Text Index Flow](text_index_flow.png)
 
 The full search Flow can be seen below:
 
-[comment]: <> (TODO)
+![Text Query Flow](text_query_flow.png)
 
-## Configuration of Flows and Pods
-
-Jina allows for parallelization of data processing. You can read an overview of these options [here](link)
-
-[comment]: <> (TODO link)
-
-We use these to parallelize the various `Pods`. We also use the `load_balance` scheduling strategy. This prioritizes the idle `Peas` inside the `Pods`.    
-
-### Configuration
+## Configuration
 
 The configuration parameters of this experiment can be found in the `.env` file, whose values are set as environment variables and changed in the `flow` and `pod` yamls.
 
-The file content looks like:
+The parameters are organized in 4 groups:
 
-```
-##Infrastructure parameters
-JINA_ENCODER_HOST=encoder
-JINA_RANKER_HOST=ranker
-JINA_REDIS_INDEXER_HOST=ranker
-JINA_VEC_INDEXER_HOST=vector
-
-##Sharding/Performance parameters
-JINA_SHARDS_ENCODER=2
-JINA_SHARDS_INDEXERS=8
-JINA_SHARDS_REDIS=2
-OMP_NUM_THREADS=1
-SCHEDULING=load_balance
-
-##Functional/Indexers parameters
-JINA_ENCODER_DRIVER_BATCHING=16
-JINA_DISTANCE_REVERSE=False
-JINA_FAISS_IMAGE=docker://jinahub/pod.indexer.faissindexer:0.0.15-0.9.29
-JINA_ANNOY_IMAGE=docker://jinahub/pod.indexer.annoyindexer:0.0.16-0.9.29
-JINA_FAISS_INDEX_KEY='IVF50,Flat'
-JINA_ANNOY_NUM_TREES=100
-JINA_ANNOY_SEARCH_K=-1
-
-##Client/run parameters
-TOP_K=50
-#Number of documents a client will try to index at every connection
-DOCS_INDEX=1000
-#Number of documents a client will try to query at every connection
-DOCS_QUERY=1000
-PYTHON_EXEC=python3
-DATASET=image
-#Number of seconds for which clients will try to index documents. (The time is checked after each cycle of indexing `DOCS_INDEX`)
-TIME_LOAD_INDEX=18000
-#Number of seconds for which clients will try to query documents. (The time is checked after each cycle of indexing `DOCS_QUERY`)
-TIME_LOAD_QUERY=3600
-#Number of documents every request will contain
-REQ_SIZE=50
-#Number of concurrent clients indexing
-CONCURRENCY_INDEX=5
-#Number of concurrent clients querying
-CONCURRENCY_QUERY=1
-SLEEP_TIME=10
-
-##Flow parameters
-FLOW_HOST=flow
-FLOW_PORT=8000
-```
-
-The parameters are organized in 4 groups-
-- Infrastructure parameters: Set where the different Pods run
-- Sharding Parameters: Set the parallelization and sharding of different components (Link to sharding explanation in docs)
-- Functional/Indexers parameters: Set functional parameters that can affect the performance of the search
-- Client parameters: Parameters related to how client sends data to Flow
-- Flow parameters: Host and Port of the Flow
+- Infrastructure parameters: Configure what the different machines are.
+- Sharding Parameters: Configure the parallelization and sharding of different components
+- Functional/Indexers parameters: Configure the functional parameters that can affect the performance of the search
+- Client parameters: Configure how the client connects to the Flow
 
 ### Sharding parameters
 
+Jina allows for parallelization of data processing. You can read an overview of these options [here](https://docs.jina.ai/chapters/parallel/index.html)
+
+We use these to parallelize the various `Pods`. We also use the `load_balance` scheduling strategy. This prioritizes the idle `Peas` inside the `Pods`.    
+
 ### Functional/Indexers parameter
 
-## Client  
+As part of the benchmark, we also compare the performance of the `BaseNumpyIndexer` with the advanced indexers, based on `Annoy` and `Faiss`. We also provide specific arguments to these: `num_tress` for `Annoy`; `index_key` for `Faiss`.
+
+### Client  
 
 In order to simulate a real-world scenarios, we also test using multiple concurrent clients. This is achieved using the Python `multiprocessing` library.
 
 In order to stress-test the system, we also issue index and query requests for several hours in a row. Each request contains a specific number of `Documents`, split across requests of the same `request_size`.
- 
-### Advanced Indexers
-
-As part of the benchmark, we also compare the performance of the `BaseNumpyIndexer` with the advanced indexers, based on `Annoy` and `Faiss`. We also provide specific arguments to these: `num_tress` for `Annoy`; `index_key` for `Faiss`.
 
 ## Results
 
@@ -140,8 +100,9 @@ Stats, QPS,
 
 ## Test it yourself
 
-Clone
 Install reqs on AWS
+Jina
+Clone
 Set up env
 Run script
 
