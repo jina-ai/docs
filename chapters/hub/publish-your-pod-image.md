@@ -61,9 +61,9 @@ Please refer to [hub/examples/mwu_encoder/manifest.yml](hub/examples/mwu_encoder
 If you have made code changes to a Pod, you must update the appropriate fields like `version` inside `manifest.yml` for updating the schema. With every change,
 the version will increment following `semantic versioning`. For instance, `0.0.9` becomes `0.0.10` on an update
 
-## Publish Your image
+## Publish your image
 
-All you need to do is to publish your file bundle into this repo. Subsequently, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline. 
+All you need to do is to publish your file bundle into the Jina Hub repo. Subsequently, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline. 
 
 1. Let's say you organize [all files mentioned in here](#what-files-need-to-be-uploaded) in a folder called `awesomeness`. Depending on what you are contributing, you can put it into `hub/executors/indexers/awesomeness`.
 2. Make a Pull Request and commit your changes into this repository, remember to follow the commit lint style.
