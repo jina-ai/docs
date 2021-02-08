@@ -21,13 +21,15 @@ A common pattern when building a Flow in Jina is:
   b. Index some data
   c. Query some data and look at the results
 
-The ``FlowOptimizer`` automates step 3.
+The :class:`FlowOptimizer` automates step 3.
 It can be done via python code or JAML definitions as commonly used around Jina.
 
 Before you start
 ----------------
 
 Make sure you install Jina via `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_ with ``jina[optimizer]``.
+
+Read the :class:`Evaluator` entry in the `glossary <https://docs.jina.ai/chapters/glossary/glossary.html>`_.
 
 Using the FlowOptimizer
 -----------------------
@@ -38,9 +40,9 @@ The best semantic representation for a given problem might not be the last layer
 
 A Flow Optimization requires the following components:
 
-- At least one Flow and the corresponding Pod definitions via JAML
+- At least one :class:`Flow` and the corresponding Pod definitions via JAML
 - An Evaluator Executor in at least one of the Flows
-- A datasource containting Documents, which are sent to each Flow
+- A datasource containing Documents, which are sent to each Flow
 - A ``parameter.yml`` file describing the optimization scenario
 - A ``FlowRunner`` object, which allows repeatedly running the same Flow with different configurations.
 
@@ -57,10 +59,10 @@ Let's define a ``flow.yml``:
     - uses: EuclideanEvaluator
 
 
-The optimizer will change the value of ``JINA_ENCODER_LAYER`` later on.
+The :class:`FlowOptimizer` will change the value of ``JINA_ENCODER_LAYER`` later on.
 The Flow passes it on to the ``encoder.yml`` via the ``JINA_ENCODER_LAYER_VAR``.
 
-The ``EuclideanEvaluator`` is used for calculating the distance between the calculated encoding and the expected one.
+The :class:`EuclideanEvaluator` is used for calculating the distance between the calculated encoding and the expected one.
 Furthermore, we need the corresponding ``encoder.yml``:
 
 .. code-block:: yaml
@@ -84,14 +86,16 @@ Furthermore, we need the corresponding ``encoder.yml``:
 
       def __init__(self, layer=0, *args, **kwargs):
           super().__init__(*args, **kwargs)
-          self._layer = layer
+          self._column = layer
 
-      def encode(self, data: 'np.ndarray', *args, **kwargs) -> 'np.ndarray':
-          return np.array([[self.ENCODE_LOOKUP[data[0]][self._layer]]])
+      def encode(self, data: Sequence[str], *args, **kwargs) -> 'np.ndarray':
+          return np.array([[self.ENCODE_LOOKUP[data[0]][self._column]]])
 
 
-The ``SimpleEncoder`` is not doing any computation.
-It rather illustrates the output a real encoder would have on different layers (the second layer for ``🐦`` would result in the encoding ``[4]``).
+The :class:`SimpleEncoder` is not doing any computation.
+For illustration purposes, it just chooses precomputed values for the different queries.
+Thus, the semantic switch from ``layer`` to ``_column``
+So choosing one ``column`` here is comparable with choosing a layer in a real world encoder (the second layer for ``🐦`` would result in the encoding ``[4]``).
 
 As the next step we need some ground truth data.
 
@@ -106,14 +110,14 @@ As the next step we need some ground truth data.
   ]
 
 Documents will be sent in pairs ``(doc, groundtruth)`` to the Flow.
-The *doc* represents a Document that should be encoded.
-The *groundtruth* contains the ideal encoding.
+The ``doc`` represents a Document that should be encoded.
+The ``groundtruth`` contains the ideal encoding.
 The perfect semantic encoding for ``🐲`` would be ``2``.
 
 *Note*: In a real world example the groundtruth would rather be documents, that should be retrieved after querying.
 For the sake of simplicity we omitted the indexing step in this example.
 
-The ``FlowRunner`` wraps the Flow and the Documents for rerunnability.
+The :class:``FlowRunner`` wraps the Flow and the Documents for rerunnability.
 This ensures no side effects between different Flow runs during optimization.
 
 .. code-block:: python
@@ -123,7 +127,7 @@ This ensures no side effects between different Flow runs during optimization.
   runner = SingleFlowRunner('flow.yml', documents, 1, 'search', overwrite_workspace=True)
 
 
-Now we need to tell the optimizer, what it can optimize:
+Now we need to tell the :class:`FlowOptimizer`, what it can optimize:
 The ``JINA_ENCODER_LAYER`` variable.
 This is done via a ``parameter.yml`` file:
 
@@ -145,7 +149,7 @@ Possible choices for variables are:
 
 Under the hood, Jina leverages the `optuna <https://optuna.org/>`_ optimizer.
 
-Finally, we can define the ``FlowOptimizer`` and run it:
+Finally, we can define the :class:``FlowOptimizer`` and run it:
 
 .. code-block:: python
 
@@ -161,8 +165,8 @@ Finally, we can define the ``FlowOptimizer`` and run it:
   )
   result = optimizer.optimize_flow()
 
-The ``MeanEvaluationCallback`` takes the results of the last Evaluator inside a Flow and averages the results.
-In the above defined Flow it is the single ``EuclideanEvaluator``.
+The :class:`MeanEvaluationCallback` takes the results of the last Evaluator inside a Flow and averages the results.
+In the above defined Flow it is the single :class:`EuclideanEvaluator`.
 
 Finally, we can write the optimal parameters into a file:
 
@@ -170,6 +174,8 @@ Finally, we can write the optimal parameters into a file:
 
   result.save_parameters('result_file.yml')
 
+If you are familiar with ``optuna``, you can access more information directly from the `optuna study object <https://optuna.readthedocs.io/en/stable/reference/generated/optuna.study.Study.html#optuna.study.Study>`_ via ``result.study``.
+For example ``result.study.trials`` contains detailed information about all trials.
 
 Limitations
 ------------
