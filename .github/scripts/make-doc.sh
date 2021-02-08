@@ -64,6 +64,7 @@ if [[ $1 == "commit" ]]; then
 elif [[ $1 == "release" ]]; then
   cd ${DOC_DIR}
   cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/html/
+  echo -e "${RELEASE_VER}" >> versions
   cd -
   cd ${HTML_DIR}
   rsync -avr . master  # sync everything under the root to master/
@@ -76,7 +77,6 @@ elif [[ $1 == "release" ]]; then
   cd ${HTML_DIR}
   rm -rf bak
   echo docs.jina.ai > CNAME
-  echo -e "${RELEASE_VER}" >> versions
   git init
   git config --local user.email "dev-bot@jina.ai"
   git config --local user.name "Jina Dev Bot"
