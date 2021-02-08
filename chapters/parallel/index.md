@@ -8,7 +8,9 @@ Jina allows for parallelization of Peas and Pods. This generally leads to an inc
 
 ### Before you start
 
-You are expected to be familiar with the general concepts of Jina. You should also have experience with parallelism in other systems. Jina does follow the best practices and designs from other databases or search engines. However, Jina is primarily a *neural search engine*. This means some changes and adaptations were necessary. This chapter will explain these.
+You are expected to be familiar with the general concepts of Jina, as presented in [here](https://docs.jina.ai/chapters/core/introduction/index.html).
+
+You should also have experience with parallelism in other systems. Jina does follow the best practices and designs from other databases or search engines. However, Jina is primarily a *neural search engine*. This means some changes and adaptations were necessary. This chapter will explain these.
 
 ### Implementation
 
