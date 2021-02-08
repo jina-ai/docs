@@ -49,9 +49,9 @@ f = (Flow().add(name='p1', needs='gateway')
 
 Depending on the type of `Peas`, `parallel` means different things. In *state-less* `Peas` (`Crafters`, `Encoders` etc.), you *parallelize*, not *shard*. This means the data is not persisted, but it's only processed in a parallel manner. 
 
-On the other hand, *state-ful* `Peas` (Indexers) will store the data across *shards*. This terminology is borrowed from other database systems
+On the other hand, *state-ful* `Peas` (Indexers) will store the data across *shards*. This terminology is borrowed from other database systems.
 
-For more on sharding in other DB systems (with a focus on traditional SQL), see [here](https://subscription.packtpub.com/book/big_data_and_business_intelligence/9781849516723/1/ch01lvl1sec10/using-sharding-and-data-distribution)
+For more on sharding in other DB systems (with a focus on traditional SQL), see [here].(https://subscription.packtpub.com/book/big_data_and_business_intelligence/9781849516723/1/ch01lvl1sec10/using-sharding-and-data-distribution)
 
 For both of these, you need to set `parallel` to some number higher than `1`, and `polling` to `any`.
 
