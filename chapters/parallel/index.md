@@ -71,6 +71,13 @@ Jina offers two types of scheduling:
 
 These are configured via `scheduling`, on the `Pod` level.
 
+An example of configuring the above parameters can be seen here: 
+
+```python
+from jina.enums import  SchedulerType
+f = Flow().add(name='p1', parallel=3, scheduling=SchedulerType.ROUND_ROBIN)
+```
+
 ### Limitations
 
 At the moment Jina does not support sharding and replication of shards at the same time. We only support sharding (`Peas` of the `Pod` with their own parts of the data).
