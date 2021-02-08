@@ -2,11 +2,9 @@
 
 **Jina Dashboard** is a low-code monitoring and management environment for Jina. With the Dashboard you can build Jina Flows, manage them from a central location and get insights into the health of the Flow through log stream analysis!
 
-In order to use the Dashboard visit https://dashboard.jina.ai or clone it from [Github](https://github.com/jina-ai/dashboard) 
-
+Use Jina Dashboard by visiting the [website](https://dashboard.jina.ai) or cloning it from [GitHub](https://github.com/jina-ai/dashboard) 
 
 ![flow demo](overview.gif)
-
 
 # Features
 
@@ -19,4 +17,5 @@ In order to use the Dashboard visit https://dashboard.jina.ai or clone it from [
 -  ##  [Jina Hub](hub.md)
     Share and discover custom and community driven Jina Pods and Apps tailored to specific use cases of neural search.
 
+### In order to use Jina Dashboard it has to be [ connected to JinaD first](connect-jinaD.md)
 

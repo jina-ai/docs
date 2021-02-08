@@ -6,7 +6,7 @@
 
 CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is *not* a database engine, it does provide these methods of interacting with the data stored in its indexes.
 
-Before `1.0`, Jina only supported indexing (creating) and querying (reading) Documents. To update or delete a Document, you had to edit your dataset, and then rebuild the Flow and Indexers. Needless to say, this could create problems if you had large datasets.
+Before `1.0`, Jina only supported indexing (creating) and querying (reading) Documents. To update or delete a Document, you had to edit your dataset, and then rebuild the Flow and indexes. Needless to say, this could create problems if you had large datasets.
 
 With the release of version `1.0` we are introducing **update** and **delete** operations. These are implemented across our Executors and Drivers, and allow you to update and delete Documents by their ids. 
 
@@ -16,9 +16,9 @@ Study the basics [here](https://docs.jina.ai/chapters/core/introduction/index.ht
 
 ### Implementation
 
-A basic example of this can be found in the `test_crud.py` file under `tests/integration/crud/simple`:
+A basic example of this can be found in the [`test_crud.py`](https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py):
 
-The Flow class now supports a `delete` and `update` methods, with a signature similar to index:
+The `Flow` class now supports `delete` and `update` methods, with a signature similar to `index`:
 
 ```python
     docs = random_docs(10)
@@ -34,7 +34,8 @@ The Flow class now supports a `delete` and `update` methods, with a signature si
     doc_ids = [d.id for d in docs]
         
     with f:
-        f.delete(input_fn=doc_ids)
+        delete_ids = [d.id for d in doc_ids]
+        f.delete(delete_ids)
 ```
 
 Note: deletion and update will happen by `id` of the document.
