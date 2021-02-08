@@ -28,7 +28,7 @@ POST a SearchRequest
    ' -v -i 'http://0.0.0.0:5555/api/search'
 
 Remarks on POST :command:`:<port_expose>/api/<mode>`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  ``<mode>`` should be one of ``index``, ``train`` and ``search``
 -  MIME type should be ``application/json``
@@ -41,7 +41,7 @@ Remarks on POST :command:`:<port_expose>/api/<mode>`
 -  The REST endpoint will be served at ``port_expose``
 
 Switching from gRPC gateway to REST gateway
--------------------------------------------
+---------------------------------------------
 
 By default Jina uses gRPC as the gateway for receiving and sending
 requests from and to clients. Some users especially the frontend
@@ -49,7 +49,7 @@ engineers may look for a RESTful API to communicate with Jina. This can
 be done by easily.
 
 In Python API
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -71,7 +71,7 @@ To block a Flow, use ``block()``
        f.block()
 
 In YAML
-~~~~~~~
+~~~~~~~~~
 
 .. code:: yaml
 
@@ -83,7 +83,7 @@ And then either load it in Python via ``Flow.load_config('my.yml')`` or
 via CLI: ``jina flow --yaml-path my.yml``
 
 In gateway's CLI (advanced)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Most of the cases you just need to set ``rest-api`` on the Flow level.
 But in case you need to start a separate gateway with ``rest_api``
