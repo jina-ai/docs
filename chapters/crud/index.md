@@ -1,29 +1,45 @@
 # CRUD Operations
 
+##### In this section you will get an overview of how Jina implements CRUD: Create, Read, Update, Delete  
+
+### Feature Description
+
 CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is *not* a database engine, it does provide these methods of interacting with the data stored in the indexers.
 
 Until now, Jina has only supported indexing (creating) and querying (reading) documents. To update or delete a document, you'd have to edit your dataset, and then re-build the Flow and indexers. Needless to say, this could create problems if you had large datasets.
 
-With the release of version `1.0` we're introducing **update** and **delete** operations. These are implemented across our executors and drivers and will allow you to update and delete documents by their ids. 
+With the release of version `1.0.0` we're introducing **update** and **delete** operations. These are implemented across our executors and drivers and will allow you to update and delete documents by their ids. 
+
+## Before you start 
+
+You will need to know the basics of Jina.
+
+### Implementation
 
 A basic example of this can be found in the `test_crud.py` file under `tests/integration/crud/simple`:
 
 The Flow object now supports a `delete` and `update` method, with a signature similar to index:
 
 ```python
-    with f:
-        f.index(input_fn=random_docs(10))
+    docs = random_docs(10)
 
     with f:
-        f.update(input_fn=random_docs(10))
+        f.index(input_fn=docs)
 
+    new_docs = random_docs(10)
+            
     with f:
-        f.delete(input_fn=random_docs(10))
+        f.update(input_fn=new_docs)
+
+    doc_ids = [d.id for d in docs]
+        
+    with f:
+        f.delete(input_fn=doc_ids)
 ```
 
 Note: deletion and update will happen by `id` of the document.
 
-## Limitations
+### Limitations
 
 Unfortunately there are some limitations to what Jina can do for the moment. These were trade-offs we needed to implement to keep Jina performant, robust, and easy to use. Some of these will be addressed in future versions, while some are intrinsic to Jina's architecture.
 
