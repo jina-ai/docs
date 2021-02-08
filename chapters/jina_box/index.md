@@ -5,21 +5,22 @@
 ![jina box](jinabox.gif)
 
 
+### Features
+
+- Easy-to-use web component for Jina search backend
+- Users can drag and drop multi-modal data as search queries
+- Webcam and microphone support (in progress, contributions welcome! ❤️)
+- Visualize search results in a dropdown list or separate container
+- Highly customizable
+
 ### Before you start
 
 Jinabox is a frontend for Jina. You will need to spin up a Jina backend to get search results. Based on what you want to search, run one of our example Jina backends:
 
-- Pokedex (real image data): docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.bitsearch-pokedex search
-  
-
-- Southpark (real text data): docker run -p 45678:45678 jinaai/hub.app.distilbert-southpark
-  
-
-- MP4 mock (placeholder video data): docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.iomock.mp4 search
-  
-
-- Wav mock (placeholder audio data): docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.iomock.sound search
-
+- [Pokedex](https://github.com/jina-ai/examples/tree/master/pokedex-with-bit) (real image data): `docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.bitsearch-pokedex search`
+- [Southpark](https://github.com/jina-ai/examples/tree/master/southpark-search) (real text data): `docker run -p 45678:45678 jinaai/hub.app.distilbert-southpark`
+- [MP4 mock](https://github.com/jina-ai/examples/tree/master/io-mock-app) (placeholder video data): `docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.iomock.mp4 search`
+- [Wav mock](https://github.com/jina-ai/examples/tree/master/io-mock-app) (placeholder audio data): `docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.iomock.sound search` 
 ### Open jinabox.js in your Browser
 
 Just go to https://jina.ai/jinabox.js/ in your browser to open up the search interface.
@@ -32,12 +33,30 @@ Based on the Docker port you are exposing (i.e. 65481 or 45678 in above Docker i
     http://localhost:<port_number>/api/search
 
 
+![server_endpoint](server_endpoint.png)
+
 ### Start Searching!
 
 Drag and drop images, video, or audio, or type in text to search.
 
+![jina box_search](jinabox_search.gif)
 
-### jinabox.js in Your Project
+
+## Jinabox in your Project
+
+### Jinabox on [GitHub](https://github.com/jina-ai/jinabox.js/)
+
+
+### Installation via package manager
+
+    npm install jinabox
+
+or
+
+    yarn add jinabox
+
+
+### Use Jinabox via Script Tag
 
 In HTML, include the minified script:
 
@@ -58,24 +77,7 @@ Then create a container where the searchbar/floater is to appear:
 
 Now you can drag anything from anywhere (local/browser/webpage) to it and conduct the search.
 
-Ready to learn Jina? Read our 101 tutorials.
-
-### Installation via package manager
-
-    npm install jinabox
-
-or
-
-    yarn add jinabox
-
-
-### Features
-
-- Easy-to-use web component for Jina search backend
-- Users can drag and drop multi-modal data as search queries
-- Webcam and microphone support (in progress, contributions welcome! ❤️)
-- Visualize search results in a dropdown list or separate container
-- Highly customizable
+Ready to learn Jina? Read our [101 tutorials](../101/index.md).
 
 ### Supported MIME types
 
