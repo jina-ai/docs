@@ -15,19 +15,27 @@ Before you start, you have to [launch JinaD and connect it to the Dashboard](con
 
 ### Composing a flow
 
+Drag&Drop the pods to the canvas. You can edit a pod's properties by double clicking it
+
 ![compose flow](flowCompose.gif)
 
 
 ### Starting and stopping a flow
+
+To start a flow click on the start button in the command bar. To stop it click on the stop button
 
 ![start stop flow](startStopFlow.gif)
 
 
 ### Importing a flow
 
+You can import a flow with YAML either in the window for creating a new flow or by clicking at the import flow button in the command bar
+
 ![import flow](importYML.gif)
 
 ### Exporting a flow
+
+You can export a flow either visually as a png or as YAML by clicking the respective buttons in the commandbar
 
 ![export flow](exportFlow.gif)
 
