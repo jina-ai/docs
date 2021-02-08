@@ -20,7 +20,7 @@ Batch Size
 Batch size, commonly used in machine learning, often refers to the number of data that we feed into
 the model in one iteration.
 
-In Jina ``batch_size`` is used by ``Drivers`` and ``Encoders`` to guarantee that the ``Executor`` processes
+In Jina ``batch_size`` is used by ``Drivers`` and ``Executors`` to guarantee that the ``Executor`` processes
 data in pieces of a specific size.
 
 Before you start
