@@ -1,6 +1,9 @@
 ## Jinabox
 
-##### Jinabox is a lightweight, customizable omnibox. You can use it for searching text, images, videos, audio or any kind of data with a Jina backend.
+##### Jinabox is a lightweight, customizable front end for searching text, images, videos, audio or any kind of data with a Jina backend.
+
+Ready to learn Jina? Read our [101 tutorials](../101/index.md).
+
 
 ![jina box](jinabox.gif)
 
@@ -9,7 +12,6 @@
 
 - Easy-to-use web component for Jina search backend
 - Users can drag and drop multi-modal data as search queries
-- Webcam and microphone support (in progress, contributions welcome! ❤️)
 - Visualize search results in a dropdown list or separate container
 - Highly customizable
 
@@ -44,6 +46,8 @@ Drag and drop images, video, or audio, or type in text to search.
 
 ## Jinabox in your Project
 
+This is how you can add Jinabox to your existing web project.
+
 ### Jinabox on [GitHub](https://github.com/jina-ai/jinabox.js/)
 
 
@@ -76,8 +80,6 @@ Then create a container where the searchbar/floater is to appear:
     <jina-floater></jina-searchbar>
 
 Now you can drag anything from anywhere (local/browser/webpage) to it and conduct the search.
-
-Ready to learn Jina? Read our [101 tutorials](../101/index.md).
 
 ### Supported MIME types
 
