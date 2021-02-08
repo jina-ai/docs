@@ -1,24 +1,24 @@
 # CRUD Operations
 
-##### In this section you will get an overview of how Jina implements CRUD: Create, Read, Update, Delete  
+##### In this section, you will get an overview of how Jina implements CRUD: Create, Read, Update, Delete  
 
-### Feature Description
+### Feature description
 
-CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is *not* a database engine, it does provide these methods of interacting with the data stored in the indexers.
+CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is *not* a database engine, it does provide these methods of interacting with the data stored in its indexes.
 
-Until now, Jina has only supported indexing (creating) and querying (reading) documents. To update or delete a document, you'd have to edit your dataset, and then re-build the Flow and indexers. Needless to say, this could create problems if you had large datasets.
+Before `1.0`, Jina only supported indexing (creating) and querying (reading) Documents. To update or delete a Document, you had to edit your dataset, and then rebuild the Flow and Indexers. Needless to say, this could create problems if you had large datasets.
 
-With the release of version `1.0.0` we're introducing **update** and **delete** operations. These are implemented across our executors and drivers and will allow you to update and delete documents by their ids. 
+With the release of version `1.0` we are introducing **update** and **delete** operations. These are implemented across our Executors and Drivers, and allow you to update and delete Documents by their ids. 
 
 ## Before you start 
 
-You will need to know the basics of Jina.
+Study the basics [here](https://docs.jina.ai/chapters/core/introduction/index.html)
 
 ### Implementation
 
 A basic example of this can be found in the `test_crud.py` file under `tests/integration/crud/simple`:
 
-The Flow object now supports a `delete` and `update` method, with a signature similar to index:
+The Flow class now supports a `delete` and `update` methods, with a signature similar to index:
 
 ```python
     docs = random_docs(10)
@@ -39,7 +39,7 @@ The Flow object now supports a `delete` and `update` method, with a signature si
 
 Note: deletion and update will happen by `id` of the document.
 
-### Limitations
+## Limitations
 
 Unfortunately there are some limitations to what Jina can do for the moment. These were trade-offs we needed to implement to keep Jina performant, robust, and easy to use. Some of these will be addressed in future versions, while some are intrinsic to Jina's architecture.
 
