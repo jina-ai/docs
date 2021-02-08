@@ -80,17 +80,19 @@ The parameters are organized in 4 groups:
 
 Jina allows for parallelization of data processing. You can read an overview of these options [here](https://docs.jina.ai/chapters/parallel/index.html)
 
-We use these to parallelize the various `Pods`. We also use the `load_balance` scheduling strategy. This prioritizes the idle `Peas` inside the `Pods`.    
+We use these to parallelize the various `Pods`. We also configure the scheduling strategy to `load_balance`. This prioritizes the idle `Peas` inside the `Pods`.
 
 ### Functional/Indexers parameter
 
-As part of the benchmark, we also compare the performance of the `BaseNumpyIndexer` with the advanced indexers, based on `Annoy` and `Faiss`. We also provide specific arguments to these: `num_tress` for `Annoy`; `index_key` for `Faiss`.
+As part of the benchmark, we also compare the performance of the `NumpyIndexer` with the advanced indexers, based on `Annoy` and `Faiss`. We also provide specific arguments to these: `num_tress` for `Annoy`; `index_key` for `Faiss`.
 
 ### Client  
 
 In order to simulate a real-world scenarios, we also test using multiple concurrent clients. This is achieved using the Python `multiprocessing` library.
 
 In order to stress-test the system, we also issue index and query requests for several hours in a row. Each request contains a specific number of `Documents`, split across requests of the same `request_size`.
+
+The client also sets the `TOP_K` parameter. This limits the number of matches returned by the Flow. This also affects performance.
 
 ## Results
 
@@ -100,11 +102,27 @@ Stats, QPS,
 
 ## Test it yourself
 
-Install reqs on AWS
-Jina
-Clone
-Set up env
-Run script
+You can reproduce this benchmark yourself. You have to do the following:
+
+- configure and start the instances in AWS
+
+    You can try using another provider. Additionally, you can try running it in Docker Compose, on your local machine. However, the Annoy & Faiss indexers use their own Docker images and running a Docker within Docker is currently not supported.
+
+- clone the repository [here](https://github.com/jina-ai/cloud-ops/tree/master/stress-example)
+- install Jina, JinaD and the requirements on each of the machines
+    
+    These can be found in the folders `image` or `text`.
+
+Do the following in the client machine:
+
+- clone the same repository
+- `cd` into the `stress-example` directory
+- set up the configuration options in `.env`
+- run the automatic script: `nohup bash run_test.sh > output.txt &`
+
+    `nohup` allows you to disconnect from the machine without interrupting the process. The output will be piped into `output.txt`. 
+
+When the process is done, you will find the results in `output.txt`. Look for the lines starting with `TOTAL: Ran operation`
 
 ## Learnings
 
