@@ -93,7 +93,7 @@ Ready to learn Jina? Read our [101 tutorials](../101/index.md).
 ### Configuration
 
 
-Play with and preview jinabox configurations here: https://jina.ai/jinabox.js/
+Play with and preview jinabox configurations [here](https://jina.ai/jinabox.js/)
 
 | Setting                    | Default             | Type    | Description                                                                                                                                                 |
 |----------------------------|---------------------|---------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -165,7 +165,7 @@ or
 
 ### Browser Support
 
-`jinabox.js` runs on modern browsers including Chrome, Firefox, Safari (desktop and mobile) and Opera. Certain features (like recording audio/video) are not available on all browsers and jinabox will make these features available accordingly.
+Jinabox runs on modern browsers including Chrome, Firefox, Safari (desktop and mobile) and Opera. Certain features (like recording audio/video) are not available on all browsers and jinabox will make these features available accordingly.
 
 ## Troubleshooting
 
