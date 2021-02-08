@@ -10,7 +10,7 @@ Run `pip install "jina[hub]"`
 `hub list` interface helps the user to retrieve information related to Executor images in the Hub.
 The following filters are accepted:
  `name` corresponding to image name
- `kind` corresponding to the kind of hub image (Indexer / Encoder / Segmenter / Crafter / Evaluator / Ranker etc)
+ `kind` corresponding to the kind of Hub image (Indexer / Encoder / Segmenter / Crafter / Evaluator / Ranker etc)
  `type` indicating either Pod or app
  `keywords` for filtering on specific terms like `sklearn`,  etc.
 
@@ -18,9 +18,9 @@ The following filters are accepted:
 
 ## `jina hub new`:
 Jina provides an easy-to-use interface for spinning up an Executor or an app
-### Create a new executor
+### Create a new Executor
 `jina hub new --type pod`
-It will start a wizard in the CLI to guide you in creating your first executor. The resulting file structure should look like the following:
+It will start a wizard in the CLI to guide you in creating your first Executor. The resulting file structure should look like the following:
 ```
 MyAwesomeExecutor/
 ├── Dockerfile
@@ -40,7 +40,7 @@ It will start a wizard in the CLI to guide you in creating your app.
 
 ## `jina hub login`
 
-Login to Jina Hub using your GitHub credentials. This is required for pushing your executor to Jina Hub.
+Login to Jina Hub using your GitHub credentials. This is required for pushing your Executor to Jina Hub.
 Usage:
 `jina hub login` : 
 Copy/paste the token into GitHub to verify your account
@@ -56,11 +56,11 @@ More Hub CLI usage can be found via `jina hub build --help`
 `jina hub push jinahub/type.kind.jina-image-name:image-jina_version`
  
 ### Naming conventions
-All apps and executors should follow the naming convention:
+All apps and Executors should follow the naming convention:
 `jinahub/type.kind.jina-image-name:image-jina_version`
  
 For example:
-`jinahub/app.app.wikipedia-sentences:0.0.1-1.0.0` (use default jina hub new version, and stable Jina version) 
+`jinahub/app.app.wikipedia-sentences:0.0.1-1.0.0` (use default `jina hub new` version, and stable Jina version) 
  
 For detailed information, please refer to the [Jina Hub repository].(https://github.com/jina-ai/jina-hub)
  
