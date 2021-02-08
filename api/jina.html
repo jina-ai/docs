@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Jina Python API Reference &mdash; Jina 0.9.29-master documentation</title>
+  <title>Jina Python API Reference &mdash; Jina 0.9.32-master documentation</title>
   
 
   
@@ -86,7 +86,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.29-master</button>
+            <button class="dropbtn version">0.9.32-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -168,7 +168,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/io/index.html">Input and Output Functions in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/docstring/docstring.html">Docstring guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/project-guide/project-guide.html">Project set up guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -235,10 +234,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/docstring/docstring.html">Docstring guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -430,6 +430,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="jina.helloworld.html">jina.helloworld</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jina.helloworld.chatbot.html">jina.helloworld.chatbot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jina.helloworld.components.html">jina.helloworld.components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="jina.helloworld.helper.html">jina.helloworld.helper</a></li>
 </ul>
@@ -1015,7 +1016,7 @@ effect when if it has a higher priority than the internal one with the same name
 
 <dl class="class">
 <dt id="jina.Document">
-<em class="property">class </em><code class="sig-prename descclassname">jina.</code><code class="sig-name descname">Document</code><span class="sig-paren">(</span><em class="sig-param">document=None</em>, <em class="sig-param">copy=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/types/document.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Document" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">jina.</code><code class="sig-name descname">Document</code><span class="sig-paren">(</span><em class="sig-param">document=None</em>, <em class="sig-param">field_resolver=None</em>, <em class="sig-param">copy=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/types/document.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Document" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="jina.types.mixin.html#jina.types.mixin.ProtoTypeMixin" title="jina.types.mixin.ProtoTypeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.types.mixin.ProtoTypeMixin</span></code></a></p>
 <p><a class="reference internal" href="#jina.Document" title="jina.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> is one of the <strong>primitive data type</strong> in Jina.</p>
 <p>It offers a Pythonic interface to allow users access and manipulate
@@ -1077,10 +1078,25 @@ one can also give <cite>DocumentProto</cite> directly, then depending on the <co
 it builds a view or a copy from it.</p></li>
 <li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – when <code class="docutils literal notranslate"><span class="pre">document</span></code> is given as a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentProto</span></code> object, build a
 view (i.e. weak reference) from it or a deep copy from it.</p></li>
-<li><p><strong>kwargs</strong> – other parameters to be set</p></li>
+<li><p><strong>field_resolver</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a map from field names defined in <code class="docutils literal notranslate"><span class="pre">document</span></code> (JSON, dict) to the field
+names defined in Protobuf. This is only used when the given <code class="docutils literal notranslate"><span class="pre">document</span></code> is
+a JSON string or a Python dict.</p></li>
+<li><p><strong>kwargs</strong> – other parameters to be set _after_ the document is constructed</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">document</span></code> is a JSON string or Python dictionary object, the constructor will only map the values
+from known fields defined in Protobuf, all unknown fields are mapped to <code class="docutils literal notranslate"><span class="pre">document.tags</span></code>. For example,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;123&#39;</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="s1">&#39;world&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;good&#39;</span><span class="p">:</span> <span class="s1">&#39;bye&#39;</span><span class="p">}})</span>
+
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="s1">&#39;123&#39;</span>  <span class="c1"># true</span>
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;hello&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;world&#39;</span>  <span class="c1"># true</span>
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;good&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;bye&#39;</span>  <span class="c1"># true</span>
+</pre></div>
+</div>
+</div>
 <dl class="method">
 <dt id="jina.Document.length">
 <em class="property">property </em><code class="sig-name descname">length</code><a class="headerlink" href="#jina.Document.length" title="Permalink to this definition">¶</a></dt>
@@ -1449,6 +1465,24 @@ Sometimes used for text data that frequently uses non-US-ASCII characters.
 </dl>
 </dd></dl>
 
+<dl class="method">
+<dt id="jina.Document.plot">
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">output=None</em>, <em class="sig-param">inline_display=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/types/document.html#Document.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Document.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the Document recursively</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a filename specifying the name of the image to be created,
+the suffix svg/jpg determines the file type of the output image</p></li>
+<li><p><strong>inline_display</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – show image directly inside the Jupyter Notebook</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -1731,7 +1765,7 @@ name as string key</p>
 <dl class="class">
 <dt id="jina.Flow">
 <em class="property">class </em><code class="sig-prename descclassname">jina.</code><code class="sig-name descname">Flow</code><span class="sig-paren">(</span><em class="sig-param">args=None</em>, <em class="sig-param">env=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="jina.flow.base.html#jina.flow.base.BaseFlow" title="jina.flow.base.BaseFlow"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.flow.base.BaseFlow</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="jina.flow.mixin.crud.html#jina.flow.mixin.crud.CRUDFlowMixin" title="jina.flow.mixin.crud.CRUDFlowMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.flow.mixin.crud.CRUDFlowMixin</span></code></a>, <a class="reference internal" href="jina.flow.base.html#jina.flow.base.BaseFlow" title="jina.flow.base.BaseFlow"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.flow.base.BaseFlow</span></code></a></p>
 <p>Initialize a flow object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1746,376 +1780,14 @@ name as string key</p>
 <p>The optimized version, i.e. <code class="code docutils literal notranslate"><span class="pre">Flow(optimize_level=FlowOptimizeLevel.FULL)</span></code>
 will generate 4 Peas, but it will force the <code class="xref py py-class docutils literal notranslate"><span class="pre">GatewayPea</span></code> to take BIND role,
 as the head and tail routers are removed.</p>
-<dl class="method">
-<dt id="jina.Flow.train">
-<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do training on the current flow
-It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.Flow.train" title="jina.Flow.train"><code class="xref py py-func docutils literal notranslate"><span class="pre">train()</span></code></a>.
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>with f:</dt><dd><p>f.train(input_fn)
-…</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.
-One may also build a reader/generator on your own.
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>def my_reader():</dt><dd><dl class="simple">
-<dt>for _ in range(10):</dt><dd><p>yield b’abcdfeg’   # each yield generates a document for training</p>
-</dd>
-</dl>
-</dd>
-<dt>with f.build(runtime=’thread’) as flow:</dt><dd><p>flow.train(bytes_gen=my_reader())</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]]]]) – An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.index_ndarray">
-<code class="sig-name descname">index_ndarray</code><span class="sig-paren">(</span><em class="sig-param">array</em>, <em class="sig-param">axis=0</em>, <em class="sig-param">size=None</em>, <em class="sig-param">shuffle=False</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.index_ndarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.index_ndarray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using numpy ndarray as the index source for the current flow</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>array</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – the numpy ndarray data source</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – iterate over that axis</p></li>
-<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the sub arrays</p></li>
-<li><p><strong>shuffle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – shuffle the the numpy data source beforehand</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the callback function to invoke after indexing</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.search_ndarray">
-<code class="sig-name descname">search_ndarray</code><span class="sig-paren">(</span><em class="sig-param">array</em>, <em class="sig-param">axis=0</em>, <em class="sig-param">size=None</em>, <em class="sig-param">shuffle=False</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.search_ndarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.search_ndarray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a numpy ndarray as the query source for searching on the current flow</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>array</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – the numpy ndarray data source</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – iterate over that axis</p></li>
-<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the sub arrays</p></li>
-<li><p><strong>shuffle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – shuffle the the numpy data source beforehand</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.index_lines">
-<code class="sig-name descname">index_lines</code><span class="sig-paren">(</span><em class="sig-param">lines=None</em>, <em class="sig-param">filepath=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">sampling_rate=None</em>, <em class="sig-param">read_mode='r'</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.index_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.index_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a list of lines as the index source for indexing on the current flow
-:type lines: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]
-:param lines: a list of strings, each is considered as d document
-:type filepath: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]
-:param filepath: a text file that each line contains a document
-:type size: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]
-:param size: the maximum number of the documents
-:type sampling_rate: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]
-:param sampling_rate: the sampling rate between [0, 1]
-:param read_mode: specifies the mode in which the file</p>
-<blockquote>
-<div><p>is opened. ‘r’ for reading in text mode, ‘rb’ for reading in binary</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.index_files">
-<code class="sig-name descname">index_files</code><span class="sig-paren">(</span><em class="sig-param">patterns</em>, <em class="sig-param">recursive=True</em>, <em class="sig-param">size=None</em>, <em class="sig-param">sampling_rate=None</em>, <em class="sig-param">read_mode=None</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.index_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.index_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a set of files as the index source for indexing on the current flow
-:type patterns: <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]
-:param patterns: The pattern may contain simple shell-style wildcards, e.g. ‘*.py’, ‘[*.zip, *.gz]’
-:type recursive: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>
-:param recursive: If recursive is true, the pattern ‘**’ will match any files and</p>
-<blockquote>
-<div><p>zero or more directories and subdirectories.</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the files</p></li>
-<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
-<li><p><strong>read_mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – specifies the mode in which the file
-is opened. ‘r’ for reading in text mode, ‘rb’ for reading in binary mode</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.search_files">
-<code class="sig-name descname">search_files</code><span class="sig-paren">(</span><em class="sig-param">patterns</em>, <em class="sig-param">recursive=True</em>, <em class="sig-param">size=None</em>, <em class="sig-param">sampling_rate=None</em>, <em class="sig-param">read_mode=None</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.search_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.search_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a set of files as the query source for searching on the current flow
-:type patterns: <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]
-:param patterns: The pattern may contain simple shell-style wildcards, e.g. ‘*.py’, ‘[*.zip, *.gz]’
-:type recursive: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>
-:param recursive: If recursive is true, the pattern ‘**’ will match any files and</p>
-<blockquote>
-<div><p>zero or more directories and subdirectories.</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the files</p></li>
-<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
-<li><p><strong>read_mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – specifies the mode in which the file
-is opened. ‘r’ for reading in text mode, ‘rb’ for reading in</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.search_lines">
-<code class="sig-name descname">search_lines</code><span class="sig-paren">(</span><em class="sig-param">lines=None</em>, <em class="sig-param">filepath=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">sampling_rate=None</em>, <em class="sig-param">read_mode='r'</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.search_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.search_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a list of files as the query source for searching on the current flow
-:type filepath: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]
-:param filepath: a text file that each line contains a document
-:type lines: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]
-:param lines: a list of strings, each is considered as d document
-:type size: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]
-:param size: the maximum number of the documents
-:type sampling_rate: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]
-:param sampling_rate: the sampling rate between [0, 1]
-:param read_mode: specifies the mode in which the file</p>
-<blockquote>
-<div><p>is opened. ‘r’ for reading in text mode, ‘rb’ for reading in binary</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.index">
-<code class="sig-name descname">index</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do indexing on the current flow
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>with f:</dt><dd><p>f.index(input_fn)
-…</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.
-One may also build a reader/generator on your own.
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>def my_reader():</dt><dd><dl class="simple">
-<dt>for _ in range(10):</dt><dd><p>yield b’abcdfeg’  # each yield generates a document to index</p>
-</dd>
-</dl>
-</dd>
-<dt>with f.build(runtime=’thread’) as flow:</dt><dd><p>flow.index(bytes_gen=my_reader())</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.Flow.index" title="jina.Flow.index"><code class="xref py py-func docutils literal notranslate"><span class="pre">index()</span></code></a>.
-:type input_fn: <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]]]]
-:param input_fn: An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.
-:type on_done: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]
-:param on_done: the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.
-:type on_error: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]
-:param on_error: the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.
-:type on_always: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]
-:param on_always: the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.
-:param kwargs: accepts all keyword arguments of <cite>jina client</cite> CLI</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates documents on the current flow
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>with f:</dt><dd><p>f.update(input_fn)
-…</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.
-One may also build a reader/generator on your own.
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>def my_reader():</dt><dd><dl class="simple">
-<dt>for _ in range(10):</dt><dd><p>yield b’abcdfeg’  # each yield generates a document to update</p>
-</dd>
-</dl>
-</dd>
-<dt>with f.build(runtime=’thread’) as flow:</dt><dd><p>flow.update(bytes_gen=my_reader())</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.Flow.update" title="jina.Flow.update"><code class="xref py py-func docutils literal notranslate"><span class="pre">update()</span></code></a>.
-:type input_fn: <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]]]]
-:param input_fn: An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.
-:type on_done: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]
-:param on_done: the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.
-:type on_error: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]
-:param on_error: the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.
-:type on_always: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]
-:param on_always: the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.
-:param kwargs: accepts all keyword arguments of <cite>jina client</cite> CLI</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do deletion on the current flow
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>with f:</dt><dd><p>f.delete(input_fn)
-…</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.
-One may also build a reader/generator on your own.
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>def my_reader():</dt><dd><dl class="simple">
-<dt>for _ in range(10):</dt><dd><p>yield b’abcdfeg’  # each yield generates a document to delete</p>
-</dd>
-</dl>
-</dd>
-<dt>with f.build(runtime=’thread’) as flow:</dt><dd><p>flow.delete(bytes_gen=my_reader())</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.Flow.delete" title="jina.Flow.delete"><code class="xref py py-func docutils literal notranslate"><span class="pre">delete()</span></code></a>.
-:type input_fn: <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]
-:param input_fn: An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.
-:type on_done: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]
-:param on_done: the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.
-:type on_error: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]
-:param on_error: the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.
-:type on_always: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]
-:param on_always: the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.
-:param kwargs: accepts all keyword arguments of <cite>jina client</cite> CLI</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.Flow.search">
-<code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow.html#Flow.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.Flow.search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do searching on the current flow
-It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.Flow.search" title="jina.Flow.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">search()</span></code></a>.
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>with f:</dt><dd><p>f.search(input_fn)
-…</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.
-One may also build a reader/generator on your own.
-Example,
-.. highlight:: python
-.. code-block:: python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>def my_reader():</dt><dd><dl class="simple">
-<dt>for _ in range(10):</dt><dd><p>yield b’abcdfeg’   # each yield generates a query for searching</p>
-</dd>
-</dl>
-</dd>
-<dt>with f.build(runtime=’thread’) as flow:</dt><dd><p>flow.search(bytes_gen=my_reader())</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]]]]) – An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
 <dt id="jina.AsyncFlow">
 <em class="property">class </em><code class="sig-prename descclassname">jina.</code><code class="sig-name descname">AsyncFlow</code><span class="sig-paren">(</span><em class="sig-param">args=None</em>, <em class="sig-param">env=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="jina.flow.base.html#jina.flow.base.BaseFlow" title="jina.flow.base.BaseFlow"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.flow.base.BaseFlow</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="jina.flow.mixin.async_crud.html#jina.flow.mixin.async_crud.AsyncCRUDFlowMixin" title="jina.flow.mixin.async_crud.AsyncCRUDFlowMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.flow.mixin.async_crud.AsyncCRUDFlowMixin</span></code></a>, <a class="reference internal" href="jina.flow.base.html#jina.flow.base.BaseFlow" title="jina.flow.base.BaseFlow"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.flow.base.BaseFlow</span></code></a></p>
 <p><a class="reference internal" href="#jina.AsyncFlow" title="jina.AsyncFlow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncFlow</span></code></a> is the asynchronous version of the <a class="reference internal" href="#jina.Flow" title="jina.Flow"><code class="xref py py-class docutils literal notranslate"><span class="pre">Flow</span></code></a>. They share the same interface, except
-in <a class="reference internal" href="#jina.AsyncFlow" title="jina.AsyncFlow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncFlow</span></code></a> <a class="reference internal" href="#jina.AsyncFlow.train" title="jina.AsyncFlow.train"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code></a>, <a class="reference internal" href="#jina.AsyncFlow.index" title="jina.AsyncFlow.index"><code class="xref py py-meth docutils literal notranslate"><span class="pre">index()</span></code></a>, <a class="reference internal" href="#jina.AsyncFlow.search" title="jina.AsyncFlow.search"><code class="xref py py-meth docutils literal notranslate"><span class="pre">search()</span></code></a> methods are coroutines
+in <a class="reference internal" href="#jina.AsyncFlow" title="jina.AsyncFlow"><code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncFlow</span></code></a> <code class="xref py py-meth docutils literal notranslate"><span class="pre">train()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">index()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">search()</span></code> methods are coroutines
 (i.e. declared with the async/await syntax), simply calling them will not schedule them to be executed.
 To actually run a coroutine, user need to put them in an eventloop, e.g. via <code class="docutils literal notranslate"><span class="pre">asyncio.run()</span></code>,
 <code class="docutils literal notranslate"><span class="pre">asyncio.create_task()</span></code>.</p>
@@ -2174,317 +1846,6 @@ can use this feature to schedule Jina <code class="docutils literal notranslate"
 <p>The optimized version, i.e. <code class="code docutils literal notranslate"><span class="pre">Flow(optimize_level=FlowOptimizeLevel.FULL)</span></code>
 will generate 4 Peas, but it will force the <code class="xref py py-class docutils literal notranslate"><span class="pre">GatewayPea</span></code> to take BIND role,
 as the head and tail routers are removed.</p>
-<dl class="method">
-<dt id="jina.AsyncFlow.train">
-<code class="sig-name descname">train</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.train"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.train" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do training on the current flow</p>
-<p>It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.AsyncFlow.train" title="jina.AsyncFlow.train"><code class="xref py py-func docutils literal notranslate"><span class="pre">train()</span></code></a>.</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.</p>
-<p>One may also build a reader/generator on your own.</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_reader</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-        <span class="k">yield</span> <span class="sa">b</span><span class="s1">&#39;abcdfeg&#39;</span>   <span class="c1"># each yield generates a document for training</span>
-
-<span class="k">with</span> <span class="n">f</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">runtime</span><span class="o">=</span><span class="s1">&#39;thread&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
-    <span class="n">flow</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">bytes_gen</span><span class="o">=</span><span class="n">my_reader</span><span class="p">())</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]]]]) – An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.index_ndarray">
-<code class="sig-name descname">index_ndarray</code><span class="sig-paren">(</span><em class="sig-param">array</em>, <em class="sig-param">axis=0</em>, <em class="sig-param">size=None</em>, <em class="sig-param">shuffle=False</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.index_ndarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.index_ndarray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using numpy ndarray as the index source for the current flow</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>array</strong> (<em>np.ndarray</em>) – the numpy ndarray data source</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – iterate over that axis</p></li>
-<li><p><strong>size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the maximum number of the sub arrays</p></li>
-<li><p><strong>shuffle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – shuffle the the numpy data source beforehand</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.search_ndarray">
-<code class="sig-name descname">search_ndarray</code><span class="sig-paren">(</span><em class="sig-param">array</em>, <em class="sig-param">axis=0</em>, <em class="sig-param">size=None</em>, <em class="sig-param">shuffle=False</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.search_ndarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.search_ndarray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a numpy ndarray as the query source for searching on the current flow</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>array</strong> (<em>np.ndarray</em>) – the numpy ndarray data source</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – iterate over that axis</p></li>
-<li><p><strong>size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the maximum number of the sub arrays</p></li>
-<li><p><strong>shuffle</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – shuffle the the numpy data source beforehand</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.index_lines">
-<code class="sig-name descname">index_lines</code><span class="sig-paren">(</span><em class="sig-param">lines=None</em>, <em class="sig-param">filepath=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">sampling_rate=None</em>, <em class="sig-param">read_mode='r'</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.index_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.index_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a list of lines as the index source for indexing on the current flow</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>lines</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a list of strings, each is considered as d document</p></li>
-<li><p><strong>filepath</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a text file that each line contains a document</p></li>
-<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the documents</p></li>
-<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
-<li><p><strong>read_mode</strong> – specifies the mode in which the file
-is opened. ‘r’ for reading in text mode, ‘rb’ for reading in binary</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.index_files">
-<code class="sig-name descname">index_files</code><span class="sig-paren">(</span><em class="sig-param">patterns</em>, <em class="sig-param">recursive=True</em>, <em class="sig-param">size=None</em>, <em class="sig-param">sampling_rate=None</em>, <em class="sig-param">read_mode=None</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.index_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.index_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a set of files as the index source for indexing on the current flow</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>patterns</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The pattern may contain simple shell-style wildcards, e.g. ‘*.py’, ‘[*.zip, *.gz]’</p></li>
-<li><p><strong>recursive</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If recursive is true, the pattern ‘**’ will match any files and
-zero or more directories and subdirectories.</p></li>
-<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the files</p></li>
-<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
-<li><p><strong>read_mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – specifies the mode in which the file
-is opened. ‘r’ for reading in text mode, ‘rb’ for reading in binary mode</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.search_files">
-<code class="sig-name descname">search_files</code><span class="sig-paren">(</span><em class="sig-param">patterns</em>, <em class="sig-param">recursive=True</em>, <em class="sig-param">size=None</em>, <em class="sig-param">sampling_rate=None</em>, <em class="sig-param">read_mode=None</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.search_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.search_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a set of files as the query source for searching on the current flow</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>patterns</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The pattern may contain simple shell-style wildcards, e.g. ‘*.py’, ‘[*.zip, *.gz]’</p></li>
-<li><p><strong>recursive</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If recursive is true, the pattern ‘**’ will match any files and
-zero or more directories and subdirectories.</p></li>
-<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the files</p></li>
-<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
-<li><p><strong>read_mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – specifies the mode in which the file
-is opened. ‘r’ for reading in text mode, ‘rb’ for reading in</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.search_lines">
-<code class="sig-name descname">search_lines</code><span class="sig-paren">(</span><em class="sig-param">lines=None</em>, <em class="sig-param">filepath=None</em>, <em class="sig-param">size=None</em>, <em class="sig-param">sampling_rate=None</em>, <em class="sig-param">read_mode='r'</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.search_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.search_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Use a list of files as the query source for searching on the current flow</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filepath</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a text file that each line contains a document</p></li>
-<li><p><strong>lines</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a list of strings, each is considered as d document</p></li>
-<li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the maximum number of the documents</p></li>
-<li><p><strong>sampling_rate</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – the sampling rate between [0, 1]</p></li>
-<li><p><strong>read_mode</strong> – specifies the mode in which the file
-is opened. ‘r’ for reading in text mode, ‘rb’ for reading in binary</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.index">
-<code class="sig-name descname">index</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do indexing on the current flow</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.</p>
-<p>One may also build a reader/generator on your own.</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_reader</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-        <span class="k">yield</span> <span class="sa">b</span><span class="s1">&#39;abcdfeg&#39;</span>  <span class="c1"># each yield generates a document to index</span>
-
-<span class="k">with</span> <span class="n">f</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">runtime</span><span class="o">=</span><span class="s1">&#39;thread&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
-    <span class="n">flow</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">bytes_gen</span><span class="o">=</span><span class="n">my_reader</span><span class="p">())</span>
-</pre></div>
-</div>
-<p>It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.AsyncFlow.index" title="jina.AsyncFlow.index"><code class="xref py py-func docutils literal notranslate"><span class="pre">index()</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]]]]) – An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do updates on the current flow</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.</p>
-<p>One may also build a reader/generator on your own.</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_reader</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">doc</span><span class="p">:</span>
-            <span class="n">doc</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
-            <span class="n">doc</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">i</span>
-        <span class="k">yield</span> <span class="n">doc</span>  <span class="c1"># each yield generates a query for updating</span>
-
-<span class="k">with</span> <span class="n">f</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">runtime</span><span class="o">=</span><span class="s1">&#39;thread&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
-    <span class="n">flow</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">bytes_gen</span><span class="o">=</span><span class="n">my_reader</span><span class="p">())</span>
-</pre></div>
-</div>
-<p>It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.AsyncFlow.index" title="jina.AsyncFlow.index"><code class="xref py py-func docutils literal notranslate"><span class="pre">index()</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]]]]) – An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do deletion on the current flow</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.</p>
-<p>One may also build a reader/generator on your own.</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_reader</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">doc</span><span class="p">:</span>
-            <span class="n">doc</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;...&#39;</span>
-            <span class="n">doc</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">i</span>
-        <span class="k">yield</span> <span class="n">doc</span>  <span class="c1"># each yield generates a query for deletion</span>
-
-<span class="k">with</span> <span class="n">f</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">runtime</span><span class="o">=</span><span class="s1">&#39;thread&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
-    <span class="n">flow</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">bytes_gen</span><span class="o">=</span><span class="n">my_reader</span><span class="p">())</span>
-</pre></div>
-</div>
-<p>It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.AsyncFlow.index" title="jina.AsyncFlow.index"><code class="xref py py-func docutils literal notranslate"><span class="pre">index()</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_fn</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="jina.AsyncFlow.search">
-<code class="sig-name descname">search</code><span class="sig-paren">(</span><em class="sig-param">input_fn</em>, <em class="sig-param">on_done=None</em>, <em class="sig-param">on_error=None</em>, <em class="sig-param">on_always=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/flow/asyncio.html#AsyncFlow.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.AsyncFlow.search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Do searching on the current flow</p>
-<p>It will start a <code class="xref py py-class docutils literal notranslate"><span class="pre">CLIClient</span></code> and call <a class="reference internal" href="#jina.AsyncFlow.search" title="jina.AsyncFlow.search"><code class="xref py py-func docutils literal notranslate"><span class="pre">search()</span></code></a>.</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">input_fn</span><span class="p">)</span>
-    <span class="o">...</span>
-</pre></div>
-</div>
-<p>This will call the pre-built reader to read files into an iterator of bytes and feed to the flow.</p>
-<p>One may also build a reader/generator on your own.</p>
-<p>Example,</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">my_reader</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
-        <span class="k">yield</span> <span class="sa">b</span><span class="s1">&#39;abcdfeg&#39;</span>   <span class="c1"># each yield generates a query for searching</span>
-
-<span class="k">with</span> <span class="n">f</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">runtime</span><span class="o">=</span><span class="s1">&#39;thread&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">flow</span><span class="p">:</span>
-    <span class="n">flow</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">bytes_gen</span><span class="o">=</span><span class="n">my_reader</span><span class="p">())</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]], <code class="xref py py-class docutils literal notranslate"><span class="pre">AsyncIterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[~DocumentContentType, ~DocumentSourceType, <a class="reference internal" href="jina.types.document.html#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentContentType, ~DocumentContentType], <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[~DocumentSourceType, ~DocumentSourceType]]]]]]) – An iterator of bytes. If not given, then you have to specify it in <strong>kwargs</strong>.</p></li>
-<li><p><strong>on_done</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is resolved.</p></li>
-<li><p><strong>on_error</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is rejected.</p></li>
-<li><p><strong>on_always</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[…, <code class="docutils literal notranslate"><span class="pre">None</span></code>]]) – the function to be called when the <a class="reference internal" href="#jina.Request" title="jina.Request"><code class="xref py py-class docutils literal notranslate"><span class="pre">Request</span></code></a> object is  is either resolved or rejected.</p></li>
-<li><p><strong>kwargs</strong> – accepts all keyword arguments of <cite>jina client</cite> CLI</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -2955,7 +2316,7 @@ You can use <a class="reference internal" href="#jina.AsyncClient" title="jina.A
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 06, 2021.
+        Last updated on Feb 08, 2021.
       </span>
 
         </p>

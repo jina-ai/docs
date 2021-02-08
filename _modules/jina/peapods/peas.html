@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.peas &mdash; Jina 0.9.29-master documentation</title>
+  <title>jina.peapods.peas &mdash; Jina 0.9.32-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.29-master</button>
+            <button class="dropbtn version">0.9.32-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -166,7 +166,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/io/index.html">Input and Output Functions in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring/docstring.html">Docstring guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/project-guide/project-guide.html">Project set up guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -213,10 +212,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring/docstring.html">Docstring guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -411,6 +411,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">__ready_msg__</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="si">!r}</span><span class="s1"> timeout after waiting for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">timeout_ready</span><span class="si">}</span><span class="s1">ms, &#39;</span>
+                                <span class="sa">f</span><span class="s1">&#39;if your executor takes time to load, you may increase --timeout-ready&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> can not be initialized after </span><span class="si">{</span><span class="n">_timeout</span> <span class="o">*</span> <span class="mf">1e3</span><span class="si">}</span><span class="s1">ms&#39;</span><span class="p">)</span>
@@ -418,7 +420,11 @@
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="BasePea.close"><a class="viewcode-back" href="../../../api/jina.peapods.peas.html#jina.peapods.peas.BasePea.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># wait 1s for the process/thread to end naturally, in this case no &quot;cancel&quot; is required this is required for</span>
+        <span class="sd">&quot;&quot;&quot; Close the Pea</span>
+
+<span class="sd">        This method makes sure that the `Process/thread` is properly finished and its resources properly released</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># wait 0.1s for the process/thread to end naturally, in this case no &quot;cancel&quot; is required this is required for</span>
         <span class="c1"># the is case where in subprocess, runtime.setup() fails and _finally() is not yet executed, BUT close() in the</span>
         <span class="c1"># main process is calling runtime.cancel(), which is completely unnecessary as runtime.run_forever() is not</span>
         <span class="c1"># started yet.</span>
@@ -618,7 +624,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 06, 2021.
+        Last updated on Feb 08, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document &mdash; Jina 0.9.29-master documentation</title>
+  <title>jina.types.document &mdash; Jina 0.9.32-master documentation</title>
   
 
   
@@ -86,7 +86,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.29-master</button>
+            <button class="dropbtn version">0.9.32-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -168,7 +168,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../chapters/flow/index.html">Using Flow API to Compose Your Jina Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/io/index.html">Input and Output Functions in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/cli/exit.html">Gracefully Exit Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/docstring/docstring.html">Docstring guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/project-guide/project-guide.html">Project set up guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">API Reference</span></p>
@@ -250,10 +249,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/faq/user.html">FAQ for End-Users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/docstring/docstring.html">Docstring guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -342,7 +342,7 @@
 </div>
 <span class="target" id="module-jina.types.document"></span><dl class="class">
 <dt id="jina.types.document.Document">
-<em class="property">class </em><code class="sig-prename descclassname">jina.types.document.</code><code class="sig-name descname">Document</code><span class="sig-paren">(</span><em class="sig-param">document=None</em>, <em class="sig-param">copy=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/types/document.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.types.document.Document" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">jina.types.document.</code><code class="sig-name descname">Document</code><span class="sig-paren">(</span><em class="sig-param">document=None</em>, <em class="sig-param">field_resolver=None</em>, <em class="sig-param">copy=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/types/document.html#Document"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.types.document.Document" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="jina.types.mixin.html#jina.types.mixin.ProtoTypeMixin" title="jina.types.mixin.ProtoTypeMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.types.mixin.ProtoTypeMixin</span></code></a></p>
 <p><a class="reference internal" href="#jina.types.document.Document" title="jina.types.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></a> is one of the <strong>primitive data type</strong> in Jina.</p>
 <p>It offers a Pythonic interface to allow users access and manipulate
@@ -404,10 +404,25 @@ one can also give <cite>DocumentProto</cite> directly, then depending on the <co
 it builds a view or a copy from it.</p></li>
 <li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – when <code class="docutils literal notranslate"><span class="pre">document</span></code> is given as a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentProto</span></code> object, build a
 view (i.e. weak reference) from it or a deep copy from it.</p></li>
-<li><p><strong>kwargs</strong> – other parameters to be set</p></li>
+<li><p><strong>field_resolver</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a map from field names defined in <code class="docutils literal notranslate"><span class="pre">document</span></code> (JSON, dict) to the field
+names defined in Protobuf. This is only used when the given <code class="docutils literal notranslate"><span class="pre">document</span></code> is
+a JSON string or a Python dict.</p></li>
+<li><p><strong>kwargs</strong> – other parameters to be set _after_ the document is constructed</p></li>
 </ul>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">document</span></code> is a JSON string or Python dictionary object, the constructor will only map the values
+from known fields defined in Protobuf, all unknown fields are mapped to <code class="docutils literal notranslate"><span class="pre">document.tags</span></code>. For example,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;123&#39;</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="s1">&#39;world&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;good&#39;</span><span class="p">:</span> <span class="s1">&#39;bye&#39;</span><span class="p">}})</span>
+
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="s1">&#39;123&#39;</span>  <span class="c1"># true</span>
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;hello&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;world&#39;</span>  <span class="c1"># true</span>
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;good&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;bye&#39;</span>  <span class="c1"># true</span>
+</pre></div>
+</div>
+</div>
 <dl class="method">
 <dt id="jina.types.document.Document.length">
 <em class="property">property </em><code class="sig-name descname">length</code><a class="headerlink" href="#jina.types.document.Document.length" title="Permalink to this definition">¶</a></dt>
@@ -776,6 +791,24 @@ Sometimes used for text data that frequently uses non-US-ASCII characters.
 </dl>
 </dd></dl>
 
+<dl class="method">
+<dt id="jina.types.document.Document.plot">
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param">output=None</em>, <em class="sig-param">inline_display=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/types/document.html#Document.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.types.document.Document.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the Document recursively</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – a filename specifying the name of the image to be created,
+the suffix svg/jpg determines the file type of the output image</p></li>
+<li><p><strong>inline_display</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – show image directly inside the Jupyter Notebook</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -922,7 +955,7 @@ Sometimes used for text data that frequently uses non-US-ASCII characters.
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 06, 2021.
+        Last updated on Feb 08, 2021.
       </span>
 
         </p>
