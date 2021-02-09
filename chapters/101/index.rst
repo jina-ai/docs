@@ -3,14 +3,16 @@ Jina 101: Basic components
 ===========
 
 
-In Jina 101, you will learn about the basic components of Jina. Before you start, read `The basiddcs of Neural Search`_ to get some context.
+In Jina 101, you will learn about the basic components of Jina. Before you start, read `the basics of Neural Search`_ to get some context.
 
 
-.. _The basiddcs of Neural Search: https://jina.ai/2020/07/06/What-is-Neural-Search-and-Why-Should-I-Care.html
+.. _the basics of Neural Search: https://jina.ai/2020/07/06/What-is-Neural-Search-and-Why-Should-I-Care.html
 
 .. contents:: Table of Contents
     :depth: 3
 
+
+.. _document:
 
 Document
 ============
@@ -27,8 +29,6 @@ A good example is the text we type into a search engine like Google. Documents c
 You can think of a Document as a chocolate bar: Different Documents have different formats or ingredients, and you can :ref:`break them into smaller chunks<segmenter>`.
 
 
-
-
 Flow
 =============
 
@@ -36,10 +36,6 @@ Flow
 .. image:: /chapters/101/images/flow.png
 	:width: 25%
 
-
-.. raw:: html
-
-    <object data="myfile.svg" type="image/svg+xml"></object>
 
 Flows manage the two main search workflows: indexing data (indexing Flow) and then querying it (querying Flow).
 
@@ -164,7 +160,9 @@ Driver
 
 A Driver “translates” input and output messages for an Executor. Each Executor requires a different data format to perform its task. Therefore, a Driver interprets incoming messages into Documents and extracts required fields for an Executor. 
 
-## What comes next?
+
+What comes next?
+===================
 
 Jina is a happy family. You can feel the harmony when you use Jina.
 
