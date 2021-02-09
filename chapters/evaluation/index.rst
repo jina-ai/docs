@@ -52,6 +52,24 @@ Jina :term:`Driver` extracts diff information from :term:`Protobuf`,
 and pass diff information to executor.
 The second steps happens inside the executor: quantize the diffed object to a number.
 
+Jina evaluators can be categorised into **ranking evaluators**, **text evaluators** and **embedding evaluators**.
+
+.. list-table:: Jina Evaluator Types
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Name
+     - Example
+     - Description
+   * - Ranking evaluators
+     - Precision, Recall, F1, aP, nDCG, mRR
+     - Evaluate messages coming out from Indexers and Rankers and compares matches with groundtruths
+   * - Text evaluators
+     - Length, Bleu, Edit Distance, Gleu, Hamming Distance, Jaccard Distance
+     - Evaluates the difference between actual and desired text
+   * - Embedding evaluators
+     - Cosine Distance, Euclidean Distance, L1 Norm, Minkowski Distance
+     - Evaluates the difference between actual and desired embeddings
 
 
 Evaluation in Action
