@@ -24,6 +24,10 @@ However, it ignores the fact that a search system is often composed by multiple 
 whereas evaluation on the final results hardly reveal useful insights about the system.
 It is not straightforward to see the problematic component.
 
+Jina organize such components in a :term:`Flow`.
+For this reason, we expect Jina evaluator has the capability to work anywhere in the workflow,
+at the :term:`Pod` level.
+
 
 Before you start
 -------------------
