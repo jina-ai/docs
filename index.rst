@@ -38,6 +38,7 @@ Welcome to Jina!
    chapters/restapi/index
    chapters/envs
    chapters/prevent_duplicate_indexing/index
+   chapters/incremental_indexing/index
    chapters/crud/index
 
 .. toctree::
