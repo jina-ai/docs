@@ -170,6 +170,6 @@ Here is the list of environment variables that ``jina`` uses during runtime.
 
 .. confval:: JINA_WORKSPACE
 
-    The work space to store indexed data.
+    The work space used in optimizers/discovery.
 
     :default: unset
