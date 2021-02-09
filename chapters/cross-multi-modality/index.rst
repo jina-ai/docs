@@ -9,7 +9,7 @@ Multi-modal and Cross-modal Search in Jina
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
 
 Jina is a *data type-agnostic framework*, letting you work with any type of data and run cross- and multi-modal search Flows.
-To better understand what this implies we first need to understand the concept of **modality**.
+To better understand what this implies we first need to understand the concept of *modality*.
 
 .. contents:: Table of Contents
     :depth: 2
@@ -63,5 +63,12 @@ that encodes data coming from multiple modalities into a single embedding vector
 
 ``MultiModalDriver`` is a new Driver designed to extract the expected content from every chunk inside ``MultimodalDocument`` and to provide it to the executor.
 
-In Jina, we created an example to build a multimodal search engine for image retrieval using `Composing Text and Image for Image Retrieval <https://github.com/jina-ai/examples/tree/master/multimodal-search-tirg>_`.
-We use the `Fashion200k <https://github.com/xthan/fashion-200k>_` dataset, where the input query is in the form of a clothing image plus some text that describes the desired modifications to the image.
+In Jina, we created an example to build a multimodal search engine for image retrieval using `Composing Text and Image for Image Retrieval <https://github.com/jina-ai/examples/tree/master/multimodal-search-tirg>`_.
+We use the `Fashion200k <https://github.com/xthan/fashion-200k>`_ dataset, where the input query is in the form of a clothing image plus some text that describes the desired modifications to the image.
+
+What's Next
+--------------------
+
+Thanks for your time & effort while reading this documentation.
+Please go to the example projects and start to get your hands dirty!
+If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
