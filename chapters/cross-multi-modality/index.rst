@@ -32,7 +32,7 @@ we can describe cross-modal and multi-modal search.
  - Cross-modal search can be defined as a set of retrieval applications that try to effectively find relevant documents of modality A by querying with documents from modality B.
  - Multi-modal search can be defined as a set of retrieval applications that try to effectively project documents of different modalities into a common embedding space, and find relevant documents with respect to the fusion of multiple modalities
 
-The main difference between these two search modes is that for cross-modal, there is a direct mapping between a single document or chunk and a
+The main difference between these two search modes is that for cross-modal, there is a direct mapping between a single document and a
 vector in embedding space, while for MultiModal this does not hold true, since 2 or more documents might be combined into a single vector.
 
 This unlocks a lot of powerful patterns and makes Jina fully flexible and agnostic to what can be searched.
@@ -55,13 +55,13 @@ Multi modal search
 
 In order to support multi-modal search and to make it easy to build such applications, Jina provides three new components:
 
-``MultiModalDocument`` is a Document composed by multiple Chunks with different modalities.
+``MultiModalDocument`` is a Document composed by multiple documents with different modalities.
 It makes it easy for the client and for the multimodal Drivers to build and work with these constructions.
 
 ``MultiModalEncoder`` is a new family of Executors, derived from the Encoders,
 that encodes data coming from multiple modalities into a single embedding vector.
 
-``MultiModalDriver`` is a new Driver designed to extract the expected content from every chunk inside ``MultimodalDocument`` and to provide it to the executor.
+``MultiModalDriver`` is a new Driver designed to extract the expected content from every document inside ``MultimodalDocument`` and to provide it to the executor.
 
 In Jina, we created an example to build a multimodal search engine for image retrieval using `Composing Text and Image for Image Retrieval <https://github.com/jina-ai/examples/tree/master/multimodal-search-tirg>`_.
 We use the `Fashion200k <https://github.com/xthan/fashion-200k>`_ dataset, where the input query is in the form of a clothing image plus some text that describes the desired modifications to the image.
