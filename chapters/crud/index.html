@@ -295,23 +295,42 @@
             
   <div class="section" id="crud-operations">
 <h1>CRUD Operations<a class="headerlink" href="#crud-operations" title="Permalink to this headline">¶</a></h1>
-<p>CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is <em>not</em> a database engine, it does provide these methods of interacting with the data stored in the indexers.</p>
-<p>Until now, Jina has only supported indexing (creating) and querying (reading) documents. To update or delete a document, you’d have to edit your dataset, and then re-build the Flow and indexers. Needless to say, this could create problems if you had large datasets.</p>
-<p>With the release of version <code class="docutils literal notranslate"><span class="pre">1.0.0</span></code> we’re introducing <strong>update</strong> and <strong>delete</strong> operations. These are implemented across our executors and drivers and will allow you to update and delete documents by their ids.</p>
+<div class="section" id="in-this-section-you-will-get-an-overview-of-how-jina-implements-crud-create-read-update-delete">
+<h2>In this section, you will get an overview of how Jina implements CRUD: Create, Read, Update, Delete<a class="headerlink" href="#in-this-section-you-will-get-an-overview-of-how-jina-implements-crud-create-read-update-delete" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="feature-description">
+<h2>Feature description<a class="headerlink" href="#feature-description" title="Permalink to this headline">¶</a></h2>
+<p>CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is <em>not</em> a database engine, it does provide these methods of interacting with the data stored in its indexes.</p>
+<p>Before <code class="docutils literal notranslate"><span class="pre">1.0</span></code>, Jina only supported indexing (creating) and querying (reading) Documents. To update or delete a Document, you had to edit your dataset, and then rebuild the Flow and indexes. Needless to say, this could create problems if you had large datasets.</p>
+<p>With the release of version <code class="docutils literal notranslate"><span class="pre">1.0</span></code> we are introducing <strong>update</strong> and <strong>delete</strong> operations. These are implemented across our Executors and Drivers, and allow you to update and delete Documents by their ids.</p>
+</div>
+<div class="section" id="before-you-start">
+<h2>Before you start<a class="headerlink" href="#before-you-start" title="Permalink to this headline">¶</a></h2>
+<p>Study the basics <a class="reference external" href="https://docs.jina.ai/chapters/core/introduction/index.html">here</a></p>
+<div class="section" id="implementation">
+<h3>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
 <p>A basic example of this can be found in the <a class="reference external" href="https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py"><code class="docutils literal notranslate"><span class="pre">test_crud.py</span></code></a>:</p>
-<p>The Flow object now supports a <code class="docutils literal notranslate"><span class="pre">delete</span></code> and <code class="docutils literal notranslate"><span class="pre">update</span></code> method, with a signature similar to index:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">Flow</span></code> class now supports <code class="docutils literal notranslate"><span class="pre">delete</span></code> and <code class="docutils literal notranslate"><span class="pre">update</span></code> methods, with a signature similar to <code class="docutils literal notranslate"><span class="pre">index</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">docs</span> <span class="o">=</span> <span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">docs</span><span class="p">)</span>
 
+    <span class="n">new_docs</span> <span class="o">=</span> <span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+            
     <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">delete_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">new_docs</span><span class="p">)</span>
+
+    <span class="n">doc_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
+        
+    <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">delete_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">doc_ids</span><span class="p">]</span>
         <span class="n">f</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">delete_ids</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note: deletion and update will happen by <code class="docutils literal notranslate"><span class="pre">id</span></code> of the document.</p>
+</div>
+</div>
 <div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>Unfortunately there are some limitations to what Jina can do for the moment. These were trade-offs we needed to implement to keep Jina performant, robust, and easy to use. Some of these will be addressed in future versions, while some are intrinsic to Jina’s architecture.</p>
@@ -481,7 +500,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 08, 2021.
+        Last updated on Feb 09, 2021.
       </span>
 
         </p>
