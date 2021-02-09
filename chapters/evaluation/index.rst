@@ -8,7 +8,31 @@ A guide on Jina Flow Evaluation Mode
 
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
 
-some introduction
-
 .. contents:: Table of Contents
     :depth: 2
+
+Motivation
+--------------------
+
+Feature description
+--------------------
+
+Before you start
+-------------------
+
+We expect you have a clean Python 3.7/3.8/3.9 (virtual) build.
+With Jina installed on your machine:
+
+.. highlight:: bash
+.. code-block:: bash
+
+    pip install -U jina
+
+Implementation
+-----------------
+
+Conclusion
+-----------------
+
+What's next
+-----------------
