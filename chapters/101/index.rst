@@ -1,6 +1,6 @@
-===========
+============================
 Jina 101: Basic components
-===========
+============================
 
 
 In Jina 101, you will learn about the basic components of Jina. Before you start, read `the basics of Neural Search`_ to get some context.
