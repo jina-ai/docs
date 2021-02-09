@@ -1,5 +1,5 @@
 ---
-name: "Create a documentation"
+name: "Create documentation"
 about: I’d like add/request a new documentation to Jina, before that I need some discussion.
 title: ''
 labels: kind/docs
