@@ -37,8 +37,10 @@ To prevent indexing duplicates, one needs to add ``_unique`` for the ``uses_befo
         doc_0 = Document(text='I am doc0', embedding=np.random.rand(10))
         doc_1 = Document(text='I am doc1', embedding=np.random.rand(10))
 
-        def assert_num_docs(rsp, num_docs):
-            assert len(rsp.IndexRequest.docs) == num_docs
+
+        def assert_only_two_docs_indexed(rsp):
+            assert len(rsp.index.docs) == 2
+
 
         f = Flow().add(
             uses='NumpyIndexer', uses_before='_unique')
@@ -46,7 +48,7 @@ To prevent indexing duplicates, one needs to add ``_unique`` for the ``uses_befo
         with f:
             f.index(
                 [doc_0, doc_0, doc_1],
-                on_done=lambda rsp: assert_num_docs(rsp, num_docs=2))
+                on_done=lambda rsp: assert_only_two_docs_indexed(rsp))
 
 Under the hood, the configuration yaml file, :file:``jina/resources/executors._unique.yml``, is used. The yaml file is defined as below
 
