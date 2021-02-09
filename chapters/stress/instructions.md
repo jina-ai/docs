@@ -19,6 +19,7 @@ You can reproduce this benchmark yourself. You have to do the following:
     1. set up the configuration options in `.env`
     1. run the automatic script: `nohup bash run_test.sh > output.txt &`
     
+        The script automates the creation of Flows for indexing and querying (with the various Indexers). It then uses a client with multiprocessing to issue index and query requests. Both of these are done for a specific amount of time.
         `nohup` allows you to disconnect from the machine without interrupting the process. The output will be piped into `output.txt`. 
 
 When the process is done, you will find the results in `output.txt`. Look for the lines starting with `TOTAL: Ran operation`

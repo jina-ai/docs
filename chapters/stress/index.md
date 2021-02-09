@@ -165,11 +165,3 @@ See full environment configuration file [here](./env_1)
 ## Test it yourself
 
 See [guide](./instructions.md)
-
-[comment]: <> (TODO add learnings?)
-
-[comment]: <> (## Learnings)
-
-[comment]: <> (- encoder sharding issue)
-
-[comment]: <> (- )
