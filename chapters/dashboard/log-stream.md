@@ -26,4 +26,4 @@ And you can group your logs by level like Info, Success, Warning, Error, Critica
 
 ### Before you start
 
-In order to see logs, you need to be connected to [JinaD](connect-to-jinaD.md) and [running a flow](flow.md)
+In order to see logs, you need to be connected to [JinaD](connect-jinaD.md) and [running a flow](flow.md)
