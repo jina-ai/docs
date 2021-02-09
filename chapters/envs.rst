@@ -3,10 +3,10 @@ OS Environment Variables Used in Jina
 =====================================
 
 .. meta::
-   :description: A list of environment variables that ``jina`` respects during runtime.
+   :description: A list of environment variables that ``jina`` uses during runtime.
    :keywords: Jina, environment variables
 
-Here is the list of environment variables that ``jina`` respects during runtime.
+Here is the list of environment variables that ``jina`` uses during runtime.
 
 .. note::
     These enviroment variables must be set **before** starting ``jina`` or before any ``import jina`` in Python. Changing the variables while ``jina`` is running may result in unexpected result and exceptions.
@@ -79,7 +79,7 @@ Here is the list of environment variables that ``jina`` respects during runtime.
 
 .. confval:: JINA_LOG_CONFIG
 
-    The configuration file for the logger. If unset then will load from logging.default.yml.
+    The configuration file for the logger. If unset then will load from logging.default.yml under resources.
 
     :default: unset
 
@@ -173,11 +173,3 @@ Here is the list of environment variables that ``jina`` respects during runtime.
     The work space to store indexed data.
 
     :default: unset
-
-
-
-
-
-
-
-
