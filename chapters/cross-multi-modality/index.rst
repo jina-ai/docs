@@ -53,15 +53,15 @@ It queries the text index using image embeddings and queries the image index usi
 Multi modal search
 --------------------
 
-In order to support multi-modal search and to make it easy to build such applications, Jina provides three new components:
+In order to support multi-modal search and to make it easy to build such applications, Jina provides three components:
 
 ``MultiModalDocument`` is a :term:`Document` composed by multiple documents with different modalities.
 It makes it easy for the client and for the ``MultimodalDriver`` to build and work with these constructions.
 
-``MultiModalEncoder`` is a new family of executors, derived from the encoders,
+``MultiModalEncoder`` is a family of executors, derived from the encoders,
 that encodes data coming from multiple modalities into a single embedding vector.
 
-``MultiModalDriver`` is a new :term:`Driver` designed to extract the expected content from every :term:`Document` inside ``MultimodalDocument`` and to provide it to the :term:`Executor`.
+``MultiModalDriver`` is a :term:`Driver` designed to extract the expected content from every :term:`Document` inside ``MultimodalDocument`` and to provide it to the :term:`Executor`.
 
 In Jina, we created an example to build a multi-modal search engine for image retrieval using `Composing Text and Image for Image Retrieval <https://github.com/jina-ai/examples/tree/master/multimodal-search-tirg>`_.
 We use the `Fashion200k <https://github.com/xthan/fashion-200k>`_ dataset, where the input query is in the form of a clothing image plus some text that describes the desired modifications to the image.
