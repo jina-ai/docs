@@ -41,7 +41,7 @@ Cross modal search
 --------------------
 
 Supporting cross-modal search in Jina is very easy.
-A user just needs to properly set the modality field of the input documents and design the Flow in such a way that the queries target the desired embedding space.
+A user just needs to properly set the modality field of the input documents and design the :term:`Flow` in such a way that the queries target the desired embedding space.
 
 We have created an example project that follows the cross-modal search manner.
 The `Image Search using Captions <https://github.com/jina-ai/examples/tree/master/cross-modal-search>`_ example allows users to search for images by giving corresponding caption descriptions.
@@ -55,13 +55,13 @@ Multi modal search
 
 In order to support multi-modal search and to make it easy to build such applications, Jina provides three new components:
 
-``MultiModalDocument`` is a Document composed by multiple documents with different modalities.
-It makes it easy for the client and for the multi-modal Drivers to build and work with these constructions.
+``MultiModalDocument`` is a :term:`Document` composed by multiple documents with different modalities.
+It makes it easy for the client and for the ``MultimodalDriver`` to build and work with these constructions.
 
-``MultiModalEncoder`` is a new family of Executors, derived from the Encoders,
+``MultiModalEncoder`` is a new family of executors, derived from the encoders,
 that encodes data coming from multiple modalities into a single embedding vector.
 
-``MultiModalDriver`` is a new Driver designed to extract the expected content from every document inside ``MultimodalDocument`` and to provide it to the executor.
+``MultiModalDriver`` is a new :term:`Driver` designed to extract the expected content from every :term:`Document` inside ``MultimodalDocument`` and to provide it to the :term:`Executor`.
 
 In Jina, we created an example to build a multi-modal search engine for image retrieval using `Composing Text and Image for Image Retrieval <https://github.com/jina-ai/examples/tree/master/multimodal-search-tirg>`_.
 We use the `Fashion200k <https://github.com/xthan/fashion-200k>`_ dataset, where the input query is in the form of a clothing image plus some text that describes the desired modifications to the image.
@@ -71,4 +71,5 @@ What's Next
 
 Thanks for your time & effort while reading this documentation.
 Please go to the example projects and start to get your hands dirty!
+
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
