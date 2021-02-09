@@ -2,7 +2,7 @@
  Understanding the Request Size parameter
 =============================================
 
-In some use cases, you may wish to vary the number of ``Documents`` a single Request will receive. You can achieve this by adjusting the ``request_size`` parameter when setting the Flow. This guide covers the different configuration options Jina offers.
+In some use cases, you may wish to vary the number of ``Documents`` a single ``Request`` will receive. You can achieve this by adjusting the ``request_size`` parameter when setting the Flow. This guide covers the different configuration options Jina offers.
 
 .. contents:: Table of Contents
     :depth: 2
@@ -52,7 +52,7 @@ Then we define a ``SimpleCrafter`` which will just forward the data.
             return {'id': id}
 
 
-For this example, we will index 100 documents and use 10 parallel :term:`Crafters`. The ``request_size`` is set to 20. So the 100 ``Documents`` will be divided into 5 parts and each ``Request`` contains 20 ``Documents``.
+For this example, we will index 100 ``Documents`` and use 10 parallel :term:`Crafters`. The ``request_size`` is set to 20. So the 100 ``Documents`` will be divided into 5 parts and each ``Request`` contains 20 ``Documents``.
 
 .. highlight:: python
 .. code-block:: python
