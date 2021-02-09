@@ -37,4 +37,4 @@ And you can group your logs by level like Info, Success, Warning, Error, Critica
 Before you start:
 -------------------
 
-In order to see logs, you need to be connected to JinaD and running a flow
+In order to see logs, you need to be connected to `JinaD <https://docs.jina.ai/chapters/dashboard/connect-jinaD>`_ and `running a flow <https://docs.jina.ai/chapters/dashboard/flow>`_
