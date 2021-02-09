@@ -39,6 +39,7 @@ Welcome to Jina!
    chapters/envs
    chapters/prevent_duplicate_indexing/index
    chapters/crud/index
+   chapters/optimization/index
 
 .. toctree::
    :maxdepth: 1
