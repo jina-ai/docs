@@ -14,8 +14,16 @@ A guide on Jina Flow Evaluation Mode
 Motivation
 --------------------
 
-Feature description
---------------------
+As a :term:`Neural Search` system,
+Jina employs deep neural networks to find the best :term:`Match` based on the user query.
+Measuring system performance is critical important for Jina.
+
+Users generally place an emphasis on evaluating final document ranking result using information retrieval metrics,
+such as Precision, Recall, mAP or nDCG.
+However, it ignores the fact that a search system is often composed by multiple components,
+whereas evaluation on the final results hardly reveal useful insights about the system.
+It is not straightforward to see the problematic component.
+
 
 Before you start
 -------------------
@@ -28,8 +36,11 @@ With Jina installed on your machine:
 
     pip install -U jina
 
-Implementation
+Overview
 -----------------
+
+Evaluation in Action
+----------------------
 
 Conclusion
 -----------------
