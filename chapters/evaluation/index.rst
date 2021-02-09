@@ -43,6 +43,17 @@ With Jina installed on your machine:
 Overview
 -----------------
 
+To achieve our objective, we designed a family of :term:`Executor` named :term:`Evaluator`.
+These evaluators evaluate messages coming from any kind of executor.
+As a new type of :term:`Pod`, evaluators inspect documents from the request and comparing them with ground truth.
+
+The evaluation, in general, follows a two step approach: *diff extraction* and *quantization*.
+Jina :term:`Driver` extracts diff information from :term:`Protobuf`,
+and pass diff information to executor.
+The second steps happens inside the executor: quantize the diffed object to a number.
+
+
+
 Evaluation in Action
 ----------------------
 
