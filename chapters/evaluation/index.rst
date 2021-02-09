@@ -78,5 +78,15 @@ Evaluation in Action
 Conclusion
 -----------------
 
+In this guide, we introduced why we need Jina evaluators,
+how we organize Jina evaluators.
+Apart from that, we gave some concrete examples of how to use Jina evaluators.
+We hope now you have a better understanding of Jina evaluators.
+
 What's next
 -----------------
+
+Thanks for your time & effort while reading this guide!
+If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
+
+To gain a deeper knowledge on the implementation of Jina evaluator, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors/evaluators>`_.
