@@ -134,8 +134,7 @@ You need to match exactly the term as in the Glossary. If you want to show diffe
 Documenting classes
 ----------------------------------------------------
 
-In classes you don't need to specify a return type. But here you should document the constructor. Use the parameters to document the constructor parameters under **__init__**
-
+In classes you don't need to specify a return type. But you should document the constructor parameters here. Use all parameters that are under **__init__** and document them in the class itself.
 
 *****************************************************
 Multi-line docstrings example of a function
@@ -184,14 +183,12 @@ Multi-line docstrings example of a class
             .. highlight:: python
             .. code-block:: python
                 magic_cat = Magic()
+
+        :param param1: This is an example of a param1
+        :type param1: int
+        :param param2: This is an example of a param2
+        :type param2: str
         """
 
         def __init__(self, param1: int, param2: str):
-            """
-            Specify what the contructor does
-
-            :param param1: This is an example of a param1
-            :type param1: int
-            :param param2: This is an example of a param2
-            :type param2: str
-            """
+            """Specify what the contructor does"""
