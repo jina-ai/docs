@@ -22,12 +22,11 @@
 
 ## Infrastructure
 
-This example benchmark prioritizes a real-world scenario, where a user hosts Jina in the cloud. We use six machines in AWS, of instace size `c5.2xlarge` (8 vCPUs, 16GB RAM). We also add 100GB gp2 ssd.
+This example benchmark prioritizes a real-world scenario, where a user hosts Jina in the cloud. We use six machines in AWS, of instace size `c5.2xlarge` (8 vCPUs, 16GB RAM). We also add 100GB gp2 ssd. For the Vector Indexer machine we increased RAM to 32 GB.
 
 The instances are split as follows:
 
 - **Client**: from this machine we create the Flows and issue the client requests (indexing and querying)
-[comment]: <> (- Crafter: this machine TODO is this used?)
 - **Flow**: this machine hosts the `Gateway` to the `Flow`
 - **Encoder**: this machine processes the raw data (text or image) with the respective `Encoders`
 - **Indexer**: this machine hosts the `Indexers`
@@ -76,11 +75,9 @@ The parameters are organized in 4 groups:
 - Functional/Indexers parameters: Configure the functional parameters that can affect the performance of the search
 - Client parameters: Configure how the client connects to the Flow
 
-### Sharding parameters
+### Sharding and scheduling parameters
 
-Jina allows for parallelization of data processing. You can read an overview of these options [here](https://docs.jina.ai/chapters/parallel/index.html)
-
-We use these to parallelize the various `Pods`. We also configure the scheduling strategy to `load_balance`. This prioritizes the idle `Peas` inside the `Pods`.
+Jina allows for parallelization of data processing. You can read an overview of these options [here](https://docs.jina.ai/chapters/parallel/index.html). We use these to parallelize the various `Pods`. On the same topic, we also configure the `scheduling` strategy.
 
 ### Functional/Indexers parameter
 
@@ -96,35 +93,83 @@ The client also sets the `TOP_K` parameter. This limits the number of matches re
 
 ## Results
 
-Table with params and results
+### Experiment 1
 
-Stats, QPS, 
+We configured parallelization as such:
+
+- Encoder: `parallel: 2`
+- Vector Indexer: `shards: 8`
+- Redis Indexer: `parallel: 2`
+- scheduling: `load_balance`
+
+See full environment configuration file [here](./env_1)
+
+#### Table of results
+
+[comment]: <> (BEGIN TABLE)
+
+<table>
+<thead>
+  <tr>
+    <th>Vector Indexer</th>
+    <th>KV Indexer</th>
+    <th>Index time</th>
+    <th>Docs indexed</th>
+    <th>QPS</th>
+    <th>Query time</th>
+    <th>Docs queried</th>
+    <th>QPS</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Numpy -&nbsp;&nbsp;</td>
+    <td>Redis</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Faiss - param</td>
+    <td>Redis</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>Annoy - params</td>
+    <td>Redis</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</tbody>
+</table>
+
+[comment]: <> (END TABLE)
+
+### Experiment 2
+
+[comment]: <> (TODO with BinaryPb)
+
 
 ## Test it yourself
 
-You can reproduce this benchmark yourself. You have to do the following:
+See [guide](./instructions.md)
 
-- configure and start the instances in AWS
+[comment]: <> (TODO add learnings?)
 
-    You can try using another provider. Additionally, you can try running it in Docker Compose, on your local machine. However, the Annoy & Faiss indexers use their own Docker images and running a Docker within Docker is currently not supported.
+[comment]: <> (## Learnings)
 
-- clone the repository [here](https://github.com/jina-ai/cloud-ops/tree/master/stress-example)
-- install Jina, JinaD and the requirements on each of the machines
-    
-    These can be found in the folders `image` or `text`.
+[comment]: <> (- encoder sharding issue)
 
-Do the following in the client machine:
-
-- clone the same repository
-- `cd` into the `stress-example` directory
-- set up the configuration options in `.env`
-- run the automatic script: `nohup bash run_test.sh > output.txt &`
-
-    `nohup` allows you to disconnect from the machine without interrupting the process. The output will be piped into `output.txt`. 
-
-When the process is done, you will find the results in `output.txt`. Look for the lines starting with `TOTAL: Ran operation`
-
-## Learnings
-
-- encoder sharding issue
-- 
+[comment]: <> (- )
