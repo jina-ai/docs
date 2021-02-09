@@ -1,6 +1,31 @@
 Welcome to Jina!
 ================
 
+Jina is a deep learning-powered search framework for building cross-/multi-modal search systems (e.g. text, images, video, audio) in the cloud.
+
+The Jina ecosystem is composed of four independent frameworks
+
+.. image:: ecosystem.png
+   :width: 800
+
+------------
+
+
+Documentation types
+**********************
+
+Each of the four Jina products has the following documentation types.
+
+- **Introduction**: New to a Jina product? Check out the Introduction pages. They contain an introduction to the main concepts and links to additional tutorial.
+- **Developer Guides**: Provides hands-on tutorials and in-depth information on features and implementations usecases.
+- **API References**: Contains a detailed description of the product APIs. The reference describes how the methods work and which parameters can be used.
+
+
+------------
+
+Table of content 
+**********************
+
 .. toctree::
    :maxdepth: 1
    :caption: Jina Core
