@@ -1,8 +1,10 @@
+=====================================
 OS Environment Variables Used in Jina
 =====================================
 
-
-
+.. meta::
+   :description: A list of environment variables that ``jina`` respects during runtime.
+   :keywords: Jina, environment variables
 
 Here is the list of environment variables that ``jina`` respects during runtime.
 
@@ -14,7 +16,7 @@ Here is the list of environment variables that ``jina`` respects during runtime.
         .. highlight:: python
         .. code-block:: python
 
-            os.environ['JINA_LOG_PROFILING'] = 'true'
+            os.environ['JINA_ARRAY_QUANT'] = 'fp16'
 
             from jina.flow import Flow
 
