@@ -48,7 +48,7 @@ The `Image Search using Captions <https://github.com/jina-ai/examples/tree/maste
 
 We encode images and its captions (any descriptive text of the image) in separate indexes,
 which are later queried in a cross-modal fashion.
-It queries the text index using image embeddings and query the image index using text embeddings.
+It queries the text index using image embeddings and queries the image index using text embeddings.
 
 Multi modal search
 --------------------
