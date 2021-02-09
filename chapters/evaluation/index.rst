@@ -1,10 +1,10 @@
 ==========================================
-A guide on Evaluation in Jina
+A guide on Jina Flow Evaluation Mode
 ==========================================
 
 .. meta::
-   :description: Multi-modal and cross-modal search in Jina
-   :keywords: Jina, evaluation
+   :description: A guide on Jina Flow Evaluation Mode
+   :keywords: Jina, flow evaluation
 
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
 
