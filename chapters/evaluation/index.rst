@@ -97,12 +97,9 @@ For example:
 The above example illustrates how we add evaluator into a flow.
 We added two evaluators: a ``BaseEmbeddingEvaluator`` after encoder and a ``BaseRankingEvaluator`` after ``BaseRanker``.
 
-ADD SOME TEXT ON FLOW INSPECT STRATEGY
-
 One highlight of the :meth:`inspect` is that it does not introduce any side-effect to the flow:
 
-1. The evaluations are running as *side task* in parallel.
-They deviate from the main task and are not required to complete the request. Thus, it won’t slow down the flow on the main task.
+1. The evaluations are running as *side task* in parallel. They deviate from the main task and are not required to complete the request. Thus, it won’t slow down the flow on the main task.
 2. Attaching an inspect Pod to the flow does not change the socket type between the original Pod and its neighbours.
 3. All inspect Pods can be removed from the Flow by setting ``Flow(inspect='REMOVE')``.
 
@@ -110,15 +107,16 @@ You might noticed that we defined ``Flow(inspect='HANG')`` in the above code exa
 The :class:`FlowInspectType` has three types: ``HANG``, ``COLLECT`` and ``REMOVE``.
 
 ``Flow(inspect='HANG')``
+
 .. image:: hang.svg
 
 ``Flow(inspect='COLLECT')``
+
 .. image:: collect.svg
 
 ``Flow(inspect='REMOVE')``
+
 .. image:: remove.svg
-
-
 
 
 Conclusion
