@@ -1,5 +1,5 @@
 ==========================================
-A guide on Jina Flow Evaluation Mode
+A Guide to Jina Flow Evaluation Mode
 ==========================================
 
 .. meta::
@@ -14,13 +14,13 @@ A guide on Jina Flow Evaluation Mode
 Motivation
 --------------------
 
-For any search system, measuring system performance is critical, and so it is for Jina.
+In Jina, just like in any search system, it's critical to measure system performance.
 
-Generally, evaluation is about computing a difference between an output and a desired "ideal" results,
+Generally, evaluation is about computing the difference between an output and ideal results,
 users generally place an emphasis on evaluating final document ranking results using information retrieval metrics,
 such as Precision, Recall, mAP or nDCG.
-However, it ignores the fact that a search system is often composed by multiple components,
-whereas evaluation on the final results hardly reveal useful insights about the system. Jina allows the user
+However, it ignores the fact that a search system is often composed of multiple components,
+whereas evaluation on the final results hardly reveals useful insights about the system. Jina allows the user
 to evaluate any part of the system with arbitrary metrics.
 
 
@@ -55,8 +55,8 @@ in Jina is nothing else than another :term:`Document`.
 is involved, `GroundTruth` tends to be empty, however when an `Evaluation` pod is involved in the Flow, it will actually
 take the information of every `GroundTruth` to feed both `Document` and `GroundTruth` information to the evaluator :term:`Executor`
 
-The evaluation, in general, follows a two step approach: *extraction* and *evaluation*.
-Jina :term:`Driver` extracts document and groundtruth information from :term:`Protobuf`,
+Evaluation consists of extraction and evaluation.
+In Jina, a :term:`Driver` extracts Document and GroundTruth information from a :term:`Protobuf` message,
 and pass this information to the executor.
 The second steps happens inside the executor: evaluate the difference between these two documents into a number.
 Afterwards, the :term:`Driver` will add the results of the evaluation into the `evaluations` field of the `Document`.
@@ -66,7 +66,7 @@ Since Evaluation tends to focus only on some small parts of the `Documents` (IDs
 embedding when evaluating Encoders), it is not needed for `GroundTruth` to contain more information from the `Document` than
 the one that will be used by the Evaluators.
 
-It is important to notice that the `Documents` inside the `IndexRequest` and `SerchRequest` are transformed by the `Drivers`
+It is important to note that the `Documents` inside the `IndexRequest` and `SerchRequest` are transformed by the `Drivers`
 inside the `Flow` while the `GroundTruth` is never changed, since is only used to analyze and compare to its paired `Document`
 at any point of the `Flow`.
 
@@ -143,12 +143,10 @@ Conclusion
 In this guide, we introduced why we need Jina evaluators,
 how we organize Jina evaluators.
 Apart from that, we gave some concrete examples of how to use Jina evaluators.
-We hope now you have a better understanding of Jina evaluators.
 
 What's next
 -----------------
 
-Thanks for your time & effort while reading this guide!
-If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
+If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <slack.jina.ai>`_ .
 
-To gain a deeper knowledge on the implementation of Jina evaluator, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors/evaluators>`_.
+To gain a deeper knowledge on the implementation of Jina Evaluators, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors/evaluators>`_.
