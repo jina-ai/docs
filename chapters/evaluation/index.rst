@@ -105,7 +105,7 @@ One highlight of the :meth:`inspect` is that it does not introduce any side-effe
 
 You might noticed that we defined ``Flow(inspect='HANG')`` in the above code example as inspect type.
 The :class:`FlowInspectType` has three types: ``HANG``, ``COLLECT`` and ``REMOVE``.
-The differences are shown in the figures blow:
+The differences are shown in the figures below:
 
 ``Flow(inspect='HANG')``
 
