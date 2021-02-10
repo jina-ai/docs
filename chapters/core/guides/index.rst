@@ -32,3 +32,4 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../cli/exit
    ../../envs
    ../../project-guide/project-guide
+   ../../optimization/index
