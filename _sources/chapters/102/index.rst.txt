@@ -74,9 +74,9 @@ Inside a Pod
 
 |
 
-In the Segmenter Pod, there’s only one :term:`Pea`. But sometimes you group multiple copies of the same Peas in a Pod to increase reliability or performance. To implement sharing and parallelization, check `this section`_.
+In the Segmenter Pod, there’s only one :term:`Pea`. But sometimes you group multiple copies of the same Peas in a Pod to increase reliability or performance. To implement parallelization, check `this section`_.
 
-.. _this section: link to sharing section
+.. _this section: https://docs.jina.ai/chapters/parallel/index.html
 
 
 Inside a Pea
@@ -110,11 +110,10 @@ From Flows to Executors, every part of Jina is configurable with YAML files. YAM
 .. image:: /chapters/102/images/yaml.png 
 	:width: 25%  
 
-Besides YAML, you can also design Flows in `our Dashboard`_ or `Python code`_.
+Besides YAML, you can also design Flows in :ref:`our Dashboard<jinadashboard>` or `Python code`_.
 
-.. _our Dashboard: link to Dashboard section
+.. _Python code: https://docs.jina.ai/chapters/io/index.html
 
-.. _Python code: link to IO section
 
 Search Modality
 =====================
@@ -139,7 +138,7 @@ You can use multiple modalities as input for your search applications. For examp
 
 To implement cross-modality or multi-modality, visit the `dedicated section`_ in our documentation.
 
-.. _dedicated section: link to cross- multi- modality
+.. _dedicated section: https://docs.jina.ai/chapters/cross-multi-modality/index.html
 
 
 JinaD
@@ -147,8 +146,7 @@ JinaD
 
 `JinaD`_ (Jina Daemon) enables orchestration and management of Jina Flows in distributed search systems through an API endpoint.
 
-.. _JinaD: link to jinaD section
-
+.. _JinaD: https://docs.jina.ai/chapters/remote/jinad.html
 
 
 Jina Suite
@@ -178,8 +176,10 @@ Hub
 `Jina Hub`_ is a centralized registry for the developer community. You can share and discover customized Jina Pods or Apps. 
 
 
-.. _Jina Hub: link to Hub section
+.. _Jina Hub: https://docs.jina.ai/chapters/hub/introduction/index.html
 
+
+.. _jinadashboard:
 
 Dashboard
 -----------
@@ -187,7 +187,7 @@ Dashboard
 
 `Jina Dashboard`_ is a low-code monitoring and management environment for Jina. With Dashboard you can:
 
-.. _Jina Dashboard: link to Dashboard
+.. _Jina Dashboard: https://docs.jina.ai/chapters/dashboard/introduction/index.html
 
 *   Build your Flows
 *   Monitor log stream
@@ -199,4 +199,4 @@ Box
 
 `Jina Box`_ is a frontend for Jina. It’s a lightweight, customizable omnibox. You can use it to search text, images, videos, audio or any kind of data. 
 
-.. _Jina Box: link to Box section
+.. _Jina Box: https://docs.jina.ai/chapters/box/introduction/index.html
