@@ -25,7 +25,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../extend/*
    ../../remote/index
    ../../parallel/index
-   ../../primitive_data_type/primitive_data_type
+   ../../primitive_data_type/index
    ../../project_guide/project_guide
    ../../traversal/index
    ../../simple_exec
