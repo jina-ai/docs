@@ -22,7 +22,7 @@ docker pull jinaai/jina:master-daemon
 ```bash
 docker run -p 8000:8000 -p 5555:5555 jinaai/jina:master-daemon
 ```
-![img.png](jinaD_run_docker.png)
+![img.png](img/jinaD_run_docker.png)
 
 #### Install JinaD with Jina CLI
 
@@ -32,7 +32,7 @@ docker run -p 8000:8000 -p 5555:5555 jinaai/jina:master-daemon
 jinad
 ```
 
-![img.png](jinaD_run_cli.png)
+![img.png](img/jinaD_run_cli.png)
 
 
 ### Implementation
@@ -41,7 +41,7 @@ jinad
 1. Go to [Settings](https://dashboard.jina.ai/#/settings)
 
 
-![img.png](settings.png)
+![img.png](img/settings.png)
 
 2. Set **Host** to http://localhost and **Port** to the specified port, which is 8000 in this example. Save changes
 3. Click the refresh button int the lower-left corner
@@ -49,7 +49,7 @@ jinad
 
 The globe icon on the top-left corner should turn into a green check mark, which means the connection was successful.
 
-![log server settings](2859cc17.png)
+![log server settings](img/2859cc17.png)
 
 
 
