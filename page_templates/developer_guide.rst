@@ -1,9 +1,13 @@
-=================
-Short title
-=================
+==================================
+Short Title (Must be title Case)
+==================================
+
+[For section titles: Use sentence case]
 
 Subtitle/Summary: Summarize what the reader will achieve by reading the explanation article. Two sentences ideally.
 ---------------------------------------------------------------------------------------------------------------------
+
+
 
 Feature description and expected outcome:
 -------------------------------------------
