@@ -1,6 +1,6 @@
 # Jina Cloud Benchmark & Deployment
 
-#### Purpose: Showcase how Jina scales and how you can deploy to AWS
+#### Purpose: Showcase how to scale Jina and how to deploy to AWS
 
 ---
 
@@ -80,7 +80,7 @@ The parameters are organized in 4 groups:
 
 Jina allows for parallelization of data processing. You can read an overview of these options [here](https://docs.jina.ai/chapters/parallel/index.html). We use these to parallelize the various Pods. On the same topic, we also configure the `scheduling` strategy.
 
-### Functional/Indexers parameter
+### Functional/indexers parameters
 
 As part of the benchmark, we also compare the performance of the `NumpyIndexer` with the advanced indexers, based on `Annoy` and `Faiss`. We also provide specific arguments to these: `num_tress` for `Annoy`; `index_key` for `Faiss`.
 
