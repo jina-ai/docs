@@ -6,6 +6,7 @@ API References
    :glob:
    :caption: Jina REST API Specification
 
+   ../../rest-reference/index
    ../../restapi/index
 
 .. toctree::
