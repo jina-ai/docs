@@ -1,6 +1,6 @@
-##################
+#####################
 Project set up guide
-##################
+#####################
 
 .. meta::
    :description: You will see the best practices on how to create a project on Jina.
@@ -62,19 +62,19 @@ You can also set up the project structure manually. The actual structure of your
 
 
 Folder structure elements
-====================
+==========================
 
 Now let's take a closer look at each element to see what is optional
 
 Project name
----------
+-------------
 
 ``/your-new-project``
 
 The first thing you need to do is create the folder of your project. Here is where everything will live.
 
 Requirements
----------
+-------------
 
 The first thing you should take care of is the requirements. Create a **requirements.txt**. In this file you will specify the required dependencies you'll need. Write a module per line. You can then install all the packages with pip:
 
@@ -84,7 +84,7 @@ The first thing you should take care of is the requirements. Create a **requirem
     pip install -r requirements.txt
 
 Prepare and save data
----------
+----------------------
 
 This can be optional depending on if you need extra data on your project or not. If you need to download data the best practice is to use a script. This script should live directly under the main folder.
 
@@ -116,14 +116,14 @@ App.py
 And of course, we need our main app, we have this file living directly under the main directory.
 
 Workspace
----------
+----------
 
 ``/workspace``
 
 This :term:`workspace` is a special folder. You will **not** create this folder yourself. You should design your **app.py** in a way that when you run it for the first time, this folder is created during the :term:`indexing`.
 
 Dockerfile
----------
+-----------
 
 ``/Dockerfile``
 
@@ -131,7 +131,7 @@ Dockerfile
 This is another optional element. It should be stored in the main directory.
 
 .dockerignore
----------
+--------------
 
 ``/.dockerignore``
 
@@ -139,7 +139,7 @@ Don't forget to add here all the files that you don't want to include in your in
 
 
 .gitignore
----------
+-----------
 
 ``/.gitignore``
 

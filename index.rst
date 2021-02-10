@@ -39,6 +39,9 @@ Welcome to Jina!
    chapters/envs
    chapters/prevent_duplicate_indexing/index
    chapters/stress/index
+   chapters/incremental_indexing/index
+   chapters/crud/index
+   chapters/optimization/index
 
 .. toctree::
    :maxdepth: 1

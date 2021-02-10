@@ -1,24 +1,41 @@
 # CRUD Operations
 
-CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is *not* a database engine, it does provide these methods of interacting with the data stored in the indexers.
+##### In this section, you will get an overview of how Jina implements CRUD: Create, Read, Update, Delete  
 
-Until now, Jina has only supported indexing (creating) and querying (reading) documents. To update or delete a document, you'd have to edit your dataset, and then re-build the Flow and indexers. Needless to say, this could create problems if you had large datasets.
+### Feature description
 
-With the release of version `1.0` we're introducing **update** and **delete** operations. These are implemented across our executors and drivers and will allow you to update and delete documents by their ids. 
+CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is *not* a database engine, it does provide these methods of interacting with the data stored in its indexes.
 
-A basic example of this can be found in the `test_crud.py` file under `tests/integration/crud/simple`:
+Before `1.0`, Jina only supported indexing (creating) and querying (reading) Documents. To update or delete a Document, you had to edit your dataset, and then rebuild the Flow and indexes. Needless to say, this could create problems if you had large datasets.
 
-The Flow object now supports a `delete` and `update` method, with a signature similar to index:
+With the release of version `1.0` we are introducing **update** and **delete** operations. These are implemented across our Executors and Drivers, and allow you to update and delete Documents by their ids. 
+
+## Before you start 
+
+Study the basics [here](https://docs.jina.ai/chapters/core/introduction/index.html)
+
+### Implementation
+
+A basic example of this can be found in the [`test_crud.py`](https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py):
+
+The `Flow` class now supports `delete` and `update` methods, with a signature similar to `index`:
 
 ```python
-    with f:
-        f.index(input_fn=random_docs(10))
+    docs = random_docs(10)
 
     with f:
-        f.update(input_fn=random_docs(10))
+        f.index(input_fn=docs)
 
+    new_docs = random_docs(10)
+            
     with f:
-        f.delete(input_fn=random_docs(10))
+        f.update(input_fn=new_docs)
+
+    doc_ids = [d.id for d in docs]
+        
+    with f:
+        delete_ids = [d.id for d in doc_ids]
+        f.delete(delete_ids)
 ```
 
 Note: deletion and update will happen by `id` of the document.
