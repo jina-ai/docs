@@ -75,6 +75,25 @@ Jina evaluators can be categorised into **ranking evaluators**, **text evaluator
 Evaluation in Action
 ----------------------
 
+Evaluation works in parallel with ``IndexRequest`` and ``SearchRequest``.
+The new :term:`Flow` API :meth:`inspect` allow users to add evaluation pod at an arbitrary place in the flow.
+For example:
+
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Flow
+
+    f = Flow(inspect='HANG').add(
+        uses='!BaseCrafter', name='crafter').add(
+        uses='!BaseEncoder', name='encoder').inspect(
+        uses='!BaseEmbeddingEvaluator', name='embed_eval').add(
+        uses='!CompoundIndexer', name='indexer').add(
+        uses='!BaseRanker', name='ranker').inspect(
+        uses='!BaseRankingEvaluator', name='rank_eval')
+
+.. image:: eval.svg
+
 Conclusion
 -----------------
 
