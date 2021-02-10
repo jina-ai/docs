@@ -21,14 +21,14 @@ users generally place an emphasis on evaluating final document ranking results u
 such as Precision, Recall, mAP or nDCG.
 However, it ignores the fact that a search system is often composed of multiple components,
 whereas evaluation on the final results hardly reveals useful insights about the system. Jina allows the user
-to evaluate any part of the system with arbitrary metrics.
+to evaluate any part of the system using arbitrary metrics.
 
 
 Before you start
 -------------------
 
-We expect you have a clean Python 3.7/3.8/3.9 (virtual) build.
-With Jina installed on your machine:
+We expect you have a clean Python 3.7/3.8/3.9 (virtual) environment.
+Install Jina on your machine:
 
 .. highlight:: bash
 .. code-block:: bash
@@ -40,10 +40,10 @@ Overview
 -----------------
 
 To achieve our objective, Jina has a family of :term:`Executor` named :term:`Evaluator`.
-These evaluators are meant to capture Documents from any part of the Flow in order to evaluate them.
+These Evaluators capture and evaluate Documents from any part of the Flow.
 
-As a new type of :term:`Executor`, evaluators inspect documents from the request and comparing them with ground truth.
-This executors can be wrapped in a :term:`Pod` as any other kind of executor and placed anywhere in the :term:`Flow`.
+As a new type of :term:`Executor`, Evaluators inspect Documents from the request and compare them with GroundTruth.
+The Executor can be wrapped in a :term:`Pod` as any other kind of executor and placed anywhere in the :term:`Flow`.
 They tend to be placed after the :term:`Pod` applying the transformation that wants to be evaluated by the specific `Evaluator`.
 
 In order to be able to Evaluate the performance of a transformation applied to a Document by any part of a Jina
@@ -57,8 +57,8 @@ take the information of every `GroundTruth` to feed both `Document` and `GroundT
 
 Evaluation consists of extraction and evaluation.
 In Jina, a :term:`Driver` extracts Document and GroundTruth information from a :term:`Protobuf` message,
-and pass this information to the executor.
-The second steps happens inside the executor: evaluate the difference between these two documents into a number.
+and passes this information to the Executor.
+The second steps happens inside the executor: evaluate the difference between these two documents into a score.
 Afterwards, the :term:`Driver` will add the results of the evaluation into the `evaluations` field of the `Document`.
 
 
@@ -82,7 +82,7 @@ but these can be extended to evaluate any kind of information inside a `Document
      - Description
    * - Ranking evaluators
      - Precision, Recall, F1, aP, nDCG, mRR
-     - Evaluate messages coming out from Indexers and Rankers and compares matches with groundtruths
+     - Evaluate messages coming out from Indexers and Rankers and compares matches with GroundTruth
    * - Text evaluators
      - Length, Bleu, Edit Distance, Gleu, Hamming Distance, Jaccard Distance
      - Evaluates the difference between actual and desired text
