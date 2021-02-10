@@ -17,7 +17,7 @@ Motivation
 For any search system, measuring system performance is critical, and so it is for Jina.
 
 Generally, evaluation is about computing a difference between an output and a desired "ideal" results,
-users generally place an emphasis on evaluating final document ranking result using information retrieval metrics,
+users generally place an emphasis on evaluating final document ranking results using information retrieval metrics,
 such as Precision, Recall, mAP or nDCG.
 However, it ignores the fact that a search system is often composed by multiple components,
 whereas evaluation on the final results hardly reveal useful insights about the system. Jina allows the user
@@ -132,8 +132,7 @@ the :term:`Flow` API :meth:`inspect` allows users to add pods with close to zero
 
 .. image:: hang.svg
 
-The above example illustrates how the evaluation Pods are introduced using :meth:`inspect` without introducing
- any side-effect to the flow.
+The above example illustrates how the evaluation Pods are introduced using :meth:`inspect` without introducing any side-effect to the flow.
 
 1. The evaluations are running as *side task* in parallel. They deviate from the main task and are not required to complete the request. Thus, it won’t slow down the flow on the main task.
 2. Attaching an inspect Pod to the flow does not change the socket type between the original Pod and its neighbours.
