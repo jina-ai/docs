@@ -35,7 +35,6 @@ Table of content
 
    chapters/dashboard/introduction/index
    chapters/dashboard/guides/index
-   chapters/dashboard/api_references/index
 
 .. toctree::
    :maxdepth: 1
@@ -52,7 +51,6 @@ Table of content
 
    chapters/box/introduction/index
    chapters/box/guides/index
-   chapters/box/api_references/index
 
 .. toctree::
    :maxdepth: 1
