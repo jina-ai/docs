@@ -56,7 +56,7 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="CRUD Operations" href="../crud/index.html" />
+    <link rel="next" title="Incremental Indexing" href="../incremental_indexing/index.html" />
     <link rel="prev" title="OS Environment Variables Used in Jina" href="../envs.html" /> 
 </head>
 
@@ -186,11 +186,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -296,43 +296,93 @@
             
   <div class="section" id="prevent-indexing-duplicates">
 <h1>Prevent Indexing Duplicates<a class="headerlink" href="#prevent-indexing-duplicates" title="Permalink to this headline">¶</a></h1>
-<p>When indexing documents, it is common to have duplicate documents received by the search system. One can either remove the duplicates before sending the duplicates to Jina or leave it to Jina for handling the duplicates.</p>
-<p>To prevent indexing duplicates, one needs to add <code class="docutils literal notranslate"><span class="pre">_unique</span></code> for the <code class="docutils literal notranslate"><span class="pre">uses_before</span></code> option. For example,</p>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>When indexing documents, it is common to have duplicate documents received by the search system. This document will show you how to prevent indexing duplicates in Jina.</p>
+</div>
+<div class="section" id="feature-description">
+<h2>Feature Description<a class="headerlink" href="#feature-description" title="Permalink to this headline">¶</a></h2>
+<p>One can either remove the duplicates before sending the duplicates to Jina or leave it to Jina for handling the duplicates.</p>
+</div>
+<div class="section" id="before-you-start">
+<h2>Before you start<a class="headerlink" href="#before-you-start" title="Permalink to this headline">¶</a></h2>
+<p>Make sure you are familiar with <a class="reference external" href="https://docs.jina.ai/chapters/yaml/executor.html">Executor YAML Sytax</a>.</p>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="when-shards-1">
+<h3>When <code class="docutils literal notranslate"><span class="pre">shards</span> <span class="pre">==</span> <span class="pre">1</span></code><a class="headerlink" href="#when-shards-1" title="Permalink to this headline">¶</a></h3>
+<p>If you are not using multiple shards, the built-in executor <cite>UniqueVectorIndexer</cite> and <cite>UniquePbIndexer</cite> can be used directly for keeping the unique indexed Documents. In the following codes, there are four Documents (including two unique ones) feeded to the Flow and only two unique ones are indexed.</p>
 <dl class="confval">
-<dt id="confval-PythonAPI">
-<code class="sig-name descname">Python API</code><a class="headerlink" href="#confval-PythonAPI" title="Permalink to this definition">¶</a></dt>
-<dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
-<span class="kn">from</span> <span class="nn">jina.proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
+<dt id="confval-demo_prevent_duplicate.py">
+<code class="sig-name descname">demo_prevent_duplicate.py</code><a class="headerlink" href="#confval-demo_prevent_duplicate.py" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">doc_0</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">Document</span><span class="p">()</span>
-<span class="n">doc_0</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;I am doc0&#39;</span>
-<span class="n">doc_1</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">Document</span><span class="p">()</span>
-<span class="n">doc_1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;I am doc1&#39;</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;doc</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
 
-<span class="k">def</span> <span class="nf">assert_num_docs</span><span class="p">(</span><span class="n">rsp</span><span class="p">,</span> <span class="n">num_docs</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rsp</span><span class="o">.</span><span class="n">IndexRequest</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span> <span class="o">==</span> <span class="n">num_docs</span>
+<span class="k">def</span> <span class="nf">assert_only_two_docs_indexed</span><span class="p">(</span><span class="n">rsp</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rsp</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
 
-<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;NumpyIndexer&#39;</span><span class="p">,</span> <span class="n">uses_before</span><span class="o">=</span><span class="s1">&#39;_unique&#39;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">&#39;unique_vec_idx.yml&#39;</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">doc_0</span><span class="p">,</span> <span class="n">doc_0</span><span class="p">,</span> <span class="n">doc_1</span><span class="p">],</span>
-        <span class="n">on_done</span><span class="o">=</span><span class="k">lambda</span> <span class="n">rsp</span><span class="p">:</span> <span class="n">assert_num_docs</span><span class="p">(</span><span class="n">rsp</span><span class="p">,</span> <span class="n">num_docs</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">docs</span> <span class="o">+</span> <span class="n">docs</span><span class="p">,</span> <span class="n">on_done</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">assert_only_two_docs_indexed</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<p>Under the hood, the configuration yaml file, :file:<code class="docutils literal notranslate"><span class="pre">executors._unique.yml</span></code>, under the :file:<code class="docutils literal notranslate"><span class="pre">jina/resources</span></code> is used. The yaml file is defined as below</p>
 <dl class="confval">
-<dt id="confval-YAMLspec">
-<code class="sig-name descname">YAML spec</code><a class="headerlink" href="#confval-YAMLspec" title="Permalink to this definition">¶</a></dt>
-<dd><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!DocIDCache</span>
+<dt id="confval-unique_vec_idx.yml">
+<code class="sig-name descname">unique_vec_idx.yml</code><a class="headerlink" href="#confval-unique_vec_idx.yml" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!UniqueVectorIndexer</span>
+<span class="nt">components</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!DocCache</span>
+    <span class="nt">metas</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">doc_cache</span>
+  <span class="p p-Indicator">-</span> <span class="kt">!NumpyIndexer</span>
+    <span class="nt">metas</span><span class="p">:</span>
+      <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">numpy_indexer</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="id1">
+<h3>When <code class="docutils literal notranslate"><span class="pre">shards</span> <span class="pre">&gt;</span> <span class="pre">1</span></code><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>When <code class="docutils literal notranslate"><span class="pre">shards</span> <span class="pre">&gt;</span> <span class="pre">1</span></code>, one needs to add <code class="docutils literal notranslate"><span class="pre">_unique</span></code> for the <code class="docutils literal notranslate"><span class="pre">uses_before</span></code> option. The reason is that different Peas might be running of different machines and therefore we need to check whether Document exists or not before sending the Document to one for the shards. In the following example, there are 40 Documents (including 20 unique ones) indexed by the Flow. We use <cite>on_done</cite> argument to check how many Documents are indexed. We use two shards in this example.</p>
+<dl class="confval">
+<dt id="confval-demo_prevent_duplicate_multishards.py">
+<code class="sig-name descname">demo_prevent_duplicate_multishards.py</code><a class="headerlink" href="#confval-demo_prevent_duplicate_multishards.py" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span><span class="p">,</span> <span class="n">Document</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Document</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;doc</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)]</span>
+
+<span class="k">def</span> <span class="nf">assert_only_twenty_docs_indexed</span><span class="p">(</span><span class="n">rsp</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rsp</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">20</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;NumpyIndexer&#39;</span><span class="p">,</span> <span class="n">uses_before</span><span class="o">=</span><span class="s1">&#39;_unique&#39;</span><span class="p">,</span> <span class="n">shards</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">docs</span> <span class="o">+</span> <span class="n">docs</span><span class="p">,</span> <span class="n">on_done</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">assert_only_twenty_docs_indexed</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p>Under the hood, the configuration yaml file, <code class="docutils literal notranslate"><span class="pre">jina/resources/executors._unique.yml</span></code>, is used. The yaml file is defined as below</p>
+<dl class="confval">
+<dt id="confval-jina/resources/executors._unique.yml">
+<code class="sig-name descname">jina/resources/executors._unique.yml</code><a class="headerlink" href="#confval-jina/resources/executors._unique.yml" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!DocCache</span>
 <span class="nt">with</span><span class="p">:</span>
-  <span class="nt">index_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cache.tmp</span>
+  <span class="nt">index_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">unique.tmp</span>
+<span class="nt">metas</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">unique</span>
 <span class="nt">requests</span><span class="p">:</span>
   <span class="nt">on</span><span class="p">:</span>
-    <span class="p p-Indicator">[</span><span class="nv">SearchRequest</span><span class="p p-Indicator">,</span> <span class="nv">TrainRequest</span><span class="p p-Indicator">,</span> <span class="nv">IndexRequest</span><span class="p p-Indicator">,</span> <span class="nv">ControlRequest</span><span class="p p-Indicator">]:</span>
+    <span class="p p-Indicator">[</span><span class="nv">SearchRequest</span><span class="p p-Indicator">,</span> <span class="nv">TrainRequest</span><span class="p p-Indicator">,</span> <span class="nv">IndexRequest</span><span class="p p-Indicator">,</span> <span class="nv">DeleteRequest</span><span class="p p-Indicator">,</span> <span class="nv">UpdateRequest</span><span class="p p-Indicator">,</span> <span class="nv">ControlRequest</span><span class="p p-Indicator">]:</span>
       <span class="p p-Indicator">-</span> <span class="kt">!RouteDriver</span> <span class="p p-Indicator">{}</span>
     <span class="nt">IndexRequest</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="kt">!TaggingCacheDriver</span>
@@ -346,23 +396,20 @@
 </div>
 </dd></dl>
 
-<p><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.cache.DocIdCache</span></code> uses document ID to detect the duplicates. The documents with the same ID are considered as the same one. <a class="reference internal" href="../../api/jina.drivers.cache.html#jina.drivers.cache.TaggingCacheDriver" title="jina.drivers.cache.TaggingCacheDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.cache.TaggingCacheDriver</span></code></a> keep a set of the indexed keys and check against the cache for a hit. If the document id exists, <a class="reference internal" href="../../api/jina.drivers.cache.html#jina.drivers.cache.TaggingCacheDriver" title="jina.drivers.cache.TaggingCacheDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.cache.TaggingCacheDriver</span></code></a> sets the customized keys in the <cite>tags</cite> field to the predefined value. In the above configuration, <code class="docutils literal notranslate"><span class="pre">is_indexed</span></code> in the <code class="docutils literal notranslate"><span class="pre">tags</span></code> field is set to <code class="docutils literal notranslate"><span class="pre">true</span></code> when the document id hit the cached indexed keys. Afterwards, <a class="reference internal" href="../../api/jina.drivers.querylang.filter.html#jina.drivers.querylang.filter.FilterQL" title="jina.drivers.querylang.filter.FilterQL"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.querylang.filter.FilterQL</span></code></a> is used to filter out the duplicate documents from the request.</p>
-<p>In Jina, the document ID is by default generated a new hexdigest based on the content of the document. The hexdigest is calcuated with <a class="reference external" href="https://docs.python.org/3.7/library/hashlib.html#hashlib.blake2b">blake2b algorithm</a>. By setting <code class="docutils literal notranslate"><span class="pre">override_doc_id=True</span></code>, users can also use customized document ids with Jina client and add <code class="docutils literal notranslate"><span class="pre">tags</span></code> to map to their unique concepts.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>When setting <code class="docutils literal notranslate"><span class="pre">override_doc_id=True</span></code>, a customized id is only acceptable if</p>
-<ul class="simple">
-<li><p>it is a <a class="reference external" href="https://en.wikipedia.org/wiki/Hexadecimal">hexadecimal</a> string</p></li>
-<li><p>it has an even length</p></li>
-</ul>
+<p><a class="reference internal" href="../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache" title="jina.executors.indexers.cache.DocCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.indexers.cache.DocCache</span></code></a> uses document ID to detect the duplicates. The documents with the same ID are considered as the same one. <a class="reference internal" href="../../api/jina.drivers.cache.html#jina.drivers.cache.TaggingCacheDriver" title="jina.drivers.cache.TaggingCacheDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.cache.TaggingCacheDriver</span></code></a> keep a set of the indexed keys and check against the cache for a hit. If the document id exists, <a class="reference internal" href="../../api/jina.drivers.cache.html#jina.drivers.cache.TaggingCacheDriver" title="jina.drivers.cache.TaggingCacheDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.cache.TaggingCacheDriver</span></code></a> sets the customized keys in the <code class="docutils literal notranslate"><span class="pre">tags</span></code> field to the predefined value. In the above configuration, <code class="docutils literal notranslate"><span class="pre">is_indexed</span></code> in the <code class="docutils literal notranslate"><span class="pre">tags</span></code> field is set to <code class="docutils literal notranslate"><span class="pre">true</span></code> when the document id hit the cached indexed keys. Afterwards, <a class="reference internal" href="../../api/jina.drivers.querylang.filter.html#jina.drivers.querylang.filter.FilterQL" title="jina.drivers.querylang.filter.FilterQL"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.querylang.filter.FilterQL</span></code></a> is used to filter out the duplicate documents from the request.</p>
 </div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Be careful when using <cite>_unique</cite> keyword as a cache executor, it will not set any <cite>workspace</cite> where to store actual data
-and it will use as <cite>workspace</cite> the folder where it runs, which may not be where the actual <cite>indexers</cite> store their data which
-can be inconvenient. If you want to store the cache in a specific workspace while keeping the same functionality,
-just copy the yaml description under <cite>jina/resources/executors._unique.yml</cite> and add the desired <cite>workspace</cite> under metas.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!DocIDCache</span>
+</div>
+<div class="section" id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
+<p>Be careful when using <code class="docutils literal notranslate"><span class="pre">_unique</span></code> keyword as a cache executor, it will not set any <code class="docutils literal notranslate"><span class="pre">workspace</span></code> where the data is stored.
+By default, it uses the folder where it runs as <code class="docutils literal notranslate"><span class="pre">workspace</span></code>, which may not be where the actual indexers store their data. If you want to store the cache in a specific workspace while keeping the same functionality,</p>
+<blockquote>
+<div><p>you need to define <code class="docutils literal notranslate"><span class="pre">unique_customized.yml</span></code> as below to set the desired <code class="docutils literal notranslate"><span class="pre">workspace</span></code> under metas.</p>
+</div></blockquote>
+<dl class="confval">
+<dt id="confval-unique_customized.yml">
+<code class="sig-name descname">unique_customized.yml</code><a class="headerlink" href="#confval-unique_customized.yml" title="Permalink to this definition">¶</a></dt>
+<dd><div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!DocCache</span>
 <span class="nt">with</span><span class="p">:</span>
   <span class="nt">index_path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cache.tmp</span>
 <span class="nt">metas</span><span class="p">:</span>
@@ -371,6 +418,8 @@ just copy the yaml description under <cite>jina/resources/executors._unique.yml<
   <span class="l l-Scalar l-Scalar-Plain">...</span>
 </pre></div>
 </div>
+</dd></dl>
+
 </div>
 </div>
 
@@ -382,7 +431,7 @@ just copy the yaml description under <cite>jina/resources/executors._unique.yml<
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="../crud/index.html" class="btn btn-neutral float-right" title="CRUD Operations"
+        <a href="../incremental_indexing/index.html" class="btn btn-neutral float-right" title="Incremental Indexing"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
