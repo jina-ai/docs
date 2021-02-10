@@ -1,12 +1,12 @@
 # Build Your Pod into a Docker Image
 
 ## Goal
-The objective of this tutorial is to serve as an elaborate guide for Pod image usage.
-Users can use Pod Image via several ways:
+The objective of this tutorial is to serve as a guide for Pod image usage.
+Users can use Pod images in several ways:
 
 - Run with Docker (`docker run`)
-  - ```
-    bash docker run jinaai/hub.examples.mwu_encoder --port-in 55555 --port-out 55556
+  - ```bash
+    docker run jinaai/hub.examples.mwu_encoder --port-in 55555 --port-out 55556
     ```
     
 - Flow API
@@ -19,13 +19,13 @@ Users can use Pod Image via several ways:
     ```
     
 - Jina CLI
-  - ```
-    bash jina pod --uses jinaai/hub.examples.mwu_encoder --port-in 55555 --port-out 55556
+  - ```bash
+    jina pod --uses jinaai/hub.examples.mwu_encoder --port-in 55555 --port-out 55556
     ```
     
-- Conventional local usage with `uses` flag
-  - ``` 
-    bash jina pod --uses hub/example/mwu_encoder.yml --port-in 55555 --port-out 55556
+- Conventional local usage with `uses` argument
+  - ```bash
+    jina pod --uses hub/example/mwu_encoder.yml --port-in 55555 --port-out 55556
     ```
     
 More information about [the usage can be found here](./use-your-pod.html#use-your-pod-image).
@@ -33,49 +33,61 @@ More information about [the usage can be found here](./use-your-pod.html#use-you
 
 ## Why?
 
-So you have implemented an awesome executor. You would want to reuse it in another Jina application or share it with people in the world. 
+So you have implemented an Executor. You would want to reuse it next in another Jina application or share it with people around the world. 
 
-Kind as you are, you want to offer people a ready-to-use interface without the hassle of repeating the pitfalls you faced.
+You might also want to offer people a ready-to-use interface without the hassle of repeating the pitfalls you faced.
 
-The best way, thus, is to pack everything (`python` file, `YAML` config, `pre-trained` data, dependencies) into a container image and use Jina as the entry point. You can also annotate your image with some meta information to facilitate the search, archive and classification.
+For that reason, the best way is to pack everything (Python file, `YAML` config, `pre-trained` data, dependencies) into a container image and use Jina as the entry point. You can also annotate your image with some meta information to facilitate the search, archive and classification.
 
 Here is a list of motivating reasons for building a Pod image:
 
-- You want to use one of the built-in executor (e.g. pytorch-based) and you don't want to install pytorch dependencies on the host.
-- You modify or write a new executor and want to reuse it in another project, without touching [`jina-ai/jina`](https://github.com/jina-ai/jina/).
+- You want to use one of the built-in Executor (e.g. PyTorch-based) and you don't want to install PyTorch dependencies on the host.
+- You modify or write a new Executor and want to reuse it in another project, without touching [Jina's core](https://github.com/jina-ai/jina/).
 - You customize the driver and want to reuse it in another project, without touching [`jina-ai/jina`](https://github.com/jina-ai/jina/).
 - You have a self-built library optimized for your architecture (e.g. tensorflow/numpy on GPU/CPU/x64/arm64), and you want this specific Pod to benefit from it.
-- Your awesome executor requires certain Linux headers that can only be installed via `apt` or `yum`, but you don't have `sudo` on the host.
-- You executor relies on a pretrained model, you want to include this 100MB file into the image so that people don't need to download it again.  
+- Your Executor requires certain Linux headers that can only be installed via `apt` or `yum`, but you don't have `sudo` on the host.
+- Your Executor relies on a pretrained model, you want to include this 100MB file into the image so that people don't need to download it again.  
 - You use Kubernetes or Docker Swarm and this orchestration framework requires each microservice to run as a Docker container.
 - You are using Jina on the cloud and you want to deploy an immutable Pod and version control it.
-- You have figured out a set of parameters that works best for an executor, you want to write it down in a YAML config and share it to others.
+- You have figured out a set of parameters that works best for an Executor, you want to write it down in a YAML config and share it to others.
 - You are debugging, doing try-and-error on exploring new packages, and you don't want ruin your local dev environments. 
 
 
-## What Should be the file contents of the Pod Image?
+## What files should be in the Pod image?
 
-Typically, the following files are packed into the container image:
+Typically, the following files are packed into the container image.
 
 | File             | Descriptions                                                                                        |
 |------------------|-----------------------------------------------------------------------------------------------------|
 | `Dockerfile`     | describes the dependency setup and expose the entry point;                                          |
 | `build.args`     | metadata of the image, author, tags, etc. help the Hub to index and classify your image             |
-| `*.py`           | describes the executor logic written in Python, if applicable;                                      |
-| `*.yml`          | a YAML file describes the executor arguments and configs, if you want users to use your config;     |
-| Other data files | may be required to run the executor, e.g. pre-trained model, fine-tuned model, home-made data.      |
+| `*.py`           | describes the Executor logic written in Python, if applicable;                                      |
+| `*.yml`          | a YAML file describes the Executor arguments and configs, if you want users to use your config;     |
+| Other data files | may be required to run the Executor, e.g. pre-trained model, fine-tuned model, home-made data.      |
 
-Except `Dockerfile`, all others are optional to build a valid Pod image depending on your case. `build.args` is only required when you want to [upload your image to Jina Hub](./publish-your-pod-image.html#publish-your-pod-image-to-jina-hub).
+Except `Dockerfile`, all other options to build a valid Pod image depending on your case. `build.args` is only required when you want to [upload your image to Jina Hub](./publish-your-pod-image.html#publish-your-pod-image-to-jina-hub).
+
+## How to change the default drivers of the Executor that is running inside the Docker image?
+
+Jina allows `uses_internal` as an argument while initialising Flow for this purpose.
+
+  - ```python
+    from jina.flow import Flow
+
+    f = (Flow()
+        .add(name='my-encoder', image='jinaai/hub.examples.mwu_encoder', port_in=55555, port_out=55556)
+        .add(name='my-indexer', uses='{{image_name}}', uses_internal='indexer.yml'))
+    ```
     
 ## Step-by-Step Example
 
-In this example, we consider the scenario where we create a new executor and want to reuse it in another project, without tweaking any code in [`jina-ai/jina`](https://github.com/jina-ai/jina/).
+In this example, we consider the scenario where we create a new Executor and want to reuse it in another project, without tweaking any code in [`jina-ai/jina`](https://github.com/jina-ai/jina/).
 
 Note: All files mentioned in this guide are available at [`hub/examples/mwu_encoder`](/hub/examples/mwu_encoder).
 
-### 1. Code your Executor and write its Config
+### 1. Code your Executor and write its config
 
-We write a new dummy encoder named `MWUEncoder` in [`mwu_encoder.py`](hub/examples/mwu_encoder/mwu_encoder.py) which encodes any input into a random 3-dimensional vector. This encoder has a dummy parameter `greetings` which prints a greeting message on start and on every encode. In [`mwu_encoder.yml`](hub/examples/mwu_encoder/mwu_encoder.yml), the `metas.py_modules` helps Jina to load the class of this executor from `mwu_encoder.py`.
+We write a new dummy encoder named `MWUEncoder` in [`mwu_encoder.py`](hub/examples/mwu_encoder/mwu_encoder.py) which encodes any input into a random 3-dimensional vector. This encoder has a dummy parameter `greetings` which prints a greeting message on start and on every encode. In [`mwu_encoder.yml`](hub/examples/mwu_encoder/mwu_encoder.yml), the `metas.py_modules` helps Jina to load the class of this Executor from `mwu_encoder.py`.
 
 ```yaml
 !MWUEncoder
@@ -89,9 +101,9 @@ metas:
 
 The documentation of the YAML syntax [can be found at here](../yaml/yaml.html#executor-yaml-syntax). 
 
-### 2. Write a 3-Line `Dockerfile`
+### 2. Write a 3-line `Dockerfile`
 
-The `Dockerfile` in this example is a simple three-liner snippet, 
+The `Dockerfile` in this example is a simple three-line snippet, 
 
 ```Dockerfile
 FROM jinaai/jina
@@ -160,14 +172,14 @@ This is the same as running:
 jina pod --uses hub/example/mwu_encoder.yml --port-in 55555 --port-out 55556
 ```
 
-One can also override the internal `YAML` config by specifying an out-of-docker external `YAML` config via:
+One can also override the internal YAML config by specifying an out-of-Docker external `YAML` config via:
 
 ```bash
 docker run -v $(pwd)/hub/example/mwu_encoder_ext.yml:/ext.yml jinaai/hub.examples.mwu_encoder --uses /ext.yml
 ```
 
 
-### 3. Build the Pod Image
+### 3. Build the Pod image
 
 You can build the Pod image now via `docker build`:
 
