@@ -110,7 +110,7 @@ From Flows to Executors, every part of Jina is configurable with YAML files. YAM
 .. image:: /chapters/102/images/yaml.png 
 	:width: 25%  
 
-Besides YAML, you can also design Flows in :ref:`our Dashboard<dashboard>`_ or `Python code`_.
+Besides YAML, you can also design Flows in :ref:`our Dashboard<jinadashboard>` or `Python code`_.
 
 .. _Python code: https://docs.jina.ai/chapters/io/index.html
 
@@ -179,7 +179,7 @@ Hub
 .. _Jina Hub: https://docs.jina.ai/chapters/hub/introduction/index.html
 
 
-.. _dashboard:
+.. _jinadashboard:
 
 Dashboard
 -----------
