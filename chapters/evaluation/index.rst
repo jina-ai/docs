@@ -14,19 +14,14 @@ A guide on Jina Flow Evaluation Mode
 Motivation
 --------------------
 
-As a :term:`Neural Search` system,
-Jina employs deep neural networks to find the best :term:`Match` based on the user query.
-Measuring system performance is critical important for Jina.
+For any search system, measuring system performance is critical, and so it is for Jina.
 
-Users generally place an emphasis on evaluating final document ranking result using information retrieval metrics,
+Generally, evaluation is about computing a difference between an output and a desired "ideal" results,
+users generally place an emphasis on evaluating final document ranking result using information retrieval metrics,
 such as Precision, Recall, mAP or nDCG.
 However, it ignores the fact that a search system is often composed by multiple components,
-whereas evaluation on the final results hardly reveal useful insights about the system.
-It is not straightforward to see the problematic component.
-
-Jina organize such components in a :term:`Flow`.
-For this reason, we expect Jina evaluator has the capability to work anywhere in the workflow,
-at the :term:`Pod` level.
+whereas evaluation on the final results hardly reveal useful insights about the system. Jina allows the user
+to evaluate any part of the system with arbitrary metrics.
 
 
 Before you start
@@ -40,19 +35,61 @@ With Jina installed on your machine:
 
     pip install -U jina
 
+Ground truth
+-----------------
+In order to be able to Evaluate the performance of a transformation applied to a Document by any part of a Jina
+:term:`Flow`, we need to know what the desired state of the :term:`Document` is. This desired state is called
+:term:`GroundTruth` and can be passed in Jina in every ``IndexRequest`` and ``SearchRequest``. This :term:`GroundTruth`
+in Jina is nothing else than another :term:`Document`.
+
 Overview
 -----------------
 
-To achieve our objective, we designed a family of :term:`Executor` named :term:`Evaluator`.
-These evaluators evaluate messages coming from any kind of executor.
-As a new type of :term:`Pod`, evaluators inspect documents from the request and comparing them with ground truth.
+To achieve our objective, Jina has a family of :term:`Executor` named :term:`Evaluator`.
+These evaluators are meant to capture Documents from any part of the Flow in order to evaluate them.
 
-The evaluation, in general, follows a two step approach: *diff extraction* and *quantization*.
-Jina :term:`Driver` extracts diff information from :term:`Protobuf`,
-and pass diff information to executor.
-The second steps happens inside the executor: quantize the diffed object to a number.
+As a new type of :term:`Executor`, evaluators inspect documents from the request and comparing them with ground truth.
+This executors can be wrapped in a :term:`Pod` as any other kind of executor and placed anywhere in the :term:`Flow`.
+They tend to be placed after the :term:`Pod` applying the transformation that wants to be evaluated by the specific `Evaluator`.
 
-Jina evaluators can be categorised into **ranking evaluators**, **text evaluators** and **embedding evaluators**.
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Flow
+
+    f = Flow().add(
+        uses='!BaseCrafter', name='crafter').add(
+        uses='!BaseEncoder', name='encoder').add(
+        uses='!BaseEmbeddingEvaluator', name='embed_eval').add(
+        uses='!CompoundIndexer', name='indexer').add(
+        uses='!BaseRanker', name='ranker').add(
+        uses='!BaseRankingEvaluator', name='rank_eval')
+
+The above example illustrates how we add evaluator into a flow.
+We added two evaluators: a ``BaseEmbeddingEvaluator`` after encoder and a ``BaseRankingEvaluator`` after ``BaseRanker``.
+
+
+``IndexRequest`` and ``SearchRequest`` are formed by streams of pairs and `Documents` and `GroundTruths`. When no evaluation
+is involved, `GroundTruth` tends to be empty, however when an `Evaluation` pod is involved in the Flow, it will actually
+take the information of every `GroundTruth` to feed both `Document` and `GroundTruth` information to the evaluator :term:`Executor`
+
+The evaluation, in general, follows a two step approach: *extraction* and *evaluation*.
+Jina :term:`Driver` extracts document and groundtruth information from :term:`Protobuf`,
+and pass this information to the executor.
+The second steps happens inside the executor: evaluate the difference between these two documents into a number.
+Afterwards, the :term:`Driver` will add the results of the evaluation into the `evaluations` field of the `Document`.
+
+
+Since Evaluation tends to focus only on some small parts of the `Documents` (IDs of the matches when evaluating Rankers,
+embedding when evaluating Encoders?), it is not needed for `GroundTruth` to contain more information from the `Document` than
+the one that will be used by the Evaluators.
+
+It is important to notice that the `Documents` inside the `IndexRequest` and `SerchRequest` are transformed by the `Drivers`
+inside the `Flow` while the `GroundTruth` is never changed, since is only used to analyze and compare to its paired `Document`
+at any point of the `Flow`.
+
+Currently, Jina evaluators can be categorised into **ranking evaluators**, **text evaluators** and **embedding evaluators**,
+but these can be extended to evaluate any kind of information inside a `Document`.
 
 .. list-table:: Jina Evaluator Types
    :widths: 25 25 50
@@ -76,8 +113,9 @@ Evaluation in Action
 ----------------------
 
 Evaluation works in parallel with ``IndexRequest`` and ``SearchRequest``.
-The new :term:`Flow` API :meth:`inspect` allow users to add evaluation pod at an arbitrary place in the flow.
-For example:
+
+While `Evaluation` :term:`Pods` can be added at arbitrary points of the :term:`Flow` as any other `Pod`,
+the :term:`Flow` API :meth:`inspect` allows users to add pods with close to zero-overhead with the rest of the `Flow`.
 
 .. highlight:: python
 .. code-block:: python
@@ -94,10 +132,8 @@ For example:
 
 .. image:: hang.svg
 
-The above example illustrates how we add evaluator into a flow.
-We added two evaluators: a ``BaseEmbeddingEvaluator`` after encoder and a ``BaseRankingEvaluator`` after ``BaseRanker``.
-
-One highlight of the :meth:`inspect` is that it does not introduce any side-effect to the flow:
+The above example illustrates how the evaluation Pods are introduced using :meth:`inspect` without introducing
+ any side-effect to the flow.
 
 1. The evaluations are running as *side task* in parallel. They deviate from the main task and are not required to complete the request. Thus, it won’t slow down the flow on the main task.
 2. Attaching an inspect Pod to the flow does not change the socket type between the original Pod and its neighbours.
