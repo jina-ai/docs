@@ -1,24 +1,25 @@
 # Jina Cloud Benchmark & Deployment
 
-[comment]: <> (TODO how do we sell this?)
-
 #### Purpose: Showcase how Jina scales and how you can deploy to AWS
 
 ---
 
 #### Table of Contents
 
-  * [Infrastructure](#infrastructure)
-  * [Datasets](#datasets)
-    + [Image search](#image-search)
-    + [Text search](#text-search)
-  * [Configuration](#configuration)
-    + [Sharding parameters](#sharding-parameters)
-    + [Functional/Indexers parameter](#functional-indexers-parameter)
-    + [Client](#client)
-  * [Results](#results)
-  * [Test it yourself](#test-it-yourself)
-  * [Learnings](#learnings)
+- [Infrastructure](#infrastructure)
+- [Datasets](#datasets)
+  * [Image search](#image-search)
+  * [Text search](#text-search)
+- [Configuration](#configuration)
+  * [Sharding and scheduling parameters](#sharding-and-scheduling-parameters)
+  * [Functional/Indexers parameter](#functional-indexers-parameter)
+  * [Client](#client)
+- [Experiments](#experiments)
+  * [Experiment 1 - Redis](#experiment-1---redis)
+    + [Results](#results)
+  * [Experiment 2 - BinaryPbIndexer](#experiment-2---binarypbindexer)
+    + [Results](#results-1)
+- [Test it yourself](#test-it-yourself)
 
 ## Infrastructure
 
@@ -92,6 +93,8 @@ In order to stress-test the system, we also issue index and query requests for s
 The client also sets the `TOP_K` parameter. This limits the number of matches returned by the Flow. This also affects performance.
 
 ## Experiments
+
+**NOTE** For now we only provide results for the `image` dataset. The `text` dataset will work too, if you want to test that.
 
 For computing an estimated throughput we used the following configuration:
 
