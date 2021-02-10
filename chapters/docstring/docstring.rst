@@ -10,6 +10,8 @@ Docstring guide
 In Jina, we are aware that documentation is an important part of sofware, but we also think it is especially important for OpenSource. And for this reason, we try extra hard to have clear and extensive documentation for all of our source code. But, at the same time, we know this also takes time and effort, so we want to make things as easy as possible with this guide for you. In Jina we use the `Sphinx style <https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html>`_ and here are the guidelines you should follow:
 
 
+.. contents:: Table of Contents
+    :depth: 2
 
 What are docstrings?
 ----------------------------------------------------
@@ -134,8 +136,7 @@ You need to match exactly the term as in the Glossary. If you want to show diffe
 Documenting classes
 ----------------------------------------------------
 
-In classes you don't need to specify a return type. But here you should document the constructor. Use the parameters to document the constructor parameters under **__init__**
-
+In classes you don't need to specify a return type. But you should document the constructor parameters here. Use all parameters that are under **__init__** and document them in the class itself.
 
 *****************************************************
 Multi-line docstrings example of a function
@@ -184,14 +185,54 @@ Multi-line docstrings example of a class
             .. highlight:: python
             .. code-block:: python
                 magic_cat = Magic()
+
+        :param param1: This is an example of a param1
+        :type param1: int
+        :param param2: This is an example of a param2
+        :type param2: str
         """
 
         def __init__(self, param1: int, param2: str):
-            """
-            Specify what the contructor does
+            """Specify what the contructor does"""
 
-            :param param1: This is an example of a param1
-            :type param1: int
-            :param param2: This is an example of a param2
-            :type param2: str
-            """
+
+Special Cases
+----------------------------------------------------
+
+*****************************************************
+Dunder/Magic methods
+*****************************************************
+
+You don't have to document dunder/magic methods unless you change the semantic of the method.
+
+*****************************************************
+Property
+*****************************************************
+
+Sphinx ignores docstrings on property setters so all documentation for a property must be on the @property method.
+
+.. highlight:: python
+.. code-block:: python
+
+    @property
+    def name(self):
+        """
+        The name of the document.
+
+        :getter: Returns this document's name
+        :setter: Sets this document's name
+        :type: string
+        """
+        return self._name
+
+*****************************************************
+Private methods
+*****************************************************
+
+You can safely ignore docstring for private methods, such as methods started with ``_``.
+
+*****************************************************
+args and kwargs
+*****************************************************
+
+Each parameter in the signature must be documented, including ``*args`` and ``**kwargs``, but not ``self`` or ``cls``.

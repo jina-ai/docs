@@ -1,55 +1,58 @@
 Welcome to Jina!
 ================
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Get Started
+Jina is a deep learning-powered search framework for building cross-/multi-modal search systems (e.g. text, images, video, audio) in the cloud.
 
-   chapters/install/os/index
-   chapters/helloworld/index
-   chapters/101/index
-   chapters/flow/index
-   chapters/io/index
-   chapters/cli/exit
-   chapters/project-guide/project-guide
+------------
 
 
-.. toctree::
-   :maxdepth: 1
-   :caption: API Reference
+Documentation types
+**********************
 
-   chapters/cli/index
-   api/jina
-   chapters/yaml/index
-   chapters/proto/index
+Each of the four Jina products has the following documentation types.
+
+- **Introduction**: New to a Jina product? Check out the Introduction pages. They contain an introduction to the main concepts and links to additional tutorial.
+- **Developer Guides**: Provides hands-on tutorials and in-depth information on features and implementations usecases.
+- **API References**: Contains a detailed description of the product APIs. The reference describes how the methods work and which parameters can be used.
+
+
+------------
+
+Table of content
+**********************
 
 .. toctree::
    :maxdepth: 1
-   :caption: Advanced Usage
+   :caption: Jina Core
 
-   chapters/traversal/index
-   chapters/flow/pattern
-   chapters/cross-multi-modality/index
-   chapters/hub/index
-   chapters/remote/index
-   chapters/logging/index
-   chapters/dashboard/index
-   chapters/simple_exec
-   chapters/restapi/index
-   chapters/envs
-   chapters/prevent_duplicate_indexing/index
-   chapters/crud/index
-   chapters/optimization/index
+   chapters/core/introduction/index
+   chapters/core/guides/index
+   chapters/core/api_references/index
 
 .. toctree::
    :maxdepth: 1
-   :caption: Extensions
+   :caption: Jina Dashboard
 
-   chapters/extend/executor
-   chapters/extend/mwu
-   chapters/extend/driver
-   chapters/hub/publish-your-pod-image
-   chapters/api_schema
+   chapters/dashboard/introduction/index
+   chapters/dashboard/guides/index
+   chapters/dashboard/api_references/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Jina Hub
+
+   chapters/hub/introduction/index
+   chapters/hub/guides/index
+   chapters/hub/api_references/index
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Jina Box
+
+   chapters/box/introduction/index
+   chapters/box/guides/index
+   chapters/box/api_references/index
 
 .. toctree::
    :maxdepth: 1

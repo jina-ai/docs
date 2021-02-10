@@ -1,6 +1,6 @@
-## Jinabox
+## Introduction
 
-##### Jinabox is a lightweight, customizable front end for searching text, images, videos, audio or any kind of data with a Jina backend.
+###### Jinabox is a lightweight, customizable front end for searching text, images, videos, audio or any kind of data with a Jina backend.
 
 Ready to learn Jina? Read our [101 tutorials](../101/index.md).
 
@@ -8,27 +8,27 @@ Ready to learn Jina? Read our [101 tutorials](../101/index.md).
 ![jina box](jinabox.gif)
 
 
-### Features
+#### Features
 
 - Easy-to-use web component for Jina search backend
 - Users can drag and drop multi-modal data as search queries
 - Visualize search results in a dropdown list or separate container
 - Highly customizable
 
-### Before you start
+#### Before you start
 
 Jinabox is a frontend for Jina. You will need to spin up a Jina backend to get search results. Based on what you want to search, run one of our example Jina backends:
 
 - [Pokedex](https://github.com/jina-ai/examples/tree/master/pokedex-with-bit) (real image data): `docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.bitsearch-pokedex search`
 - [Southpark](https://github.com/jina-ai/examples/tree/master/southpark-search) (real text data): `docker run -p 45678:45678 jinaai/hub.app.distilbert-southpark`
 - [MP4 mock](https://github.com/jina-ai/examples/tree/master/io-mock-app) (placeholder video data): `docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.iomock.mp4 search`
-- [Wav mock](https://github.com/jina-ai/examples/tree/master/io-mock-app) (placeholder audio data): `docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.iomock.sound search` 
-### Open jinabox.js in your Browser
+- [Wav mock](https://github.com/jina-ai/examples/tree/master/io-mock-app) (placeholder audio data): `docker run -p 65481:65481 -e "JINA_PORT=65481" jinaai/hub.app.iomock.sound search`
+#### Open jinabox.js in your Browser
 
 Just go to https://jina.ai/jinabox.js/ in your browser to open up the search interface.
 
 
-### Set Server Endpoint
+#### Set Server Endpoint
 
 Based on the Docker port you are exposing (i.e. 65481 or 45678 in above Docker images), set jinabox's server endpoint to:
 
@@ -37,21 +37,21 @@ Based on the Docker port you are exposing (i.e. 65481 or 45678 in above Docker i
 
 ![server_endpoint](server_endpoint.png)
 
-### Start Searching!
+#### Start Searching!
 
 Drag and drop images, video, or audio, or type in text to search.
 
 ![jina box_search](jinabox_search.gif)
 
 
-## Jinabox in your Project
+### Jinabox in your Project
 
 This is how you can add Jinabox to your existing web project.
 
-### Jinabox on [GitHub](https://github.com/jina-ai/jinabox.js/)
+#### Jinabox on [GitHub](https://github.com/jina-ai/jinabox.js/)
 
 
-### Installation via package manager
+#### Installation via package manager
 
     npm install jinabox
 
@@ -60,11 +60,11 @@ or
     yarn add jinabox
 
 
-### Use Jinabox via Script Tag
+#### Use Jinabox via Script Tag
 
 In HTML, include the minified script:
 
-    
+
     <script src="https://unpkg.com/jinabox"></script>
     <script>
         jb = window.JinaBox
@@ -74,14 +74,14 @@ In HTML, include the minified script:
 Then create a container where the searchbar/floater is to appear:
 
     <jina-searchbar></jina-searchbar>
-    
+
     <!--or-->
-    
+
     <jina-floater></jina-searchbar>
 
 Now you can drag anything from anywhere (local/browser/webpage) to it and conduct the search.
 
-### Supported MIME types
+#### Supported MIME types
 
 | MIME type                                                                       | Input (Query)              | Output (Result)                         | Description                                                                                                                                                                                                                  |
 | ---                                                                             | ---                        | ---                                     | ---                                                                                                                                                                                                                          |
@@ -92,7 +92,7 @@ Now you can drag anything from anywhere (local/browser/webpage) to it and conduc
 
 
 
-### Configuration
+#### Configuration
 
 
 Play with and preview jinabox configurations [here](https://jina.ai/jinabox.js/)
@@ -114,7 +114,7 @@ Play with and preview jinabox configurations [here](https://jina.ai/jinabox.js/)
 | `acceptText`               | `true`              | boolean | Allow search with text queries                                                                                                                              |
 | `acceptImage`              | `true`              | boolean | Allow search with image queries                                                                                                                             |
 
-### Expected Response Structure
+#### Expected Response Structure
 
 `jinabox.js` expects query responses to contain either of the following structures
 
@@ -165,16 +165,16 @@ or
 
 ```
 
-### Browser Support
+#### Browser Support
 
 Jinabox runs on modern browsers including Chrome, Firefox, Safari (desktop and mobile) and Opera. Certain features (like recording audio/video) are not available on all browsers and jinabox will make these features available accordingly.
 
-## Troubleshooting
+### Troubleshooting
 
-### SSL Error on Localhost
+#### SSL Error on Localhost
 
 Try `http://localhost:65481/api/search`, make sure to use `http` and `localhost`, instead of `0.0.0.0`.
 
-### Requests hanging or failing
+#### Requests hanging or failing
 
 Query your api with `curl` to ensure it is properly receiving, processing, and responding to requests. Ensure responses meet `jinabox` [expected response structure](#expected-response-structure).
