@@ -138,7 +138,7 @@ You can use multiple modalities as input for your search applications. For examp
 
 To implement cross-modality or multi-modality, visit the `dedicated section`_ in our documentation.
 
-.. _dedicated section: link to cross- multi- modality
+.. _dedicated section: https://docs.jina.ai/chapters/cross-multi-modality/index.html
 
 
 JinaD
@@ -146,8 +146,7 @@ JinaD
 
 `JinaD`_ (Jina Daemon) enables orchestration and management of Jina Flows in distributed search systems through an API endpoint.
 
-.. _JinaD: https://docs.jina.ai/chapters/parallel/index.html
-
+.. _JinaD: https://docs.jina.ai/chapters/remote/jinad.html
 
 
 Jina Suite
