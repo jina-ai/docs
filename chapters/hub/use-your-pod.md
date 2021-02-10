@@ -16,7 +16,7 @@ One can mount a host path to the container via `--volumes` or `-v`. For example,
 
 ```bash
 # assuming $pwd is the root dir of this repo 
-docker run --rm -v $(pwd)/hub/example/mwu_encoder_ext.yml:/ext.yml jinaai/hub.examples.mwu_encoder --uses /ext.yml
+docker run --rm -v $(pwd)/hub/example/mwu_encoder_ext.yml:/ext.yml jinaai/hub.examples.mwu_encoder
 ```
 
 ```text
@@ -62,7 +62,60 @@ from jina.flow import Flow
 
 f = (Flow()
         .add(name='my-encoder', image='jinaai/hub.examples.mwu_encoder',
-             volumes='./abc', uses='hub/examples/mwu-encoder/mwu_encoder_ext.yml', 
+             volumes='./abc', 
+             port_in=55555, port_out=55556)
+        .add(name='my-indexer', uses='indexer.yml'))
+```
+
+## How to change the default drivers of the Executor that is running inside the Docker image?
+
+Jina allows `uses_internal` as an argument while initialising Flow for this purpose. Pod images are docker images that normally have an 
+`entrypoint` that looks like this:
+
+`ENTRYPOINT ["jina", "pod", "--uses", "config.yml"]`
+
+This indicates that when the `pod` image is started, inside the docker container, a `Pod` is started with the preset `config.yml` containing
+the `yaml` instance of the specific `executor`. By using `uses_internal`, jina overrides the `entrypoint` forcing the `Pod` inside the `docker` container
+to use the `yaml` configuration in `uses_internal`. This allows to use the same image while changing parameters of the `Executor` or using different `Drivers 
+than the default ones.
+
+For instance, the `config.yml` for the 'jinaai/hub.examples.mwu_encoder' may look like this:
+
+```yaml
+!MWUEncoder
+with:
+  {}
+metas:
+  py_modules: 
+    - __init__.py
+```
+
+Imagine we want to have this `Executor` do encoding for [`chunks` of `chunks` of the `root` documents](https://docs.jina.ai/chapters/traversal/index.html). Then we may want to 
+change the default driver's settings and build a 'custom_mwu_encoder.yml' to be passed in `uses_internal` argument.
+
+```yaml
+!MWUEncoder
+with:
+  {}
+metas:
+  py_modules: 
+    - __init__.py
+requests:
+  on:
+    [SearchRequest, IndexRequest]:
+      - !EncodeDriver
+        with:
+          traversal_paths: ['cc']
+```
+
+Then, the Flow instantiation would look like:
+
+```python
+from jina.flow import Flow
+
+f = (Flow()
+        .add(name='my-encoder', image='jinaai/hub.examples.mwu_encoder',
+             volumes='./abc',  uses_internal='custom_mwu_encoder.yml',
              port_in=55555, port_out=55556)
         .add(name='my-indexer', uses='indexer.yml'))
 ```
