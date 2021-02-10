@@ -4,7 +4,7 @@ You can reproduce this benchmark yourself. You have to do the following:
 
 1. Configure and start the instances in AWS
 
-    You can try using another provider. Additionally, you can try running it in Docker Compose, on your local machine. However, the Annoy & Faiss indexers use their own Docker images and running a Docker within Docker is currently not supported.
+    You can try using another provider. Additionally, you can try running it in Docker Compose, on your local machine. However, the Annoy and Faiss indexers use their own Docker images and running a Docker within Docker is currently not supported.
 
 1. On all the machines, apart from the client: 
    
@@ -32,8 +32,8 @@ When the process is done, you will find the results in `output.txt`. Look for th
 
 1. Clone this repository from [here](https://github.com/jina-ai/cloud-ops/)
 1. `cd cloud-ops/stress-example`
-1. Build docker image `docker build -f debianx.Dockerfile -t stress_example_image_search $PATH_TO_JINA_CORE_REPO`
-1. Create docker compose containers `docker-compose -f docker-compose.yml --project-directory . up --build -d`
+1. Build Docker image `docker build -f debianx.Dockerfile -t stress_example_image_search $PATH_TO_JINA_CORE_REPO`
+1. Create Docker compose containers `docker-compose -f docker-compose.yml --project-directory . up --build -d`
 1. Proceed as normal with configuring the machines and the client, as above.
 1. Tear down containers: `docker-compose -f docker-compose.yml --project-directory . down`
 

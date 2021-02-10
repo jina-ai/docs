@@ -4,7 +4,7 @@
 
 ---
 
-#### Table of Contents
+#### Table of contents
 
 - [Infrastructure](#infrastructure)
 - [Datasets](#datasets)
@@ -23,15 +23,15 @@
 
 ## Infrastructure
 
-This example benchmark prioritizes a real-world scenario, where a user hosts Jina in the cloud. We use six machines in AWS, of instace size `c5.2xlarge` (8 vCPUs, 16GB RAM). We also add 100GB gp2 ssd. For the Vector Indexer machine we increased RAM to 32 GB.
+This example benchmark prioritizes a real-world scenario, where a user hosts Jina in the cloud. We use six machines in AWS, of instance size `c5.2xlarge` (8 vCPUs, 16 GB RAM). We also add a 100 GB ssd. For the vector indexer machine we increased RAM to 32 GB.
 
 The instances are split as follows:
 
 - **Client**: from this machine we create the Flows and issue the client requests (indexing and querying)
 - **Flow**: this machine hosts the `Gateway` to the `Flow`
-- **Encoder**: this machine processes the raw data (text or image) with the respective `Encoders`
-- **Indexer**: this machine hosts the `Indexers`
-- **Ranker**: this machine hosts the `Redis` servers and the `Rankers`
+- **Encoder**: this machine processes the raw data (text or image) with the respective encoders
+- **Indexer**: this machine hosts the indexers
+- **Ranker**: this machine hosts the `Redis` servers and the rankers
 
 ## Datasets
 
@@ -45,17 +45,17 @@ The first scenario simulates an image search application. Images are randomly ge
 
 ![Image Index Flow](image_index_flow.png)
 
-We use the `mobilenet_v2` `Encoder` with the `ImageTorchEncoder`.
+We use the `mobilenet_v2` encoder with the `ImageTorchEncoder`.
 
 At query time, the Flow looks like this:
 
 ![Image Query Flow](image_query_flow.png)
 
-In the image search scenario, there is no `Segmentation` and ranking. The results are returned according to the `distance` in embedding space returned by the `VectorIndexers`. 
+In the image search scenario there is no segmentation and ranking. The results are returned according to the `distance` in embedding space returned by the `VectorIndexers`. 
 
 ### Text search
 
-The text search topology is similar to the one above, but with a `Segmenter` (`Sentencizer`) and a `Ranker` (`SimpleAggregateRanker`). This means we are indexing on the chunk level of a `Document`. 
+The text search topology is similar to the one above, but with a segmenter (`Sentencizer`) and a ranker (`SimpleAggregateRanker`). This means we are indexing on the chunk level of a `Document`. 
 
 The full indexing Flow can be seen below:
 
@@ -67,18 +67,18 @@ The full search Flow can be seen below:
 
 ## Configuration
 
-The configuration parameters of this experiment can be found in the `.env` file, whose values are set as environment variables and changed in the `flow` and `pod` yamls.
+The configuration parameters of this experiment can be found in the `.env` file. These values are set as environment variables and replaced in the YAML files, configuring the flow and the pods.
 
 The parameters are organized in 4 groups:
 
 - Infrastructure parameters: Configure what the different machines are.
-- Sharding Parameters: Configure the parallelization and sharding of different components
-- Functional/Indexers parameters: Configure the functional parameters that can affect the performance of the search
+- Sharding parameters: Configure the parallelization and sharding of different components
+- Functional/indexers parameters: Configure the functional parameters that can affect the performance of the search
 - Client parameters: Configure how the client connects to the Flow
 
 ### Sharding and scheduling parameters
 
-Jina allows for parallelization of data processing. You can read an overview of these options [here](https://docs.jina.ai/chapters/parallel/index.html). We use these to parallelize the various `Pods`. On the same topic, we also configure the `scheduling` strategy.
+Jina allows for parallelization of data processing. You can read an overview of these options [here](https://docs.jina.ai/chapters/parallel/index.html). We use these to parallelize the various Pods. On the same topic, we also configure the `scheduling` strategy.
 
 ### Functional/Indexers parameter
 
