@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.drivers &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -317,6 +317,7 @@
 <span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAMLCompatible</span>
 <span class="kn">from</span> <span class="nn">..types.querylang</span> <span class="kn">import</span> <span class="n">QueryLang</span>
 
+<span class="c1"># noinspection PyUnreachableCode</span>
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="c1"># fix type-hint complain for sphinx and flake</span>
     <span class="kn">from</span> <span class="nn">..peapods.runtimes.zmq.zed</span> <span class="kn">import</span> <span class="n">ZEDRuntime</span>
@@ -329,10 +330,14 @@
 
 
 <div class="viewcode-block" id="store_init_kwargs"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.store_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">store_init_kwargs</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Mark the args and kwargs of :func:`__init__` later to be stored via :func:`save_config` in YAML&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Mark the args and kwargs of :func:`__init__` later to be stored via :func:`save_config` in YAML</span>
+
+<span class="sd">    :param func: the Callable to wrap</span>
+<span class="sd">    :return: the wrapped Callable</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s1">&#39;__init__&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s1">&#39;this decorator should only be used on __init__ method of a driver&#39;</span>
@@ -363,7 +368,7 @@
         <span class="n">f</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span>
 
-    <span class="k">return</span> <span class="n">arg_wrapper</span></div>
+    <span class="k">return</span> <span class="n">_arg_wrapper</span></div>
 
 
 <div class="viewcode-block" id="QuerySetReader"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.QuerySetReader">[docs]</a><span class="k">class</span> <span class="nc">QuerySetReader</span><span class="p">:</span>
@@ -452,15 +457,16 @@
 
 <span class="sd">    A :class:`BaseDriver` needs to be :attr:`attached` to a :class:`jina.peapods.runtimes.zmq.zed.ZEDRuntime` before</span>
 <span class="sd">    using. This is done by :func:`attach`. Note that a deserialized :class:`BaseDriver` from file is always unattached.</span>
+
+<span class="sd">    :param priority: the priority of its default arg values (hardcoded in Python). If the</span>
+<span class="sd">         received ``QueryLang`` has a higher priority, it will override the hardcoded value</span>
+<span class="sd">    :param *args: not used (kept to maintain interface)</span>
+<span class="sd">    :param **kwargs: not used (kept to maintain interface)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">store_args_kwargs</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1">#: set this to ``True`` to save ``args`` (in a list) and ``kwargs`` (in a map) in YAML config</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param priority: the priority of its default arg values (hardcoded in Python). If the</span>
-<span class="sd">             received ``QueryLang`` has a higher priority, it will override the hardcoded value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attached</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># : represent if this driver is attached to a</span>
         <span class="c1"># :class:`jina.peapods.runtimes.zmq.zed.ZEDRuntime` (&amp; :class:`jina.executors.BaseExecutor`)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: Optional[&#39;ZEDRuntime&#39;]</span>
@@ -469,7 +475,9 @@
 <div class="viewcode-block" id="BaseDriver.attach"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseDriver.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="s1">&#39;ZEDRuntime&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Attach this driver to a :class:`jina.peapods.runtimes.zmq.zed.ZEDRuntime`</span>
 
-<span class="sd">        :param runtime: the pea to be attached.</span>
+<span class="sd">        :param runtime: the pea to be attached</span>
+<span class="sd">        :param *args: not used (kept to maintain interface)</span>
+<span class="sd">        :param **kwargs: not used (kept to maintain interface)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span> <span class="o">=</span> <span class="n">runtime</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attached</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -539,6 +547,7 @@
 <span class="sd">        Unlike `Executor`, driver is stateless.</span>
 
 <span class="sd">        Therefore, on every save, it creates a new &amp; empty driver object and save it.</span>
+<span class="sd">        :return: the state in dict form</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="p">)</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
@@ -546,10 +555,12 @@
 
 
 <div class="viewcode-block" id="BaseRecursiveDriver"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseRecursiveDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRecursiveDriver</span><span class="p">(</span><span class="n">BaseDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A Driver to traverse a set of Documents with a specific path.</span>
+
+<span class="sd">    :param traversal_paths: The describes the leaves of the document tree on which _apply_all are called</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param traversal_paths: The describes the leaves of the document tree on which _apply_all are called</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">traversal_paths</span><span class="p">]</span>
 
@@ -577,6 +588,8 @@
 <span class="sd">        :param docs: a list of :class:`jina.Document` objects to work on; they could come from ``matches``/``chunks``.</span>
 <span class="sd">        :param context_doc: the owner of ``docs``</span>
 <span class="sd">        :param field: where ``docs`` comes from, either ``matches`` or ``chunks``</span>
+<span class="sd">        :param *args: *args</span>
+<span class="sd">        :param **kwargs: **kwargs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -626,6 +639,8 @@
 
 <span class="sd">        :param executor: the name of the sub-executor, only necessary when :class:`jina.executors.compound.CompoundExecutor` is used</span>
 <span class="sd">        :param method: the function name of the executor that the driver feeds to</span>
+<span class="sd">        :param *args: *args for super</span>
+<span class="sd">        :param **kwargs: **kwargs for super</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span> <span class="o">=</span> <span class="n">executor</span>
@@ -635,12 +650,15 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;AnyExecutor&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;the executor that attached &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;the executor that to which the instance is attached&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exec_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;the function of :func:`jina.executors.BaseExecutor` to call &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;the function of :func:`jina.executors.BaseExecutor` to call</span>
+
+<span class="sd">        :return: the Callable to execute in the driver</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">is_error</span>
             <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">on_error_strategy</span> <span class="o">&lt;</span> <span class="n">OnErrorStrategy</span><span class="o">.</span><span class="n">SKIP_EXECUTOR</span>
@@ -650,7 +668,12 @@
             <span class="k">return</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="BaseExecutableDriver.attach"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseExecutableDriver.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="s1">&#39;AnyExecutor&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Attach the driver to a :class:`jina.executors.BaseExecutor`&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Attach the driver to a :class:`jina.executors.BaseExecutor`</span>
+
+<span class="sd">        :param executor: the executor to which we attach</span>
+<span class="sd">        :param *args: *args for super().attach()</span>
+<span class="sd">        :param **kwargs: **kwargs for super().attach()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">CompoundExecutor</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span> <span class="ow">in</span> <span class="n">executor</span><span class="p">:</span>
@@ -681,7 +704,10 @@
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Do not save the executor and executor function, as it would be cross-referencing and unserializable.</span>
-<span class="sd">        In other words, a deserialized :class:`BaseExecutableDriver` from file is always unattached.&quot;&quot;&quot;</span>
+<span class="sd">        In other words, a deserialized :class:`BaseExecutableDriver` from file is always unattached.</span>
+
+<span class="sd">        :return: dictionary of state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
         <span class="k">if</span> <span class="s1">&#39;_exec&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_exec&#39;</span><span class="p">]</span>
@@ -820,7 +846,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

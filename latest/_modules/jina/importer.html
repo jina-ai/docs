@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.importer &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.importer &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -311,16 +311,13 @@
                    <span class="n">show_import_table</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                    <span class="n">import_once</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Import all or selected executors into the runtime. This is called when Jina is first imported for registering the YAML</span>
-<span class="sd">    constructor beforehand. It can be also used to import third-part or external executors.</span>
+<span class="sd">    Import all or selected executors into the runtime. This is called when Jina is first imported for registering the YAML constructor beforehand. It can be also used to import third-part or external executors.</span>
 
 <span class="sd">    :param namespace: the namespace to import</span>
 <span class="sd">    :param show_import_table: show the import result as a table</span>
 <span class="sd">    :param import_once: import everything only once, to avoid repeated import</span>
-
 <span class="sd">    :return: the dependency tree of the imported classes under the `namespace`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">_namespace2type</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;jina.executors&#39;</span><span class="p">:</span> <span class="s1">&#39;ExecutorType&#39;</span><span class="p">,</span>
         <span class="s1">&#39;jina.drivers&#39;</span><span class="p">:</span> <span class="s1">&#39;DriverType&#39;</span><span class="p">,</span>
@@ -365,21 +362,17 @@
 
 <div class="viewcode-block" id="ImportExtensions"><a class="viewcode-back" href="../../api/jina.importer.html#jina.importer.ImportExtensions">[docs]</a><span class="k">class</span> <span class="nc">ImportExtensions</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A context manager for wrapping extension import and fallback.</span>
-<span class="sd">    It guides the user to pip install correct package by looking up</span>
-<span class="sd">    extra-requirements.txt</span>
+<span class="sd">    A context manager for wrapping extension import and fallback. It guides the user to pip install correct package by looking up extra-requirements.txt.</span>
+
+<span class="sd">    :param required: set to True if you want to raise the ModuleNotFound error</span>
+<span class="sd">    :param logger: when not given, built-in warnings.warn will be used</span>
+<span class="sd">    :param help_text: the help text followed after</span>
+<span class="sd">    :param pkg_name: the package name to find in extra_requirements.txt, when not given the ModuleNotFound exec_val will be used as the best guess</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">help_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">pkg_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param required: set to True if you want to raise the ModuleNotFound error</span>
-<span class="sd">        :param logger: when not given, built-in warnings.warn will be used</span>
-<span class="sd">        :param help_text: the help text followed after</span>
-<span class="sd">        :param pkg_name: the package name to find in extra_requirements.txt, when not given</span>
-<span class="sd">                the ModuleNotFound exec_val will be used as the best guess</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_required</span> <span class="o">=</span> <span class="n">required</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_help_text</span> <span class="o">=</span> <span class="n">help_text</span>
@@ -462,6 +455,7 @@
 
 
 <div class="viewcode-block" id="PathImporter"><a class="viewcode-back" href="../../api/jina.importer.html#jina.importer.PathImporter">[docs]</a><span class="k">class</span> <span class="nc">PathImporter</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The class to import modules from paths.&quot;&quot;&quot;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_module_name</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">use_abspath</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">use_basename</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -473,6 +467,12 @@
 
 <div class="viewcode-block" id="PathImporter.add_modules"><a class="viewcode-back" href="../../api/jina.importer.html#jina.importer.PathImporter.add_modules">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">add_modules</span><span class="p">(</span><span class="o">*</span><span class="n">paths</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Import modules from paths.</span>
+
+<span class="sd">        :param paths: Paths of the modules.</span>
+<span class="sd">        :return: The target module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;cannot import module from </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">, file not exist&#39;</span><span class="p">)</span>
@@ -783,7 +783,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

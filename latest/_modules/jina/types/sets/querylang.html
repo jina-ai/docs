@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.sets.querylang &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.types.sets.querylang &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -315,17 +315,23 @@
 
 
 <div class="viewcode-block" id="QueryLangSet"><a class="viewcode-back" href="../../../../api/jina.types.sets.querylang.html#jina.QueryLangSet">[docs]</a><span class="k">class</span> <span class="nc">QueryLangSet</span><span class="p">(</span><span class="n">MutableSequence</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;:class:`QueryLangSet` is a mutable sequence of :class:`QueryLang`,</span>
-<span class="sd">    it gives an efficient view of a list of Document. One can iterate over it like</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :class:`QueryLangSet` is a mutable sequence of :class:`QueryLang`.</span>
+<span class="sd">    It gives an efficient view of a list of Document. One can iterate over it like</span>
 <span class="sd">    a generator but ALSO modify it, count it, get item.</span>
+
+<span class="sd">    :param querylang_protos: A list of :class:`QueryLangProto`</span>
+<span class="sd">    :type querylang_protos: :class:`RepeatedCompositeContainer`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">querylang_protos</span><span class="p">:</span> <span class="s1">&#39;RepeatedContainer&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_querylangs_proto</span> <span class="o">=</span> <span class="n">querylang_protos</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_querylangs_map</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="QueryLangSet.insert"><a class="viewcode-back" href="../../../../api/jina.types.sets.querylang.html#jina.QueryLangSet.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ql</span><span class="p">:</span> <span class="s1">&#39;QueryLang&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Insert :param:`ql` at :param:`index` into `_querylangs_proto`.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_querylangs_proto</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">ql</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;QueryLang&#39;</span><span class="p">):</span>
@@ -355,6 +361,7 @@
             <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;do not support this index </span><span class="si">{</span><span class="n">item</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="QueryLangSet.append"><a class="viewcode-back" href="../../../../api/jina.types.sets.querylang.html#jina.QueryLangSet.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;AcceptQueryLangType&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Append :param:`value` in `_querylangs_proto`.&quot;&quot;&quot;</span>
         <span class="n">q_pb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_querylangs_proto</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
             <span class="n">q_pb</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">QueryLang</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span>
@@ -370,9 +377,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="QueryLangSet.clear"><a class="viewcode-back" href="../../../../api/jina.types.sets.querylang.html#jina.QueryLangSet.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear `_querylangs_proto` set.&quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_querylangs_proto</span><span class="p">[:]</span></div>
 
 <div class="viewcode-block" id="QueryLangSet.reverse"><a class="viewcode-back" href="../../../../api/jina.types.sets.querylang.html#jina.QueryLangSet.reverse">[docs]</a>    <span class="k">def</span> <span class="nf">reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reverse order of `_querylangs_proto` set.&quot;&quot;&quot;</span>
         <span class="n">size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_querylangs_proto</span><span class="p">)</span>
         <span class="n">hi_idx</span> <span class="o">=</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)):</span>
@@ -383,9 +392,7 @@
             <span class="n">hi_idx</span> <span class="o">-=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="QueryLangSet.build"><a class="viewcode-back" href="../../../../api/jina.types.sets.querylang.html#jina.QueryLangSet.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Build a name to QueryLang mapping so one can later index a QueryLang using</span>
-<span class="sd">        name as string key</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Build a name to QueryLang mapping so one can later index a QueryLang using name as string key.&quot;&quot;&quot;</span>
         <span class="c1"># TODO This is a temp fix, QueryLangProto do not have an id field.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_querylangs_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">q</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_querylangs_proto</span><span class="p">}</span></div></div>
 </pre></div>
@@ -520,7 +527,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

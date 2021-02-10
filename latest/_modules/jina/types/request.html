@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.request &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.types.request &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -333,12 +333,15 @@
 <span class="sd">    It overrides :meth:`__getattr__` to provide the same get/set interface as an</span>
 <span class="sd">    :class:`jina_pb2.RequestProto` object.</span>
 
+<span class="sd">    :param request: The request.</span>
+<span class="sd">    :param envelope: EnvelopeProto object.</span>
+<span class="sd">    :param copy: Copy the request if ``copy`` is True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.RequestProto&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">envelope</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;jina_pb2.EnvelopeProto&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-
+        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="p">()</span>  <span class="c1"># type: &#39;jina_pb2.RequestProto&#39;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -375,6 +378,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the request type, raise ``ValueError`` if request_type not set.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_type</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proto</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_type</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -386,12 +390,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">request_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return the request body type, when not set yet, return ``None``&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return the request body type, when not set yet, return ``None``.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request_type</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
 
 <div class="viewcode-block" id="Request.as_typed_request"><a class="viewcode-back" href="../../../api/jina.types.request.html#jina.Request.as_typed_request">[docs]</a>    <span class="k">def</span> <span class="nf">as_typed_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Change the request class according to the one_of value in ``body``&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Change the request class according to the one_of value in ``body``.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.train</span> <span class="kn">import</span> <span class="n">TrainRequest</span>
         <span class="kn">from</span> <span class="nn">.search</span> <span class="kn">import</span> <span class="n">SearchRequest</span>
         <span class="kn">from</span> <span class="nn">.control</span> <span class="kn">import</span> <span class="n">ControlRequest</span>
@@ -418,7 +422,7 @@
 
     <span class="nd">@request_type</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">request_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the type of this request, but keep the body empty&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set the type of this request, but keep the body empty.&quot;&quot;&quot;</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_body_type</span><span class="p">:</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proto</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">SetInParent</span><span class="p">()</span>
@@ -453,8 +457,8 @@
     <span class="k">def</span> <span class="nf">proto</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;jina_pb2.RequestProto&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cast ``self`` to a :class:`jina_pb2.RequestProto`. This will trigger</span>
-<span class="sd">         :attr:`is_used`. Laziness will be broken and serialization will be recomputed when calling</span>
-<span class="sd">         :meth:`SerializeToString`.</span>
+<span class="sd">        :attr:`is_used`. Laziness will be broken and serialization will be recomputed when calling</span>
+<span class="sd">        :meth:`SerializeToString`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">:</span>
             <span class="c1"># if request is already given while init</span>
@@ -485,24 +489,25 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QueryLangSet&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the queryset in :class:`QueryLangSet` type.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_used</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">QueryLangSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proto</span><span class="o">.</span><span class="n">queryset</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Request.as_response"><a class="viewcode-back" href="../../../api/jina.types.request.html#jina.Request.as_response">[docs]</a>    <span class="k">def</span> <span class="nf">as_response</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a weak reference of this object but as :class:`Response` object. It gives a more</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a weak reference of this object but as :class:`Response` object. It gives a more</span>
 <span class="sd">        consistent semantics on the client.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">base_cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
         <span class="n">base_cls_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">base_cls_name</span><span class="p">,</span> <span class="p">(</span><span class="n">base_cls</span><span class="p">,</span> <span class="n">Response</span><span class="p">),</span> <span class="p">{})</span></div></div>
 
 
 <div class="viewcode-block" id="Response"><a class="viewcode-back" href="../../../api/jina.types.request.html#jina.Response">[docs]</a><span class="k">class</span> <span class="nc">Response</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Response is the :class:`Request` object returns from the flow. Right now it shares the same representation as</span>
-<span class="sd">       :class:`Request`. At 0.8.12, :class:`Response` is a simple alias. But it does give a more consistent semantic on</span>
-<span class="sd">       the client API: send a :class:`Request` and receive a :class:`Response`.</span>
-
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Response is the :class:`Request` object returns from the flow. Right now it shares the same representation as</span>
+<span class="sd">    :class:`Request`. At 0.8.12, :class:`Response` is a simple alias. But it does give a more consistent semantic on</span>
+<span class="sd">    the client API: send a :class:`Request` and receive a :class:`Response`.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 </pre></div>
 
@@ -636,7 +641,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

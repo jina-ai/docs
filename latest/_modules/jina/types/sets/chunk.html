@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.sets.chunk &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.types.sets.chunk &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -300,14 +300,28 @@
 
 
 <div class="viewcode-block" id="ChunkSet"><a class="viewcode-back" href="../../../../api/jina.types.sets.chunk.html#jina.types.sets.chunk.ChunkSet">[docs]</a><span class="k">class</span> <span class="nc">ChunkSet</span><span class="p">(</span><span class="n">DocumentSet</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :class:`ChunkSet` inherits from :class:`DocumentSet`.</span>
+<span class="sd">    It&#39;s a subset of Documents.</span>
+
+<span class="sd">    :param docs_proto: Set of sub-documents (i.e chunks) of `reference_doc`</span>
+<span class="sd">    :type docs_proto: :class:`Document`</span>
+<span class="sd">    :param reference_doc: Reference :class:`Document` for the sub-documents</span>
+<span class="sd">    :type reference_doc: :class:`Document`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs_proto</span><span class="p">,</span> <span class="n">reference_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">docs_proto</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ref_doc</span> <span class="o">=</span> <span class="n">reference_doc</span>
 
 <div class="viewcode-block" id="ChunkSet.append"><a class="viewcode-back" href="../../../../api/jina.types.sets.chunk.html#jina.types.sets.chunk.ChunkSet.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">document</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add a sub-document (i.e chunk) to the current Document</span>
+        <span class="sd">&quot;&quot;&quot;Add a sub-document (i.e chunk) to the current Document.</span>
 
+<span class="sd">        :param document: Sub-document to be appended</span>
+<span class="sd">        :type document: :class:`Document`</span>
 <span class="sd">        :return: the newly added sub-document in :class:`Document` view</span>
+<span class="sd">        :rtype: :class:`Document`</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            Comparing to :attr:`DocumentSet.append()`, this method adds more safeguard to</span>
@@ -330,17 +344,17 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">parent_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the document that this :class:`ChunkSet` belonging to&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the document that :class:`ChunkSet` belongs to.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_doc</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">granularity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The granularity of all document in this set &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get granularity of all document in this set.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_doc</span><span class="o">.</span><span class="n">granularity</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The adjacency of all document in this set &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get adjacency of all document in this set.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_doc</span><span class="o">.</span><span class="n">adjacency</span></div>
 </pre></div>
 
@@ -474,7 +488,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.docker.checker &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.docker.checker &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -293,13 +293,15 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.docker.checker</h1><div class="highlight"><pre>
-<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Module for validation functions.&quot;&quot;&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">unicodedata</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_stream</span>
 
@@ -315,68 +317,137 @@
 <span class="n">excepts_regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\b(error|failed|FAILURES)\b&#39;</span>
 
 
-<div class="viewcode-block" id="check_registry"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_registry">[docs]</a><span class="k">def</span> <span class="nf">check_registry</span><span class="p">(</span><span class="n">registry</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">repo_prefix</span><span class="p">):</span>
+<div class="viewcode-block" id="check_registry"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_registry">[docs]</a><span class="k">def</span> <span class="nf">check_registry</span><span class="p">(</span><span class="n">registry</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">repo_prefix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check registry image is valid within this registry.</span>
+
+<span class="sd">    :param registry: the registry URL</span>
+<span class="sd">    :param name: the name of the image</span>
+<span class="sd">    :param repo_prefix: the prefix of the repo</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">registry</span> <span class="o">==</span> <span class="s1">&#39;https://index.docker.io/v1/&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">repo_prefix</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;default registry only support image named with &quot;</span><span class="si">{</span><span class="n">repo_prefix</span><span class="si">}</span><span class="s1">&quot;, yours: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="check_name"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_name">[docs]</a><span class="k">def</span> <span class="nf">check_name</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">name_regex</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1"> is not a valid name, it should match with </span><span class="si">{</span><span class="n">name_regex</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="check_name"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_name">[docs]</a><span class="k">def</span> <span class="nf">check_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the name is valid against the regex rule.</span>
+
+<span class="sd">    :param name: the name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">name_regex</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> is not a valid name, it should match with </span><span class="si">{</span><span class="n">name_regex</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="check_version"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_version">[docs]</a><span class="k">def</span> <span class="nf">check_version</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">sver_regex</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1"> is not a valid semantic version number, see http://semver.org/&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="check_version"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_version">[docs]</a><span class="k">def</span> <span class="nf">check_version</span><span class="p">(</span><span class="n">version</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the version against the regex.</span>
+<span class="sd">    </span>
+<span class="sd">    :param version: the version </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">sver_regex</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1"> is not a valid semantic version number, see http://semver.org/&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="check_image_name"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_image_name">[docs]</a><span class="k">def</span> <span class="nf">check_image_name</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">image_tag_regex</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1"> is not a valid image name for a Jina Hub image, it should match with </span><span class="si">{</span><span class="n">image_tag_regex</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="check_image_name"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_image_name">[docs]</a><span class="k">def</span> <span class="nf">check_image_name</span><span class="p">(</span><span class="n">image_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the image name against the image tag regex.</span>
+<span class="sd">    </span>
+<span class="sd">    :param image_name: the name of the image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">image_tag_regex</span><span class="p">,</span> <span class="n">image_name</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">image_name</span><span class="si">}</span><span class="s1"> is not a valid image name for a Jina Hub image, it should match with </span><span class="si">{</span><span class="n">image_tag_regex</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="check_platform"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_platform">[docs]</a><span class="k">def</span> <span class="nf">check_platform</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="check_platform"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_platform">[docs]</a><span class="k">def</span> <span class="nf">check_platform</span><span class="p">(</span><span class="n">platform_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the platform against the list of supported platforms.</span>
+
+<span class="sd">    :param platform_name: the name of the platform</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">resource_stream</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;hub-builder&#39;</span><span class="p">,</span> <span class="s1">&#39;platforms.yml&#39;</span><span class="p">)))</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">platforms</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">platform_name</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">ss</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">platforms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;platform </span><span class="si">{</span><span class="n">ss</span><span class="si">}</span><span class="s1"> is not supported, should be one of </span><span class="si">{</span><span class="n">platforms</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="check_license"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_license">[docs]</a><span class="k">def</span> <span class="nf">check_license</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="check_license"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_license">[docs]</a><span class="k">def</span> <span class="nf">check_license</span><span class="p">(</span><span class="n">lic</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the license is a valid OS supported license.</span>
+
+<span class="sd">    :param lic: the license</span>
+<span class="sd">    :return: the full name of the license</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">resource_stream</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;hub-builder&#39;</span><span class="p">,</span> <span class="s1">&#39;osi-approved.yml&#39;</span><span class="p">)))</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">approved</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">approved</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;license </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1"> is not an OSI-approved license </span><span class="si">{</span><span class="n">approved</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">approved</span><span class="p">[</span><span class="n">s</span><span class="p">]</span></div>
+    <span class="k">if</span> <span class="n">lic</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">approved</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;license </span><span class="si">{</span><span class="n">lic</span><span class="si">}</span><span class="s1"> is not an OSI-approved license </span><span class="si">{</span><span class="n">approved</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">approved</span><span class="p">[</span><span class="n">lic</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="check_image_type"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_image_type">[docs]</a><span class="k">def</span> <span class="nf">check_image_type</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="check_image_type"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.check_image_type">[docs]</a><span class="k">def</span> <span class="nf">check_image_type</span><span class="p">(</span><span class="n">image_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check the image type is valid.</span>
+
+<span class="sd">    :param image_type: the type of image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">allowed</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pod&#39;</span><span class="p">,</span> <span class="s1">&#39;flow&#39;</span><span class="p">,</span> <span class="s1">&#39;app&#39;</span><span class="p">}</span>
-    <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;type </span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s1"> is not allowed, should be one of </span><span class="si">{</span><span class="n">allowed</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">image_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;type </span><span class="si">{</span><span class="n">image_type</span><span class="si">}</span><span class="s1"> is not allowed, should be one of </span><span class="si">{</span><span class="n">allowed</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="remove_control_characters"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.remove_control_characters">[docs]</a><span class="k">def</span> <span class="nf">remove_control_characters</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="remove_control_characters"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.remove_control_characters">[docs]</a><span class="k">def</span> <span class="nf">remove_control_characters</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove control characters.</span>
+
+<span class="sd">    :param s: the string to check</span>
+<span class="sd">    :return: the cleaned string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ch</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">category</span><span class="p">(</span><span class="n">ch</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="safe_url_name"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.safe_url_name">[docs]</a><span class="k">def</span> <span class="nf">safe_url_name</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;__&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span></div>
+<div class="viewcode-block" id="safe_url_name"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.safe_url_name">[docs]</a><span class="k">def</span> <span class="nf">safe_url_name</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clean the url.</span>
+<span class="sd">    </span>
+<span class="sd">    :param url: the url input</span>
+<span class="sd">    :return: the sanitized url</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;__&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_exist_path"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.get_exist_path">[docs]</a><span class="k">def</span> <span class="nf">get_exist_path</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<div class="viewcode-block" id="get_exist_path"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.get_exist_path">[docs]</a><span class="k">def</span> <span class="nf">get_exist_path</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if path exists within the directory.</span>
+
+<span class="sd">    :param directory: the directory within which to check</span>
+<span class="sd">    :param filename: the filename which we check</span>
+<span class="sd">    :return: if exists, the full path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
 
-<div class="viewcode-block" id="get_summary_path"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.get_summary_path">[docs]</a><span class="k">def</span> <span class="nf">get_summary_path</span><span class="p">(</span><span class="n">image_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<div class="viewcode-block" id="get_summary_path"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.get_summary_path">[docs]</a><span class="k">def</span> <span class="nf">get_summary_path</span><span class="p">(</span><span class="n">image_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get full path to summary.</span>
+
+<span class="sd">    :param image_name: the name of the image</span>
+<span class="sd">    :return: the full path to the summary JSON file of the image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">gettempdir</span><span class="p">(),</span> <span class="n">image_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_summary.json&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_error_message"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.is_error_message">[docs]</a><span class="k">def</span> <span class="nf">is_error_message</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="is_error_message"><a class="viewcode-back" href="../../../api/jina.docker.checker.html#jina.docker.checker.is_error_message">[docs]</a><span class="k">def</span> <span class="nf">is_error_message</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if the string matches an exception regex.</span>
+
+<span class="sd">    :param s: the string to check</span>
+<span class="sd">    :return: whether or not it matches</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">excepts_regex</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span> <span class="o">|</span> <span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 </pre></div>
 
@@ -510,7 +581,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

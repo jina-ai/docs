@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.helper &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.helper &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -86,7 +86,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -201,16 +201,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -321,22 +321,41 @@
 <dl class="function">
 <dt id="jina.helper.deprecated_alias">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">deprecated_alias</code><span class="sig-paren">(</span><em class="sig-param">**aliases</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#deprecated_alias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.deprecated_alias" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Usage, kwargs with key as the deprecated arg name and value be a tuple,</dt><dd><p>(new_name, deprecate_level). With level 0 means warning, level 1 means exception</p>
-</dd>
+<dd><p>Usage, kwargs with key as the deprecated arg name and value be a tuple, (new_name, deprecate_level).</p>
+<p>With level 0 means warning, level 1 means exception.</p>
+<dl class="simple">
+<dt>For example:</dt><dd></dd>
 </dl>
-<p>Example:</p>
-<blockquote>
-<div><p>&#64;deprecated_alias(buffer=(‘input_fn’, 0), callback=(‘on_done’, 1), output_fn=(‘on_done’, 1))</p>
-</div></blockquote>
 </dd></dl>
 
 <dl class="function">
 <dt id="jina.helper.batch_iterator">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">batch_iterator</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">batch_size</em>, <em class="sig-param">axis=0</em>, <em class="sig-param">yield_slice=False</em>, <em class="sig-param">yield_dict=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#batch_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.batch_iterator" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+<dd><p>Get an iterator of batches of data.</p>
+<p>For example:
+.. highlight:: python
+.. code-block:: python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>for batch in batch_iterator(data, batch_size, split_over_axis, yield_slice=yield_slice):</dt><dd><p># Do something with batch</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – Data source.</p></li>
+<li><p><strong>batch_size</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Size of one batch.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Determine which axis to iterate for np.ndarray data.</p></li>
+<li><p><strong>yield_slice</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Return tuple type of data if True else return np.ndarray type.</p></li>
+<li><p><strong>yield_dict</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Return dict type of data if True else return tuple type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An Iterator of batch data.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -344,9 +363,16 @@
 <dl class="function">
 <dt id="jina.helper.parse_arg">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">parse_arg</code><span class="sig-paren">(</span><em class="sig-param">v</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#parse_arg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.parse_arg" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]</p>
+<dd><p>Parse the arguments from string to <cite>Union[bool, int, str, list, float]</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The string of arguments</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The parsed arguments list.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -354,9 +380,13 @@
 <dl class="function">
 <dt id="jina.helper.random_port">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">random_port</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#random_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.random_port" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Get a random available port number from ‘49153’ to ‘65535’.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A random port.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -364,12 +394,7 @@
 <dl class="function">
 <dt id="jina.helper.random_identity">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">random_identity</code><span class="sig-paren">(</span><em class="sig-param">use_uuid1=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#random_identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.random_identity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate random UUID</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>use_uuid1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – use UUID1 instead of UUID4. This is the default Document ID generator.</p>
-</dd>
-</dl>
+<dd><p>Generate random UUID.</p>
 <dl>
 <dt>..note::</dt><dd><p>A MAC address or time-based ordering (UUID1) can afford increased database performance, since it’s less work
 to sort numbers closer-together than those distributed randomly (UUID4) (see here).</p>
@@ -378,8 +403,14 @@ explicitly stored.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>use_uuid1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – use UUID1 instead of UUID4. This is the default Document ID generator.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A random UUID.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -387,9 +418,16 @@ explicitly stored.</p>
 <dl class="function">
 <dt id="jina.helper.random_uuid">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">random_uuid</code><span class="sig-paren">(</span><em class="sig-param">use_uuid1=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#random_uuid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.random_uuid" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">UUID</span></code></p>
+<dd><p>Get a random UUID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>use_uuid1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Use UUID1 if True, else use UUID4.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">UUID</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A random UUID.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -397,9 +435,16 @@ explicitly stored.</p>
 <dl class="function">
 <dt id="jina.helper.expand_env_var">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">expand_env_var</code><span class="sig-paren">(</span><em class="sig-param">v</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#expand_env_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.expand_env_var" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]</p>
+<dd><p>Expand the environment variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>v</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – String of environment variables.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Parsed environment variables.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -407,27 +452,80 @@ explicitly stored.</p>
 <dl class="function">
 <dt id="jina.helper.is_url">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">is_url</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#is_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.is_url" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if the text is URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> – The target text.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if text is URL else False.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="function">
 <dt id="jina.helper.colored">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">colored</code><span class="sig-paren">(</span><em class="sig-param">text</em>, <em class="sig-param">color=None</em>, <em class="sig-param">on_color=None</em>, <em class="sig-param">attrs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#colored"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.colored" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dd><p>Give the text with color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The target text.</p></li>
+<li><p><strong>color</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The color of text. Chosen from the following.</p></li>
+</ul>
 </dd>
 </dl>
+<dl class="simple">
+<dt>{</dt><dd><p>‘grey’: 30,
+‘red’: 31,
+‘green’: 32,
+‘yellow’: 33,
+‘blue’: 34,
+‘magenta’: 35,
+‘cyan’: 36,
+‘white’: 37</p>
+</dd>
+</dl>
+<p>}
+:type on_color: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]
+:param on_color: The on_color of text. Chosen from the following.
+{</p>
+<blockquote>
+<div><p>‘on_grey’: 40,
+‘on_red’: 41,
+‘on_green’: 42,
+‘on_yellow’: 43,
+‘on_blue’: 44,
+‘on_magenta’: 45,
+‘on_cyan’: 46,
+‘on_white’: 47</p>
+</div></blockquote>
+<p>}
+:type attrs: <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]
+:param attrs: Attributes of color. Chosen from the following.
+{</p>
+<blockquote>
+<div><p>‘bold’: 1,
+‘dark’: 2,
+‘underline’: 4,
+‘blink’: 5,
+‘reverse’: 7,
+‘concealed’: 8</p>
+</div></blockquote>
+<p>}
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
+:return: Colored text.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="jina.helper.ArgNamespace">
 <em class="property">class </em><code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">ArgNamespace</code><a class="reference internal" href="../_modules/jina/helper.html#ArgNamespace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.ArgNamespace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Helper function for argparse.Namespace object</p>
+<p>Helper function for argparse.Namespace object.</p>
 <dl class="method">
 <dt id="jina.helper.ArgNamespace.kwargs2list">
 <em class="property">static </em><code class="sig-name descname">kwargs2list</code><span class="sig-paren">(</span><em class="sig-param">kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#ArgNamespace.kwargs2list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.ArgNamespace.kwargs2list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert dict to an argparse-friendly list</p>
+<dd><p>Convert dict to an argparse-friendly list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>kwargs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – dictionary of key-values to be converted</p>
@@ -441,7 +539,7 @@ explicitly stored.</p>
 <dl class="method">
 <dt id="jina.helper.ArgNamespace.kwargs2namespace">
 <em class="property">static </em><code class="sig-name descname">kwargs2namespace</code><span class="sig-paren">(</span><em class="sig-param">kwargs</em>, <em class="sig-param">parser</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#ArgNamespace.kwargs2namespace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.ArgNamespace.kwargs2namespace" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert dict to a namespace</p>
+<dd><p>Convert dict to a namespace.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -458,7 +556,7 @@ explicitly stored.</p>
 <dl class="method">
 <dt id="jina.helper.ArgNamespace.get_parsed_args">
 <em class="property">static </em><code class="sig-name descname">get_parsed_args</code><span class="sig-paren">(</span><em class="sig-param">kwargs</em>, <em class="sig-param">parser</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#ArgNamespace.get_parsed_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.ArgNamespace.get_parsed_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all parsed args info in a dict</p>
+<dd><p>Get all parsed args info in a dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -475,7 +573,7 @@ explicitly stored.</p>
 <dl class="method">
 <dt id="jina.helper.ArgNamespace.get_non_defaults_args">
 <em class="property">static </em><code class="sig-name descname">get_non_defaults_args</code><span class="sig-paren">(</span><em class="sig-param">args</em>, <em class="sig-param">parser</em>, <em class="sig-param">taboo=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#ArgNamespace.get_non_defaults_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.ArgNamespace.get_non_defaults_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get non-default args in a dict</p>
+<dd><p>Get non-default args in a dict.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -493,7 +591,7 @@ explicitly stored.</p>
 <dl class="method">
 <dt id="jina.helper.ArgNamespace.flatten_to_dict">
 <em class="property">static </em><code class="sig-name descname">flatten_to_dict</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#ArgNamespace.flatten_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.ArgNamespace.flatten_to_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>A helper function to convert argparse.Namespace to dict to be uploaded via REST</p>
+<dd><p>Convert argparse.Namespace to dict to be uploaded via REST.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>args</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Namespace</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Namespace</span></code>]) – namespace or dict or namespace to dict.</p>
@@ -509,9 +607,16 @@ explicitly stored.</p>
 <dl class="function">
 <dt id="jina.helper.is_valid_local_config_source">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">is_valid_local_config_source</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#is_valid_local_config_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.is_valid_local_config_source" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd><p>Check if the path is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Local file path.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if the path is valid else False.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -519,28 +624,65 @@ explicitly stored.</p>
 <dl class="function">
 <dt id="jina.helper.typename">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">typename</code><span class="sig-paren">(</span><em class="sig-param">obj</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#typename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.typename" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the typename of object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> – Target object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Typename of the obj.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="class">
 <dt id="jina.helper.cached_property">
 <em class="property">class </em><code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">cached_property</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#cached_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.cached_property" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The decorator to cache property of a class.</p>
+<p>Create the <a class="reference internal" href="#jina.helper.cached_property" title="jina.helper.cached_property"><code class="xref py py-class docutils literal notranslate"><span class="pre">cached_property</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> – Cached function.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="jina.helper.get_internal_ip">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">get_internal_ip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#get_internal_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.get_internal_ip" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the private IP address of the gateway for connecting from other machine in the same network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Private IP address.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="function">
 <dt id="jina.helper.get_public_ip">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">get_public_ip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#get_public_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.get_public_ip" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the public IP address of the gateway for connecting from other machine in the public network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Public IP address.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="function">
 <dt id="jina.helper.convert_tuple_to_list">
 <code class="sig-prename descclassname">jina.helper.</code><code class="sig-name descname">convert_tuple_to_list</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/helper.html#convert_tuple_to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.helper.convert_tuple_to_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Convert all the tuple type values from a dict to list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>d</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – Dict type of data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Converted dict with list type values.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="function">
 <dt id="jina.helper.run_async">
@@ -558,7 +700,7 @@ is running in the same thread.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>asyncio.run(func)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -707,7 +849,7 @@ is running in the same thread.</p>
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

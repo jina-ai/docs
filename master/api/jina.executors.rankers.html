@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.rankers &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.executors.rankers &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -86,7 +86,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -255,7 +255,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -396,26 +396,23 @@ as arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>match_idx</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – <p>a [N x 4] numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, column-wise:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">match_idx[:,</span> <span class="pre">0]</span></code>: <code class="docutils literal notranslate"><span class="pre">doc_id</span></code> of the matched chunks, integer</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">match_idx[:,</span> <span class="pre">1]</span></code>: <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the matched chunks, integer</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">match_idx[:,</span> <span class="pre">2]</span></code>: <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the query chunks, integer</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">match_idx[:,</span> <span class="pre">3]</span></code>: distance/metric/score between the query and matched chunks, float</p></li>
-</ul>
-</p></li>
-<li><p><strong>query_chunk_meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – the meta information of the query chunks, where the key is query chunks’ <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code>,
+<li><p><strong>match_idx</strong> (<em>np.ndarray.</em>) – A [N x 4] numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, column-wise:
+- <code class="docutils literal notranslate"><span class="pre">match_idx[:,</span> <span class="pre">0]</span></code>: <code class="docutils literal notranslate"><span class="pre">doc_id</span></code> of the matched chunks, integer
+- <code class="docutils literal notranslate"><span class="pre">match_idx[:,</span> <span class="pre">1]</span></code>: <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the matched chunks, integer
+- <code class="docutils literal notranslate"><span class="pre">match_idx[:,</span> <span class="pre">2]</span></code>: <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code> of the query chunks, integer
+- <code class="docutils literal notranslate"><span class="pre">match_idx[:,</span> <span class="pre">3]</span></code>: distance/metric/score between the query and matched chunks, float</p></li>
+<li><p><strong>query_chunk_meta</strong> (<em>Dict.</em>) – The meta information of the query chunks, where the key is query chunks’ <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code>,
 the value is extracted by the <code class="docutils literal notranslate"><span class="pre">required_keys</span></code>.</p></li>
-<li><p><strong>match_chunk_meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – the meta information of the matched chunks, where the key is matched chunks’
+<li><p><strong>match_chunk_meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – The meta information of the matched chunks, where the key is matched chunks’
 <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code>, the value is extracted by the <code class="docutils literal notranslate"><span class="pre">required_keys</span></code>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a [N x 2] numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, where the first column is the matched documents’ <code class="docutils literal notranslate"><span class="pre">doc_id</span></code> (integer)
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A [N x 2] numpy <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>, where the first column is the matched documents’ <code class="docutils literal notranslate"><span class="pre">doc_id</span></code> (integer)
 the second column is the score/distance/metric between the matched doc and the query doc (float).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -423,21 +420,26 @@ the second column is the score/distance/metric between the matched doc and the q
 <dl class="method">
 <dt id="jina.executors.rankers.Chunk2DocRanker.group_by_doc_id">
 <code class="sig-name descname">group_by_doc_id</code><span class="sig-paren">(</span><em class="sig-param">match_idx</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers.html#Chunk2DocRanker.group_by_doc_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.Chunk2DocRanker.group_by_doc_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Group the <code class="docutils literal notranslate"><span class="pre">match_idx</span></code> by <code class="docutils literal notranslate"><span class="pre">doc_id</span></code>
-:return: an iterator over the groups</p>
+<dd><p>Group the <code class="docutils literal notranslate"><span class="pre">match_idx</span></code> by <code class="docutils literal notranslate"><span class="pre">doc_id</span></code>.
+:return: an iterator over the groups.
+:rtype: <a class="reference internal" href="#jina.executors.rankers.Chunk2DocRanker" title="jina.executors.rankers.Chunk2DocRanker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code></a>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="jina.executors.rankers.Chunk2DocRanker.sort_doc_by_score">
 <em class="property">static </em><code class="sig-name descname">sort_doc_by_score</code><span class="sig-paren">(</span><em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers.html#Chunk2DocRanker.sort_doc_by_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.Chunk2DocRanker.sort_doc_by_score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sort a list of (<code class="docutils literal notranslate"><span class="pre">doc_id</span></code>, <code class="docutils literal notranslate"><span class="pre">score</span></code>) tuples by the <code class="docutils literal notranslate"><span class="pre">score</span></code>.
-:return: an <cite>np.ndarray</cite> in the shape of [N x 2], where <cite>N</cite> in the length of the input list.</p>
+:param r: List of Tuples with document id and score
+:type r: List[Tuple[Any, Any]]
+:return: A <cite>np.ndarray</cite> in the shape of [N x 2], where <cite>N</cite> in the length of the input list.
+:rtype: np.ndarray</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="jina.executors.rankers.Chunk2DocRanker.get_doc_id">
 <code class="sig-name descname">get_doc_id</code><span class="sig-paren">(</span><em class="sig-param">match_with_same_doc_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers.html#Chunk2DocRanker.get_doc_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.Chunk2DocRanker.get_doc_id" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return document id that matches with given id <a href="#id1"><span class="problematic" id="id2">:param:`match_with_same_doc_id`</span></a></p>
+</dd></dl>
 
 </dd></dl>
 
@@ -447,14 +449,14 @@ the second column is the score/distance/metric between the matched doc and the q
 <dd><p>Bases: <a class="reference internal" href="#jina.executors.rankers.BaseRanker" title="jina.executors.rankers.BaseRanker"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.rankers.BaseRanker</span></code></a></p>
 <p>Re-scores the matches for a document. This Ranker is only responsible for
 calculating new scores and not for the actual sorting. The sorting is handled
-in the respective <code class="docutils literal notranslate"><span class="pre">Matches2DocRankDriver</span></code>.
-Possible implementations:</p>
-<blockquote>
-<div><ul class="simple">
+in the respective <code class="docutils literal notranslate"><span class="pre">Matches2DocRankDriver</span></code>.</p>
+<dl class="simple">
+<dt>Possible implementations:</dt><dd><ul class="simple">
 <li><p>ReverseRanker (reverse scores of all matches)</p></li>
-<li><p>BucketShuffleRanker (first buckets matches and then sort each bucket)</p></li>
+<li><p>BucketShuffleRanker (first buckets matches and then sort each bucket).</p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <dl class="attribute">
 <dt id="jina.executors.rankers.Match2DocRanker.COL_MATCH_ID">
 <code class="sig-name descname">COL_MATCH_ID</code><em class="property"> = 'match_id'</em><a class="headerlink" href="#jina.executors.rankers.Match2DocRanker.COL_MATCH_ID" title="Permalink to this definition">¶</a></dt>
@@ -468,26 +470,24 @@ Possible implementations:</p>
 <dl class="method">
 <dt id="jina.executors.rankers.Match2DocRanker.score">
 <code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">query_meta</em>, <em class="sig-param">old_match_scores</em>, <em class="sig-param">match_meta</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/rankers.html#Match2DocRanker.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.executors.rankers.Match2DocRanker.score" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function calculated the new scores for matches and returns them.
-:query_meta: a dictionary containing all the query meta information</p>
-<blockquote>
-<div><p>requested by the <cite>required_keys</cite> class_variable.</p>
-</div></blockquote>
+<dd><p>Calculates the new scores for matches and returns them.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Old_match_scores</dt>
-<dd class="field-odd"><p>contains old scores in the format {match_id: score}</p>
-</dd>
-<dt class="field-even">Match_meta</dt>
-<dd class="field-even"><p>a dictionary containing all the matches meta information
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query_meta</strong> (<em>Dict</em>) – Dictionary containing all the query meta information
+requested by the <cite>required_keys</cite> class_variable.</p></li>
+<li><p><strong>old_match_scores</strong> (<em>Dict</em>) – Contains old scores in the format {match_id: score}</p></li>
+<li><p><strong>match_meta</strong> (<em>Dict</em>) – Dictionary containing all the matches meta information
 requested by the <cite>required_keys</cite> class_variable.
-Format: {match_id: {attribute: attribute_value}}e.g.{5: {“length”: 3}}</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+Format: {match_id: {attribute: attribute_value}}e.g.{5: {“length”: 3}}</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <cite>np.ndarray</cite> in the shape of [N x 2] where <cite>N</cite> is the length of
+<dd class="field-even"><p>A <cite>np.ndarray</cite> in the shape of [N x 2] where <cite>N</cite> is the length of
 the <cite>old_match_scores</cite>. Semantic: [[match_id, new_score]]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
 </dd></dl>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.querylang.queryset.dunderkey &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.drivers.querylang.queryset.dunderkey &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -86,7 +86,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -226,16 +226,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -377,11 +377,16 @@ underscore</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;a__b__c&#39;</span>
 </pre></div>
 </div>
-<p>:param <a href="#id1"><span class="problematic" id="id2">*</span></a>args : <a href="#id3"><span class="problematic" id="id4">*</span></a>String
-:rtype       : String</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*args</strong> – <p>the multiple strings</p>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the joined key</p>
 </dd>
 </dl>
 </dd></dl>
@@ -389,20 +394,16 @@ underscore</p>
 <dl class="function">
 <dt id="jina.drivers.querylang.queryset.dunderkey.dunder_partition">
 <code class="sig-prename descclassname">jina.drivers.querylang.queryset.dunderkey.</code><code class="sig-name descname">dunder_partition</code><span class="sig-paren">(</span><em class="sig-param">key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/querylang/queryset/dunderkey.html#dunder_partition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.querylang.queryset.dunderkey.dunder_partition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits a dunderkey into 2 parts</p>
+<dd><p>Split a dunderkey into 2 parts.</p>
 <p>The first part is everything before the final double underscore
 The second part is after the final double underscore</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dunder_partition</span><span class="p">(</span><span class="s1">&#39;a__b__c&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="s1">&#39;a__b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>:param neskey : String
-:rtype        : 2 Tuple</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</p>
-</dd>
-</dl>
+<p>:param key : the dunder string
+:rtype: <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]
+:return: the two parts</p>
 </dd></dl>
 
 <dl class="function">
@@ -413,13 +414,9 @@ The second part is after the final double underscore</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;a__b&#39;</span>
 </pre></div>
 </div>
-<p>:param neskey : String
-:rtype        : String</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
+<p>:param key : the dunder string
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
+:return: the first part (None if invalid dunder str)</p>
 </dd></dl>
 
 <dl class="function">
@@ -430,13 +427,9 @@ The second part is after the final double underscore</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;c&#39;</span>
 </pre></div>
 </div>
-<p>:param neskey : String
-:rtype        : Optional String</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
-</dd>
-</dl>
+<p>:param key : the dunder string
+:rtype: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]
+:return: the last part (None if invalid dunder string)</p>
 </dd></dl>
 
 <dl class="function">
@@ -454,12 +447,8 @@ a dict. eg:</p>
 <p>key ‘b’ can be referrenced as ‘a__b’</p>
 <p>:param _dict : (dict, list, struct or object) which we want to index into
 :param key   : (str) that represents a first level or nested key in the dict
-:rtype       : (mixed) value corresponding to the key</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
-</dd>
-</dl>
+:rtype: <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>
+:return: (mixed) value corresponding to the key</p>
 </dd></dl>
 
 <dl class="function">
@@ -472,12 +461,8 @@ a dict. eg:</p>
 </pre></div>
 </div>
 <p>:param _dict : (dict) flat dict
-:rtype       : (dict) nested dict</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
-</dd>
-</dl>
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>
+:return: (dict) nested dict</p>
 </dd></dl>
 
 <dl class="function">
@@ -495,12 +480,8 @@ not truncated further</p>
 </pre></div>
 </div>
 <p>:param _dict : (dict) to flatten
-:rtype       : (dict) flattened result</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
-</dd>
-</dl>
+:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>
+:return: (dict) flattened result</p>
 </dd></dl>
 
 </div>
@@ -647,7 +628,7 @@ not truncated further</p>
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

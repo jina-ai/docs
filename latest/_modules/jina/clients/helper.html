@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.clients.helper &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.clients.helper &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -295,7 +295,8 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.clients.helper</h1><div class="highlight"><pre>
-<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Helper functions for clients in Jina.&quot;&quot;&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
@@ -305,11 +306,12 @@
 <span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">BadClientCallback</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">colored</span>
 <span class="kn">from</span> <span class="nn">..importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
+<span class="kn">from</span> <span class="nn">..logging</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
 <span class="kn">from</span> <span class="nn">..proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
 
 
 <div class="viewcode-block" id="pprint_routes"><a class="viewcode-back" href="../../../api/jina.clients.helper.html#jina.clients.helper.pprint_routes">[docs]</a><span class="k">def</span> <span class="nf">pprint_routes</span><span class="p">(</span><span class="n">resp</span><span class="p">:</span> <span class="s1">&#39;Response&#39;</span><span class="p">,</span> <span class="n">stack_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Pretty print routes with :mod:`prettytable`, fallback to :func:`print`</span>
+    <span class="sd">&quot;&quot;&quot;Pretty print routes with :mod:`prettytable`, fallback to :func:`print`.</span>
 
 <span class="sd">    :param resp: the :class:`Response` object</span>
 <span class="sd">    :param stack_limit: traceback limit</span>
@@ -344,7 +346,7 @@
 
 <span class="k">def</span> <span class="nf">_safe_callback</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">continue_on_error</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">logger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_arg_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
@@ -354,10 +356,19 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">BadClientCallback</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
 
-    <span class="k">return</span> <span class="n">arg_wrapper</span>
+    <span class="k">return</span> <span class="n">_arg_wrapper</span>
 
 
-<div class="viewcode-block" id="callback_exec"><a class="viewcode-back" href="../../../api/jina.clients.helper.html#jina.clients.helper.callback_exec">[docs]</a><span class="k">def</span> <span class="nf">callback_exec</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">on_done</span><span class="p">,</span> <span class="n">on_error</span><span class="p">,</span> <span class="n">on_always</span><span class="p">,</span> <span class="n">continue_on_error</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
+<div class="viewcode-block" id="callback_exec"><a class="viewcode-back" href="../../../api/jina.clients.helper.html#jina.clients.helper.callback_exec">[docs]</a><span class="k">def</span> <span class="nf">callback_exec</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">on_done</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">on_error</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">on_always</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">continue_on_error</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="n">JinaLogger</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Execute the callback with the response.</span>
+
+<span class="sd">    :param response: the response</span>
+<span class="sd">    :param on_done: the on_done callback</span>
+<span class="sd">    :param on_error: the on_error callback</span>
+<span class="sd">    :param on_always: the on_always callback</span>
+<span class="sd">    :param continue_on_error: whether to continue on error</span>
+<span class="sd">    :param logger: a logger instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">on_error</span> <span class="ow">and</span> <span class="n">response</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">code</span> <span class="o">&gt;=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">StatusProto</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span>
         <span class="n">_safe_callback</span><span class="p">(</span><span class="n">on_error</span><span class="p">,</span> <span class="n">continue_on_error</span><span class="p">,</span> <span class="n">logger</span><span class="p">)(</span><span class="n">response</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">on_done</span><span class="p">:</span>
@@ -496,7 +507,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

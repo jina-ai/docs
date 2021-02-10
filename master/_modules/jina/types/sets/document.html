@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.sets.document &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.types.sets.document &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -218,7 +218,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -317,12 +317,17 @@
 
 
 <div class="viewcode-block" id="DocumentSet"><a class="viewcode-back" href="../../../../api/jina.types.sets.document.html#jina.DocumentSet">[docs]</a><span class="k">class</span> <span class="nc">DocumentSet</span><span class="p">(</span><span class="n">MutableSequence</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;:class:`DocumentSet` is a mutable sequence of :class:`Document`,</span>
-<span class="sd">    it gives an efficient view of a list of Document. One can iterate over it like</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :class:`DocumentSet` is a mutable sequence of :class:`Document`.</span>
+<span class="sd">    It gives an efficient view of a list of Document. One can iterate over it like</span>
 <span class="sd">    a generator but ALSO modify it, count it, get item, or union two &#39;DocumentSet&#39;s using the &#39;+&#39; and &#39;+=&#39; operators.</span>
+
+<span class="sd">    :param docs_proto: A list of :class:`Document`</span>
+<span class="sd">    :type docs_proto: Union[&#39;RepeatedContainer&#39;, Sequence[&#39;Document&#39;]]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs_proto</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;RepeatedContainer&#39;</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]]):</span>
+        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span> <span class="o">=</span> <span class="n">docs_proto</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_docs_map</span> <span class="o">=</span> <span class="p">{}</span>
@@ -402,9 +407,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DocumentSet.build"><a class="viewcode-back" href="../../../../api/jina.types.sets.document.html#jina.DocumentSet.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Build a doc_id to doc mapping so one can later index a Document using</span>
-<span class="sd">        doc_id as string key</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Build a doc_id to doc mapping so one can later index a Document using doc_id as string key.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_docs_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="DocumentSet.sort"><a class="viewcode-back" href="../../../../api/jina.types.sets.document.html#jina.DocumentSet.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -418,9 +421,9 @@
     <span class="k">def</span> <span class="nf">all_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return all embeddings from every document in this set as a ndarray</span>
 
-<span class="sd">        :return a tuple of embedding in :class:`np.ndarray`,</span>
-<span class="sd">                the corresponding documents in a :class:`DocumentSet`,</span>
+<span class="sd">        :return: The corresponding documents in a :class:`DocumentSet`,</span>
 <span class="sd">                and the documents have no embedding in a :class:`DocumentSet`.</span>
+<span class="sd">        :rtype: A tuple of embedding in :class:`np.ndarray`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_docs</span><span class="p">(</span><span class="s1">&#39;embedding&#39;</span><span class="p">)</span>
 
@@ -428,9 +431,9 @@
     <span class="k">def</span> <span class="nf">all_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return all embeddings from every document in this set as a ndarray</span>
 
-<span class="sd">        :return: a tuple of embedding in :class:`np.ndarray`,</span>
-<span class="sd">                the corresponding documents in a :class:`DocumentSet`,</span>
+<span class="sd">        :return: The corresponding documents in a :class:`DocumentSet`,</span>
 <span class="sd">                and the documents have no contents in a :class:`DocumentSet`.</span>
+<span class="sd">        :rtype: A tuple of embedding in :class:`np.ndarray`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_docs</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">)</span>
 
@@ -456,7 +459,7 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="DocumentSet.new"><a class="viewcode-back" href="../../../../api/jina.types.sets.document.html#jina.DocumentSet.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a new empty document appended to the end of the set&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create a new empty document appended to the end of the set.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..document</span> <span class="kn">import</span> <span class="n">Document</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">())</span></div>
 

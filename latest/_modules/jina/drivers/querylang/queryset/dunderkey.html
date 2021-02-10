@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.querylang.queryset.dunderkey &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.drivers.querylang.queryset.dunderkey &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -342,14 +342,14 @@
 <span class="sd">       &gt;&gt;&gt; dunderkey(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;)</span>
 <span class="sd">       &gt;&gt;&gt; &#39;a__b__c&#39;</span>
 
-<span class="sd">    :param *args : *String</span>
-<span class="sd">    :rtype       : String</span>
+<span class="sd">    :param *args: the multiple strings</span>
+<span class="sd">    :returns: the joined key</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s1">&#39;__&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="dunder_partition"><a class="viewcode-back" href="../../../../../api/jina.drivers.querylang.queryset.dunderkey.html#jina.drivers.querylang.queryset.dunderkey.dunder_partition">[docs]</a><span class="k">def</span> <span class="nf">dunder_partition</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Splits a dunderkey into 2 parts</span>
+    <span class="sd">&quot;&quot;&quot;Split a dunderkey into 2 parts.</span>
 
 <span class="sd">    The first part is everything before the final double underscore</span>
 <span class="sd">    The second part is after the final double underscore</span>
@@ -357,8 +357,8 @@
 <span class="sd">        &gt;&gt;&gt; dunder_partition(&#39;a__b__c&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; (&#39;a__b&#39;, &#39;c&#39;)</span>
 
-<span class="sd">    :param neskey : String</span>
-<span class="sd">    :rtype        : 2 Tuple</span>
+<span class="sd">    :param key : the dunder string</span>
+<span class="sd">    :return: the two parts</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">part1</span><span class="p">:</span> <span class="nb">str</span>
@@ -376,8 +376,8 @@
 <span class="sd">        &gt;&gt;&gt; dunder_init(&#39;a__b__c&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; &#39;a__b&#39;</span>
 
-<span class="sd">    :param neskey : String</span>
-<span class="sd">    :rtype        : String</span>
+<span class="sd">    :param key : the dunder string</span>
+<span class="sd">    :return: the first part (None if invalid dunder str)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">dunder_partition</span><span class="p">(</span><span class="n">key</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
@@ -388,8 +388,8 @@
 <span class="sd">        &gt;&gt;&gt; dunder_last(&#39;a__b__c&#39;)</span>
 <span class="sd">        &gt;&gt;&gt; &#39;c&#39;</span>
 
-<span class="sd">    :param neskey : String</span>
-<span class="sd">    :rtype        : Optional String</span>
+<span class="sd">    :param key : the dunder string</span>
+<span class="sd">    :return: the last part (None if invalid dunder string)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">dunder_partition</span><span class="p">(</span><span class="n">key</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span></div>
 
@@ -409,7 +409,7 @@
 
 <span class="sd">    :param _dict : (dict, list, struct or object) which we want to index into</span>
 <span class="sd">    :param key   : (str) that represents a first level or nested key in the dict</span>
-<span class="sd">    :rtype       : (mixed) value corresponding to the key</span>
+<span class="sd">    :return: (mixed) value corresponding to the key</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -445,7 +445,7 @@
 <span class="sd">        {&#39;a&#39;: &#39;hello&#39;, &#39;b&#39;: {&#39;c&#39;: &#39;world&#39;}}</span>
 
 <span class="sd">    :param _dict : (dict) flat dict</span>
-<span class="sd">    :rtype       : (dict) nested dict</span>
+<span class="sd">    :return: (dict) nested dict</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -482,7 +482,7 @@
 <span class="sd">        {&#39;a__p&#39;: &#39;yay&#39;, &#39;b__p&#39;: &#39;no&#39;, &#39;z&#39;: &#39;dunno&#39;}</span>
 
 <span class="sd">    :param _dict : (dict) to flatten</span>
-<span class="sd">    :rtype       : (dict) flattened result</span>
+<span class="sd">    :return: (dict) flattened result</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">keylist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -625,7 +625,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

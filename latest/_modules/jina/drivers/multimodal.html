@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.multimodal &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.drivers.multimodal &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -312,7 +312,9 @@
 
 <div class="viewcode-block" id="MultiModalDriver"><a class="viewcode-back" href="../../../api/jina.drivers.multimodal.html#jina.drivers.multimodal.MultiModalDriver">[docs]</a><span class="k">class</span> <span class="nc">MultiModalDriver</span><span class="p">(</span><span class="n">BaseEncodeDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Extract multimodal embeddings from different modalities.</span>
+
 <span class="sd">    Input-Output ::</span>
+
 <span class="sd">        Input:</span>
 <span class="sd">        document:</span>
 <span class="sd">                |- chunk: {modality: mode1}</span>
@@ -325,8 +327,11 @@
 <span class="sd">                |- chunk: {modality: mode2}</span>
 
 <span class="sd">    .. note::</span>
+
 <span class="sd">        - It traverses on the ``documents`` for which we want to apply the ``multimodal`` embedding. This way</span>
+
 <span class="sd">        we can use the `batching` capabilities for the `executor`.</span>
+
 <span class="sd">    .. warning::</span>
 <span class="sd">        - It assumes that every ``chunk`` of a ``document`` belongs to a different modality.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -344,10 +349,12 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Could not know which position of the ndarray to load to each modality&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span><span class="o">.</span><span class="n">positional_modality</span>
 
-    <span class="k">def</span> <span class="nf">_get_executor_input_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_by_modality</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            From a dictionary ``content_by_modality`` it returns the arguments in the proper order so that they can be</span>
-<span class="sd">            passed to the executor.</span>
+    <span class="k">def</span> <span class="nf">_get_executor_input_arguments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_by_modality</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;From a dictionary ``content_by_modality`` it returns the arguments in the proper order so that they can be</span>
+<span class="sd">        passed to the executor.</span>
+
+<span class="sd">         :param content_by_modality: a dictionary of `Document content` by modality name</span>
+<span class="sd">         :return: list of input arguments as np arrays</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">content_by_modality</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span> <span class="k">for</span> <span class="n">modality</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">positional_modality</span><span class="p">]</span>
 
@@ -356,10 +363,11 @@
             <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
             <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Apply the driver to each of the Documents in docs.</span>
+
 <span class="sd">        :param docs: the docs for which a ``multimodal embedding`` will be computed, whose chunks are of different</span>
-<span class="sd">        modalities</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param *args: args</span>
+<span class="sd">        :param **kwargs: kwargs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">content_by_modality</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># array of num_rows equal to num_docs and num_columns equal to</span>
 
@@ -520,7 +528,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

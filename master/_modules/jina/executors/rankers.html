@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.rankers &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.executors.rankers &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -218,7 +218,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -334,22 +334,26 @@
     <span class="n">COL_SCORE</span> <span class="o">=</span> <span class="s1">&#39;score&#39;</span>
 
 <div class="viewcode-block" id="Chunk2DocRanker.score"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.Chunk2DocRanker.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_idx</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">query_chunk_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">match_chunk_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Translate the chunk-level top-k results into doc-level top-k results. Some score functions may leverage the</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Translate the chunk-level top-k results into doc-level top-k results. Some score functions may leverage the</span>
 <span class="sd">        meta information of the query, hence the meta info of the query chunks and matched chunks are given</span>
 <span class="sd">        as arguments.</span>
 
-<span class="sd">        :param match_idx: a [N x 4] numpy ``ndarray``, column-wise:</span>
-
+<span class="sd">        :param match_idx: A [N x 4] numpy ``ndarray``, column-wise:</span>
 <span class="sd">                - ``match_idx[:, 0]``: ``doc_id`` of the matched chunks, integer</span>
 <span class="sd">                - ``match_idx[:, 1]``: ``chunk_id`` of the matched chunks, integer</span>
 <span class="sd">                - ``match_idx[:, 2]``: ``chunk_id`` of the query chunks, integer</span>
 <span class="sd">                - ``match_idx[:, 3]``: distance/metric/score between the query and matched chunks, float</span>
-<span class="sd">        :param query_chunk_meta: the meta information of the query chunks, where the key is query chunks&#39; ``chunk_id``,</span>
+<span class="sd">        :type match_idx: np.ndarray.</span>
+<span class="sd">        :param query_chunk_meta: The meta information of the query chunks, where the key is query chunks&#39; ``chunk_id``,</span>
 <span class="sd">            the value is extracted by the ``required_keys``.</span>
-<span class="sd">        :param match_chunk_meta: the meta information of the matched chunks, where the key is matched chunks&#39;</span>
+<span class="sd">        :type query_chunk_meta: Dict.</span>
+<span class="sd">        :param match_chunk_meta: The meta information of the matched chunks, where the key is matched chunks&#39;</span>
 <span class="sd">            ``chunk_id``, the value is extracted by the ``required_keys``.</span>
-<span class="sd">        :return: a [N x 2] numpy ``ndarray``, where the first column is the matched documents&#39; ``doc_id`` (integer)</span>
+<span class="sd">        :type query_chunk_meta: Dict.</span>
+<span class="sd">        :return: A [N x 2] numpy ``ndarray``, where the first column is the matched documents&#39; ``doc_id`` (integer)</span>
 <span class="sd">                the second column is the score/distance/metric between the matched doc and the query doc (float).</span>
+<span class="sd">        :rtype: np.ndarray.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_by_doc_id</span><span class="p">(</span><span class="n">match_idx</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
@@ -360,8 +364,9 @@
 
 <div class="viewcode-block" id="Chunk2DocRanker.group_by_doc_id"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.Chunk2DocRanker.group_by_doc_id">[docs]</a>    <span class="k">def</span> <span class="nf">group_by_doc_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_idx</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Group the ``match_idx`` by ``doc_id``</span>
-<span class="sd">        :return: an iterator over the groups</span>
+<span class="sd">        Group the ``match_idx`` by ``doc_id``.</span>
+<span class="sd">        :return: an iterator over the groups.</span>
+<span class="sd">        :rtype: :class:`Chunk2DocRanker`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_by</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">)</span></div>
 
@@ -380,7 +385,10 @@
     <span class="k">def</span> <span class="nf">sort_doc_by_score</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sort a list of (``doc_id``, ``score``) tuples by the ``score``.</span>
-<span class="sd">        :return: an `np.ndarray` in the shape of [N x 2], where `N` in the length of the input list.</span>
+<span class="sd">        :param r: List of Tuples with document id and score</span>
+<span class="sd">        :type r: List[Tuple[Any, Any]]</span>
+<span class="sd">        :return: A `np.ndarray` in the shape of [N x 2], where `N` in the length of the input list.</span>
+<span class="sd">        :rtype: np.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
             <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
@@ -389,6 +397,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Chunk2DocRanker.get_doc_id"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.Chunk2DocRanker.get_doc_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_doc_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_with_same_doc_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return document id that matches with given id :param:`match_with_same_doc_id`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">match_with_same_doc_id</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">]</span></div></div>
 
 
@@ -397,9 +406,10 @@
 <span class="sd">    Re-scores the matches for a document. This Ranker is only responsible for</span>
 <span class="sd">    calculating new scores and not for the actual sorting. The sorting is handled</span>
 <span class="sd">    in the respective ``Matches2DocRankDriver``.</span>
+
 <span class="sd">    Possible implementations:</span>
 <span class="sd">        - ReverseRanker (reverse scores of all matches)</span>
-<span class="sd">        - BucketShuffleRanker (first buckets matches and then sort each bucket)</span>
+<span class="sd">        - BucketShuffleRanker (first buckets matches and then sort each bucket).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">COL_MATCH_ID</span> <span class="o">=</span> <span class="s1">&#39;match_id&#39;</span>
@@ -407,15 +417,20 @@
 
 <div class="viewcode-block" id="Match2DocRanker.score"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.Match2DocRanker.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">old_match_scores</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">match_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function calculated the new scores for matches and returns them.</span>
-<span class="sd">        :query_meta: a dictionary containing all the query meta information</span>
+<span class="sd">        Calculates the new scores for matches and returns them.</span>
+
+<span class="sd">        :param query_meta: Dictionary containing all the query meta information</span>
 <span class="sd">            requested by the `required_keys` class_variable.</span>
-<span class="sd">        :old_match_scores: contains old scores in the format {match_id: score}</span>
-<span class="sd">        :match_meta: a dictionary containing all the matches meta information</span>
+<span class="sd">        :type query_meta: Dict</span>
+<span class="sd">        :param old_match_scores: Contains old scores in the format {match_id: score}</span>
+<span class="sd">        :type old_match_scores: Dict</span>
+<span class="sd">        :param match_meta: Dictionary containing all the matches meta information</span>
 <span class="sd">            requested by the `required_keys` class_variable.</span>
 <span class="sd">            Format: {match_id: {attribute: attribute_value}}e.g.{5: {&quot;length&quot;: 3}}</span>
-<span class="sd">        :return: a `np.ndarray` in the shape of [N x 2] where `N` is the length of</span>
+<span class="sd">        :type match_meta: Dict</span>
+<span class="sd">        :return: A `np.ndarray` in the shape of [N x 2] where `N` is the length of</span>
 <span class="sd">            the `old_match_scores`. Semantic: [[match_id, new_score]]</span>
+<span class="sd">        :rtype: np.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 </pre></div>

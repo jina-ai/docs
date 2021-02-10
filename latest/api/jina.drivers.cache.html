@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.cache &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.drivers.cache &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -86,7 +86,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -218,16 +218,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -343,13 +343,27 @@
 <em class="property">class </em><code class="sig-prename descclassname">jina.drivers.cache.</code><code class="sig-name descname">BaseCacheDriver</code><span class="sig-paren">(</span><em class="sig-param">with_serialization=False</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/cache.html#BaseCacheDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.cache.BaseCacheDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="jina.drivers.index.html#jina.drivers.index.BaseIndexDriver" title="jina.drivers.index.BaseIndexDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.index.BaseIndexDriver</span></code></a></p>
 <p>A driver related to <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCache</span></code>.</p>
-<p>Create a new BaseCacheDriver.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>with_serialization</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – feed serialized Document to the CacheIndexer</p></li>
-<li><p><strong>args</strong> – </p></li>
-<li><p><strong>kwargs</strong> – </p></li>
+<li><p><strong>*args</strong> – <p><a href="#id3"><span class="problematic" id="id4">*</span></a>args for super</p>
+</p></li>
+<li><p><strong>**kwargs</strong> – <p><a href="#id7"><span class="problematic" id="id8">**</span></a>kwargs for super</p>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p>Initialize a <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExecutableDriver</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>executor</strong> – the name of the sub-executor, only necessary when <a class="reference internal" href="jina.executors.compound.html#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a> is used</p></li>
+<li><p><strong>method</strong> – the function name of the executor that the driver feeds to</p></li>
+<li><p><strong>*args</strong> – <p><a href="#id11"><span class="problematic" id="id12">*</span></a>args for super</p>
+</p></li>
+<li><p><strong>**kwargs</strong> – <p><a href="#id15"><span class="problematic" id="id16">**</span></a>kwargs for super</p>
+</p></li>
 </ul>
 </dd>
 </dl>
@@ -385,9 +399,6 @@
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p></p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -401,7 +412,13 @@
 <p>Create a new TaggingCacheDriver.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tags</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – the tags to be updated on hit docs</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tags</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – the tags to be updated on hit docs</p></li>
+<li><p><strong>*args</strong> – <p><a href="#id19"><span class="problematic" id="id20">*</span></a>args for super</p>
+</p></li>
+<li><p><strong>**kwargs</strong> – <p><a href="#id23"><span class="problematic" id="id24">**</span></a>kwargs for super</p>
+</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="method">
@@ -409,8 +426,14 @@
 <code class="sig-name descname">on_hit</code><span class="sig-paren">(</span><em class="sig-param">req_doc</em>, <em class="sig-param">hit_result</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/drivers/cache.html#TaggingCacheDriver.on_hit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#jina.drivers.cache.TaggingCacheDriver.on_hit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call when cache is hit for a document.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>req_doc</strong> (<a class="reference internal" href="jina.html#jina.Document" title="jina.Document"><em>Document</em></a>) – the document requested</p></li>
+<li><p><strong>hit_result</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – the result of the hit</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -561,7 +584,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

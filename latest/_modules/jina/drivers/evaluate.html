@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.evaluate &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.drivers.evaluate &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -319,8 +319,8 @@
 <span class="sd">        :param executor: the name of the sub-executor, only necessary when :class:`jina.executors.compound.CompoundExecutor` is used</span>
 <span class="sd">        :param method: the function name of the executor that the driver feeds to</span>
 <span class="sd">        :param running_avg: always return running average instead of value of the current run</span>
-<span class="sd">        :param args:</span>
-<span class="sd">        :param kwargs:</span>
+<span class="sd">        :param *args:</span>
+<span class="sd">        :param **kwargs:</span>
 
 <span class="sd">        .. warning::</span>
 
@@ -377,8 +377,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param field: the field name to be extracted from the Protobuf</span>
-<span class="sd">        :param args:</span>
-<span class="sd">        :param kwargs:</span>
+<span class="sd">        :param *args:</span>
+<span class="sd">        :param **kwargs:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
@@ -399,8 +399,9 @@
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param args:</span>
-<span class="sd">        :param kwargs:</span>
+<span class="sd">        :param field: the field name to be extracted from the Protobuf</span>
+<span class="sd">        :param *args:</span>
+<span class="sd">        :param **kwargs:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -413,8 +414,9 @@
 <div class="viewcode-block" id="NDArrayEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.NDArrayEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">NDArrayEvaluateDriver</span><span class="p">(</span><span class="n">FieldEvaluateDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Drivers used to pass `embedding` from documents and groundtruths to an executor and add the evaluation value</span>
 
-<span class="sd">    - Valid fields:</span>
-<span class="sd">        [&#39;blob&#39;, &#39;embedding&#39;]</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        - Valid fields:</span>
+<span class="sd">                     [&#39;blob&#39;, &#39;embedding&#39;]</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -425,14 +427,9 @@
 <div class="viewcode-block" id="TextEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.TextEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">TextEvaluateDriver</span><span class="p">(</span><span class="n">FieldEvaluateDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Drivers used to pass a content field from documents and groundtruths to an executor and add the evaluation value</span>
 
-<span class="sd">    - Valid fields:</span>
-<span class="sd">                [&#39;id&#39;,</span>
-<span class="sd">                 &#39;level_name&#39;,</span>
-<span class="sd">                 &#39;parent_id&#39;,</span>
-<span class="sd">                 &#39;text&#39;,</span>
-<span class="sd">                 &#39;mime_type&#39;,</span>
-<span class="sd">                 &#39;uri&#39;,</span>
-<span class="sd">                 &#39;modality&#39;]</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        - Valid fields:</span>
+<span class="sd">                    [&#39;id&#39;, &#39;level_name&#39;, &#39;parent_id&#39;, &#39;text&#39;, &#39;mime_type&#39;, &#39;uri&#39;, &#39;modality&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -593,7 +590,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>

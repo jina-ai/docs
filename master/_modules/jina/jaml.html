@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.jaml &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.jaml &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -218,7 +218,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -301,6 +301,7 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">yaml.constructor</span> <span class="kn">import</span> <span class="n">FullConstructor</span>
 
 <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">JinaResolver</span><span class="p">,</span> <span class="n">JinaLoader</span><span class="p">,</span> <span class="n">parse_config_source</span><span class="p">,</span> <span class="n">load_py_modules</span>
 
@@ -368,14 +369,17 @@
              <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse the first YAML document in a stream and produce the corresponding Python object.</span>
 
-<span class="sd">        :param substitute: substitute environment, internal reference and context variables.</span>
-<span class="sd">        :param context: context replacement variables in a dict, the value of the dict is the replacement.</span>
-
 <span class="sd">        .. note::</span>
 <span class="sd">            :class:`BaseFlow`, :class:`BaseExecutor`, :class:`BaseDriver`</span>
 <span class="sd">            and all their subclasses have already implemented JAML interfaces,</span>
 <span class="sd">            to load YAML config into objects, please use :meth:`Flow.load_config`,</span>
 <span class="sd">            :meth:`BaseExecutor.load_config`, etc.</span>
+
+<span class="sd">        :param substitute: substitute environment, internal reference and context variables.</span>
+<span class="sd">        :param context: context replacement variables in a dict, the value of the dict is the replacement.</span>
+<span class="sd">        :param stream: the stream to load</span>
+<span class="sd">        :return: the Python object</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">JinaLoader</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">substitute</span><span class="p">:</span>
@@ -385,6 +389,9 @@
 <div class="viewcode-block" id="JAML.load_no_tags"><a class="viewcode-back" href="../../api/jina.jaml.html#jina.jaml.JAML.load_no_tags">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_no_tags</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load yaml object but ignore all customized tags, e.g. !Executor, !Driver, !Flow</span>
+<span class="sd">        :param stream: the output stream</span>
+<span class="sd">        :param **kwargs: other kwargs</span>
+<span class="sd">        :return: the Python object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">safe_yml</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[\s-]*?!\b&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;__cls: &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">JAML</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">safe_yml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -523,6 +530,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Serialize a Python object into a YAML stream.</span>
 <span class="sd">        If stream is None, return the produced string instead.</span>
+
+<span class="sd">        :param data: the data to serialize</span>
+<span class="sd">        :param stream: the output stream</span>
+<span class="sd">        :param **kwargs: other kwargs</span>
+<span class="sd">        :return: the yaml output</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">stream</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -532,6 +544,9 @@
 <span class="sd">            - if it has attribute yaml_tag use that to register, else use class name</span>
 <span class="sd">            - if it has methods to_yaml/from_yaml use those to dump/load else dump attributes</span>
 <span class="sd">              as mapping</span>
+
+<span class="sd">        :param cls: the class to register</span>
+<span class="sd">        :return: the registered class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">tag</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;yaml_tag&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
@@ -584,18 +599,24 @@
 <span class="sd">        .. warning::</span>
 <span class="sd">            This function should not be used directly, please use :meth:`save_config`.</span>
 
+<span class="sd">        :param representer: the class that will serialize</span>
+<span class="sd">        :param data: the data to serialize</span>
+<span class="sd">        :return: the node&#39;s representation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">get_parser</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">get_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">representer</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="s1">&#39;!&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">:</span> <span class="n">FullConstructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A low-level interface required by :mod:`pyyaml` load interface</span>
 
 <span class="sd">        .. warning::</span>
 <span class="sd">            This function should not be used directly, please use :meth:`load_config`.</span>
 
+<span class="sd">        :param constructor: the class that will construct</span>
+<span class="sd">        :param node: the node to traverse</span>
+<span class="sd">        :return: the parser associated with the class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">constructor</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">get_parser</span>
@@ -605,7 +626,6 @@
         <span class="sd">&quot;&quot;&quot;Save the object&#39;s config into a YAML file</span>
 
 <span class="sd">        :param filename: file path of the yaml file, if not given then :attr:`config_abspath` is used</span>
-<span class="sd">        :return: successfully dumped or not</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;config_abspath&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
@@ -625,12 +645,6 @@
 <span class="sd">        of loading extra py_modules, substitute env &amp; context variables. Any class that</span>
 <span class="sd">        implements :class:`JAMLCompatible` mixin can enjoy this feature, e.g. :class:`BaseFlow`,</span>
 <span class="sd">        :class:`BaseExecutor`, :class:`BaseDriver` and all their subclasses.</span>
-
-<span class="sd">        :param source: the multi-kind source of the configs.</span>
-<span class="sd">        :param allow_py_modules: allow importing plugins specified by ``py_modules`` in YAML at any levels</span>
-<span class="sd">        :param substitute: substitute environment, internal reference and context variables.</span>
-<span class="sd">        :param context: context replacement variables in a dict, the value of the dict is the replacement.</span>
-<span class="sd">        :return: :class:`JAMLCompatible` object</span>
 
 <span class="sd">        Support substitutions in YAML:</span>
 <span class="sd">            - Environment variables: `${{ENV.VAR}}` (recommended), ``${{VAR}}``, ``$VAR``.</span>
@@ -665,6 +679,13 @@
 <span class="sd">            # disable substitute</span>
 <span class="sd">            b = BaseExecutor.load_config(&#39;a.yml&#39;, substitute=False)</span>
 
+<span class="sd">        # noqa: DAR401</span>
+<span class="sd">        :param source: the multi-kind source of the configs.</span>
+<span class="sd">        :param allow_py_modules: allow importing plugins specified by ``py_modules`` in YAML at any levels</span>
+<span class="sd">        :param substitute: substitute environment, internal reference and context variables.</span>
+<span class="sd">        :param context: context replacement variables in a dict, the value of the dict is the replacement.</span>
+<span class="sd">        :param **kwargs: **kwargs for parse_config_source</span>
+<span class="sd">        :return: :class:`JAMLCompatible` object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">stream</span><span class="p">,</span> <span class="n">s_path</span> <span class="o">=</span> <span class="n">parse_config_source</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">stream</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
@@ -691,12 +712,13 @@
     <span class="k">def</span> <span class="nf">inject_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">raw_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Inject/modify the config before loading it into an object.</span>
 
-<span class="sd">        :param raw_config: raw config to work on</span>
-
-
 <span class="sd">         .. note::</span>
 <span class="sd">            This function is most likely to be overridden by its subclass.</span>
 
+<span class="sd">        :param raw_config: raw config to work on</span>
+<span class="sd">        :param *args: *args</span>
+<span class="sd">        :param **kwargs: **kwargs</span>
+<span class="sd">        :return: the config</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">raw_config</span></div></div>
 </pre></div>

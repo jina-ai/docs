@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.docker.hubio &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.docker.hubio &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -218,7 +218,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
 </ul>
 
@@ -293,7 +293,8 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.docker.hubio</h1><div class="highlight"><pre>
-<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;Module for wrapping Jina Hub API calls.&quot;&quot;&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
 <span class="kn">import</span> <span class="nn">argparse</span>
@@ -303,7 +304,7 @@
 <span class="kn">import</span> <span class="nn">urllib.parse</span>
 <span class="kn">import</span> <span class="nn">urllib.request</span>
 <span class="kn">import</span> <span class="nn">webbrowser</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">.checker</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">credentials_file</span>
@@ -330,7 +331,8 @@
 
 
 <div class="viewcode-block" id="HubIO"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO">[docs]</a><span class="k">class</span> <span class="nc">HubIO</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; :class:`HubIO` provides the way to interact with Jina Hub registry.</span>
+    <span class="sd">&quot;&quot;&quot;:class:`HubIO` provides the way to interact with Jina Hub registry.</span>
+
 <span class="sd">    You can use it with CLI to package a directory into a Jina Hub image and publish it to the world.</span>
 
 <span class="sd">    Examples:</span>
@@ -340,6 +342,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new HubIO.</span>
+
+<span class="sd">        :param args: arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">JinaLogger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_docker_client</span><span class="p">()</span>
@@ -357,7 +363,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_raw_client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;unix://var/run/docker.sock&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="HubIO.new"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a new executor using cookiecutter template &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create a new executor using cookiecutter template.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">cookiecutter.main</span> <span class="kn">import</span> <span class="n">cookiecutter</span>
             <span class="kn">import</span> <span class="nn">click</span>  <span class="c1"># part of cookiecutter</span>
@@ -375,7 +381,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;nothing is created, bye!&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HubIO.login"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.login">[docs]</a>    <span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Login using Github Device flow to allow push access to Jina Hub Registry&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Login using Github Device flow to allow push access to Jina Hub Registry.&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">requests</span>
 
         <span class="k">with</span> <span class="n">resource_stream</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;hubapi.yml&#39;</span><span class="p">)))</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
@@ -444,8 +450,11 @@
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exp</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;can not read the key in response: </span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="HubIO.list"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.list">[docs]</a>    <span class="k">def</span> <span class="nf">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot; List all hub images given a filter specified by CLI &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="HubIO.list"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.list">[docs]</a>    <span class="k">def</span> <span class="nf">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;List all hub images given a filter specified by CLI.</span>
+
+<span class="sd">        :return: list of dictionaries of images</span>
+<span class="sd">         &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">local_only</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_list_local</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -457,10 +466,12 @@
 
 <div class="viewcode-block" id="HubIO.push"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">readme_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">build_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot; A wrapper of docker push</span>
-<span class="sd">        - Checks for the tempfile, returns without push if it cannot find</span>
-<span class="sd">        - Pushes to docker hub, returns withput writing to db if it fails</span>
-<span class="sd">        - Writes to the db</span>
+        <span class="sd">&quot;&quot;&quot;Push image to Jina Hub.</span>
+
+<span class="sd">        :param name: name of image</span>
+<span class="sd">        :param readme_path: path to readme</span>
+<span class="sd">        :param build_result: dictionary containing the build summary</span>
+<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">name</span>
         <span class="k">try</span><span class="p">:</span>
@@ -500,9 +511,12 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ImageAlreadyExists</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">e</span></div>
 
-    <span class="k">def</span> <span class="nf">_push_docker_hub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">readme_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">docker_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                         <span class="n">docker_password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot; Helper push function &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_push_docker_hub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">readme_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Push to Docker Hub.</span>
+
+<span class="sd">        :param name: name of image</span>
+<span class="sd">        :param readme_path: path to README</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_registry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">registry</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_docker_image</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_docker_login</span><span class="p">()</span>
@@ -541,7 +555,7 @@
                 <span class="sa">f</span><span class="s1">&#39;Check out the usage </span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="n">share_link</span><span class="p">,</span> <span class="s2">&quot;cyan&quot;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;underline&quot;</span><span class="p">])</span><span class="si">}</span><span class="s1"> and share it with others!&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="HubIO.pull"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.pull">[docs]</a>    <span class="k">def</span> <span class="nf">pull</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;A wrapper of docker pull &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Pull docker image.&quot;&quot;&quot;</span>
         <span class="n">check_registry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">registry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_docker_login</span><span class="p">()</span>
@@ -576,7 +590,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;✅ </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> is a valid Jina Hub image, ready to publish&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_docker_login</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;A wrapper of docker login &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Log-in to Docker.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">docker.errors</span> <span class="kn">import</span> <span class="n">APIError</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">username</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">password</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">_fetch_docker_auth</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
@@ -588,7 +602,11 @@
             <span class="k">raise</span> <span class="n">DockerLoginFailed</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;invalid credentials passed. docker login failed&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="HubIO.build"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;A wrapper of docker build &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a build of the Docker image.</span>
+
+<span class="sd">        :return: dictionary with information on image (manifest)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">dry_run</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -792,6 +810,11 @@
         <span class="k">return</span> <span class="n">p_names</span><span class="p">,</span> <span class="n">failed_levels</span>
 
 <div class="viewcode-block" id="HubIO.dry_run"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.dry_run">[docs]</a>    <span class="k">def</span> <span class="nf">dry_run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a dry-run.</span>
+
+<span class="sd">        :return: a dict with the manifest info.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_completeness</span><span class="p">()</span>
             <span class="n">s</span><span class="p">[</span><span class="s1">&#39;is_build_success&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>

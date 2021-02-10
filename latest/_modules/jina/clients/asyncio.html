@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.clients.asyncio &mdash; Jina 0.9.34-master documentation</title>
+  <title>jina.clients.asyncio &mdash; Jina 1.0.1-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">0.9.34-master</button>
+            <button class="dropbtn version">1.0.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -179,16 +179,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/traversal/index.html">Understand Jina Recursive Document Representation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/flow/pattern.html">Common Design Patterns</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi &amp; Cross Modality</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/cross-multi-modality/index.html">Multi-modal and Cross-modal Search in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/index.html">Using Jina Pod with Docker Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/remote/index.html">Using Jina Pod Remotely</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/logging/index.html">Logging configuration in jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html">Jina Dashboard</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/dashboard/index.html#features">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/restapi/index.html">Jina REST API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/prevent_duplicate_indexing/index.html">Prevent Indexing Duplicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/incremental_indexing/index.html">Incremental Indexing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/crud/index.html">CRUD Operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/optimization/index.html">Flow Optimization</a></li>
 </ul>
@@ -295,7 +295,8 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.clients.asyncio</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
+<span></span><span class="sd">&quot;&quot;&quot;Module wrapping AsyncIO ops for clients.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
 
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">InputFnType</span><span class="p">,</span> <span class="n">BaseClient</span><span class="p">,</span> <span class="n">CallbackFnType</span>
 <span class="kn">from</span> <span class="nn">.websocket</span> <span class="kn">import</span> <span class="n">WebSocketClientMixin</span>
@@ -305,16 +306,19 @@
 
 <div class="viewcode-block" id="AsyncClient"><a class="viewcode-back" href="../../../api/jina.clients.asyncio.html#jina.AsyncClient">[docs]</a><span class="k">class</span> <span class="nc">AsyncClient</span><span class="p">(</span><span class="n">BaseClient</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :class:`AsyncClient` is the asynchronous version of the :class:`Client`. They share the same interface, except</span>
-<span class="sd">    in :class:`AsyncClient` :meth:`train`, :meth:`index`, :meth:`search` methods are coroutines</span>
-<span class="sd">    (i.e. declared with the async/await syntax), simply calling them will not schedule them to be executed.</span>
-<span class="sd">    To actually run a coroutine, user need to put them in an eventloop, e.g. via ``asyncio.run()``,</span>
+<span class="sd">    :class:`AsyncClient` is the asynchronous version of the :class:`Client`.</span>
+
+<span class="sd">    They share the same interface, except in :class:`AsyncClient` :meth:`train`, :meth:`index`,</span>
+<span class="sd">    :meth:`search` methods are coroutines (i.e. declared with the async/await syntax),</span>
+<span class="sd">    simply calling them will not schedule them to be executed.</span>
+
+<span class="sd">    To actually run a coroutine, user need to put them in an event loop, e.g. via ``asyncio.run()``,</span>
 <span class="sd">    ``asyncio.create_task()``.</span>
 
 <span class="sd">    :class:`AsyncClient` can be very useful in</span>
 <span class="sd">    the integration settings, where Jina/Flow/Client is NOT the main logic, but rather served as a part of other program.</span>
 <span class="sd">    In this case, users often do not want to let Jina control the ``asyncio.eventloop``. On contrary, :class:`Client`</span>
-<span class="sd">    is controlling and wrapping the eventloop internally, making the Client looks synchronous from outside.</span>
+<span class="sd">    is controlling and wrapping the event loop internally, making the Client looks synchronous from outside.</span>
 
 <span class="sd">    For example, say you have the Flow running in remote. You want to use Client to connect to it do</span>
 <span class="sd">    some index and search, but meanwhile you have some other IO-bounded jobs and want to do them concurrently.</span>
@@ -350,7 +354,7 @@
                     <span class="n">on_error</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">on_always</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Issue &#39;train&#39; request to the Flow.</span>
 
 <span class="sd">        :param input_fn: the input function that generates the content</span>
 <span class="sd">        :param on_done: the function to be called when the :class:`Request` object is resolved.</span>
@@ -369,7 +373,7 @@
                      <span class="n">on_error</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="n">on_always</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Issue &#39;search&#39; request to the Flow.</span>
 
 <span class="sd">        :param input_fn: the input function that generates the content</span>
 <span class="sd">        :param on_done: the function to be called when the :class:`Request` object is resolved.</span>
@@ -389,7 +393,7 @@
                     <span class="n">on_error</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">on_always</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Issue &#39;index&#39; request to the Flow.</span>
 
 <span class="sd">        :param input_fn: the input function that generates the content</span>
 <span class="sd">        :param on_done: the function to be called when the :class:`Request` object is resolved.</span>
@@ -408,7 +412,7 @@
                      <span class="n">on_error</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="n">on_always</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Issue &#39;delete&#39; request to the Flow.</span>
 
 <span class="sd">        :param input_fn: the input function that generates the content</span>
 <span class="sd">        :param on_done: the function to be called when the :class:`Request` object is resolved.</span>
@@ -427,7 +431,7 @@
                      <span class="n">on_error</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="n">on_always</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                      <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Issue &#39;update&#39; request to the Flow.</span>
 
 <span class="sd">        :param input_fn: the input function that generates the content</span>
 <span class="sd">        :param on_done: the function to be called when the :class:`Request` object is resolved.</span>
@@ -444,6 +448,7 @@
 <div class="viewcode-block" id="AsyncWebSocketClient"><a class="viewcode-back" href="../../../api/jina.clients.asyncio.html#jina.AsyncWebSocketClient">[docs]</a><span class="k">class</span> <span class="nc">AsyncWebSocketClient</span><span class="p">(</span><span class="n">AsyncClient</span><span class="p">,</span> <span class="n">WebSocketClientMixin</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :class:`AsyncWebSocketClient` is the asynchronous version of the :class:`WebSocketClient`.</span>
+
 <span class="sd">    They share the same interface, except in :class:`AsyncWebSocketClient` :meth:`train`, :meth:`index`, :meth:`search`</span>
 <span class="sd">    methods are coroutines (i.e. declared with the async/await syntax), simply calling them will not schedule them to be executed.</span>
 <span class="sd">    To actually run a coroutine, user need to put them in an eventloop, e.g. via ``asyncio.run()``,</span>
@@ -614,7 +619,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 09, 2021.
+        Last updated on Feb 10, 2021.
       </span>
 
         </p>
