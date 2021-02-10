@@ -33,17 +33,17 @@ More information about [the usage can be found here](./use-your-pod.html#use-you
 
 ## Why?
 
-So you have implemented an Executor. You would want to reuse it next in another Jina application or share it with people around the world. 
+So you have implemented an Executor and you would want to reuse it in another Jina application or share it with people around the world. 
 
 You might also want to offer people a ready-to-use interface without the hassle of repeating the pitfalls you faced.
 
-For that reason, the best way is to pack everything (Python file, `YAML` config, `pre-trained` data, dependencies) into a container image and use Jina as the entry point. You can also annotate your image with some meta information to facilitate the search, archive and classification.
+The best way to do this is to pack everything (Python file, `YAML` config, `pre-trained` data, dependencies) into a container image and use Jina as the entry point. You can also annotate your image with some meta information to facilitate the search, archive and classification.
 
 Here is a list of motivating reasons for building a Pod image:
 
 - You want to use one of the built-in Executor (e.g. PyTorch-based) and you don't want to install PyTorch dependencies on the host.
 - You modify or write a new Executor and want to reuse it in another project, without touching [Jina's core](https://github.com/jina-ai/jina/).
-- You customize the driver and want to reuse it in another project, without touching [`jina-ai/jina`](https://github.com/jina-ai/jina/).
+- You customize the driver and want to reuse it in another project, without touching [Jina's core](https://github.com/jina-ai/jina/).
 - You have a self-built library optimized for your architecture (e.g. tensorflow/numpy on GPU/CPU/x64/arm64), and you want this specific Pod to benefit from it.
 - Your Executor requires certain Linux headers that can only be installed via `apt` or `yum`, but you don't have `sudo` on the host.
 - Your Executor relies on a pretrained model, you want to include this 100MB file into the image so that people don't need to download it again.  
