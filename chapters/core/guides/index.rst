@@ -34,3 +34,4 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../project-guide/project-guide
    ../../optimization/index
    ../../request_size/request_size
+   ../../incremental_indexing/index
