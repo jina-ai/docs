@@ -7,7 +7,7 @@ Docstring guide
     — Guido van Rossum
 
 
-In Jina, we are aware that documentation is an important part of sofware, but we also think it is especially important for OpenSource. And for this reason, we try extra hard to have clear and extensive documentation for all of our source code. But, at the same time, we know this also takes time and effort, so we want to make things as easy as possible with this guide for you. In Jina we use the `Sphinx style <https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html>`_ and here are the guidelines you should follow:
+In Jina, we are aware that documentation is an important part of software, but we also think it is especially important for OpenSource. And for this reason, we try extra hard to have clear and extensive documentation for all of our source code. But, at the same time, we know this also takes time and effort, so we want to make things as easy as possible with this guide for you. In Jina we use the `Sphinx style <https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html>`_ and here are the guidelines you should follow:
 
 
 .. contents:: Table of Contents
@@ -45,7 +45,7 @@ One-line Docstrings Example
 .. code-block:: python
 
     def does_magic():
-        """ Do magic """
+        """Do magic"""
         print('Magic happens here')
 
 
@@ -236,3 +236,26 @@ args and kwargs
 *****************************************************
 
 Each parameter in the signature must be documented, including ``*args`` and ``**kwargs``, but not ``self`` or ``cls``.
+
+*****************************************************
+The ``_init_`` method
+*****************************************************
+
+Put all the documentation in the class itself, including notes on the constructor.
+
+Pre-commit hook
+----------------------------------------------------
+
+In Jina we use git's pre-commit hooks in order to make sure code is properly documented to match our style and high quality. The hook will automatically remind you to add docstrings to new code, or fix any unfit docstrings.
+
+Follow the guide in [CONTRIBUTING.md](https://github.com/jina-ai/jina/blob/master/CONTRIBUTING.md) to install it.
+
+*****************************************************
+Disabling specific cases
+*****************************************************
+
+In some cases it is okay to disable linting. This is either due to our principles, or due to bugs or limitations in the linters.
+
+1. We do not need to document exceptions in the docstrings. Use ``# noqa: DAR401``.
+2. We do not need to document the return value in a ``@property`` method of a class. Use ``# noqa: DAR201``
+
