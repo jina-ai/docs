@@ -4,7 +4,7 @@
 
 Use Jina Dashboard by visiting the [website](https://dashboard.jina.ai) or cloning it from [GitHub](https://github.com/jina-ai/dashboard)
 
-![flow demo](../overview.gif)
+![flow demo](../img/overview.gif)
 
 ## Features
 
