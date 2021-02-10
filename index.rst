@@ -3,11 +3,6 @@ Welcome to Jina!
 
 Jina is a deep learning-powered search framework for building cross-/multi-modal search systems (e.g. text, images, video, audio) in the cloud.
 
-The Jina ecosystem is composed of four independent frameworks
-
-.. image:: ecosystem.png
-   :width: 800
-
 ------------
 
 
@@ -23,7 +18,7 @@ Each of the four Jina products has the following documentation types.
 
 ------------
 
-Table of content 
+Table of content
 **********************
 
 .. toctree::
