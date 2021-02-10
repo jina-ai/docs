@@ -35,12 +35,6 @@ With Jina installed on your machine:
 
     pip install -U jina
 
-Ground truth
------------------
-In order to be able to Evaluate the performance of a transformation applied to a Document by any part of a Jina
-:term:`Flow`, we need to know what the desired state of the :term:`Document` is. This desired state is called
-:term:`GroundTruth` and can be passed in Jina in every ``IndexRequest`` and ``SearchRequest``. This :term:`GroundTruth`
-in Jina is nothing else than another :term:`Document`.
 
 Overview
 -----------------
@@ -52,22 +46,10 @@ As a new type of :term:`Executor`, evaluators inspect documents from the request
 This executors can be wrapped in a :term:`Pod` as any other kind of executor and placed anywhere in the :term:`Flow`.
 They tend to be placed after the :term:`Pod` applying the transformation that wants to be evaluated by the specific `Evaluator`.
 
-.. highlight:: python
-.. code-block:: python
-
-    from jina import Flow
-
-    f = Flow().add(
-        uses='!BaseCrafter', name='crafter').add(
-        uses='!BaseEncoder', name='encoder').add(
-        uses='!BaseEmbeddingEvaluator', name='embed_eval').add(
-        uses='!CompoundIndexer', name='indexer').add(
-        uses='!BaseRanker', name='ranker').add(
-        uses='!BaseRankingEvaluator', name='rank_eval')
-
-The above example illustrates how we add evaluator into a flow.
-We added two evaluators: a ``BaseEmbeddingEvaluator`` after encoder and a ``BaseRankingEvaluator`` after ``BaseRanker``.
-
+In order to be able to Evaluate the performance of a transformation applied to a Document by any part of a Jina
+:term:`Flow`, we need to know what the desired state of the :term:`Document` is. This desired state is called
+:term:`GroundTruth` and can be passed in Jina in every ``IndexRequest`` and ``SearchRequest``. This :term:`GroundTruth`
+in Jina is nothing else than another :term:`Document`.
 
 ``IndexRequest`` and ``SearchRequest`` are formed by streams of pairs and `Documents` and `GroundTruths`. When no evaluation
 is involved, `GroundTruth` tends to be empty, however when an `Evaluation` pod is involved in the Flow, it will actually
