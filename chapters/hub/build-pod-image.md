@@ -67,18 +67,6 @@ Typically, the following files are packed into the container image.
 
 Except `Dockerfile`, all other options to build a valid Pod image depending on your case. `build.args` is only required when you want to [upload your image to Jina Hub](./publish-your-pod-image.html#publish-your-pod-image-to-jina-hub).
 
-## How to change the default drivers of the Executor that is running inside the Docker image?
-
-Jina allows `uses_internal` as an argument while initialising Flow for this purpose.
-
-  - ```python
-    from jina.flow import Flow
-
-    f = (Flow()
-        .add(name='my-encoder', image='jinaai/hub.examples.mwu_encoder', port_in=55555, port_out=55556)
-        .add(name='my-indexer', uses='{{image_name}}', uses_internal='indexer.yml'))
-    ```
-    
 ## Step-by-Step Example
 
 In this example, we consider the scenario where we create a new Executor and want to reuse it in another project, without tweaking any code in [`jina-ai/jina`](https://github.com/jina-ai/jina/).
