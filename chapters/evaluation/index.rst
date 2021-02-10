@@ -63,8 +63,8 @@ Afterwards, the :term:`Driver` will add the results of the evaluation into the `
 
 
 Since Evaluation tends to focus only on some small parts of the `Documents` (IDs of the matches when evaluating Rankers,
-embedding when evaluating Encoders), it is not needed for `GroundTruth` to contain more information from the `Document` than
-the one that will be used by the Evaluators.
+embedding when evaluating Encoders),
+GroundTruth does not need to contain more information from the Document than will be used by the Evaluator.
 
 It is important to note that the Documents inside the `IndexRequest` and `SerchRequest` are transformed by the `Drivers`
 inside the Flow while GroundTruth never changes, since is only used to analyze and compare to its paired `Document`
