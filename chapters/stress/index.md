@@ -91,77 +91,178 @@ In order to stress-test the system, we also issue index and query requests for s
 
 The client also sets the `TOP_K` parameter. This limits the number of matches returned by the Flow. This also affects performance.
 
-## Results
+## Experiments
 
-### Experiment 1
-
-We configured parallelization as such:
+For computing an estimated throughput we used the following configuration:
 
 - Encoder: `parallel: 2`
 - Vector Indexer: `shards: 8`
-- Redis Indexer: `parallel: 2`
+- key-value Indexer: `parallel: 2`
 - scheduling: `load_balance`
 
-See full environment configuration file [here](./env_1)
+See full environment configuration (the `.env` file):
 
-#### Table of results
+<details>
+  <summary>Click to expand</summary>
+  
+```dotenv
+##Infrastructure parameters
+JINA_ENCODER_HOST=encoder
+JINA_RANKER_HOST=ranker
+JINA_REDIS_INDEXER_HOST=ranker
+JINA_VEC_INDEXER_HOST=vector
 
-[comment]: <> (BEGIN TABLE)
+##Flow parameters
+FLOW_HOST=flow_host
+FLOW_PORT=8000
+
+##Sharding/Performance parameters
+JINA_SHARDS_ENCODER=2
+JINA_SHARDS_INDEXERS=8
+JINA_SHARDS_REDIS=2
+OMP_NUM_THREADS=1
+SCHEDULING=load_balance
+
+##Functional/Indexers parameters
+JINA_ENCODER_DRIVER_BATCHING=16
+JINA_DISTANCE_REVERSE=False
+JINA_FAISS_IMAGE=docker://jinahub/pod.indexer.faissindexer:0.0.15-0.9.33
+JINA_ANNOY_IMAGE=docker://jinahub/pod.indexer.annoyindexer:0.0.16-0.9.33
+JINA_FAISS_INDEX_KEY='IVF50,Flat'
+JINA_ANNOY_NUM_TREES=100
+JINA_ANNOY_SEARCH_K=-1
+
+##Client/run parameters
+TOP_K=50
+#Number of documents a client will try to index at every connection
+DOCS_INDEX=1000
+#Number of documents a client will try to query at every connection
+DOCS_QUERY=1000
+PYTHON_EXEC=python3
+DATASET=image
+#Number of seconds for which clients will try to index documents. (The time is checked after each cycle of indexing `DOCS_INDEX`)
+TIME_LOAD_INDEX=18000
+#Number of seconds for which clients will try to query documents. (The time is checked after each cycle of indexing `DOCS_QUERY`)
+TIME_LOAD_QUERY=3600
+#Number of documents every request will contain
+REQ_SIZE=50
+#Number of concurrent clients indexing
+CONCURRENCY_INDEX=5
+#Number of concurrent clients querying
+CONCURRENCY_QUERY=1
+SLEEP_TIME=10
+
+```
+</details>
+
+We provide two experiments, depending on the key-value store we employ.
+
+### Experiment 1 - Redis
+
+In this example we use [redis](https://redis.io/) as a key-value store.
+
+#### Results
 
 <table>
 <thead>
   <tr>
+    <th>Operation</th>
     <th>Vector Indexer</th>
     <th>KV Indexer</th>
-    <th>Index time</th>
-    <th>Docs indexed</th>
-    <th>QPS</th>
-    <th>Query time</th>
-    <th>Docs queried</th>
+    <th>Time (h)</th>
+    <th>Documents</th>
     <th>QPS</th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td>Numpy -&nbsp;&nbsp;</td>
+    <td>Index</td>
+    <td>NumpyIndexer</td>
     <td>Redis</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>5</td>
+    <td>1448000</td>
+    <td>80.22</td>
   </tr>
   <tr>
-    <td>Faiss - param</td>
+    <td>Query</td>
+    <td>Faiss (index_key='IVF50,Flat')</td>
     <td>Redis</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>1</td>
+    <td>22000</td>
+    <td>5.89</td>
   </tr>
   <tr>
-    <td>Annoy - params</td>
+    <td>Query</td>
+    <td>Annoy (trees=100, k=-1)</td>
     <td>Redis</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
+    <td>1</td>
+    <td>23000</td>
+    <td>6.14</td>
+  </tr>
+  <tr>
+    <td>Query</td>
+    <td>NumpyIndexer</td>
+    <td>Redis</td>
+    <td>1</td>
+    <td>8000</td>
+    <td>2.07</td>
   </tr>
 </tbody>
 </table>
 
-[comment]: <> (END TABLE)
+### Experiment 2 - BinaryPbIndexer
 
-### Experiment 2
+In this example we use the `BinaryPbIndexer` as a key-value store, instead of `redis`.
 
-[comment]: <> (TODO with BinaryPb)
+#### Results
 
+<table>
+<thead>
+  <tr>
+    <th>Operation</th>
+    <th>Vector Indexer</th>
+    <th>KV Indexer</th>
+    <th>Time (h)</th>
+    <th>Documents</th>
+    <th>QPS</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>Index</td>
+    <td>NumpyIndexer</td>
+    <td>BinaryPb</td>
+    <td>5</td>
+    <td>1283000</td>
+    <td>71.05</td>
+  </tr>
+  <tr>
+    <td>Query</td>
+    <td>Faiss (index_key='IVF50,Flat')</td>
+    <td>BinaryPb</td>
+    <td>1</td>
+    <td>108000</td>
+    <td>29.77</td>
+  </tr>
+  <tr>
+    <td>Query</td>
+    <td>Annoy (trees=100, k=-1)</td>
+    <td>BinaryPb</td>
+    <td>1</td>
+    <td>113000</td>
+    <td>31.12</td>
+  </tr>
+  <tr>
+    <td>Query</td>
+    <td>NumpyIndexer</td>
+    <td>BinaryPb</td>
+    <td>1</td>
+    <td>9000</td>
+    <td>2.36</td>
+  </tr>
+</tbody>
+</table>
 
 ## Test it yourself
 
-See [guide](./instructions.md)
+To reproduce these benchmarks, follow this [guide](./instructions.md)
