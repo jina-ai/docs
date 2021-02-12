@@ -1,5 +1,5 @@
 ==================================
-Docstring guide
+Docstring Guide
 ==================================
 
     “Code is more often read than written.”
