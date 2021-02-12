@@ -11,7 +11,7 @@ Guides are publicly available and represent the Jina AI brand and the quality of
 
 ## Specific guidelines:
 
-** For anything not covered here, we default to the [Google developer style guide.](https://developers.google.com/style)  **
+**For anything not covered here, we default to the [Google developer style guide.](https://developers.google.com/style)**
 
 1.  Check the spelling and grammar in your contributions. Most editors include a spell checker or have an available spell-checking plugin. You can also paste your text into a Google Doc or other document software for a more robust spelling and grammar check. We use [American English spelling](https://www.oxfordinternationalenglish.com/differences-in-british-and-american-spelling/).
 
@@ -41,7 +41,7 @@ Guides are publicly available and represent the Jina AI brand and the quality of
 12. For code/CLI output, capitalization should match the actual code or output
 
 ```python
-	    #correct:
+	#correct:
     	import numpy as np
     	from jina.executors.encoders import BaseImageEncoder
 
@@ -49,8 +49,10 @@ Guides are publicly available and represent the Jina AI brand and the quality of
     	import Numpy as NP
     	from jina.executors.encoders import BaseImageEncoder
 ```
-13.  - For top-level titles: Use Title Case [You can check with this website [here\]
-](https://titlecaseconverter.com/)		- For section titles: Use sentence case
+13.  
+- For top-level titles: Use Title Case [You can check with this website [here\]
+](https://titlecaseconverter.com/)		
+- For section titles: Use sentence case
 
 14. For code markup:
 - Use `<code>` in HTML or `` ` `` in Markdown to apply a monospace font and other styling to [code in text](https://developers.google.com/style/code-in-text), inline code, and user input.
