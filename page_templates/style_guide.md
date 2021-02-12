@@ -11,6 +11,8 @@ Guides are publicly available and represent the Jina AI brand and the quality of
 
 ## Specific guidelines:
 
+**Code Context:** Anything inside of a code snippet.  
+
 **For anything not covered here, we default to the [Google developer style guide.](https://developers.google.com/style)**
 
 1.  Check the spelling and grammar in your contributions. Most editors include a spell checker or have an available spell-checking plugin. You can also paste your text into a Google Doc or other document software for a more robust spelling and grammar check. We use [American English spelling](https://www.oxfordinternationalenglish.com/differences-in-british-and-american-spelling/).
