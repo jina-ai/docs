@@ -108,22 +108,12 @@ View "Hello World" in Jina Dashboard
 ====================================
 
 
-.. highlight:: bash
-.. code-block:: bash
+You can see the the logs and get insight into the health of your Flow with `Jina Dashboard <https://docs.jina.ai/chapters/dashboard/introduction/index.html>`_. In order to do that you’ll need 2 steps:
 
-    pip install "jina[sse]"
+1. Connect to :term:`JinaD`.
+2. Set the right port in **Dashboard**.
 
-    jina hello-world --logserver
-
-
-Or if you use Docker:
-
-
-.. highlight:: bash
-.. code-block:: bash
-
-
-    docker run -p 5000:5000 -v "$(pwd)/j:/j" jinaai/jina hello-world --workdir /j --logserver && open j/hello-world.html # replace "open" with "xdg-open" on Linux
+You can follow the detailed steps `here <https://docs.jina.ai/chapters/dashboard/connect-jinaD.html>`_.
 
 
 
