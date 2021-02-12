@@ -1,4 +1,4 @@
-# Jina AI Documentation
+# Jina Documentation
 
 ![CD](https://github.com/jina-ai/docs/workflows/CD/badge.svg?branch=docs-migration)
 
