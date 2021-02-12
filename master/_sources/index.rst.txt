@@ -18,7 +18,7 @@ Each of the four Jina products has the following documentation types.
 
 ------------
 
-Table of content
+Table of contents
 **********************
 
 .. toctree::
@@ -43,7 +43,6 @@ Table of content
    chapters/hub/introduction/index
    chapters/hub/guides/index
    chapters/hub/api_references/index
-
 
 .. toctree::
    :maxdepth: 1
