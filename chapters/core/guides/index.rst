@@ -36,3 +36,4 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../request_size/request_size
    ../../evaluation/index
    ../../incremental_indexing/index
+   ../../stress/index
