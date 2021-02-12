@@ -17,7 +17,7 @@ Before you start, you have to [launch JinaD and connect it to the Dashboard](con
 
 Drag&Drop the pods to the canvas. You can edit a pod's properties by double clicking it
 
-![compose flow](img/flowCompose.gif)
+![compose flow](img/composeFlow.gif)
 
 
 ### Starting and stopping a flow
