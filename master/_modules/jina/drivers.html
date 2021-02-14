@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers &mdash; Jina 1.0.1-master documentation</title>
+  <title>jina.drivers &mdash; Jina 1.0.2-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.1-master</button>
+            <button class="dropbtn version">1.0.2-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -198,8 +198,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
 </ul>
 
             
@@ -304,9 +304,9 @@
     <span class="kn">from</span> <span class="nn">..executors</span> <span class="kn">import</span> <span class="n">AnyExecutor</span>
     <span class="kn">from</span> <span class="nn">..logging.logger</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
     <span class="kn">from</span> <span class="nn">..types.message</span> <span class="kn">import</span> <span class="n">Message</span>
-    <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
     <span class="kn">from</span> <span class="nn">..types.request</span> <span class="kn">import</span> <span class="n">Request</span>
     <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">QueryLangSet</span><span class="p">,</span> <span class="n">DocumentSet</span>
+    <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 
 
 <div class="viewcode-block" id="store_init_kwargs"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.store_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">store_init_kwargs</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
@@ -496,28 +496,12 @@
             <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;JinaLogger&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Shortcut to ``self.runtime.logger``&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">logger</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_dump_instance_to_yaml</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
-        <span class="c1"># note: we only save non-default property for the sake of clarity</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">a</span><span class="p">:</span>
-            <span class="n">r</span><span class="p">[</span><span class="s1">&#39;with&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
-        <span class="k">return</span> <span class="n">r</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span>
@@ -543,6 +527,13 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">traversal_paths</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span>
 
     <span class="k">def</span> <span class="nf">_apply_root</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -603,6 +594,31 @@
                     <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">parent_doc</span><span class="p">,</span> <span class="n">parent_edge_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="FastRecursiveMixin"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.FastRecursiveMixin">[docs]</a><span class="k">class</span> <span class="nc">FastRecursiveMixin</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The optimized version of :class:`BaseRecursiveDriver`,</span>
+<span class="sd">     it uses :meth:`traverse` in :class:`DocumentSet` and yield much better performance for index and encode drivers.</span>
+
+<span class="sd">     .. seealso::</span>
+<span class="sd">        https://github.com/jina-ai/jina/issues/1932</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">DocumentSet</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaseExecutableDriver"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseExecutableDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseExecutableDriver</span><span class="p">(</span><span class="n">BaseRecursiveDriver</span><span class="p">):</span>
@@ -826,7 +842,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 13, 2021.
+        Last updated on Feb 14, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document &mdash; Jina 1.0.1-master documentation</title>
+  <title>jina.types.document &mdash; Jina 1.0.2-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.1-master</button>
+            <button class="dropbtn version">1.0.2-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -198,8 +198,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
 </ul>
 
             
@@ -274,6 +274,7 @@
             
   <h1>Source code for jina.types.document</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">mimetypes</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -287,7 +288,7 @@
 <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
 <span class="kn">from</span> <span class="nn">google.protobuf.field_mask_pb2</span> <span class="kn">import</span> <span class="n">FieldMask</span>
 
-<span class="kn">from</span> <span class="nn">.converters</span> <span class="kn">import</span> <span class="n">png_to_buffer</span><span class="p">,</span> <span class="n">to_datauri</span><span class="p">,</span> <span class="n">guess_mime</span>
+<span class="kn">from</span> <span class="nn">.converters</span> <span class="kn">import</span> <span class="n">png_to_buffer</span><span class="p">,</span> <span class="n">to_datauri</span><span class="p">,</span> <span class="n">guess_mime</span><span class="p">,</span> <span class="n">to_image_blob</span>
 <span class="kn">from</span> <span class="nn">..mixin</span> <span class="kn">import</span> <span class="n">ProtoTypeMixin</span>
 <span class="kn">from</span> <span class="nn">..ndarray.generic</span> <span class="kn">import</span> <span class="n">NdArray</span>
 <span class="kn">from</span> <span class="nn">..score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
@@ -461,21 +462,27 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the length of of the document.&quot;&quot;&quot;</span>
         <span class="c1"># TODO(Han): rename this to siblings as this shadows the built-in `length`</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">length</span>
 
     <span class="nd">@length</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the length of of the document.</span>
+
+<span class="sd">        :param value: The int length of the document</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">weight</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the weight of the document &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return the weight of the document.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">weight</span>
 
     <span class="nd">@weight</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the weight of the document</span>
+        <span class="sd">&quot;&quot;&quot;Set the weight of the document.</span>
 
 <span class="sd">        :param value: the float weight of the document.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -483,17 +490,109 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">modality</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the modality of the document &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the modality of the document.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">modality</span>
 
     <span class="nd">@modality</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">modality</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the modality of the document&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set the modality of the document.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">modality</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">content_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the content hash of the document.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">content_hash</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
+                <span class="n">destination</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
+                <span class="n">exclude_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">include_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">replace_message_field</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="n">replace_repeated_field</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Merge fields specified in ``include_fields`` or ``exclude_fields`` from source to destination.</span>
+
+<span class="sd">        :param source: source :class:`Document` object.</span>
+<span class="sd">        :param destination: the destination :class:`Document` object to be merged into.</span>
+<span class="sd">        :param exclude_fields: a tuple of field names that excluded from destination document</span>
+<span class="sd">        :param include_fields: a tuple of field names that included from source document</span>
+<span class="sd">        :param replace_message_field: Replace message field if True. Merge message</span>
+<span class="sd">                  field if False.</span>
+<span class="sd">        :param replace_repeated_field: Replace repeated field if True. Append</span>
+<span class="sd">                  elements of repeated field if False.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            *. if neither ``exclude_fields`` nor ``include_fields`` is given,</span>
+<span class="sd">                then destination is overrided by the source completely.</span>
+<span class="sd">            *. ``destination`` will be modified in place, ``source`` will be unchanged</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">include_fields</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">exclude_fields</span><span class="p">:</span>
+            <span class="c1"># same behavior as copy</span>
+            <span class="n">destination</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">include_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">exclude_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">include_fields</span><span class="p">)</span><span class="o">.</span><span class="n">MergeMessage</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">proto</span><span class="p">,</span> <span class="n">destination</span><span class="o">.</span><span class="n">proto</span><span class="p">,</span>
+                                                         <span class="n">replace_message_field</span><span class="o">=</span><span class="n">replace_message_field</span><span class="p">,</span>
+                                                         <span class="n">replace_repeated_field</span><span class="o">=</span><span class="n">replace_repeated_field</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">exclude_fields</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">empty_doc</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span>
+
+            <span class="n">_dest</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span>
+            <span class="c1"># backup exclude fields in destination</span>
+            <span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">exclude_fields</span><span class="p">)</span><span class="o">.</span><span class="n">MergeMessage</span><span class="p">(</span><span class="n">destination</span><span class="o">.</span><span class="n">proto</span><span class="p">,</span> <span class="n">_dest</span><span class="p">,</span>
+                                                         <span class="n">replace_repeated_field</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                         <span class="n">replace_message_field</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">include_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># override dest with src</span>
+                <span class="n">destination</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># only update include fields</span>
+                <span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">include_fields</span><span class="p">)</span><span class="o">.</span><span class="n">MergeMessage</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">proto</span><span class="p">,</span> <span class="n">destination</span><span class="o">.</span><span class="n">proto</span><span class="p">,</span>
+                                                             <span class="n">replace_message_field</span><span class="o">=</span><span class="n">replace_message_field</span><span class="p">,</span>
+                                                             <span class="n">replace_repeated_field</span><span class="o">=</span><span class="n">replace_repeated_field</span><span class="p">)</span>
+
+            <span class="c1"># clear the exclude fields</span>
+            <span class="n">FieldMask</span><span class="p">(</span><span class="n">paths</span><span class="o">=</span><span class="n">exclude_fields</span><span class="p">)</span><span class="o">.</span><span class="n">MergeMessage</span><span class="p">(</span><span class="n">empty_doc</span><span class="p">,</span> <span class="n">destination</span><span class="o">.</span><span class="n">proto</span><span class="p">,</span>
+                                                         <span class="n">replace_repeated_field</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                         <span class="n">replace_message_field</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># recover exclude fields</span>
+            <span class="n">destination</span><span class="o">.</span><span class="n">proto</span><span class="o">.</span><span class="n">MergeFrom</span><span class="p">(</span><span class="n">_dest</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Document.update"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
+               <span class="n">exclude_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="n">include_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Updates fields specified in ``include_fields`` from the source to current Document.</span>
+
+<span class="sd">        :param source: source :class:`Document` object.</span>
+<span class="sd">        :param exclude_fields: a tuple of field names that excluded from the current document,</span>
+<span class="sd">                when not given the non-empty fields of the current document is considered as ``exclude_fields``</span>
+<span class="sd">        :param include_fields: a tuple of field names that included from the source document</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            *. ``destination`` will be modified in place, ``source`` will be unchanged</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">include_fields</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">include_fields</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">exclude_fields</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exclude_fields</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;include_fields and exclude_fields must be tuple of str&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">exclude_fields</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">include_fields</span><span class="p">:</span>
+                <span class="n">exclude_fields</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_empty_fields</span> <span class="k">if</span> <span class="n">f</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">include_fields</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">exclude_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_empty_fields</span>
+
+        <span class="k">if</span> <span class="n">include_fields</span> <span class="ow">and</span> <span class="n">exclude_fields</span><span class="p">:</span>
+            <span class="n">_intersect</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">include_fields</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">exclude_fields</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_intersect</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">_intersect</span><span class="si">}</span><span class="s1"> is in both `include_fields` and `exclude_fields`&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span>
+                     <span class="n">exclude_fields</span><span class="o">=</span><span class="n">exclude_fields</span><span class="p">,</span>
+                     <span class="n">include_fields</span><span class="o">=</span><span class="n">include_fields</span><span class="p">,</span>
+                     <span class="n">replace_message_field</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">replace_repeated_field</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Document.update_content_hash"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.update_content_hash">[docs]</a>    <span class="k">def</span> <span class="nf">update_content_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                             <span class="n">exclude_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
@@ -564,16 +663,17 @@
 
     <span class="nd">@blob</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">blob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.NdArrayProto&#39;</span><span class="p">,</span> <span class="s1">&#39;NdArray&#39;</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Set the `blob` to :param:`value`.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_ndarray</span><span class="p">(</span><span class="s1">&#39;blob&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return ``embedding`` of the content of a Document.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return ``embedding`` of the content of a Document.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">NdArray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">embedding</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
 
     <span class="nd">@embedding</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.NdArrayProto&#39;</span><span class="p">,</span> <span class="s1">&#39;NdArray&#39;</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Set the ``embedding`` of the content of a Document.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_ndarray</span><span class="p">(</span><span class="s1">&#39;embedding&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
@@ -589,12 +689,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">matches</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;MatchSet&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get all matches of the current document &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get all matches of the current document.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">MatchSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">matches</span><span class="p">,</span> <span class="n">reference_doc</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ChunkSet&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get all chunks of the current document &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get all chunks of the current document.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ChunkSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">chunks</span><span class="p">,</span> <span class="n">reference_doc</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Document.set_attrs"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.set_attrs">[docs]</a>    <span class="k">def</span> <span class="nf">set_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -646,6 +746,7 @@
 
     <span class="nd">@buffer</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the ``buffer`` to :param:`value`.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -667,16 +768,18 @@
 
     <span class="nd">@text</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the `text` to :param:`value`&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="s1">&#39;text/plain&#39;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">uri</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the URI of the document.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">uri</span>
 
     <span class="nd">@uri</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the URI of the document</span>
+        <span class="sd">&quot;&quot;&quot;Set the URI of the document.</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            :attr:`mime_type` will be updated accordingly</span>
@@ -765,18 +868,22 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">granularity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the granularity of the document.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">granularity</span>
 
     <span class="nd">@granularity</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">granularity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">granularity_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the granularity of the document.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">granularity</span> <span class="o">=</span> <span class="n">granularity_value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the score of the document.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">NamedScore</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">score</span><span class="p">)</span>
 
     <span class="nd">@score</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">jina_pb2</span><span class="o">.</span><span class="n">NamedScoreProto</span><span class="p">,</span> <span class="n">NamedScore</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Set the score of the document.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">NamedScoreProto</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">NamedScore</span><span class="p">):</span>
@@ -795,10 +902,26 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Document.convert_buffer_image_to_blob"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.convert_buffer_image_to_blob">[docs]</a>    <span class="k">def</span> <span class="nf">convert_buffer_image_to_blob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convert an image buffer to blob</span>
+
+<span class="sd">        :param color_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
+<span class="sd">        :param kwargs: reserved for maximum compatibility when using with ConvertDriver</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">to_image_blob</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">),</span> <span class="n">color_axis</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Document.convert_blob_to_uri"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.convert_blob_to_uri">[docs]</a>    <span class="k">def</span> <span class="nf">convert_blob_to_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;BILINEAR&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Assuming :attr:`blob` is a _valid_ image, set :attr:`uri` accordingly&quot;&quot;&quot;</span>
         <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">png_to_buffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blob</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="s1">&#39;data:image/png;base64,&#39;</span> <span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">png_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Document.convert_uri_to_blob"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.convert_uri_to_blob">[docs]</a>    <span class="k">def</span> <span class="nf">convert_uri_to_blob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">uri_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Convert uri to blob</span>
+
+<span class="sd">        :param color_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
+<span class="sd">        :param kwargs: reserved for maximum compatibility when using with ConvertDriver</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">to_image_blob</span><span class="p">((</span><span class="n">uri_prefix</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span> <span class="k">if</span> <span class="n">uri_prefix</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">color_axis</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Document.convert_uri_to_buffer"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.convert_uri_to_buffer">[docs]</a>    <span class="k">def</span> <span class="nf">convert_uri_to_buffer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert uri to buffer</span>
@@ -877,9 +1000,11 @@
             <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="Document.MergeFrom"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.MergeFrom">[docs]</a>    <span class="k">def</span> <span class="nf">MergeFrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Merge the content of target :param:doc into current document.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">MergeFrom</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Document.CopyFrom"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.CopyFrom">[docs]</a>    <span class="k">def</span> <span class="nf">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Copy the content of target :param:doc into current document.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Document.traverse"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.traverse">[docs]</a>    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -961,7 +1086,7 @@
 <div class="viewcode-block" id="Document.plot"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
              <span class="n">inline_display</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Visualize the Document recursively</span>
+<span class="sd">        Visualize the Document recursively.</span>
 
 <span class="sd">        :param output: a filename specifying the name of the image to be created,</span>
 <span class="sd">                    the suffix svg/jpg determines the file type of the output image</span>
@@ -987,7 +1112,12 @@
             <span class="n">download_mermaid_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">showed</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">jina.logging</span> <span class="kn">import</span> <span class="n">default_logger</span>
-            <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Document visualization: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
+            <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Document visualization: </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">non_empty_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return the set fields of the curren&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">field</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ListFields</span><span class="p">())</span></div>
 </pre></div>
 
            </div>
@@ -1120,7 +1250,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 13, 2021.
+        Last updated on Feb 14, 2021.
       </span>
 
         </p>

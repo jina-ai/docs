@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document.converters &mdash; Jina 1.0.1-master documentation</title>
+  <title>jina.types.document.converters &mdash; Jina 1.0.2-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.1-master</button>
+            <button class="dropbtn version">1.0.2-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -198,8 +198,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
 </ul>
 
             
@@ -284,7 +284,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="png_to_buffer_1d"><a class="viewcode-back" href="../../../../api/jina.types.document.converters.html#jina.types.document.converters.png_to_buffer_1d">[docs]</a><span class="k">def</span> <span class="nf">png_to_buffer_1d</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_png_to_buffer_1d</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="n">pixels</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">arr</span> <span class="o">=</span> <span class="mi">255</span> <span class="o">-</span> <span class="n">arr</span>
     <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
@@ -309,39 +309,67 @@
         <span class="n">png_pack</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;IDAT&#39;</span><span class="p">,</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span>
         <span class="n">png_pack</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;IEND&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)])</span>
 
-    <span class="k">return</span> <span class="n">png_bytes</span></div>
+    <span class="k">return</span> <span class="n">png_bytes</span>
 
 
-<div class="viewcode-block" id="pillow_image_to_buffer"><a class="viewcode-back" href="../../../../api/jina.types.document.converters.html#jina.types.document.converters.pillow_image_to_buffer">[docs]</a><span class="k">def</span> <span class="nf">pillow_image_to_buffer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">io</span>
     <span class="n">img_byte_arr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
     <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">img_byte_arr</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">image_format</span><span class="p">)</span>
     <span class="n">img_byte_arr</span> <span class="o">=</span> <span class="n">img_byte_arr</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">img_byte_arr</span></div>
+    <span class="k">return</span> <span class="n">img_byte_arr</span>
 
 
 <div class="viewcode-block" id="png_to_buffer"><a class="viewcode-back" href="../../../../api/jina.types.document.converters.html#jina.types.document.converters.png_to_buffer">[docs]</a><span class="k">def</span> <span class="nf">png_to_buffer</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert png to buffer bytes.</span>
+
+<span class="sd">    :param arr: Data representations of the png.</span>
+<span class="sd">    :param width: Width of the png.</span>
+<span class="sd">    :param height: Height of the png.</span>
+<span class="sd">    :param resize_method: Resize methods (e.g. `NEAREST`, `BILINEAR`, `BICUBIC`, and `LANCZOS`).</span>
+<span class="sd">    :return: Png in buffer bytes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">png_to_buffer_1d</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_png_to_buffer_1d</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
         <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">)</span>
         <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Image</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">))</span>
-        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="s1">&#39;PNG&#39;</span><span class="p">)</span>
+        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="s1">&#39;PNG&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
         <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
         <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Image</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">))</span>
-        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="s1">&#39;PNG&#39;</span><span class="p">)</span>
+        <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="s1">&#39;PNG&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ndim=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s1"> array is not supported&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">png_bytes</span></div>
 
 
+<div class="viewcode-block" id="to_image_blob"><a class="viewcode-back" href="../../../../api/jina.types.document.converters.html#jina.types.document.converters.to_image_blob">[docs]</a><span class="k">def</span> <span class="nf">to_image_blob</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">color_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+    <span class="n">raw_img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raw_img</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">color_axis</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">color_axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span></div>
+
+
 <div class="viewcode-block" id="to_datauri"><a class="viewcode-back" href="../../../../api/jina.types.document.converters.html#jina.types.document.converters.to_datauri">[docs]</a><span class="k">def</span> <span class="nf">to_datauri</span><span class="p">(</span><span class="n">mimetype</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">charset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">base64</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert data to data URI.</span>
+
+<span class="sd">    :param mimetype: MIME types (e.g. &#39;text/plain&#39;,&#39;image/png&#39; etc.)</span>
+<span class="sd">    :param data: Data representations.</span>
+<span class="sd">    :param charset: Charset may be any character set registered with IANA</span>
+<span class="sd">    :param base64: Used to encode arbitrary octet sequences into a form that satisfies the rules of 7bit. Designed to be efficient for non-text 8 bit and binary data. Sometimes used for text data that frequently uses non-US-ASCII characters.</span>
+<span class="sd">    :param binary:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data:&#39;</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">charset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">parts</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;;charset=&#39;</span><span class="p">,</span> <span class="n">charset</span><span class="p">])</span>
@@ -363,6 +391,12 @@
 
 
 <div class="viewcode-block" id="guess_mime"><a class="viewcode-back" href="../../../../api/jina.types.document.converters.html#jina.types.document.converters.guess_mime">[docs]</a><span class="k">def</span> <span class="nf">guess_mime</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Guess the type of a file based on its URL.</span>
+
+<span class="sd">    :param uri: Data URI.</span>
+<span class="sd">    :return: MIME type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># guess when uri points to a local file</span>
     <span class="n">m_type</span> <span class="o">=</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="n">uri</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># guess when uri points to a remote file</span>
@@ -503,7 +537,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 13, 2021.
+        Last updated on Feb 14, 2021.
       </span>
 
         </p>

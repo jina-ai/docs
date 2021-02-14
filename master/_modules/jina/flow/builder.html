@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.flow.builder &mdash; Jina 1.0.1-master documentation</title>
+  <title>jina.flow.builder &mdash; Jina 1.0.2-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.1-master</button>
+            <button class="dropbtn version">1.0.2-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -198,8 +198,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
 </ul>
 
             
@@ -284,6 +284,7 @@
 <span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">FlowBuildLevelError</span>
 <span class="kn">from</span> <span class="nn">..peapods.pods</span> <span class="kn">import</span> <span class="n">_fill_in_host</span>
 
+<span class="c1"># noinspection PyUnreachableCode</span>
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Flow</span>
     <span class="kn">from</span> <span class="nn">..peapods</span> <span class="kn">import</span> <span class="n">BasePod</span>
@@ -291,8 +292,6 @@
 
 <div class="viewcode-block" id="build_required"><a class="viewcode-back" href="../../../api/jina.flow.builder.html#jina.flow.builder.build_required">[docs]</a><span class="k">def</span> <span class="nf">build_required</span><span class="p">(</span><span class="n">required_level</span><span class="p">:</span> <span class="s1">&#39;FlowBuildLevel&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Annotate a function so that it requires certain build level to run.</span>
-
-<span class="sd">    :param required_level: required build level to run this function.</span>
 
 <span class="sd">    Example:</span>
 
@@ -303,8 +302,9 @@
 <span class="sd">        def foo():</span>
 <span class="sd">            print(1)</span>
 
+<span class="sd">    :param required_level: required build level to run this function.</span>
+<span class="sd">    :return: annotated function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="nf">__build_level</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -344,7 +344,10 @@
 
 
 <span class="k">def</span> <span class="nf">_hanging_pods</span><span class="p">(</span><span class="n">op_flow</span><span class="p">:</span> <span class="s1">&#39;Flow&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Return the names of hanging pods (nobody recv from them) in the flow&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param op_flow: the Flow we&#39;re operating on</span>
+<span class="sd">    :return: names of hanging Pods (nobody recv from them) in the Flow.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">all_needs</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">op_flow</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">needs</span><span class="p">}</span>
     <span class="n">all_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">op_flow</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
     <span class="c1"># all_names is always a superset of all_needs</span>
@@ -384,6 +387,7 @@
 <span class="k">def</span> <span class="nf">_connect</span><span class="p">(</span><span class="n">first</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">,</span> <span class="n">second</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">,</span> <span class="n">first_socket_type</span><span class="p">:</span> <span class="s1">&#39;SocketType&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Connect two Pods</span>
 
+<span class="sd">    # noqa: DAR401</span>
 <span class="sd">    :param first: the first BasePod</span>
 <span class="sd">    :param second: the second BasePod</span>
 <span class="sd">    :param first_socket_type: socket type of the first BasePod, availables are PUSH_BIND, PUSH_CONNECT, PUB_BIND</span>
@@ -416,10 +420,9 @@
     <span class="k">def</span> <span class="nf">_optimize_two_connections</span><span class="p">(</span><span class="n">flow</span><span class="p">:</span> <span class="s1">&#39;Flow&#39;</span><span class="p">,</span> <span class="n">start_node_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_node_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; THIS CODE IS NEVER TESTED AND THE LOGIC MAY NOT APPLIED ANYMORE</span>
 
-<span class="sd">        :param flow:</span>
-<span class="sd">        :param start_node_name:</span>
-<span class="sd">        :param end_node_name:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param flow: the Flow we&#39;re optimizing</span>
+<span class="sd">        :param start_node_name: first node of connection</span>
+<span class="sd">        :param end_node_name: second node of connection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">start_node</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">[</span><span class="n">start_node_name</span><span class="p">]</span>
         <span class="n">end_node</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">[</span><span class="n">end_node_name</span><span class="p">]</span>
@@ -588,7 +591,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 13, 2021.
+        Last updated on Feb 14, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.helper &mdash; Jina 1.0.1-master documentation</title>
+  <title>jina.helper &mdash; Jina 1.0.2-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.1-master</button>
+            <button class="dropbtn version">1.0.2-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -198,8 +198,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 63 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
 </ul>
 
             
@@ -322,6 +322,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">rename_kwargs</span><span class="p">(</span><span class="n">func_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">aliases</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Raise warnings or exceptions for deprecated arguments.</span>
+
+<span class="sd">        :param func_name: Name of the function.</span>
+<span class="sd">        :param aliases: kwargs with key as the deprecated arg name and value be a tuple, (new_name, deprecate_level).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">new_arg</span> <span class="ow">in</span> <span class="n">aliases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_arg</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">new_arg</span><span class="si">}</span><span class="s1"> must be a tuple, with first element as the new name, &#39;</span>
@@ -341,8 +347,11 @@
                     <span class="k">raise</span> <span class="n">NotSupportedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s1"> has been renamed to `</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s1">`&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">deco</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set Decorator function.&quot;&quot;&quot;</span>
+
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Set wrapper function.&quot;&quot;&quot;</span>
             <span class="n">rename_kwargs</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">aliases</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -696,6 +705,11 @@
 
 
 <span class="k">def</span> <span class="nf">build_url_regex_pattern</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set up the regex pattern of URL.</span>
+
+<span class="sd">    :return: Regex pattern.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ul</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\u00a1</span><span class="s1">-</span><span class="se">\uffff</span><span class="s1">&#39;</span>  <span class="c1"># Unicode letters range (must not be a raw string).</span>
 
     <span class="c1"># IP patterns</span>
@@ -1017,21 +1031,6 @@
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
 
 
-<span class="k">def</span> <span class="nf">rsetattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
-    <span class="n">pre</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">post</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">rgetattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pre</span><span class="p">)</span> <span class="k">if</span> <span class="n">pre</span> <span class="k">else</span> <span class="n">obj</span><span class="p">,</span> <span class="n">post</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">rgetattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">_getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">_getattr</span><span class="p">,</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span> <span class="o">+</span> <span class="n">attr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">))</span>
-
-
 <div class="viewcode-block" id="cached_property"><a class="viewcode-back" href="../../api/jina.helper.html#jina.helper.cached_property">[docs]</a><span class="k">class</span> <span class="nc">cached_property</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;The decorator to cache property of a class.&quot;&quot;&quot;</span>
 
@@ -1178,8 +1177,11 @@
 <span class="sd">    :return: asyncio.run(func)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">class</span> <span class="nc">RunThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">_RunThread</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a running thread when in Jupyter notebook.&quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Run given `func` asynchronously.&quot;&quot;&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -1191,7 +1193,7 @@
         <span class="c1"># eventloop already exist</span>
         <span class="c1"># running inside Jupyter</span>
         <span class="k">if</span> <span class="n">is_jupyter</span><span class="p">():</span>
-            <span class="n">thread</span> <span class="o">=</span> <span class="n">RunThread</span><span class="p">()</span>
+            <span class="n">thread</span> <span class="o">=</span> <span class="n">_RunThread</span><span class="p">()</span>
             <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="n">thread</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1411,7 +1413,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 13, 2021.
+        Last updated on Feb 14, 2021.
       </span>
 
         </p>
