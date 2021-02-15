@@ -18,7 +18,7 @@ Document
 ============
 
 
-.. image:: /chapters/101/images/document.png
+.. image:: /chapters/images/document.png
 	:width: 25%
 
 
@@ -33,7 +33,7 @@ Flow
 =============
 
 
-.. image:: /chapters/101/images/flow.png
+.. image:: /chapters/images/flow.png
 	:width: 25%
 
 
@@ -57,7 +57,7 @@ Executors perform each task in an indexing or querying Flow. Jina offers `many E
 Crafter
 ---------------
 
-.. image:: /chapters/101/images/crafter.png
+.. image:: /chapters/images/crafter.png
 	:width: 25%
 
 Crafters pre-process input Documents, for example, resizing images or converting text to lower case. A Crafter often comes before the :ref:`Encoder<encoder>` but it’s not always required.
@@ -70,7 +70,7 @@ Crafters pre-process input Documents, for example, resizing images or converting
 Segmenter
 ----------------
 
-.. image:: /chapters/101/images/segmenter.png
+.. image:: /chapters/images/segmenter.png
 	:width: 25%
 
 Like a :ref:`Crafter<crafter>`, a Segmenter also pre-processes Documents. A Segmenter breaks Documents into **multiple** chunks. For example, breaking a paragraph into sentences.
@@ -82,7 +82,7 @@ Like a :ref:`Crafter<crafter>`, a Segmenter also pre-processes Documents. A Segm
 Encoder 
 ----------------
 
-.. image:: /chapters/101/images/encoder.png
+.. image:: /chapters/images/encoder.png
 	:width: 25%
 
 
@@ -93,7 +93,7 @@ Indexer
 ----------------
 
 
-.. image:: /chapters/101/images/indexer.png
+.. image:: /chapters/images/indexer.png
 	:width: 25%
 
 
@@ -107,7 +107,7 @@ Ranker
 ----------------
 
 
-.. image:: /chapters/101/images/ranker.png
+.. image:: /chapters/images/ranker.png
 	:width: 25%
 
 Rankers sort and rank search results. They are frequently used in a querying Flow. 
@@ -117,7 +117,7 @@ Classifier
 ----------------
 
 
-.. image:: /chapters/101/images/classifier.png
+.. image:: /chapters/images/classifier.png
 	:width: 25%
 
 Classifiers classify input Documents into categories and output the predicted hard/soft labels. Classifiers are optional, but may be useful depending on the use case.
@@ -126,7 +126,7 @@ Classifiers classify input Documents into categories and output the predicted ha
 Evaluator
 ----------------
 
-.. image:: /chapters/101/images/evaluator.png
+.. image:: /chapters/images/evaluator.png
 	:width: 25%
 
 Not every search gets perfect results the first time. An Evaluator evaluates performance of other Executors by comparing the Document rankings you **get** with the Document rankings you **want**. Choosing the right set of Executors optimizes your search.
@@ -135,7 +135,7 @@ Not every search gets perfect results the first time. An Evaluator evaluates per
 Pea
 =============
 
-.. image:: /chapters/101/images/pea.png
+.. image:: /chapters/images/pea.png
 	:width: 25%
 
 A Pea wraps an Executor and lets it exchange data with other Peas. Peas can run locally, remotely, or inside a Docker container, containing all dependencies and context in one place.
@@ -146,7 +146,7 @@ Every Pea runs inside a Pod. Sometimes multiple copies of a Pea run in a single 
 Pod
 =============
 
-.. image:: /chapters/101/images/pod.png
+.. image:: /chapters/images/pod.png
 	:width: 25%
 
 A Pod is a container and interface for one or multiple Peas that have the same properties. It coordinates Peas to improve efficiency and scaling. Beyond that, a Pod adds further control, scheduling, and context management to its Peas.
@@ -155,7 +155,7 @@ A Pod is a container and interface for one or multiple Peas that have the same p
 Driver
 =============
 
-.. image:: /chapters/101/images/driver.png
+.. image:: /chapters/images/driver.png
 	:width: 25%
 
 A Driver “translates” input and output messages for an Executor. Each Executor requires a different data format to perform its task. Therefore, a Driver interprets incoming messages into Documents and extracts required fields for an Executor. 
@@ -170,4 +170,4 @@ You can design at the micro-level and scale up to the macro-level. YAML becomes 
 
 Now, continue to `Jina 102`_ to learn how these components work together! 
 
-.. _Jina 102: https://docs.jina.ai/chapters/102/index.html
+.. _Jina 102: https://docs.jina.ai/chapters/102_index.html
