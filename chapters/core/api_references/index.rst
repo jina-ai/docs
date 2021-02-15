@@ -15,19 +15,13 @@ API References
 
    ../../yaml/index
 
-.. toctree::
-   :titlesonly:
-   :glob:
-   :caption: Jina API Schema for 3rd-Party Application
-
-   ../../api_schema
 
 .. toctree::
    :titlesonly:
    :glob:
    :caption: Jina Command Line Interface Syntax Reference
 
-   
+   ../../api_schema
    ../../cli/index
 
 .. toctree::
