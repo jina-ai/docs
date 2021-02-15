@@ -7,7 +7,7 @@ Jina REST API Specification
 API reference
 ---------
 
-You can view the API reference `ReDoc <https://api.jina.ai/rest/>`.
+You can view the API reference on external the `ReDocs page <https://api.jina.ai/rest/>`_ .
 
 
 Interface
