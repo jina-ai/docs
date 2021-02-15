@@ -4,8 +4,7 @@
 
 This tutorial guides you through building your own neural search app using the [Jina framework](https://github.com/jina-ai/jina/). 
 
-TODO
-![](./images/jinabox-startrek.gif)
+![](./images/jinabox-wikipedia.gif)
 
 Our example program will be a simple neural search engine for text. It will take a user's input, and return a list of sentences from Wikipedia that match most closely.
 
@@ -13,9 +12,7 @@ The end result will be close to [wikipedia sentence search](https://github.com/j
 
 ## 🗝️ Key concepts
 
-TODO urls
-
-- **[What is Neural Search?]()** See how Jina is different from traditional search
+- **[What is Neural Search?](https://docs.jina.ai/chapters/what-is-neural-search/)** See how Jina is different from traditional search
 - **[Jina 101](https://docs.jina.ai/chapters/101/)**: Learn about Jina's core components
 - **[Jina 102](https://docs.jina.ai/chapters/102/)**: See how Jina's components are connected together
 
@@ -33,30 +30,32 @@ This runs a **pre-indexed** version of the example, and allows you to search usi
 
 ### Search with Jina Box
 
-[Jinabox](https://github.com/jina-ai/jinabox.js/) is a simple web-based front-end for neural search. You can see it in the graphic at the top of this tutorial.
+[Jina Box](https://github.com/jina-ai/jinabox.js/) is a simple web-based front-end for neural search. You can see it in the image at the top of this tutorial.
 
 1. Go to [Jina Box](https://jina.ai/jinabox.js) in your browser
 2. Set the server endpoint to `http://127.0.0.1:45678/api/search`
 3. Type a word into the search bar and see which Wikipedia sentences come up
 
-**Note:** If the search times out the first time, that's because the query system is still warming up. Try again in a few seconds!
+ℹ️  If the search times out the first time, that's because the query system is still warming up. Try again in a few seconds!
 
 ### Search with `curl`
 
 ```sh
-curl --request POST -d '{"top_k":10,"mode":"search","data":["middle east"]}' -H 'Content-Type: application/json' 'http://0.0.0.0:45678/api/search'
+curl --request POST -d '{"top_k":10,"mode":"search","data":["computer"]}' -H 'Content-Type: application/json' 'http://0.0.0.0:45678/api/search'
 ```
+
+ℹ️  To make it easier to read the output, add `| jq | less` to the end to add pretty JSON formatting and paging
 
 `curl` will output a *lot* of information in JSON format. This includes not just the lines you're searching for, but also metadata about the search and the Documents it returns. Look for the lines starting with `"matchDoc"` to find the matches.
 
 After looking through the JSON you should see lines that contain the text of the Document matches:
 
-TODO actual example from toy data default
 ```json
-"text": "OACIS for the Middle East is a union list of serials from or about the Middle East.\n",
+"text": "It solves Aerospace problems with a data driven interface and automatic initial guesses.\n"
 ```
 
 ℹ️  There's a LOT of other data too. This is all metadata and not so relevant to the output a user would want to see.
+ℹ️  If you're not getting good results, check the [get better search results section](#get-better-search-results) below.
 
 ### Shut down Docker
 
@@ -206,8 +205,7 @@ When you're finished, stop the Flow with Ctrl-C (or Command-C on a Mac), and run
 
 ### Flows
 
-TODO
-<img src="https://raw.githubusercontent.com/jina-ai/jina/master/docs/chapters/101/img/ILLUS10.png" width="30%" align="left">
+<img src="https://docs.jina.ai/_images/flow.png" width="30%" align="left">
 
 Just as a plant manages nutrient flow and growth rate for its branches, Jina's Flow manages the states and context of a group of Pods, orchestrating them to accomplish one specific task. 
 
@@ -290,8 +288,7 @@ As in `flows/index.yml`, we use three Pods, but this time they behave differentl
 
 ### Pods
 
-TODO
-<img src="https://raw.githubusercontent.com/jina-ai/jina/master/docs/chapters/101/img/ILLUS8.png" width="20%" align="left">
+<img src=""https://docs.jina.ai/_images/pod.png width="20%" align="left">
 
 - A Flow tells Jina *what* tasks (indexing, querying) to perform on the dataset.
 - The [Pods]() comprise the Flow and tell Jina *how* to perform each task. They define the neural networks we use in neural search, namely the machine-learning models like `distilbert-base-cased`.
