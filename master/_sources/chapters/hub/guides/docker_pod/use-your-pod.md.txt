@@ -55,14 +55,15 @@ See `jina pod --help` for more usage.
 
 ## Use the Pod image via Flow API
 
-Finally, one can use it via Flow API as well, e.g.
+A Pod image can also be used in the Flow API as well:
 
 ```python
 from jina.flow import Flow
 
 f = (Flow()
-        .add(name='my-encoder', image='jinaai/hub.examples.mwu_encoder',
-             volumes='./abc', uses='hub/examples/mwu-encoder/mwu_encoder_ext.yml', 
+        .add(name='my-encoder', volumes='./abc', uses='hub/examples/mwu-encoder/mwu_encoder_ext.yml', 
              port_in=55555, port_out=55556)
         .add(name='my-indexer', uses='indexer.yml'))
 ```
+
+`uses` could also point to an existing `docker-image` url for the Hub Encoder, i.e. `uses="docker://..."`
