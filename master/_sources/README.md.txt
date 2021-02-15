@@ -1,6 +1,7 @@
 # Jina Documentation
 
-![CD](https://github.com/jina-ai/docs/workflows/CD/badge.svg?branch=docs-migration)
+![CD](https://github.com/jina-ai/docs/workflows/CD/badge.svg?branch=master)
+![Release](https://github.com/jina-ai/docs/workflows/Release/badge.svg?branch=master)
 
 
 > “Open source is this magical thing right? You release code, and the code gnomes come and make it better for you.
