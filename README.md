@@ -71,7 +71,7 @@ See details [here](https://docs.jina.ai/chapters/docstring/docstring.html).
 
 ## Jina style guide
 
-All documentation should follow this style guide. LINK TO BE ADDED.
+All documentation should follow this [style guide](https://github.com/jina-ai/docs/blob/master/page_templates/style_guide.md).
 
 ## Technical aspects of the the doc site
 
