@@ -15,12 +15,12 @@
 From @ericholscher [guide to writing docs](https://www.writethedocs.org/guide/writing/beginners-guide-to-docs/)
 
 ## Table of contents
-*  [Hierarchical structure](#Hierarchical structure)
-* [Missing content](#Missing content)
-*  [How to add pages](#How to add pages)
-*  [Jina style guide](#Jina style guide)
-* [Updating Docstrings](#Updating Docstrings)
-* [Technical aspects of this site](#Technical aspects of the the doc site)
+* [Hierarchical structure](#hierarchical-structure)
+* [Missing content](#missing-content)
+* [How to add pages](#how-to-add-pages)
+* [Updating Docstrings](#updating-docstrings)
+* [Jina style guide](#jina-style-guide)
+* [Technical aspects of the the doc site](#technical-aspects-of-the-the-doc-site)
 
 ## Hierarchical structure
 
@@ -31,7 +31,7 @@ Jina documentation adheres to the following hierarchical structure. Each Jina pr
 | **API References**| Are detailed descriptions of the product API. Possibility auto-generated from docstrings or open API references. Describes how the methods work and which parameters can be used.  |
 
 
-## Missing content 
+## Missing content
 
 If you find a gap in our documentation, please submit a GitHub issue [here](https://github.com/jina-ai/docs).
 
@@ -47,11 +47,11 @@ For getting started pages and developer guides:
 
 4.  Create a git new branch: `git checkout -b fix_pods` .
 
-5. Your commit messages should following the standard Jina format seen [here](https://github.com/jina-ai/jina#contributing). 
+5. Your commit messages should following the standard Jina format seen [here](https://github.com/jina-ai/jina#contributing).
 
 5.  Add your file to the chapters folder.
 
-6.  Add your file to a table of contents. 
+6.  Add your file to a table of contents.
 
 8.  Push your branch and create a pull request.
 
@@ -64,11 +64,11 @@ For getting started pages and developer guides:
 * A guide to RST can be found [here](https://bashtage.github.io/sphinx-material/rst-cheatsheet/rst-cheatsheet.html)
 *  A guide to MD formatting can be found [here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) [*Note that MD is more limited in functionality then RST*]
 
-## Updating Docstrings 
+## Updating Docstrings
 
 See details [here](https://docs.jina.ai/chapters/docstring/docstring.html).
 
-## Jina style guide 
+## Jina style guide
 
 All documentation should follow this style guide. LINK TO BE ADDED.
 
