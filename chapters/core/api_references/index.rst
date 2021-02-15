@@ -6,7 +6,6 @@ API References
    :glob:
    :caption: Jina REST API Specification
 
-   ../../rest-reference/index
    ../../restapi/index
 
 .. toctree::
@@ -28,6 +27,7 @@ API References
    :glob:
    :caption: Jina Command Line Interface Syntax Reference
 
+   
    ../../cli/index
 
 .. toctree::
