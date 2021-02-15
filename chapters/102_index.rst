@@ -31,7 +31,7 @@ The indexing Flow prepares data to be searched. Input Documents are fed in, proc
 
 |
 
-.. image:: /chapters/102/images/index_flow.png 
+.. image:: /chapters/images/index_flow.png 
 	:width: 80%  
 
 |
@@ -41,7 +41,7 @@ Then, the querying Flow takes a user query as its input Document, and returns a 
 
 |
 
-.. image:: /chapters/102/images/query_flow.png 
+.. image:: /chapters/images/query_flow.png 
 	:width: 80%  
 
 |
@@ -53,7 +53,7 @@ Here, we’ll use the indexing Flow as an example:
 
 |
 
-.. image:: /chapters/102/images/flow_pods.png
+.. image:: /chapters/images/flow_pods.png
 	:width: 80%   
 
 |
@@ -69,7 +69,7 @@ Inside a Pod
 
 |
 
-.. image:: /chapters/102/images/pod_peas.png
+.. image:: /chapters/images/pod_peas.png
 	:width: 80%  
 
 |
@@ -88,7 +88,7 @@ Let’s take a closer look at the Pea in the Segmenter Pod:
 
 |
 
-.. image:: /chapters/102/images/pea_exec_driver.png 
+.. image:: /chapters/images/pea_exec_driver.png 
 	:width: 60%  
 
 |
@@ -107,7 +107,7 @@ YAML Configuration
 
 From Flows to Executors, every part of Jina is configurable with YAML files. YAML files let you change the behavior of an object without touching its code.
 
-.. image:: /chapters/102/images/yaml.png 
+.. image:: /chapters/images/yaml.png 
 	:width: 25%  
 
 Besides YAML, you can also design Flows in :ref:`our Dashboard<jinadashboard>` or `Python code`_.
@@ -125,7 +125,7 @@ Cross-modal search
 
 An example of cross-modal search is using text to search for images, or the other way around. 
 
-.. image:: /chapters/102/images/cross.png 
+.. image:: /chapters/images/cross.png 
 	:width: 25%  
 
 Multi-modal search
@@ -133,7 +133,7 @@ Multi-modal search
 
 You can use multiple modalities as input for your search applications. For example, a search query input can be an image plus some descriptive text.
 
-.. image:: /chapters/102/images/multi.png 
+.. image:: /chapters/images/multi.png 
 	:width: 25%  
 
 To implement cross-modality or multi-modality, visit the `dedicated section`_ in our documentation.
@@ -158,7 +158,7 @@ What you’ve learned in the previous sections are the most important components
 
 |
 
-.. image:: /chapters/102/images/suite.png
+.. image:: /chapters/images/suite.png
 	:width: 70%  
 
 |
