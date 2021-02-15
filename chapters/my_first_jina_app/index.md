@@ -16,7 +16,7 @@ The end result will be close to [wikipedia sentence search](https://github.com/j
 TODO urls
 
 - **[What is Neural Search?]()** See how Jina is different from traditional search
-- **[Jina 101](https://docs.jina.ai/chapters/101)**: Learn about Jina's core components
+- **[Jina 101](https://docs.jina.ai/chapters/101/)**: Learn about Jina's core components
 - **[Jina 102](https://docs.jina.ai/chapters/102/)**: See how Jina's components are connected together
 
 ## 🐳 Try it in Docker
