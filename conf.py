@@ -149,7 +149,7 @@ redoc = [
         'page': 'daemon',
         'spec': 'chapters/daemon/daemon.json',
         'embed': True,
-        'ops': {
+        'opts': {
             'suppress-warnings': True,
         }
     },
