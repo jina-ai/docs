@@ -100,6 +100,7 @@ extensions = [
     'sphinx_markdown_tables',
     'sphinx_copybutton',
     'notfound.extension',
+    'sphinxcontrib.redoc',
 ]
 
 # -- Custom 404 page
@@ -141,6 +142,18 @@ linkcheck_ignore = [
 linkcheck_timeout = 20
 linkcheck_retries = 2
 linkcheck_anchors = False
+
+redoc = [
+    {
+        'name': 'Jina Daemon API',
+        'page': 'daemon',
+        'spec': 'chapters/daemon/daemon.json',
+        'embed': True,
+        'ops': {
+            'suppress-warnings': True,
+        }
+    },
+]
 
 def setup(app):
     from sphinx.domains.python import PyField
