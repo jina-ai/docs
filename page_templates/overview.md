@@ -1,1 +1,1 @@
-## Short title
+# Short Title  (Use Title Case)
