@@ -1,0 +1,28 @@
+name: Test
+on:
+  push:
+    branches:
+      - master
+#  repository_dispatch:
+#    types: [jina-release-event]
+
+jobs:
+  releaseJob:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Checkout to Jina core
+        uses: actions/checkout@v2
+        with:
+          repository: jina-ai/jina
+          token: ${{ secrets.JINA_DEV_BOT }}
+      - name: Install Jina and export JinaD json file
+        run: |
+          JINA_VERSION=${GITHUB_REF/refs\/tags\/v/}
+          pip install .[daemon] --no-cache-dir
+          python -c "from daemon import _write_openapi_schema; _write_openapi_schema()"
+          cat daemon.json
+
