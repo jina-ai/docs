@@ -147,7 +147,7 @@ redoc = [
     {
         'name': 'Jina Daemon API',
         'page': 'daemon',
-        'spec': 'chapters/daemon/daemon.json',
+        'spec': 'chapters/daemon/daemon.yaml',
         'embed': True,
         'opts': {
             'suppress-warnings': True,

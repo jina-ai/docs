@@ -1,0 +1,1344 @@
+components:
+  schemas:
+    Body__create_flows_post:
+      properties:
+        flow:
+          format: binary
+          title: Flow
+          type: string
+        workspace_id:
+          format: uuid
+          title: Workspace Id
+          type: string
+      required:
+      - flow
+      title: Body__create_flows_post
+      type: object
+    Body__create_workspaces_post:
+      properties:
+        files:
+          items:
+            format: binary
+            type: string
+          title: Files
+          type: array
+        workspace_id:
+          format: uuid
+          title: Workspace Id
+          type: string
+      required:
+      - files
+      title: Body__create_workspaces_post
+      type: object
+    DaemonStatus:
+      properties:
+        envs:
+          title: Envs
+          type: object
+        flows:
+          $ref: '#/components/schemas/FlowStoreStatus'
+        jina:
+          title: Jina
+          type: object
+        peas:
+          $ref: '#/components/schemas/StoreStatus'
+        pods:
+          $ref: '#/components/schemas/StoreStatus'
+        used_memory:
+          title: Used Memory
+          type: string
+        workspaces:
+          $ref: '#/components/schemas/StoreStatus'
+      required:
+      - jina
+      - envs
+      - peas
+      - pods
+      - flows
+      - workspaces
+      - used_memory
+      title: DaemonStatus
+      type: object
+    FlowItemStatus:
+      properties:
+        arguments:
+          anyOf:
+          - type: object
+          - items: {}
+            type: array
+          title: Arguments
+        time_created:
+          format: date-time
+          title: Time Created
+          type: string
+        workdir:
+          title: Workdir
+          type: string
+        workspace_id:
+          format: uuid
+          title: Workspace Id
+          type: string
+        yaml_source:
+          title: Yaml Source
+          type: string
+      required:
+      - time_created
+      - arguments
+      - workspace_id
+      - workdir
+      - yaml_source
+      title: FlowItemStatus
+      type: object
+    FlowStoreStatus:
+      properties:
+        items:
+          additionalProperties:
+            $ref: '#/components/schemas/FlowItemStatus'
+          title: Items
+          type: object
+        num_add:
+          title: Num Add
+          type: integer
+        num_del:
+          title: Num Del
+          type: integer
+        size:
+          title: Size
+          type: integer
+        time_created:
+          format: date-time
+          title: Time Created
+          type: string
+        time_updated:
+          format: date-time
+          title: Time Updated
+          type: string
+      required:
+      - size
+      - time_created
+      - time_updated
+      - num_add
+      - num_del
+      - items
+      title: FlowStoreStatus
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          title: Detail
+          type: array
+      title: HTTPValidationError
+      type: object
+    PeaModel:
+      properties:
+        ctrl_with_ipc:
+          default: false
+          description: If set, use ipc protocol for control socket
+          title: Ctrl With Ipc
+          type: boolean
+        daemon:
+          default: false
+          description: The Pea attempts to terminate all of its Runtime child processes/threads
+            on existing. setting it to true basically tell the Pea do not wait on
+            the Runtime when closing
+          title: Daemon
+          type: boolean
+        dump_interval:
+          default: 240
+          description: 'Serialize the model in the pod every n seconds if model changes.
+            -1 means --read-only. '
+          title: Dump Interval
+          type: integer
+        entrypoint:
+          description: The entrypoint command overrides the ENTRYPOINT in Docker image.
+            when not set then the Docker image ENTRYPOINT takes effective.
+          title: Entrypoint
+          type: string
+        expose_public:
+          default: false
+          description: If set, expose the public IP address to remote when necessary,
+            by default it exposesprivate IP address, which only allows accessing under
+            the same network/subnet. Important to set this to true when the Pea will
+            receive input connections from remote Peas
+          title: Expose Public
+          type: boolean
+        hide_exc_info:
+          default: false
+          description: If set, then exception stack information to be added to the
+            logging message, useful in debugging
+          title: Hide Exc Info
+          type: boolean
+        host:
+          default: 0.0.0.0
+          description: The host address of the runtime, by default it is 0.0.0.0.
+          title: Host
+          type: string
+        host_in:
+          default: 0.0.0.0
+          description: The host address for input, by default it is 0.0.0.0
+          title: Host In
+          type: string
+        host_out:
+          default: 0.0.0.0
+          description: The host address for output, by default it is 0.0.0.0
+          title: Host Out
+          type: string
+        log_config:
+          default: /Users/bo/Documents/work/jina/jina/resources/logging.default.yml
+          description: The YAML config of the logger used in this object.
+          title: Log Config
+          type: string
+        memory_hwm:
+          default: -1
+          description: The memory high watermark of this pod in Gigabytes, pod will
+            restart when this is reached. -1 means no restriction
+          title: Memory Hwm
+          type: integer
+        name:
+          description: "\nThe name of this object.\n\nThis will be used in the following\
+            \ places:\n- how you refer to this object in Python/YAML/CLI\n- log message\n\
+            - ...\n\nWhen not given, then the default naming strategy will apply.\n\
+            \                    "
+          title: Name
+          type: string
+        noblock_on_start:
+          default: false
+          description: If set, starting a Pea/Pod does not block the thread/process.
+            It then relies on `wait_start_success` at outer function for the postpone
+            check.
+          title: Noblock On Start
+          type: boolean
+        num_part:
+          default: 0
+          description: the number of messages expected from upstream, 0 and 1 means
+            single part
+          title: Num Part
+          type: integer
+        on_error_strategy:
+          default: IGNORE
+          description: "\nThe skip strategy on exceptions.\n\n- IGNORE: Ignore it,\
+            \ keep running all Drivers & Executors logics in the sequel flow\n- SKIP_EXECUTOR:\
+            \ Skip all Executors in the sequel, but drivers are still called\n- SKIP_HANDLE:\
+            \ Skip all Drivers & Executors in the sequel, only `pre_hook` and `post_hook`\
+            \ are called\n- THROW_EARLY: Immediately throw the exception, the sequel\
+            \ flow will not be running at all \n                    \nNote, `IGNORE`,\
+            \ `SKIP_EXECUTOR` and `SKIP_HANDLE` do not guarantee the success execution\
+            \ in the sequel flow. If something \nis wrong in the upstream, it is hard\
+            \ to carry this exception and moving forward without any side-effect.\n"
+          title: On Error Strategy
+          type: string
+        pea_id:
+          default: 0
+          description: defines the suffix for the workspace path of the pea`
+          title: Pea Id
+          type: integer
+        pea_role:
+          default: SINGLETON
+          description: The role of this Pea in a Pod
+          title: Pea Role
+          type: string
+        port_ctrl:
+          description: The port for controlling the runtime, default a random port
+            between [49152, 65535]
+          example: 52293
+          title: Port Ctrl
+          type: integer
+        port_expose:
+          description: The port of the host exposed to the public
+          example: 52296
+          title: Port Expose
+          type: integer
+        port_in:
+          description: The port for input data, default a random port between [49152,
+            65535]
+          example: 52294
+          title: Port In
+          type: integer
+        port_out:
+          description: The port for output data, default a random port between [49152,
+            65535]
+          example: 52295
+          title: Port Out
+          type: integer
+        pull_latest:
+          default: false
+          description: Pull the latest image before running
+          title: Pull Latest
+          type: boolean
+        py_modules:
+          description: "\nThe customized python modules need to be imported before\
+            \ loading the executor\n\nNote, when importing multiple files and there\
+            \ is a dependency between them, then one has to write the dependencies\
+            \ in \nreverse order. That is, if `__init__.py` depends on `A.py`, which\
+            \ again depends on `B.py`, then you need to write: \n\n--py-modules __init__.py\
+            \ --py-modules B.py --py-modules A.py\n\n"
+          items:
+            type: string
+          title: Py Modules
+          type: array
+        read_only:
+          default: false
+          description: If set, do not allow the pod to modify the model, dump_interval
+            will be ignored
+          title: Read Only
+          type: boolean
+        runtime_backend:
+          default: PROCESS
+          description: The parallel backend of the runtime inside the Pea
+          title: Runtime Backend
+          type: string
+        runtime_cls:
+          default: ZEDRuntime
+          description: The runtime class to run inside the Pea
+          title: Runtime Cls
+          type: string
+        silent_remote_logs:
+          default: false
+          description: Do not display the streaming of remote logs on local console
+          title: Silent Remote Logs
+          type: boolean
+        socket_in:
+          default: PULL_BIND
+          description: The socket type for input port
+          title: Socket In
+          type: string
+        socket_out:
+          default: PUSH_BIND
+          description: The socket type for output port
+          title: Socket Out
+          type: string
+        ssh_keyfile:
+          description: This specifies a key to be used in ssh login, default None.
+            regular default ssh keys will be used without specifying this argument.
+          title: Ssh Keyfile
+          type: string
+        ssh_password:
+          description: The ssh password to the ssh server.
+          title: Ssh Password
+          type: string
+        ssh_server:
+          description: The SSH server through which the tunnel will be created, can
+            actually be a fully specified `user@server:port` ssh url.
+          title: Ssh Server
+          type: string
+        timeout_ctrl:
+          default: 5000
+          description: The timeout in milliseconds of the control request, -1 for
+            waiting forever
+          title: Timeout Ctrl
+          type: integer
+        timeout_ready:
+          default: 60000
+          description: The timeout in milliseconds of a Pea waits for the runtime
+            to be ready, -1 for waiting forever
+          title: Timeout Ready
+          type: integer
+        upload_files:
+          description: '
+
+            The files on the host to be uploaded to the remote
+
+            workspace. This can be useful when your Pod has more
+
+            file dependencies beyond a single YAML file, e.g.
+
+            Python files, data files.
+
+
+            Note,
+
+            - currently only flatten structure is supported, which means if you upload
+            `[./foo/a.py, ./foo/b.pp, ./bar/c.yml]`, then they will be put under the
+            _same_ workspace on the remote, losing all hierarchies.
+
+            - by default, `--uses` YAML file is always uploaded.
+
+            - uploaded files are by default isolated across the runs. To ensure files
+            are submitted to the same workspace across different runs, use `--workspace-id`
+            to specify the workspace.
+
+            '
+          items:
+            type: string
+          title: Upload Files
+          type: array
+        uses:
+          default: _pass
+          description: "\nThe config of the executor, it could be one of the followings:\
+            \ \n- an Executor-level YAML file path (*.yml/yaml) \n- a name of a class\
+            \ inherited from `jina.Executor`\n- a docker image (must start with `docker://`)\n\
+            - builtin executors, e.g. `_pass`, `_logforward`, `_merge` \n- the string\
+            \ literal of a YAML config (must start with `!`)\n- the string literal\
+            \ of a JSON config\n- the string literal of a YAML driver config (must\
+            \ start with `- !!`)\n\nWhen use it under Python, one can use the following\
+            \ values additionally:\n- a Python dict that represents the config\n-\
+            \ a text file stream has `.read()` interface\n"
+          title: Uses
+          type: string
+        uses_internal:
+          default: BaseExecutor
+          description: "\nThe config runs inside the Docker container. \n\nSyntax\
+            \ and function are the same as `--uses`. This is designed when `--uses=\"\
+            docker://...\"` this config is passed to \nthe Docker container.\n"
+          title: Uses Internal
+          type: string
+        volumes:
+          description: "\nThe path on the host to be mounted inside the container.\
+            \ \n\nNote, \n- If separated by `:`, then the first part will be considered\
+            \ as the local host path and the second part is the path in the container\
+            \ system. \n- If no split provided, then the basename of that directory\
+            \ will be mounted into container's root path, e.g. `--volumes=\"/user/test/my-workspace\"\
+            ` will be mounted into `/my-workspace` inside the container. \n- All volumes\
+            \ are mounted with read-write mode.\n"
+          items:
+            type: string
+          title: Volumes
+          type: array
+        workspace_id:
+          description: the UUID for identifying the workspace. When not given a random
+            id will be assigned.Multiple Pea/Pod/Flow will work under the same workspace
+            if they share the same `workspace-id`.
+          example: 945849e4-2fd0-4410-8d7c-ab8fdd9f965d
+          title: Workspace Id
+          type: string
+      title: PeaModel
+      type: object
+    PodModel:
+      properties:
+        ctrl_with_ipc:
+          default: false
+          description: If set, use ipc protocol for control socket
+          title: Ctrl With Ipc
+          type: boolean
+        daemon:
+          default: false
+          description: The Pea attempts to terminate all of its Runtime child processes/threads
+            on existing. setting it to true basically tell the Pea do not wait on
+            the Runtime when closing
+          title: Daemon
+          type: boolean
+        dump_interval:
+          default: 240
+          description: 'Serialize the model in the pod every n seconds if model changes.
+            -1 means --read-only. '
+          title: Dump Interval
+          type: integer
+        entrypoint:
+          description: The entrypoint command overrides the ENTRYPOINT in Docker image.
+            when not set then the Docker image ENTRYPOINT takes effective.
+          title: Entrypoint
+          type: string
+        expose_public:
+          default: false
+          description: If set, expose the public IP address to remote when necessary,
+            by default it exposesprivate IP address, which only allows accessing under
+            the same network/subnet. Important to set this to true when the Pea will
+            receive input connections from remote Peas
+          title: Expose Public
+          type: boolean
+        hide_exc_info:
+          default: false
+          description: If set, then exception stack information to be added to the
+            logging message, useful in debugging
+          title: Hide Exc Info
+          type: boolean
+        host:
+          default: 0.0.0.0
+          description: The host address of the runtime, by default it is 0.0.0.0.
+          title: Host
+          type: string
+        host_in:
+          default: 0.0.0.0
+          description: The host address for input, by default it is 0.0.0.0
+          title: Host In
+          type: string
+        host_out:
+          default: 0.0.0.0
+          description: The host address for output, by default it is 0.0.0.0
+          title: Host Out
+          type: string
+        log_config:
+          default: /Users/bo/Documents/work/jina/jina/resources/logging.default.yml
+          description: The YAML config of the logger used in this object.
+          title: Log Config
+          type: string
+        memory_hwm:
+          default: -1
+          description: The memory high watermark of this pod in Gigabytes, pod will
+            restart when this is reached. -1 means no restriction
+          title: Memory Hwm
+          type: integer
+        name:
+          description: "\nThe name of this object.\n\nThis will be used in the following\
+            \ places:\n- how you refer to this object in Python/YAML/CLI\n- log message\n\
+            - ...\n\nWhen not given, then the default naming strategy will apply.\n\
+            \                    "
+          title: Name
+          type: string
+        noblock_on_start:
+          default: false
+          description: If set, starting a Pea/Pod does not block the thread/process.
+            It then relies on `wait_start_success` at outer function for the postpone
+            check.
+          title: Noblock On Start
+          type: boolean
+        num_part:
+          default: 0
+          description: the number of messages expected from upstream, 0 and 1 means
+            single part
+          title: Num Part
+          type: integer
+        on_error_strategy:
+          default: IGNORE
+          description: "\nThe skip strategy on exceptions.\n\n- IGNORE: Ignore it,\
+            \ keep running all Drivers & Executors logics in the sequel flow\n- SKIP_EXECUTOR:\
+            \ Skip all Executors in the sequel, but drivers are still called\n- SKIP_HANDLE:\
+            \ Skip all Drivers & Executors in the sequel, only `pre_hook` and `post_hook`\
+            \ are called\n- THROW_EARLY: Immediately throw the exception, the sequel\
+            \ flow will not be running at all \n                    \nNote, `IGNORE`,\
+            \ `SKIP_EXECUTOR` and `SKIP_HANDLE` do not guarantee the success execution\
+            \ in the sequel flow. If something \nis wrong in the upstream, it is hard\
+            \ to carry this exception and moving forward without any side-effect.\n"
+          title: On Error Strategy
+          type: string
+        parallel:
+          default: 1
+          description: The number of parallel peas in the pod running at the same
+            time, `port_in` and `port_out` will be set to random, and routers will
+            be added automatically when necessary
+          title: Parallel
+          type: integer
+        pea_id:
+          default: 0
+          description: defines the suffix for the workspace path of the pea`
+          title: Pea Id
+          type: integer
+        pea_role:
+          default: SINGLETON
+          description: The role of this Pea in a Pod
+          title: Pea Role
+          type: string
+        pod_role:
+          description: The role of this pod in the flow
+          title: Pod Role
+          type: string
+        polling:
+          default: ANY
+          description: "\nThe polling strategy of the Pod (when `parallel>1`) \n-\
+            \ ANY: only one (whoever is idle) Pea polls the message\n- ALL: all Peas\
+            \ poll the message (like a broadcast)\n"
+          title: Polling
+          type: string
+        port_ctrl:
+          description: The port for controlling the runtime, default a random port
+            between [49152, 65535]
+          example: 52285
+          title: Port Ctrl
+          type: integer
+        port_expose:
+          description: The port of the host exposed to the public
+          example: 52288
+          title: Port Expose
+          type: integer
+        port_in:
+          description: The port for input data, default a random port between [49152,
+            65535]
+          example: 52286
+          title: Port In
+          type: integer
+        port_out:
+          description: The port for output data, default a random port between [49152,
+            65535]
+          example: 52287
+          title: Port Out
+          type: integer
+        pull_latest:
+          default: false
+          description: Pull the latest image before running
+          title: Pull Latest
+          type: boolean
+        py_modules:
+          description: "\nThe customized python modules need to be imported before\
+            \ loading the executor\n\nNote, when importing multiple files and there\
+            \ is a dependency between them, then one has to write the dependencies\
+            \ in \nreverse order. That is, if `__init__.py` depends on `A.py`, which\
+            \ again depends on `B.py`, then you need to write: \n\n--py-modules __init__.py\
+            \ --py-modules B.py --py-modules A.py\n\n"
+          items:
+            type: string
+          title: Py Modules
+          type: array
+        read_only:
+          default: false
+          description: If set, do not allow the pod to modify the model, dump_interval
+            will be ignored
+          title: Read Only
+          type: boolean
+        runtime_backend:
+          default: PROCESS
+          description: The parallel backend of the runtime inside the Pea
+          title: Runtime Backend
+          type: string
+        runtime_cls:
+          default: ZEDRuntime
+          description: The runtime class to run inside the Pea
+          title: Runtime Cls
+          type: string
+        scheduling:
+          default: LOAD_BALANCE
+          description: The strategy of scheduling workload among Peas
+          title: Scheduling
+          type: string
+        silent_remote_logs:
+          default: false
+          description: Do not display the streaming of remote logs on local console
+          title: Silent Remote Logs
+          type: boolean
+        socket_in:
+          default: PULL_BIND
+          description: The socket type for input port
+          title: Socket In
+          type: string
+        socket_out:
+          default: PUSH_BIND
+          description: The socket type for output port
+          title: Socket Out
+          type: string
+        ssh_keyfile:
+          description: This specifies a key to be used in ssh login, default None.
+            regular default ssh keys will be used without specifying this argument.
+          title: Ssh Keyfile
+          type: string
+        ssh_password:
+          description: The ssh password to the ssh server.
+          title: Ssh Password
+          type: string
+        ssh_server:
+          description: The SSH server through which the tunnel will be created, can
+            actually be a fully specified `user@server:port` ssh url.
+          title: Ssh Server
+          type: string
+        timeout_ctrl:
+          default: 5000
+          description: The timeout in milliseconds of the control request, -1 for
+            waiting forever
+          title: Timeout Ctrl
+          type: integer
+        timeout_ready:
+          default: 60000
+          description: The timeout in milliseconds of a Pea waits for the runtime
+            to be ready, -1 for waiting forever
+          title: Timeout Ready
+          type: integer
+        upload_files:
+          description: '
+
+            The files on the host to be uploaded to the remote
+
+            workspace. This can be useful when your Pod has more
+
+            file dependencies beyond a single YAML file, e.g.
+
+            Python files, data files.
+
+
+            Note,
+
+            - currently only flatten structure is supported, which means if you upload
+            `[./foo/a.py, ./foo/b.pp, ./bar/c.yml]`, then they will be put under the
+            _same_ workspace on the remote, losing all hierarchies.
+
+            - by default, `--uses` YAML file is always uploaded.
+
+            - uploaded files are by default isolated across the runs. To ensure files
+            are submitted to the same workspace across different runs, use `--workspace-id`
+            to specify the workspace.
+
+            '
+          items:
+            type: string
+          title: Upload Files
+          type: array
+        uses:
+          default: _pass
+          description: "\nThe config of the executor, it could be one of the followings:\
+            \ \n- an Executor-level YAML file path (*.yml/yaml) \n- a name of a class\
+            \ inherited from `jina.Executor`\n- a docker image (must start with `docker://`)\n\
+            - builtin executors, e.g. `_pass`, `_logforward`, `_merge` \n- the string\
+            \ literal of a YAML config (must start with `!`)\n- the string literal\
+            \ of a JSON config\n- the string literal of a YAML driver config (must\
+            \ start with `- !!`)\n\nWhen use it under Python, one can use the following\
+            \ values additionally:\n- a Python dict that represents the config\n-\
+            \ a text file stream has `.read()` interface\n"
+          title: Uses
+          type: string
+        uses_after:
+          description: The executor attached after the Peas described by --uses, typically
+            used for receiving from all parallels, accepted type follows `--uses`
+          title: Uses After
+          type: string
+        uses_before:
+          description: The executor attached after the Peas described by --uses, typically
+            before sending to all parallels, accepted type follows `--uses`
+          title: Uses Before
+          type: string
+        uses_internal:
+          default: BaseExecutor
+          description: "\nThe config runs inside the Docker container. \n\nSyntax\
+            \ and function are the same as `--uses`. This is designed when `--uses=\"\
+            docker://...\"` this config is passed to \nthe Docker container.\n"
+          title: Uses Internal
+          type: string
+        volumes:
+          description: "\nThe path on the host to be mounted inside the container.\
+            \ \n\nNote, \n- If separated by `:`, then the first part will be considered\
+            \ as the local host path and the second part is the path in the container\
+            \ system. \n- If no split provided, then the basename of that directory\
+            \ will be mounted into container's root path, e.g. `--volumes=\"/user/test/my-workspace\"\
+            ` will be mounted into `/my-workspace` inside the container. \n- All volumes\
+            \ are mounted with read-write mode.\n"
+          items:
+            type: string
+          title: Volumes
+          type: array
+        workspace_id:
+          description: the UUID for identifying the workspace. When not given a random
+            id will be assigned.Multiple Pea/Pod/Flow will work under the same workspace
+            if they share the same `workspace-id`.
+          example: 9cac0b6d-68c1-402f-92c2-0af3fcf32828
+          title: Workspace Id
+          type: string
+      title: PodModel
+      type: object
+    StoreItemStatus:
+      properties:
+        arguments:
+          anyOf:
+          - type: object
+          - items: {}
+            type: array
+          title: Arguments
+        time_created:
+          format: date-time
+          title: Time Created
+          type: string
+        workdir:
+          title: Workdir
+          type: string
+        workspace_id:
+          format: uuid
+          title: Workspace Id
+          type: string
+      required:
+      - time_created
+      - arguments
+      - workspace_id
+      - workdir
+      title: StoreItemStatus
+      type: object
+    StoreStatus:
+      properties:
+        items:
+          additionalProperties:
+            $ref: '#/components/schemas/StoreItemStatus'
+          title: Items
+          type: object
+        num_add:
+          title: Num Add
+          type: integer
+        num_del:
+          title: Num Del
+          type: integer
+        size:
+          title: Size
+          type: integer
+        time_created:
+          format: date-time
+          title: Time Created
+          type: string
+        time_updated:
+          format: date-time
+          title: Time Updated
+          type: string
+      required:
+      - size
+      - time_created
+      - time_updated
+      - num_add
+      - num_del
+      - items
+      title: StoreStatus
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            type: string
+          title: Location
+          type: array
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+      type: object
+info:
+  description: REST interface for managing distributed Jina
+  title: JinaD (Daemon)
+  version: 1.0.2
+  x-logo:
+    url: https://api.jina.ai/logo/logo-product/jina-core/horizontal-layout/colored/Product%20logo_Core_vertical_colorful%402x-margin.png
+openapi: 3.0.2
+paths:
+  /:
+    get:
+      description: The instruction HTML when user visits `/` directly
+      operationId: _home__get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: ' Home'
+      tags:
+      - daemon
+  /flows:
+    delete:
+      operationId: _clear_all_flows_delete
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Terminate all running Flows
+      tags:
+      - flows
+    get:
+      operationId: _get_items_flows_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowStoreStatus'
+          description: Successful Response
+      summary: Get all alive Flows' status
+      tags:
+      - flows
+    post:
+      operationId: _create_flows_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body__create_flows_post'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                format: uuid
+                title: Response  Create Flows Post
+                type: string
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Create a Flow from a YAML config
+      tags:
+      - flows
+  /flows/arguments:
+    get:
+      operationId: _fetch_flow_params_flows_arguments_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get all accept arguments of a Flow
+      tags:
+      - flows
+  /flows/{id}:
+    delete:
+      description: Terminate a running Flow and release its resources
+      operationId: _delete_flows__id__delete
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          title: Id
+          type: string
+      - in: query
+        name: workspace
+        required: false
+        schema:
+          default: false
+          title: Workspace
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Terminate a running Flow
+      tags:
+      - flows
+    get:
+      operationId: _status_flows__id__get
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          title: Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowItemStatus'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get the status of a running Flow
+      tags:
+      - flows
+  /logs/{workspace_id}/{log_id}:
+    get:
+      operationId: _export_logs_logs__workspace_id___log_id__get
+      parameters:
+      - in: path
+        name: workspace_id
+        required: true
+        schema:
+          format: uuid
+          title: Workspace Id
+          type: string
+      - in: path
+        name: log_id
+        required: true
+        schema:
+          format: uuid
+          title: Log Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: ' Export Logs'
+      tags:
+      - logs
+  /peas:
+    delete:
+      operationId: _clear_all_peas_delete
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Terminate all running Peas
+      tags:
+      - peas
+    get:
+      operationId: _get_items_peas_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreStatus'
+          description: Successful Response
+      summary: Get all alive Pea' status
+      tags:
+      - peas
+    post:
+      description: Create a Pea and add it to the store
+      operationId: _create_peas_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PeaModel'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                format: uuid
+                title: Response  Create Peas Post
+                type: string
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Create a Pea
+      tags:
+      - peas
+  /peas/arguments:
+    get:
+      operationId: _fetch_pea_params_peas_arguments_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get all accept arguments of a Pea
+      tags:
+      - peas
+  /peas/{id}:
+    delete:
+      description: Terminate a running Pea and release its resources
+      operationId: _delete_peas__id__delete
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          title: Id
+          type: string
+      - in: query
+        name: workspace
+        required: false
+        schema:
+          default: false
+          title: Workspace
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Terminate a running Pea
+      tags:
+      - peas
+    get:
+      operationId: _status_peas__id__get
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          title: Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreItemStatus'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get status of a running Pea
+      tags:
+      - peas
+  /pods:
+    delete:
+      operationId: _clear_all_pods_delete
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Terminate all running Pods
+      tags:
+      - pods
+    get:
+      operationId: _get_items_pods_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreStatus'
+          description: Successful Response
+      summary: Get all alive Pods' status
+      tags:
+      - pods
+    post:
+      description: Create a Pod and add it to the store
+      operationId: _create_pods_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PodModel'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                format: uuid
+                title: Response  Create Pods Post
+                type: string
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Create a Pod
+      tags:
+      - pods
+  /pods/arguments:
+    get:
+      operationId: _fetch_pod_params_pods_arguments_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Get all accept arguments of a Pod
+      tags:
+      - pods
+  /pods/{id}:
+    delete:
+      description: Terminate a running Pod and release its resources
+      operationId: _delete_pods__id__delete
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          title: Id
+          type: string
+      - in: query
+        name: workspace
+        required: false
+        schema:
+          default: false
+          title: Workspace
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Terminate a running Pod
+      tags:
+      - pods
+    get:
+      operationId: _status_pods__id__get
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          title: Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreItemStatus'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get status of a running Pod
+      tags:
+      - pods
+  /status:
+    get:
+      operationId: _status_status_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DaemonStatus'
+          description: Successful Response
+      summary: Get the status of the daemon
+      tags:
+      - daemon
+  /workspaces:
+    delete:
+      operationId: _clear_all_workspaces_delete
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+      summary: Deleting all Workspaces
+      tags:
+      - workspaces
+    get:
+      operationId: _get_items_workspaces_get
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreStatus'
+          description: Successful Response
+      summary: Get all existing Workspaces' status
+      tags:
+      - workspaces
+    post:
+      description: Return a UUID to the workspace, which can be used later when create
+        Pea/Pod/Flow
+      operationId: _create_workspaces_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body__create_workspaces_post'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                format: uuid
+                title: Response  Create Workspaces Post
+                type: string
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Upload files to a workspace
+      tags:
+      - workspaces
+  /workspaces/{id}:
+    delete:
+      operationId: _delete_workspaces__id__delete
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          title: Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Deleting an existing Workspace
+      tags:
+      - workspaces
+    get:
+      operationId: _list_workspaces__id__get
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          title: Id
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreItemStatus'
+          description: Successful Response
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+          description: Validation Error
+      summary: Get the status of an existing Workspace
+      tags:
+      - workspaces
+tags:
+- description: API to manage the Daemon
+  name: daemon
+- description: API to manage Flows
+  name: flows
+- description: API to manage Pods
+  name: pods
+- description: API to manage Peas
+  name: peas
+- description: API to stream Logs
+  name: logs
+- description: API to manage Workspaces
+  name: workspaces
