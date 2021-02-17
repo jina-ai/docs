@@ -161,7 +161,7 @@ In section you will index and search through your data.
 
 ### Index Flow
 
-First up we need to build up an index of our dataset, which we'll later search with our search Flow.
+First up we need to build up an index of our dataset, which we'll later search with our [query Flow](#query-flow).
 
 ```sh
 python app.py -t index
