@@ -5,38 +5,44 @@ This version of Jina includes 124 Executors.
 ## Inheritances in a Tree View
 - `JAMLCompatible`
    - `BaseExecutor`
-      - `BaseCrafter`
-         - `AudioMonophoner`
-         - `AudioReader`
-         - `AlbumentationsCrafter`
-         - `AudioNormalizer`
-         - `ArrayStringReader`
-         - `ImageResizer`
-         - `ImageFlipper`
-         - `ArrayBytesReader`
-         - `CenterImageCropper`
-         - `TikaExtractor`
-         - `ImageReader`
-         - `ImageCropper`
-         - `ImageNormalizer`
-      - `BaseEvaluator`
-         - `BaseTextEvaluator`
-            - `JaccardSimilarityEvaluator`
-            - `EditDistanceEvaluator`
-            - `HammingDistanceEvaluator`
-            - `RougeEvaluator`
-            - `BleuEvaluator`
-            - `GleuEvaluator`
-         - `BaseRankingEvaluator`
-            - `AveragePrecisionEvaluator`
-            - `NDCGEvaluator`
-            - `ReciprocalRankEvaluator`
-            - `f1ScoreEvaluator`
-         - `BaseEmbeddingEvaluator`
-            - `MinkowskiDistanceEvaluator`
-            - `InfiniteNormEvaluator`
-            - `L1NormEvaluator`
+      - `BaseRanker`
+         - `Chunk2DocRanker`
+            - `BM25Ranker`
+            - `SimpleAggregateRanker`
+            - `TfIdfRanker`
+            - `BiMatchRanker`
+         - `Match2DocRanker`
+            - `LevenshteinRanker`
       - `BaseEncoder`
+         - `BaseDevice`
+            - `TFDevice`
+               - `BaseTFEncoder`
+                  - `ImageKerasEncoder`
+                  - `CustomKerasImageEncoder`
+                  - `BigTransferEncoder`
+                  - `UniversalSentenceEncoder`
+               - `TransformerTFEncoder`
+            - `PaddleDevice`
+               - `BasePaddleEncoder`
+                  - `TextPaddlehubEncoder`
+                  - `VideoPaddleEncoder`
+                  - `ImagePaddlehubEncoder`
+            - `TorchDevice`
+               - `BaseTorchEncoder`
+                  - `FarmTextEncoder`
+                  - `VSETextEncoder`
+                  - `FlairTextEncoder`
+                  - `TirgImageEncoder`
+                  - `VSEImageEncoder`
+                  - `ImageTorchEncoder`
+                  - `LaserEncoder`
+                  - `CustomImageTorchEncoder`
+               - `TransformerTorchEncoder`
+            - `OnnxDevice`
+               - `BaseOnnxEncoder`
+                  - `ImageOnnxEncoder`
+         - `BaseTextEncoder`
+            - `OneHotTextEncoder`
          - `BaseNumericEncoder`
             - `TransformEncoder`
                - `RandomSparseEncoder`
@@ -44,14 +50,14 @@ This version of Jina includes 124 Executors.
                - `IncrementalPCAEncoder`
                - `FeatureAgglomerationEncoder`
                - `RandomGaussianEncoder`
-            - `TSNEEncoder`
             - `BaseAudioEncoder`
                - `ChromaPitchEncoder`
-               - `MFCCTimbreEncoder`
                - `BaseDevice`
                   - `TorchDevice`
                      - `BaseTorchEncoder`
                         - `Wav2VecSpeechEncoder`
+               - `MFCCTimbreEncoder`
+            - `TSNEEncoder`
             - `BaseVideoEncoder`
                - `BaseDevice`
                   - `TorchDevice`
@@ -60,76 +66,70 @@ This version of Jina includes 124 Executors.
             - `BaseDevice`
                - `TFDevice`
                   - `CompressionVaeEncoder`
-         - `BaseDevice`
-            - `TorchDevice`
-               - `BaseTorchEncoder`
-                  - `VSEImageEncoder`
-                  - `TirgImageEncoder`
-                  - `LaserEncoder`
-                  - `FlairTextEncoder`
-                  - `CustomImageTorchEncoder`
-                  - `ImageTorchEncoder`
-                  - `FarmTextEncoder`
-                  - `VSETextEncoder`
-               - `TransformerTorchEncoder`
-            - `TFDevice`
-               - `BaseTFEncoder`
-                  - `ImageKerasEncoder`
-                  - `UniversalSentenceEncoder`
-                  - `BigTransferEncoder`
-                  - `CustomKerasImageEncoder`
-               - `TransformerTFEncoder`
-            - `PaddleDevice`
-               - `BasePaddleEncoder`
-                  - `TextPaddlehubEncoder`
-                  - `VideoPaddleEncoder`
-                  - `ImagePaddlehubEncoder`
-            - `OnnxDevice`
-               - `BaseOnnxEncoder`
-                  - `ImageOnnxEncoder`
-         - `BaseTextEncoder`
-            - `OneHotTextEncoder`
-      - `BaseSegmenter`
-         - `JiebaSegmenter`
-         - `Sentencizer`
-         - `SlidingWindowAudioSlicer`
-         - `PDFExtractorSegmenter`
-         - `SlidingWindowSegmenter`
-         - `BaseDevice`
-            - `TorchDevice`
-               - `TorchObjectDetectionSegmenter`
-         - `SlidingWindowImageCropper`
-         - `RandomImageCropper`
-         - `AudioSlicer`
-         - `DeepSegmenter`
-         - `FiveImageCropper`
-      - `BaseRanker`
-         - `Chunk2DocRanker`
-            - `BiMatchRanker`
-            - `SimpleAggregateRanker`
-            - `TfIdfRanker`
-            - `BM25Ranker`
-         - `Match2DocRanker`
-            - `LevenshteinRanker`
+      - `BaseCrafter`
+         - `ArrayStringReader`
+         - `ImageFlipper`
+         - `ImageCropper`
+         - `ImageResizer`
+         - `ImageNormalizer`
+         - `TikaExtractor`
+         - `CenterImageCropper`
+         - `ArrayBytesReader`
+         - `AudioNormalizer`
+         - `AudioMonophoner`
+         - `ImageReader`
+         - `AudioReader`
+         - `AlbumentationsCrafter`
       - `BaseIndexer`
+         - `BaseKVIndexer`
+            - `BinaryPbIndexer`
+               - `MongoDBIndexer`
+               - `RedisDBIndexer`
+               - `LevelDBIndexer`
          - `BaseVectorIndexer`
             - `BaseNumpyIndexer`
-               - `ScannIndexer`
-               - `NumpyIndexer`
-                  - `ZarrIndexer`
-               - `NGTIndexer`
-               - `SptagIndexer`
-               - `AnnoyIndexer`
-               - `NmsLibIndexer`
                - `BaseDevice`
                   - `FaissDevice`
                      - `FaissIndexer`
+               - `AnnoyIndexer`
+               - `NmsLibIndexer`
+               - `SptagIndexer`
+               - `NumpyIndexer`
+                  - `ZarrIndexer`
+               - `NGTIndexer`
+               - `ScannIndexer`
             - `MilvusIndexer`
-         - `BaseKVIndexer`
-            - `BinaryPbIndexer`
-               - `RedisDBIndexer`
-               - `LevelDBIndexer`
-               - `MongoDBIndexer`
+      - `BaseSegmenter`
+         - `Sentencizer`
+         - `PDFExtractorSegmenter`
+         - `RandomImageCropper`
+         - `BaseDevice`
+            - `TorchDevice`
+               - `TorchObjectDetectionSegmenter`
+         - `SlidingWindowAudioSlicer`
+         - `JiebaSegmenter`
+         - `SlidingWindowImageCropper`
+         - `FiveImageCropper`
+         - `SlidingWindowSegmenter`
+         - `AudioSlicer`
+         - `DeepSegmenter`
+      - `BaseEvaluator`
+         - `BaseTextEvaluator`
+            - `JaccardSimilarityEvaluator`
+            - `BleuEvaluator`
+            - `EditDistanceEvaluator`
+            - `GleuEvaluator`
+            - `RougeEvaluator`
+            - `HammingDistanceEvaluator`
+         - `BaseEmbeddingEvaluator`
+            - `MinkowskiDistanceEvaluator`
+            - `InfiniteNormEvaluator`
+            - `L1NormEvaluator`
+         - `BaseRankingEvaluator`
+            - `AveragePrecisionEvaluator`
+            - `ReciprocalRankEvaluator`
+            - `NDCGEvaluator`
+            - `f1ScoreEvaluator`
       - `BaseMultiModalEncoder`
          - `BaseDevice`
             - `TorchDevice`
@@ -139,25 +139,25 @@ This version of Jina includes 124 Executors.
 
 | Class | Module |
 | --- | --- |
-| `AlbumentationsCrafter` | `jina.hub.crafters.image.ImageNormalizer` |
-| `AnnoyIndexer` | `jina.hub.indexers.vector.FaissIndexer` |
-| `ArrayBytesReader` | `jina.hub.crafters.image.ImageNormalizer` |
-| `ArrayStringReader` | `jina.hub.crafters.image.ImageNormalizer` |
-| `AudioMonophoner` | `jina.hub.crafters.image.ImageNormalizer` |
-| `AudioNormalizer` | `jina.hub.crafters.image.ImageNormalizer` |
-| `AudioReader` | `jina.hub.crafters.image.ImageNormalizer` |
-| `AudioSlicer` | `jina.hub.segmenters.image.FiveImageCropper` |
+| `AlbumentationsCrafter` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `AnnoyIndexer` | `jina.hub.indexers.vector.ScannIndexer` |
+| `ArrayBytesReader` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `ArrayStringReader` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `AudioMonophoner` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `AudioNormalizer` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `AudioReader` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `AudioSlicer` | `jina.hub.segmenters.nlp.DeepSegmenter` |
 | `AveragePrecisionEvaluator` | `jina.hub.evaluators.rank.f1ScoreEvaluator` |
-| `BM25Ranker` | `jina.hub.rankers.BM25Ranker` |
+| `BM25Ranker` | `jina.hub.rankers.BiMatchRanker` |
 | `BaseAudioEncoder` | `jina.hub.encoders.numeric.CompressionVaeEncoder` |
 | `BaseCrafter` |   |
-| `BaseDevice` | `jina.hub.encoders.audio.Wav2VecSpeechEncoder` |
+| `BaseDevice` | `jina.hub.encoders.audio.MFCCTimbreEncoder` |
 | `BaseDevice` | `jina.hub.encoders.multimodal.TirgMultimodalEncoder` |
-| `BaseDevice` | `jina.hub.encoders.nlp.TransformerTorchEncoder` |
+| `BaseDevice` | `jina.hub.encoders.nlp.TransformerTFEncoder` |
 | `BaseDevice` | `jina.hub.encoders.numeric.CompressionVaeEncoder` |
 | `BaseDevice` | `jina.hub.encoders.video.VideoTorchEncoder` |
-| `BaseDevice` | `jina.hub.indexers.vector.FaissIndexer` |
-| `BaseDevice` | `jina.hub.segmenters.image.FiveImageCropper` |
+| `BaseDevice` | `jina.hub.indexers.vector.ScannIndexer` |
+| `BaseDevice` | `jina.hub.segmenters.nlp.DeepSegmenter` |
 | `BaseEmbeddingEvaluator` |   |
 | `BaseEncoder` |   |
 | `BaseEvaluator` |   |
@@ -165,7 +165,7 @@ This version of Jina includes 124 Executors.
 | `BaseIndexer` |   |
 | `BaseKVIndexer` |   |
 | `BaseMultiModalEncoder` |   |
-| `BaseNumericEncoder` | `jina.hub.encoders.nlp.TransformerTorchEncoder` |
+| `BaseNumericEncoder` | `jina.hub.encoders.nlp.TransformerTFEncoder` |
 | `BaseNumpyIndexer` | `jina.hub.indexers.vector.MilvusIndexer` |
 | `BaseOnnxEncoder` |   |
 | `BasePaddleEncoder` |   |
@@ -173,91 +173,91 @@ This version of Jina includes 124 Executors.
 | `BaseRankingEvaluator` |   |
 | `BaseSegmenter` |   |
 | `BaseTFEncoder` |   |
-| `BaseTextEncoder` | `jina.hub.encoders.nlp.TransformerTorchEncoder` |
+| `BaseTextEncoder` | `jina.hub.encoders.nlp.TransformerTFEncoder` |
 | `BaseTextEvaluator` |   |
 | `BaseTorchEncoder` |   |
 | `BaseVectorIndexer` |   |
 | `BaseVideoEncoder` | `jina.hub.encoders.numeric.CompressionVaeEncoder` |
-| `BiMatchRanker` | `jina.hub.rankers.BM25Ranker` |
-| `BigTransferEncoder` | `jina.hub.encoders.image.CustomKerasImageEncoder` |
+| `BiMatchRanker` | `jina.hub.rankers.BiMatchRanker` |
+| `BigTransferEncoder` | `jina.hub.encoders.nlp.UniversalSentenceEncoder` |
 | `BinaryPbIndexer` |   |
-| `BleuEvaluator` | `jina.hub.evaluators.text.GleuEvaluator` |
-| `CenterImageCropper` | `jina.hub.crafters.image.ImageNormalizer` |
-| `ChromaPitchEncoder` | `jina.hub.encoders.audio.Wav2VecSpeechEncoder` |
+| `BleuEvaluator` | `jina.hub.evaluators.text.HammingDistanceEvaluator` |
+| `CenterImageCropper` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `ChromaPitchEncoder` | `jina.hub.encoders.audio.MFCCTimbreEncoder` |
 | `Chunk2DocRanker` |   |
 | `CompressionVaeEncoder` |   |
-| `CustomImageTorchEncoder` | `jina.hub.encoders.nlp.VSETextEncoder` |
-| `CustomKerasImageEncoder` | `jina.hub.encoders.image.CustomKerasImageEncoder` |
-| `DeepSegmenter` | `jina.hub.segmenters.image.FiveImageCropper` |
-| `EditDistanceEvaluator` | `jina.hub.evaluators.text.GleuEvaluator` |
+| `CustomImageTorchEncoder` | `jina.hub.encoders.image.CustomImageTorchEncoder` |
+| `CustomKerasImageEncoder` | `jina.hub.encoders.nlp.UniversalSentenceEncoder` |
+| `DeepSegmenter` | `jina.hub.segmenters.nlp.DeepSegmenter` |
+| `EditDistanceEvaluator` | `jina.hub.evaluators.text.HammingDistanceEvaluator` |
 | `FaissDevice` |   |
 | `FaissIndexer` |   |
-| `FarmTextEncoder` | `jina.hub.encoders.nlp.VSETextEncoder` |
+| `FarmTextEncoder` | `jina.hub.encoders.image.CustomImageTorchEncoder` |
 | `FastICAEncoder` | `jina.hub.encoders.numeric.RandomGaussianEncoder` |
 | `FeatureAgglomerationEncoder` | `jina.hub.encoders.numeric.RandomGaussianEncoder` |
-| `FiveImageCropper` | `jina.hub.segmenters.image.FiveImageCropper` |
-| `FlairTextEncoder` | `jina.hub.encoders.nlp.VSETextEncoder` |
-| `GleuEvaluator` | `jina.hub.evaluators.text.GleuEvaluator` |
-| `HammingDistanceEvaluator` | `jina.hub.evaluators.text.GleuEvaluator` |
-| `ImageCropper` | `jina.hub.crafters.image.ImageNormalizer` |
-| `ImageFlipper` | `jina.hub.crafters.image.ImageNormalizer` |
-| `ImageKerasEncoder` | `jina.hub.encoders.image.CustomKerasImageEncoder` |
-| `ImageNormalizer` | `jina.hub.crafters.image.ImageNormalizer` |
+| `FiveImageCropper` | `jina.hub.segmenters.nlp.DeepSegmenter` |
+| `FlairTextEncoder` | `jina.hub.encoders.image.CustomImageTorchEncoder` |
+| `GleuEvaluator` | `jina.hub.evaluators.text.HammingDistanceEvaluator` |
+| `HammingDistanceEvaluator` | `jina.hub.evaluators.text.HammingDistanceEvaluator` |
+| `ImageCropper` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `ImageFlipper` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `ImageKerasEncoder` | `jina.hub.encoders.nlp.UniversalSentenceEncoder` |
+| `ImageNormalizer` | `jina.hub.crafters.image.AlbumentationsCrafter` |
 | `ImageOnnxEncoder` | `jina.hub.encoders.image.ImageOnnxEncoder` |
 | `ImagePaddlehubEncoder` | `jina.hub.encoders.image.ImagePaddlehubEncoder` |
-| `ImageReader` | `jina.hub.crafters.image.ImageNormalizer` |
-| `ImageResizer` | `jina.hub.crafters.image.ImageNormalizer` |
-| `ImageTorchEncoder` | `jina.hub.encoders.nlp.VSETextEncoder` |
+| `ImageReader` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `ImageResizer` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `ImageTorchEncoder` | `jina.hub.encoders.image.CustomImageTorchEncoder` |
 | `IncrementalPCAEncoder` | `jina.hub.encoders.numeric.RandomGaussianEncoder` |
 | `InfiniteNormEvaluator` | `jina.hub.evaluators.embedding.L1NormEvaluator` |
 | `JAMLCompatible` |   |
-| `JaccardSimilarityEvaluator` | `jina.hub.evaluators.text.GleuEvaluator` |
-| `JiebaSegmenter` | `jina.hub.segmenters.image.FiveImageCropper` |
+| `JaccardSimilarityEvaluator` | `jina.hub.evaluators.text.HammingDistanceEvaluator` |
+| `JiebaSegmenter` | `jina.hub.segmenters.nlp.DeepSegmenter` |
 | `L1NormEvaluator` | `jina.hub.evaluators.embedding.L1NormEvaluator` |
-| `LaserEncoder` | `jina.hub.encoders.nlp.VSETextEncoder` |
-| `LevelDBIndexer` | `jina.hub.indexers.keyvalue.MongoDBIndexer` |
+| `LaserEncoder` | `jina.hub.encoders.image.CustomImageTorchEncoder` |
+| `LevelDBIndexer` | `jina.hub.indexers.keyvalue.LevelDBIndexer` |
 | `LevenshteinRanker` | `jina.hub.rankers.LevenshteinRanker` |
-| `MFCCTimbreEncoder` | `jina.hub.encoders.audio.Wav2VecSpeechEncoder` |
+| `MFCCTimbreEncoder` | `jina.hub.encoders.audio.MFCCTimbreEncoder` |
 | `Match2DocRanker` |   |
 | `MilvusIndexer` | `jina.hub.indexers.vector.MilvusIndexer` |
 | `MinkowskiDistanceEvaluator` | `jina.hub.evaluators.embedding.L1NormEvaluator` |
-| `MongoDBIndexer` | `jina.hub.indexers.keyvalue.MongoDBIndexer` |
+| `MongoDBIndexer` | `jina.hub.indexers.keyvalue.LevelDBIndexer` |
 | `NDCGEvaluator` | `jina.hub.evaluators.rank.f1ScoreEvaluator` |
-| `NGTIndexer` | `jina.hub.indexers.vector.FaissIndexer` |
-| `NmsLibIndexer` | `jina.hub.indexers.vector.FaissIndexer` |
-| `NumpyIndexer` | `jina.hub.indexers.vector.FaissIndexer` |
+| `NGTIndexer` | `jina.hub.indexers.vector.ScannIndexer` |
+| `NmsLibIndexer` | `jina.hub.indexers.vector.ScannIndexer` |
+| `NumpyIndexer` | `jina.hub.indexers.vector.ScannIndexer` |
 | `OneHotTextEncoder` | `jina.hub.encoders.nlp.OneHotTextEncoder` |
 | `OnnxDevice` |   |
-| `PDFExtractorSegmenter` | `jina.hub.segmenters.image.FiveImageCropper` |
+| `PDFExtractorSegmenter` | `jina.hub.segmenters.nlp.DeepSegmenter` |
 | `PaddleDevice` |   |
 | `RandomGaussianEncoder` | `jina.hub.encoders.numeric.RandomGaussianEncoder` |
-| `RandomImageCropper` | `jina.hub.segmenters.image.FiveImageCropper` |
+| `RandomImageCropper` | `jina.hub.segmenters.nlp.DeepSegmenter` |
 | `RandomSparseEncoder` | `jina.hub.encoders.numeric.RandomGaussianEncoder` |
 | `ReciprocalRankEvaluator` | `jina.hub.evaluators.rank.f1ScoreEvaluator` |
-| `RedisDBIndexer` | `jina.hub.indexers.keyvalue.MongoDBIndexer` |
-| `RougeEvaluator` | `jina.hub.evaluators.text.GleuEvaluator` |
-| `ScannIndexer` | `jina.hub.indexers.vector.FaissIndexer` |
-| `Sentencizer` | `jina.hub.segmenters.image.FiveImageCropper` |
-| `SimpleAggregateRanker` | `jina.hub.rankers.BM25Ranker` |
-| `SlidingWindowAudioSlicer` | `jina.hub.segmenters.image.FiveImageCropper` |
-| `SlidingWindowImageCropper` | `jina.hub.segmenters.image.FiveImageCropper` |
-| `SlidingWindowSegmenter` | `jina.hub.segmenters.image.FiveImageCropper` |
-| `SptagIndexer` | `jina.hub.indexers.vector.FaissIndexer` |
+| `RedisDBIndexer` | `jina.hub.indexers.keyvalue.LevelDBIndexer` |
+| `RougeEvaluator` | `jina.hub.evaluators.text.HammingDistanceEvaluator` |
+| `ScannIndexer` | `jina.hub.indexers.vector.ScannIndexer` |
+| `Sentencizer` | `jina.hub.segmenters.nlp.DeepSegmenter` |
+| `SimpleAggregateRanker` | `jina.hub.rankers.BiMatchRanker` |
+| `SlidingWindowAudioSlicer` | `jina.hub.segmenters.nlp.DeepSegmenter` |
+| `SlidingWindowImageCropper` | `jina.hub.segmenters.nlp.DeepSegmenter` |
+| `SlidingWindowSegmenter` | `jina.hub.segmenters.nlp.DeepSegmenter` |
+| `SptagIndexer` | `jina.hub.indexers.vector.ScannIndexer` |
 | `TFDevice` |   |
 | `TSNEEncoder` | `jina.hub.encoders.numeric.CompressionVaeEncoder` |
 | `TextPaddlehubEncoder` | `jina.hub.encoders.image.ImagePaddlehubEncoder` |
-| `TfIdfRanker` | `jina.hub.rankers.BM25Ranker` |
-| `TikaExtractor` | `jina.hub.crafters.image.ImageNormalizer` |
-| `TirgImageEncoder` | `jina.hub.encoders.nlp.VSETextEncoder` |
+| `TfIdfRanker` | `jina.hub.rankers.BiMatchRanker` |
+| `TikaExtractor` | `jina.hub.crafters.image.AlbumentationsCrafter` |
+| `TirgImageEncoder` | `jina.hub.encoders.image.CustomImageTorchEncoder` |
 | `TirgMultiModalEncoder` |   |
 | `TorchDevice` |   |
 | `TorchObjectDetectionSegmenter` |   |
 | `TransformEncoder` | `jina.hub.encoders.numeric.CompressionVaeEncoder` |
 | `TransformerTFEncoder` |   |
 | `TransformerTorchEncoder` |   |
-| `UniversalSentenceEncoder` | `jina.hub.encoders.image.CustomKerasImageEncoder` |
-| `VSEImageEncoder` | `jina.hub.encoders.nlp.VSETextEncoder` |
-| `VSETextEncoder` | `jina.hub.encoders.nlp.VSETextEncoder` |
+| `UniversalSentenceEncoder` | `jina.hub.encoders.nlp.UniversalSentenceEncoder` |
+| `VSEImageEncoder` | `jina.hub.encoders.image.CustomImageTorchEncoder` |
+| `VSETextEncoder` | `jina.hub.encoders.image.CustomImageTorchEncoder` |
 | `VideoPaddleEncoder` | `jina.hub.encoders.image.ImagePaddlehubEncoder` |
 | `VideoTorchEncoder` |   |
 | `Wav2VecSpeechEncoder` |   |
