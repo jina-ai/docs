@@ -302,4 +302,3 @@ And run this command in terminal to acquire the docstring coverage report.
 .. code-block:: bash
 
     interrogate -c jina/pyproject.toml -vv jina
-
