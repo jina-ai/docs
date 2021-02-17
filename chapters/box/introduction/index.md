@@ -2,7 +2,7 @@
 
 ###### Jinabox is a lightweight, customizable front end for searching text, images, videos, audio or any kind of data with a Jina backend.
 
-Ready to learn Jina? Read our [101 tutorials](../../101/index.rst).
+Ready to learn Jina? Read our [101 tutorials](../../101.rst).
 
 
 ![jina box](jinabox.gif)
