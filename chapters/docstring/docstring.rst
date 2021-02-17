@@ -273,4 +273,33 @@ Note: Please add two blank lines and two dots as the example below to ignore `# 
         """
         raise NotImplementedError
 
+Docstring Coverage
+-------------------
+We suggest leveraging `interrogate <https://github.com/econchick/interrogate>`_ to calculate the docstring coverage and find out missing docstrings.
+You can create a configure file ``pyproject.toml`` with the following configurations.
 
+.. highlight:: toml
+.. code-block:: toml
+
+    [tool.interrogate]
+    ignore-init-method = false
+    ignore-init-module = false
+    ignore-magic = true
+    ignore-semiprivate = true
+    ignore-private = true
+    ignore-property-decorators = false
+    ignore-module = true
+    fail-under = 75
+    exclude = ["setup.py", "docs", "build"]
+    ignore-regex = ["^get$", "^mock_.*", ".*BaseClass.*"]
+    verbose = 0
+    quiet = false
+    whitelist-regex = []
+    color = true
+
+And run this command in terminal to acquire the docstring coverage report.
+
+.. highlight:: bash
+.. code-block:: bash
+
+    interrogate -c jina/pyproject.toml -vv jina
