@@ -111,7 +111,7 @@ The documentation of the YAML syntax [can be found at here](../yaml/yaml.html#ex
 
 ### 2. Write a 3-line `Dockerfile`
 
-The `Dockerfile` in this example is a simple three-line snippet, 
+The `Dockerfile` in this example is a simple three-line snippet.
 
 ```Dockerfile
 FROM jinaai/jina
