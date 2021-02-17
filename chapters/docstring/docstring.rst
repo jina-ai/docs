@@ -298,6 +298,7 @@ You can create a configure file ``pyproject.toml`` with the following configurat
     color = true
 
 And run this command in terminal to acquire the docstring coverage report.
+
 .. highlight:: bash
 .. code-block:: bash
 
