@@ -259,6 +259,20 @@ In some cases it is okay to disable linting. This is either due to our principle
 1. We do not need to document exceptions in the docstrings. Use ``# noqa: DAR401``.
 2. We do not need to document the return value in a ``@property`` method of a class. Use ``# noqa: DAR201``
 
+Note: Please add two blank lines and two dots as the example below to ignore `# noqa` in sphinx autodoc.
+
+.. highlight:: python
+.. code-block:: python
+
+    def dump(self, data: Union['BaseFlow', 'BaseExecutor', 'BaseDriver']) -> Dict:
+        """Return the dictionary given a versioned flow object
+
+
+        ..  # noqa: DAR401
+        :param data: versioned flow object
+        """
+        raise NotImplementedError
+
 Docstring Coverage
 -------------------
 We suggest leveraging `interrogate <https://github.com/econchick/interrogate>`_ to calculate the docstring coverage and find out missing docstrings.
@@ -288,3 +302,4 @@ And run this command in terminal to acquire the docstring coverage report.
 .. code-block:: bash
 
     interrogate -c jina/pyproject.toml -vv jina
+
