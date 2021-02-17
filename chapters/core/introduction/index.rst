@@ -10,5 +10,5 @@ This section introduces fundamental concepts related to Jina Core.
    :glob:
 
    ../../101
-   ../../102_index
+   ../../102
    ../../helloworld_index
