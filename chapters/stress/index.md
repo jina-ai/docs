@@ -23,7 +23,7 @@
 
 ## Infrastructure
 
-This example benchmark prioritizes a real-world scenario, where a user hosts Jina in the cloud. We use six machines in AWS, of instance size `c5.2xlarge` (8 vCPUs, 16 GB RAM). We also add a 100 GB ssd. For the vector indexer machine we increased RAM to 32 GB.
+This example benchmark prioritizes a real-world scenario, where a user hosts Jina on the cloud. We use six machines in AWS, of instance size `c5.2xlarge` (8 vCPUs, 16 GB RAM). We also add a 100 GB ssd. For the vector indexer machine we increased RAM to 32 GB.
 
 The instances are split as follows:
 

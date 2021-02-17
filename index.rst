@@ -1,7 +1,7 @@
 Welcome to Jina!
 ================
 
-Jina is a deep learning-powered search framework for building cross-/multi-modal search systems (e.g. text, images, video, audio) in the cloud.
+Jina is a deep learning-powered search framework for building cross-/multi-modal search systems (e.g. text, images, video, audio) on the cloud.
 
 ------------
 
