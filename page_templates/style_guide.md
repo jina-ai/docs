@@ -34,7 +34,7 @@ Guides are publicly available and represent the Jina AI brand and the quality of
 
 8. When discussing a Jina component inside a code context (i.e. referring to CLI output or actual Python/YAML code) use Jina terms exactly as they should be portrayed in that context.
 
-9. When dicussing a Jina component outside of a code context, capitalize all terms and products. Such as Flow, Pod, JinaD. Anything found in the [Jina glossary](https://docs.jina.ai/chapters/glossary/glossary.html) or [Jina 101](https://docs.jina.ai/chapters/101/index.html). Including Executor types (Evaluator, Segmenter, etc.)
+9. When dicussing a Jina component outside of a code context, capitalize all terms and products. Such as Flow, Pod, JinaD. Anything found in the [Jina glossary](https://docs.jina.ai/chapters/glossary/glossary.html) or [Jina 101](https://101.jina.ai). Including Executor types (Evaluator, Segmenter, etc.)
 
 10. Don't capitalize Flow types (index, query). Don't capitalize the adjective or  `-tion`  form (i.e. evaluation, evaluating, segmenting, etc)
 

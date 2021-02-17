@@ -35,8 +35,8 @@ When you're finished, you'll have recreated our [wikipedia sentence search examp
 TODO urls
 
 - **[What is Neural Search?]()** See how Jina's search is different from the traditional way
-- **[Jina 101](https://github.com/jina-ai/jina/tree/master/docs/chapters/101)**: Get an idea of Jina's core components
-- **[Jina 102](https://github.com/jina-ai/jina/tree/master/docs/chapters/102)**: See how Jina's components are wired together
+- **[Jina 101](https://101.jina.ai)**: Get an idea of Jina's core components
+- **[Jina 102](https://docs.jina.ai/chapters/102/index.html)**: See how Jina's components are wired together
 
 ## 🐳 Try it in Docker
 
@@ -235,7 +235,7 @@ When you're finished, stop the search Flow with Ctrl-C (or Command-C on a Mac).
 TODO
 <img src="https://raw.githubusercontent.com/jina-ai/jina/master/docs/chapters/101/img/ILLUS10.png" width="30%" align="left">
 
-As you can see in [Jina 101](https://github.com/jina-ai/jina/tree/master/docs/chapters/101), just as a plant manages nutrient flow and growth rate for its branches, Jina's Flow manages the states and context of a group of Pods, orchestrating them to accomplish one specific task. 
+As you can see in [Jina 101](https://101.jina.ai), just as a plant manages nutrient flow and growth rate for its branches, Jina's Flow manages the states and context of a group of Pods, orchestrating them to accomplish one specific task. 
 
 We define Flows in `app.py` to index and query our dataset:
 
@@ -337,7 +337,7 @@ with:
   max_length: 96
 ```
 
-The built-in `TransformerTorchEncoder` is the Pod's **[Executor](https://github.com/jina-ai/jina/tree/master/docs/chapters/101#executors)**. The `with` field specifies the parameters we pass to `TransformerTorchEncoder`.
+The built-in `TransformerTorchEncoder` is the Pod's **[Executor](https://101.jina.ai/#executors)**. The `with` field specifies the parameters we pass to `TransformerTorchEncoder`.
 
 | Parameter                       | Effect                                                     |
 | ---                             | ---                                                        |
