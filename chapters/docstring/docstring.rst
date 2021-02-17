@@ -261,7 +261,7 @@ In some cases it is okay to disable linting. This is either due to our principle
 
 Docstring Coverage
 -------------------
-We suggest leveraging `interrogate <https://github.com/econchick/interrogate>`_ to calculate the docstring coverage and help to find out missing docstrings.
+We suggest leveraging `interrogate <https://github.com/econchick/interrogate>`_ to calculate the docstring coverage and find out missing docstrings.
 You can create a configure file ``pyproject.toml`` with the following configurations.
 
 .. highlight:: toml
