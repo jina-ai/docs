@@ -4,11 +4,11 @@
 
 This tutorial guides you through building your own neural search app using the [Jina framework](https://github.com/jina-ai/jina/). 
 
-![](./images/jinabox-wikipedia.gif)
+![](/images/jinabox-wikipedia.gif)
 
 Our example program will be a simple neural search engine for text. It will take a user's input, and return a list of sentences from Wikipedia that match most closely.
 
-The end result will be close to [wikipedia sentence search](https://github.com/jina-ai/examples/tree/master/wikipedia-sentences).
+The end result will be close to [Wikipedia sentence search](https://github.com/jina-ai/examples/tree/master/wikipedia-sentences).
 
 ## 🗝️ Key concepts
 
@@ -18,10 +18,10 @@ The end result will be close to [wikipedia sentence search](https://github.com/j
 
 ## 🐳 Try it in Docker
 
-Before downloading, configuring and testing your app, let's see what the finished product is like:
+Before building your app, let's see what the finished product is like:
 
 ```sh
-docker run --name wikipedia-search -p 45678:45678 jinahub/app.example.wikipedia-sentences-30k:0.2.8-0.9.23
+docker run --name wikipedia-search -p 45678:45678 jinahub/app.example.wikipedia-sentences-30k:0.2.9-1.0.1
 ```
 
 This runs a **pre-indexed** version of the example, and allows you to search using Jina's REST API.
@@ -44,9 +44,9 @@ This runs a **pre-indexed** version of the example, and allows you to search usi
 curl --request POST -d '{"top_k":10,"mode":"search","data":["computer"]}' -H 'Content-Type: application/json' 'http://0.0.0.0:45678/api/search'
 ```
 
-ℹ️  To make it easier to read the output, add `| jq | less` to the end to add pretty JSON formatting and paging
+ℹ️  To make it easier to read the output, add `| jq | less` to the end of the command. This will add pretty JSON formatting and paging.
 
-`curl` will output a *lot* of information in JSON format. This includes not just the lines you're searching for, but also metadata about the search and the Documents it returns. Look for the lines starting with `"matchDoc"` to find the matches.
+`curl` will output a *lot* of information in JSON format. This includes not just the lines you're searching for, but also metadata about the search and the Documents it returns. 
 
 After looking through the JSON you should see lines that contain the text of the Document matches:
 
