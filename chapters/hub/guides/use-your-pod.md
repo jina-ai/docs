@@ -37,7 +37,7 @@ docker run --rm --entrypoint "jina" jinaai/hub.examples.mwu_encoder check
 
 Another way to use the Pod image is simply give it to `jina pod` via `--uses`,
 ```bash
-jina pod --uses jinaai/hub.examples.mwu_encoder
+jina pod --uses docker://jinaai/hub.examples.mwu_encoder
 ```
 
 ```text
@@ -61,7 +61,7 @@ Finally, one can use it via Flow API as well, e.g.
 from jina.flow import Flow
 
 f = (Flow()
-        .add(name='my-encoder', image='jinaai/hub.examples.mwu_encoder',
+        .add(name='my-encoder', uses='docker://jinaai/hub.examples.mwu_encoder',
              volumes='./abc', 
              port_in=55555, port_out=55556)
         .add(name='my-indexer', uses='indexer.yml'))
@@ -114,7 +114,7 @@ Then, the Flow instantiation would look like:
 from jina.flow import Flow
 
 f = (Flow()
-        .add(name='my-encoder', image='jinaai/hub.examples.mwu_encoder',
+        .add(name='my-encoder', uses='docker://jinaai/hub.examples.mwu_encoder',
              volumes='./abc',  uses_internal='custom_mwu_encoder.yml',
              port_in=55555, port_out=55556)
         .add(name='my-indexer', uses='indexer.yml'))

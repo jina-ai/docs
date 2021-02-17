@@ -6,7 +6,7 @@ Users can use Pod images in several ways:
 
 - Run with Docker (`docker run`)
   - ```bash
-    docker run jinaai/hub.examples.mwu_encoder --port-in 55555 --port-out 55556
+    docker run jinahub/pod.encoder.dummy_mwu_encoder:0.0.6-1.0.2 --port-in 55555 --port-out 55556
     ```
     
 - Flow API
@@ -14,18 +14,18 @@ Users can use Pod images in several ways:
     from jina.flow import Flow
 
     f = (Flow()
-        .add(name='my-encoder', image='jinaai/hub.examples.mwu_encoder', port_in=55555, port_out=55556)
+        .add(name='my-encoder', uses='docker://jinahub/pod.encoder.dummy_mwu_encoder:0.0.6-1.0.2', port_in=55555, port_out=55556)
         .add(name='my-indexer', uses='indexer.yml'))
     ```
     
 - Jina CLI
   - ```bash
-    jina pod --uses jinaai/hub.examples.mwu_encoder --port-in 55555 --port-out 55556
+    jina pod --uses docker://jinahub/pod.encoder.dummy_mwu_encoder:0.0.6-1.0.2 --port-in 55555 --port-out 55556
     ```
     
 - Conventional local usage with `uses` argument
   - ```bash
-    jina pod --uses hub/example/mwu_encoder.yml --port-in 55555 --port-out 55556
+    jina pod --uses hub/example/dummy_mwu_encoder.yml --port-in 55555 --port-out 55556
     ```
     
 More information about [the usage can be found here](./use-your-pod.html#use-your-pod-image).
@@ -71,11 +71,31 @@ Except `Dockerfile`, all other options to build a valid Pod image depending on y
 
 In this example, we consider the scenario where we create a new Executor and want to reuse it in another project, without tweaking any code in [`jina-ai/jina`](https://github.com/jina-ai/jina/).
 
-Note: All files mentioned in this guide are available at [`hub/examples/mwu_encoder`](/hub/examples/mwu_encoder).
 
 ### 1. Code your Executor and write its config
 
-We write a new dummy encoder named `MWUEncoder` in [`mwu_encoder.py`](hub/examples/mwu_encoder/mwu_encoder.py) which encodes any input into a random 3-dimensional vector. This encoder has a dummy parameter `greetings` which prints a greeting message on start and on every encode. In [`mwu_encoder.yml`](hub/examples/mwu_encoder/mwu_encoder.yml), the `metas.py_modules` helps Jina to load the class of this Executor from `mwu_encoder.py`.
+We write a new dummy encoder named `MWUEncoder` in `mwu_encoder.py` which encodes any input into a random 3-dimensional vector. This encoder has a dummy parameter `greetings` which prints a greeting message on start and on every encode. 
+```python
+from typing import Any
+
+import numpy as np
+
+from jina.executors.encoders import BaseEncoder
+
+
+class MWUEncoder(BaseEncoder):
+
+    def __init__(self, greetings: str, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._greetings = greetings
+        self.logger.success(f'look at me! {greetings}')
+
+    def encode(self, data: Any, *args, **kwargs) -> Any:
+        self.logger.info(f'{self._greetings} {data}')
+        return np.random.random([data.shape[0], 3])
+```
+
+In `mwu_encoder.yml`, the `metas.py_modules` helps Jina to load the class of this Executor from `mwu_encoder.py`.
 
 ```yaml
 !MWUEncoder
