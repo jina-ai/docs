@@ -11,4 +11,4 @@ This section introduces fundamental concepts related to Jina Core.
 
    ../../101
    ../../102
-   ../../helloworld_index
+   ../../helloworld
