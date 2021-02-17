@@ -259,3 +259,32 @@ In some cases it is okay to disable linting. This is either due to our principle
 1. We do not need to document exceptions in the docstrings. Use ``# noqa: DAR401``.
 2. We do not need to document the return value in a ``@property`` method of a class. Use ``# noqa: DAR201``
 
+Docstring Coverage
+-------------------
+We suggest leveraging `interrogate <https://github.com/econchick/interrogate>`_ to calculate the docstring coverage and help to find out missing docstrings.
+You can create a configure file ``pyproject.toml`` with the following configurations.
+
+.. highlight:: toml
+.. code-block:: toml
+
+    [tool.interrogate]
+    ignore-init-method = false
+    ignore-init-module = false
+    ignore-magic = true
+    ignore-semiprivate = true
+    ignore-private = true
+    ignore-property-decorators = false
+    ignore-module = true
+    fail-under = 75
+    exclude = ["setup.py", "docs", "build"]
+    ignore-regex = ["^get$", "^mock_.*", ".*BaseClass.*"]
+    verbose = 0
+    quiet = false
+    whitelist-regex = []
+    color = true
+
+And run this command in terminal to acquire the docstring coverage report.
+.. highlight:: bash
+.. code-block:: bash
+
+    interrogate -c jina/pyproject.toml -vv jina
