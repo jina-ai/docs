@@ -257,8 +257,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
             
@@ -605,6 +605,24 @@ it will be used as the major view.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#jina.types.document.Document.update" title="jina.types.document.Document.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> for bulk set/update attributes</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Arguments will be extracted using <cite>dunder_get</cite>
+.. highlight:: python
+.. code-block:: python</p>
+<blockquote>
+<div><p>d = Document({‘id’: ‘123’, ‘hello’: ‘world’, ‘tags’: {‘id’: ‘external_id’, ‘good’: ‘bye’}})</p>
+<p>assert d.id == ‘123’  # true
+assert d.tags[‘hello’] == ‘world’ # true
+assert d.tags[‘good’] == ‘bye’ # true
+assert d.tags[‘id’] == ‘external_id’ # true</p>
+<p>res = d.get_attrs(<a href="#id3"><span class="problematic" id="id4">*</span></a>[‘id’, ‘tags__hello’, ‘tags__good’, ‘tags__id’])</p>
+<p>assert res[‘id’] == ‘123’ # true
+assert res[‘tags__hello’] == ‘world’ # true
+assert res[‘tags__good’] == ‘bye’ # true
+assert res[‘tags__id’] == ‘external_id’ # true</p>
+</div></blockquote>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>

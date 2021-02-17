@@ -216,8 +216,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
             
@@ -397,6 +397,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">as_querylang</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Render as QueryLang parameters.</span>
+
+
+<span class="sd">        .. # noqa: DAR201&quot;&quot;&quot;</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="p">}</span>
@@ -432,12 +436,28 @@
 
 
 <div class="viewcode-block" id="DriverType"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.DriverType">[docs]</a><span class="k">class</span> <span class="nc">DriverType</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">JAMLCompatible</span><span class="p">),</span> <span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A meta class representing a Driver</span>
+
+<span class="sd">    When a new Driver is created, it gets registered</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and register a new class with this meta class.</span>
+
+<span class="sd">        :param *args: *args for super</span>
+<span class="sd">        :param **kwargs: **kwargs for super</span>
+<span class="sd">        :return: the newly registered class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">register_class</span><span class="p">(</span><span class="n">_cls</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DriverType.register_class"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.DriverType.register_class">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">register_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Register a class</span>
+
+<span class="sd">        :param cls: the class</span>
+<span class="sd">        :return: the class, after being registered</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">reg_cls_set</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_registered_class&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reg_cls_set</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;force_register&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
             <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;__init__&#39;</span><span class="p">],</span> <span class="n">store_init_kwargs</span><span class="p">)</span>
@@ -482,12 +502,23 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">req</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Request&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the current (typed) request, shortcut to ``self.runtime.request``&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the current (typed) request, shortcut to ``self.runtime.request``</span>
+
+
+<span class="sd">        .. # noqa: DAR201</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">request</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">partial_reqs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;The collected partial requests under the current ``request_id`` &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;The collected partial requests under the current ``request_id``</span>
+
+
+<span class="sd">        .. # noqa: DAR401</span>
+
+
+<span class="sd">        .. # noqa: DAR201</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">partial_requests</span>
         <span class="k">else</span><span class="p">:</span>
@@ -498,16 +529,35 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">expect_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The expected number of partial messages &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;The expected number of partial messages</span>
+
+
+<span class="sd">        .. # noqa: DAR201</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">expect_parts</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">msg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the current request, shortcut to ``self.runtime.message``&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the current request, shortcut to ``self.runtime.message``</span>
+
+
+<span class="sd">        .. # noqa: DAR201</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">message</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QueryLangSet&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        .. # noqa: DAR101</span>
+
+
+<span class="sd">        .. # noqa: DAR102</span>
+
+
+<span class="sd">        .. # noqa: DAR201</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">queryset</span>
         <span class="k">else</span><span class="p">:</span>
@@ -515,10 +565,22 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;JinaLogger&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Shortcut to ``self.runtime.logger``&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Shortcut to ``self.runtime.logger``</span>
+
+
+<span class="sd">        .. # noqa: DAR201</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">logger</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        .. # noqa: DAR102</span>
+
+
+<span class="sd">        .. # noqa: DAR101</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -536,18 +598,19 @@
         <span class="k">return</span> <span class="n">d</span></div>
 
 
-<div class="viewcode-block" id="BaseRecursiveDriver"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseRecursiveDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRecursiveDriver</span><span class="p">(</span><span class="n">BaseDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A Driver to traverse a set of Documents with a specific path.</span>
-
-<span class="sd">    :param traversal_paths: The describes the leaves of the document tree on which _apply_all are called</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">traversal_paths</span><span class="p">]</span>
+<div class="viewcode-block" id="RecursiveMixin"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.RecursiveMixin">[docs]</a><span class="k">class</span> <span class="nc">RecursiveMixin</span><span class="p">(</span><span class="n">BaseDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A mixin to traverse a set of Documents with a specific path. to be mixed in with :class:`BaseRecursiveDriver`&quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        .. # noqa: DAR102</span>
+
+
+<span class="sd">        .. # noqa: DAR201</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -582,6 +645,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Call the Driver.</span>
+
+<span class="sd">        :param *args: *args for ``_traverse_apply``</span>
+<span class="sd">        :param **kwargs: **kwargs for ``_traverse_apply``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_traverse_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -616,19 +684,28 @@
 
 <div class="viewcode-block" id="FastRecursiveMixin"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.FastRecursiveMixin">[docs]</a><span class="k">class</span> <span class="nc">FastRecursiveMixin</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The optimized version of :class:`BaseRecursiveDriver`,</span>
-<span class="sd">     it uses :meth:`traverse` in :class:`DocumentSet` and yield much better performance for index and encode drivers.</span>
+<span class="sd">    The optimized version of :class:`RecursiveMixin`, to be mixed in with :class:`BaseRecursiveDriver`</span>
+<span class="sd">    it uses :meth:`traverse` in :class:`DocumentSet` and yield much better performance for index and encode drivers.</span>
 
-<span class="sd">     .. seealso::</span>
-<span class="sd">        https://github.com/jina-ai/jina/issues/1932</span>
+<span class="sd">    .. seealso::</span>
+<span class="sd">       https://github.com/jina-ai/jina/issues/1932</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Traverse with _apply_all</span>
+
+<span class="sd">        :param *args: *args for ``_apply_all``</span>
+<span class="sd">        :param **kwargs: **kwargs for ``_apply_all``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The DocumentSet after applying the traversal</span>
+
+
+<span class="sd">        .. # noqa: DAR201&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -637,6 +714,23 @@
             <span class="p">)</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BaseRecursiveDriver"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseRecursiveDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRecursiveDriver</span><span class="p">(</span><span class="n">BaseDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A :class:`BaseRecursiveDriver` is an abstract Driver class containing information about the `traversal_paths`</span>
+<span class="sd">    that a `Driver` must apply its logic.</span>
+<span class="sd">    It is intended to be mixed in with either :class:`FastRecursiveMixin` or :class:`RecursiveMixin`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a :class:`BaseRecursiveDriver`</span>
+
+<span class="sd">        :param traversal_paths: Describes the leaves of the document tree on which _apply_all are called</span>
+<span class="sd">        :param *args: *args for super</span>
+<span class="sd">        :param **kwargs: **kwargs for super</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">traversal_paths</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="BaseExecutableDriver"><a class="viewcode-back" href="../../api/jina.drivers.html#jina.drivers.BaseExecutableDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseExecutableDriver</span><span class="p">(</span><span class="n">BaseRecursiveDriver</span><span class="p">):</span>
@@ -648,7 +742,13 @@
 <span class="sd">    This is done by :func:`attach`. Note that a deserialized :class:`BaseDriver` from file is always unattached.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">executor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize a :class:`BaseExecutableDriver`</span>
 
 <span class="sd">        :param executor: the name of the sub-executor, only necessary when :class:`jina.executors.compound.CompoundExecutor` is used</span>
@@ -664,7 +764,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;AnyExecutor&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;the executor that to which the instance is attached&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;the executor that to which the instance is attached</span>
+
+
+<span class="sd">        .. # noqa: DAR201</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span>
 
     <span class="nd">@property</span>

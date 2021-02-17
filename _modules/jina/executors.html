@@ -216,8 +216,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
             
@@ -418,26 +418,38 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_post_init_vars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_snapshot_ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
-
     <span class="k">def</span> <span class="nf">_post_init_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_metas</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">_requests</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fill_in_metas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">&#39;post_init may take some time&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">fill_in_metas</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">_metas</span><span class="p">:</span>
                     <span class="n">_metas</span> <span class="o">=</span> <span class="n">get_default_metas</span><span class="p">()</span>
 
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">_requests</span><span class="p">:</span>
-                    <span class="kn">from</span> <span class="nn">..executors.requests</span> <span class="kn">import</span> <span class="n">get_default_reqs</span>
-                    <span class="n">_requests</span> <span class="o">=</span> <span class="n">get_default_reqs</span><span class="p">(</span><span class="nb">type</span><span class="o">.</span><span class="n">mro</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">))</span>
-
                 <span class="bp">self</span><span class="o">.</span><span class="n">_fill_metas</span><span class="p">(</span><span class="n">_metas</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_fill_requests</span><span class="p">(</span><span class="n">_requests</span><span class="p">)</span>
+
+                <span class="kn">from</span> <span class="nn">..executors.requests</span> <span class="kn">import</span> <span class="n">get_default_reqs</span>
+                <span class="n">default_requests</span> <span class="o">=</span> <span class="n">get_default_reqs</span><span class="p">(</span><span class="nb">type</span><span class="o">.</span><span class="n">mro</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_requests</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_drivers_from_requests</span><span class="p">(</span><span class="n">default_requests</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">parsed_drivers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_drivers_from_requests</span><span class="p">(</span><span class="n">_requests</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">_requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_default&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                        <span class="n">default_drivers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_drivers_from_requests</span><span class="p">(</span><span class="n">default_requests</span><span class="p">)</span>
+
+                        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">default_drivers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parsed_drivers</span><span class="p">:</span>
+                                <span class="n">parsed_drivers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span> <span class="o">=</span> <span class="n">parsed_drivers</span>
 
             <span class="n">_before</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">post_init</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_post_init_vars</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_before</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">_fill_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_requests</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[str, List[&#39;BaseDriver&#39;]]</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_drivers_from_requests</span><span class="p">(</span><span class="n">_requests</span><span class="p">):</span>
+        <span class="n">_drivers</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[str, List[&#39;BaseDriver&#39;]]</span>
 
         <span class="k">if</span> <span class="n">_requests</span> <span class="ow">and</span> <span class="s1">&#39;on&#39;</span> <span class="ow">in</span> <span class="n">_requests</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_requests</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="c1"># if control request is forget in YAML, then fill it</span>
@@ -445,14 +457,36 @@
                 <span class="kn">from</span> <span class="nn">..drivers.control</span> <span class="kn">import</span> <span class="n">ControlReqDriver</span>
                 <span class="n">_requests</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">][</span><span class="s1">&#39;ControlRequest&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ControlReqDriver</span><span class="p">()]</span>
 
-            <span class="k">for</span> <span class="n">req_type</span><span class="p">,</span> <span class="n">drivers</span> <span class="ow">in</span> <span class="n">_requests</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">req_type</span><span class="p">,</span> <span class="n">drivers_spec</span> <span class="ow">in</span> <span class="n">_requests</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">req_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                     <span class="n">req_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">req_type</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">drivers_spec</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="c1"># old syntax</span>
+                    <span class="n">drivers</span> <span class="o">=</span> <span class="n">drivers_spec</span>
+                    <span class="n">common_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">drivers_spec</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">drivers</span> <span class="o">=</span> <span class="n">drivers_spec</span><span class="p">[</span><span class="s1">&#39;drivers&#39;</span><span class="p">]</span>
+                    <span class="n">common_kwargs</span> <span class="o">=</span> <span class="n">drivers_spec</span><span class="p">[</span><span class="s1">&#39;with&#39;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unsupported type of driver spec: </span><span class="si">{</span><span class="n">drivers_spec</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
                 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">req_type</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">r</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">!=</span> <span class="n">drivers</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">drivers</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">r</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_drivers</span><span class="p">:</span>
+                        <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">!=</span> <span class="n">drivers</span><span class="p">:</span>
+                        <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">drivers</span><span class="p">)</span>
+
+                    <span class="c1"># inject common kwargs to drivers</span>
+                    <span class="k">if</span> <span class="n">common_kwargs</span><span class="p">:</span>
+                        <span class="n">new_drivers</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]:</span>
+                            <span class="n">new_init_kwargs_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                            <span class="n">new_init_kwargs_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">common_kwargs</span><span class="p">)</span>
+                            <span class="n">new_drivers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">new_init_kwargs_dict</span><span class="p">))</span>
+                        <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                        <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_drivers</span>
+
+        <span class="k">return</span> <span class="n">_drivers</span>
 
     <span class="k">def</span> <span class="nf">_fill_metas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_metas</span><span class="p">):</span>
         <span class="n">unresolved_attr</span> <span class="o">=</span> <span class="kc">False</span>

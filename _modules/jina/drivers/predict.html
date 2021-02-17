@@ -216,8 +216,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 124 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
             
@@ -312,14 +312,14 @@
 
 
 <div class="viewcode-block" id="BaseLabelPredictDriver"><a class="viewcode-back" href="../../../api/jina.drivers.predict.html#jina.drivers.predict.BaseLabelPredictDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseLabelPredictDriver</span><span class="p">(</span><span class="n">BasePredictDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class of a Driver for label prediction.</span>
+
+<span class="sd">    :param output_tag: output label will be written to ``doc.tags``</span>
+<span class="sd">    :param *args: *args for super</span>
+<span class="sd">    :param **kwargs: **kwargs for super</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;prediction&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param output_tag: output label will be written to ``doc.tags``</span>
-<span class="sd">        :param *args:</span>
-<span class="sd">        :param **kwargs:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_tag</span> <span class="o">=</span> <span class="n">output_tag</span>
 
@@ -345,6 +345,13 @@
 
 <span class="sd">        :param prediction: the float/int numpy ndarray given by :class:`BaseClassifier`</span>
 <span class="sd">        :return: the readable label to be stored.</span>
+
+
+
+<span class="sd">        .. # noqa: DAR401</span>
+
+
+<span class="sd">        .. # noqa: DAR202</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
@@ -360,8 +367,8 @@
 
 <span class="sd">        :param one_label: label when prediction is one</span>
 <span class="sd">        :param zero_label: label when prediction is zero</span>
-<span class="sd">        :param *args:</span>
-<span class="sd">        :param **kwargs:</span>
+<span class="sd">        :param *args: *args for super</span>
+<span class="sd">        :param **kwargs: **kwargs for super</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">one_label</span> <span class="o">=</span> <span class="n">one_label</span>
@@ -371,7 +378,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param prediction: a (B,) or (B, 1) zero one array</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: the labels as either ``self.one_label`` or ``self.zero_label``</span>
+
+
+<span class="sd">        .. # noqa: DAR401</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -394,17 +404,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span>
 
 <div class="viewcode-block" id="OneHotPredictDriver.validate_labels"><a class="viewcode-back" href="../../../api/jina.drivers.predict.html#jina.drivers.predict.OneHotPredictDriver.validate_labels">[docs]</a>    <span class="k">def</span> <span class="nf">validate_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validate the labels.</span>
+
+<span class="sd">        :param prediction: the predictions</span>
+
+
+<span class="sd">        .. # noqa: DAR401</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">prediction</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> expects prediction has ndim=2, but receiving </span><span class="si">{</span><span class="n">prediction</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> expects prediction to have ndim=2, but received </span><span class="si">{</span><span class="n">prediction</span><span class="o">.</span><span class="n">ndim</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">prediction</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> expects prediction.shape[1]==len(self.labels), but receiving </span><span class="si">{</span><span class="n">prediction</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> expects prediction.shape[1]==len(self.labels), but received </span><span class="si">{</span><span class="n">prediction</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="OneHotPredictDriver.prediction2label"><a class="viewcode-back" href="../../../api/jina.drivers.predict.html#jina.drivers.predict.OneHotPredictDriver.prediction2label">[docs]</a>    <span class="k">def</span> <span class="nf">prediction2label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param prediction: a (B, C) array where C is the number of classes, only one element can be one</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: the list of labels</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validate_labels</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -412,7 +429,7 @@
 
 
 <div class="viewcode-block" id="MultiLabelPredictDriver"><a class="viewcode-back" href="../../../api/jina.drivers.predict.html#jina.drivers.predict.MultiLabelPredictDriver">[docs]</a><span class="k">class</span> <span class="nc">MultiLabelPredictDriver</span><span class="p">(</span><span class="n">OneHotPredictDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Mapping prediction to a list of labels</span>
+    <span class="sd">&quot;&quot;&quot;Mapping prediction to a list of labels</span>
 
 <span class="sd">    Expect prediction to be 2dim array, zero-one valued. Each row corresponds to</span>
 <span class="sd">    a sample, each column corresponds to a label. Each row can have only multiple 1s.</span>
@@ -421,6 +438,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="MultiLabelPredictDriver.prediction2label"><a class="viewcode-back" href="../../../api/jina.drivers.predict.html#jina.drivers.predict.MultiLabelPredictDriver.prediction2label">[docs]</a>    <span class="k">def</span> <span class="nf">prediction2label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Transform the prediction into labels.</span>
+
+<span class="sd">        :param prediction: the array of predictions</span>
+<span class="sd">        :return: nested list of labels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">validate_labels</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">pp</span><span class="p">)]</span> <span class="k">for</span> <span class="n">pp</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prediction</span><span class="p">]</span></div></div>
 
