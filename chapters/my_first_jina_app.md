@@ -6,11 +6,13 @@ This tutorial guides you through building your own neural search app using the [
 
 ![](/images/jinabox-wikipedia.gif)
 
-Our example program will be a simple neural search engine for text. It will take a user's input, and return a list of sentences from Wikipedia that match most closely.
+Our example program will be a simple neural search engine for text. It will take a user's input and return a list of sentences from Wikipedia that match most closely.
 
 The end result will be close to [Wikipedia sentence search](https://github.com/jina-ai/examples/tree/master/wikipedia-sentences).
 
 ## 🗝️ Key concepts
+
+You should be familiar with these before you start:
 
 - **[What is Neural Search?](https://docs.jina.ai/chapters/what-is-neural-search/)** See how Jina is different from traditional search
 - **[Jina 101](https://docs.jina.ai/chapters/101/)**: Learn about Jina's core components
@@ -155,7 +157,7 @@ echo $JINA_DATA_FILE
 
 ## 🏃 Run the app
 
-In section you will index and search through your data
+In section you will index and search through your data.
 
 ### Index Flow
 
@@ -164,6 +166,8 @@ First up we need to build up an index of our dataset, which we'll later search w
 ```sh
 python app.py -t index
 ```
+
+ℹ️  `-t` is short for `--task`
 
 You'll see a lot of output scrolling by. Indexing is complete when you see:
 
@@ -191,15 +195,15 @@ After a while you should see the console stop scrolling and display output like:
 
 Your search engine is now ready to run!
 
-⚠️  Note down the port number. You'll need it for `curl` and the Jina Box frontend. In our case we can see it's `45678`.
+⚠️  Note down the port number. You'll need it for `curl` and the Jina Box front-end. In our case we can see it's `45678`.
 
-ℹ️  `python app.py query_restful` doesn't pop up a search interface - for that you'll need to connect via `curl`, Jina Box, or another client. Alternatively run `python app.py query` to search from your terminal.
+ℹ️  `python app.py -t query_restful` doesn't pop up a search interface - for that you'll need to connect via `curl`, Jina Box, or another client. Alternatively run `python app.py -t query` to search from your terminal.
 
 ### Searching Wikipedia sentences
 
 See our section on [searching the data](#search-the-data).
 
-When you're finished, stop the Flow with Ctrl-C (or Command-C on a Mac), and run `deactivate` to exit your virtualenv. (If you wish to re-activate it in future, you can return to the app directory and run `source env/bin/activate`).
+When you're finished, stop the Flow with Ctrl-C (or Command-C on a Mac), and run `deactivate` to exit your virtualenv. (If you wish to re-activate it in the future, you can return to the app directory and run `source env/bin/activate`).
 
 ## 🤔 How does it work?
 
@@ -230,7 +234,6 @@ To start the Flow, we run `python app.py -t <flow_name>`, in this case:
 python app.py -t index
 ```
 
-ℹ️  `-t` is short for `--task`
 ℹ️  You also can build Flows in `app.py` itself [without specifying them in YAML](https://docs.jina.ai/chapters/flow/index.html) or with [Jina Dashboard](http://dashboard.jina.ai)
 
 #### Indexing
@@ -288,7 +291,7 @@ As in `flows/index.yml`, we use three Pods, but this time they behave differentl
 
 ### Pods
 
-<img src=""https://docs.jina.ai/_images/pod.png width="20%" align="left">
+<img src="https://docs.jina.ai/_images/pod.png" width="20%" align="left">
 
 - A Flow tells Jina *what* tasks (indexing, querying) to perform on the dataset.
 - The [Pods]() comprise the Flow and tell Jina *how* to perform each task. They define the neural networks we use in neural search, namely the machine-learning models like `distilbert-base-cased`.
@@ -362,7 +365,7 @@ rm -f pods/craft.yml
 
 Also remove those Pod entries from `flows/index.yml` and `flows/query.yml`.
 
-### Enable incremental indexing
+### Enable [incremental indexing](https://docs.jina.ai/chapters/incremental_indexing/index.html)
 
 In this example, if you wanted to index more data you would need to remove your `workspace` directory and then re-index **everything** from scratch. To avoid this [we can add incremental indexing](https://github.com/jina-ai/examples/tree/master/wikipedia-sentences-incremental)
 
@@ -386,4 +389,4 @@ In this tutorial you've learned:
 * How to query data with `curl` and Jina Box
 * The details behind Jina Flows and Pods
 
-Now you have a broad understanding of how things work. Nexy you can look at more [examples](https://github.com/jina-ai/examples) to build [image](https://github.com/jina-ai/examples/tree/master/pokedex-with-bit) or [video](https://github.com/jina-ai/examples/tree/master/tumblr-gif-search) search, or see a [more advanced text search example](https://github.com/jina-ai/examples/tree/master/multires-lyrics-search).
+Now you have a broad understanding of how things work. Next you can look at more [examples](https://github.com/jina-ai/examples) to build [image](https://github.com/jina-ai/examples/tree/master/pokedex-with-bit) or [video](https://github.com/jina-ai/examples/tree/master/tumblr-gif-search) search, or see a [more advanced text search example](https://github.com/jina-ai/examples/tree/master/multires-lyrics-search).
