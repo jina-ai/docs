@@ -302,6 +302,8 @@
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseExecutor</span>
 
+<span class="n">COL_STR_TYPE</span> <span class="o">=</span> <span class="s1">&#39;U64&#39;</span>  <span class="c1">#: the ID column data type for score matrix</span>
+
 
 <div class="viewcode-block" id="BaseRanker"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.executors.rankers.BaseRanker">[docs]</a><span class="k">class</span> <span class="nc">BaseRanker</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The base class for a `Ranker`&quot;&quot;&quot;</span>
@@ -335,9 +337,9 @@
 <span class="sd">        :meth:`get_attrs` of :class:`Document`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">COL_MATCH_PARENT_ID</span> <span class="o">=</span> <span class="s1">&#39;match_parent_id&#39;</span>
-    <span class="n">COL_MATCH_ID</span> <span class="o">=</span> <span class="s1">&#39;match_id&#39;</span>
-    <span class="n">COL_DOC_CHUNK_ID</span> <span class="o">=</span> <span class="s1">&#39;doc_chunk_id&#39;</span>
+    <span class="n">COL_PARENT_ID</span> <span class="o">=</span> <span class="s1">&#39;match_parent_id&#39;</span>
+    <span class="n">COL_DOC_CHUNK_ID</span> <span class="o">=</span> <span class="s1">&#39;match_doc_chunk_id&#39;</span>
+    <span class="n">COL_QUERY_CHUNK_ID</span> <span class="o">=</span> <span class="s1">&#39;match_query_chunk_id&#39;</span>
     <span class="n">COL_SCORE</span> <span class="o">=</span> <span class="s1">&#39;score&#39;</span>
 
 <div class="viewcode-block" id="Chunk2DocRanker.score"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.executors.rankers.Chunk2DocRanker.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_idx</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">query_chunk_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">match_chunk_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
@@ -375,7 +377,7 @@
 <span class="sd">        :return: an iterator over the groups.</span>
 <span class="sd">        :rtype: :class:`Chunk2DocRanker`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_by</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_by</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">COL_PARENT_ID</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_group_by</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span> <span class="n">col_name</span><span class="p">):</span>
@@ -398,14 +400,14 @@
 <span class="sd">        :rtype: np.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-            <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_PARENT_ID</span><span class="p">,</span> <span class="n">COL_STR_TYPE</span><span class="p">),</span>
             <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)]</span>
                      <span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Chunk2DocRanker.get_doc_id"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.executors.rankers.Chunk2DocRanker.get_doc_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_doc_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">match_with_same_doc_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return document id that matches with given id :param:`match_with_same_doc_id`&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">match_with_same_doc_id</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="n">match_with_same_doc_id</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">COL_PARENT_ID</span><span class="p">]</span></div></div>
 
 
 <div class="viewcode-block" id="Match2DocRanker"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.executors.rankers.Match2DocRanker">[docs]</a><span class="k">class</span> <span class="nc">Match2DocRanker</span><span class="p">(</span><span class="n">BaseRanker</span><span class="p">):</span>
@@ -419,7 +421,7 @@
 <span class="sd">        - BucketShuffleRanker (first buckets matches and then sort each bucket).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">COL_MATCH_ID</span> <span class="o">=</span> <span class="s1">&#39;match_id&#39;</span>
+    <span class="n">COL_MATCH_ID</span> <span class="o">=</span> <span class="s1">&#39;match_doc_chunk_id&#39;</span>
     <span class="n">COL_SCORE</span> <span class="o">=</span> <span class="s1">&#39;score&#39;</span>
 
 <div class="viewcode-block" id="Match2DocRanker.score"><a class="viewcode-back" href="../../../api/jina.executors.rankers.html#jina.executors.rankers.Match2DocRanker.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">old_match_scores</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">match_meta</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
