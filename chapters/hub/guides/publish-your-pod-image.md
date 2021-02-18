@@ -54,7 +54,7 @@ Your image will be published as `jinaai/hub.executors.encoders.awesomeness`.
 | `avatar` | a picture that personalizes and distinguishes your image | None |
 | `platform` | a list of CPU architectures that your image is built on, each item should be [in this list](https://github.com/jina-ai/jina/blob/master/jina/resources/hub-builder/platforms.yml) | `[linux/amd64]` | 
 
-Please refer to [hub/examples/mwu_encoder/manifest.yml](hub/examples/mwu_encoder/manifest.yml) for the example.
+Please refer to [VSETextEncoder/manifest.yml](https://github.com/jina-ai/jina-hub/blob/master/encoders/nlp/VSETextEncoder/manifest.yml) for the example.
 
 ## Updating schema of Pods
 

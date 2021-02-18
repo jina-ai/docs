@@ -8,14 +8,14 @@ Use Jina Dashboard by visiting the [website](https://dashboard.jina.ai) or cloni
 
 ## Features
 
--  ###  [Flow Design GUI:](flow.md)
+-  ###  [Flow Design GUI:](../flow.md)
    Build your own custom Flow visually on the canvas leveraging templates, YAML files or by starting from scratch with empty pods and flows. You can add properties as you go, and deploy right from the canvas.
 
--  ###  [LogStream](log-stream.rst)
+-  ###  [LogStream](../log-stream.rst)
    Jina’s LogStream enables you to dig deeper into your Jina Flow, debug it by viewing your logs in real-time and filter, group and search based on component (Pod) and log level / message.
 
 
--  ###  [Jina Hub](hub.md)
+-  ###  [Jina Hub](../hub.md)
     Share and discover custom and community driven Jina Pods and Apps tailored to specific use cases of neural search.
 
 ### In order to use Jina Dashboard it has to be [ connected to JinaD first](connect-jinaD.md)
