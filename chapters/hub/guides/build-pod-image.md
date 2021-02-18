@@ -28,7 +28,7 @@ Users can use Pod images in several ways:
     jina pod --uses hub/example/dummy_mwu_encoder.yml --port-in 55555 --port-out 55556
     ```
     
-More information about [the usage can be found here](./use-your-pod.html#use-your-pod-image).
+More information about [the usage can be found here](./use-your-pod.md).
 
 
 ## Why?
@@ -65,7 +65,7 @@ Typically, the following files are packed into the container image.
 | `*.yml`          | a YAML file describes the Executor arguments and configs, if you want users to use your config;     |
 | Other data files | may be required to run the Executor, e.g. pre-trained model, fine-tuned model, home-made data.      |
 
-Except `Dockerfile`, all other options to build a valid Pod image depending on your case. `build.args` is only required when you want to [upload your image to Jina Hub](./publish-your-pod-image.html#publish-your-pod-image-to-jina-hub).
+Except `Dockerfile`, all other options to build a valid Pod image depending on your case. `build.args` is only required when you want to [upload your image to Jina Hub](./publish-your-pod-image.md).
 
 ## Step-by-Step Example
 
@@ -107,7 +107,7 @@ metas:
   workspace: ./
 ```
 
-The documentation of the YAML syntax [can be found at here](../yaml/yaml.html#executor-yaml-syntax). 
+The documentation of the YAML syntax [can be found at here](../../yaml/index.rst). 
 
 ### 2. Write a 3-line `Dockerfile`
 
