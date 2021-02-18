@@ -58,7 +58,7 @@ with f:
     f.index_ndarray(input_data)
 ```
     
-* Add a dummy Pod with config `_logforward` to the Flow. [`_logforward`](https://docs.jina.ai/chapters/simple_exec.html) is a built-in YAML, which just forwards input data to the results and prints it to the log. It is located in `jina/resources/executors._forward.yml`. You can also use your own [YAML](https://docs.jina.ai/chapters/yaml/yaml.html) to organize `pods`.
+* Add a dummy Pod with config `_logforward` to the Flow. [`_logforward`](https://docs.jina.ai/chapters/simple_exec.html) is a built-in YAML, which just forwards input data to the results and prints it to the log. It is located in `jina/resources/executors._forward.yml`. You can also use your own [YAML](https://docs.jina.ai/chapters/yaml/index.html) to organize `pods`.
 * Use the Flow to index an `ndarray` by calling the `index_ndarray()` API. 
 
 Calling the `index_ndarray()` API generates requests with the following message:
@@ -328,9 +328,9 @@ As you can see from the examples above, we can use `buffer` to transfer strings 
 `.index()`, `.search()` and `.train()` also accept `batch_size` which controls the number of Documents per request. However, this does not change the `crafter`'s implementation, as the `crafter` always works at the Document level. 
 
 Further reading:
-- [`jina client --help`](../cli/jina-client.html)
-- [Jina `Document` Protobuf](../proto/docs.html#document)
-- [`prefetch` in `jina gateway`](../cli/jina-gateway.html?highlight=prefetch#gateway%20arguments)
+- [`jina client --help`](../cli/jina-client.rst)
+- [Jina `Document` Protobuf](../proto/index.rst)
+- [`prefetch` in `jina gateway`](../cli/jina-gateway.rst)
 
 
 ## Output Function
