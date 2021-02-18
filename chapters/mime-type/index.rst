@@ -59,13 +59,14 @@ To have the full control over the mime type, it is also possible to set it manua
 
 Mime type in chunks
 -------------------
+Chunks are created by ``Segmenters``.
 For a variety of use cases, chunks have the same mime type as their parent documents.
 Examples are text documents where each sentence (chunk) is a text document on its own.
 Also when segmenting images or audio, most applications are creating chunks of the same mime type.
 However, there are scenarios where it makes sense to change the mime type on chunk level.
-Common examples would be for instance video documents where the chunks are images or images with text chunks (OCR).
+A common examples would be for instance video documents where the chunks are images.
 The ``Segmenters`` are responsible for assigning the right mime type to the chunks they create.
-In case no mime type is set, the ``SegmentDriver`` assigns the the mime type of the parent document as default value.
+In case no mime type is set, the ``SegmentDriver`` assigns the mime type of the parent document as default value.
 The following example illustrates a simple segmenter, which sets the ``mime_type`` for each chunk it creates.
 
 .. confval:: dummy_segmenter.py
