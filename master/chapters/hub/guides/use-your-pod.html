@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Introduction &mdash; Jina 1.0.2-master documentation</title>
+  <title>Use Your Pod Image &mdash; Jina 1.0.2-master documentation</title>
   
 
   
@@ -54,8 +54,8 @@
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Developer Guides" href="../guides/index.html" />
-    <link rel="prev" title="Connect Dashboard to JinaD" href="../../dashboard/connect-jinaD.html" /> 
+    <link rel="next" title="Publish Your Pod Image to Jina Hub" href="publish-your-pod-image.html" />
+    <link rel="prev" title="Build Your Pod into a Docker Image" href="build-pod-image.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -191,8 +191,14 @@
 </ul>
 <p class="caption"><span class="caption-text">Jina Hub</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Developer Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="build-pod-image.html">Build Your Pod into a Docker Image</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Use Your Pod Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hub-builder.html">Jina Hub Builder</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../api_references/index.html">API References</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Jina Box</span></p>
@@ -266,7 +272,9 @@
     
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Introduction</li>
+          <li><a href="index.html">Developer Guides</a> &raquo;</li>
+        
+      <li>Use Your Pod Image</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -292,23 +300,107 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="jina-hub-is-a-centralized-registry-where-you-can-share-and-discover-custom-and-community-driven-jina-pods-and-apps-tailored-to-specific-use-cases-of-neural-search">
-<h2><a class="reference external" href="https://dashboard.jina.ai/#/hub">Jina Hub</a> is a centralized registry, where you can share and discover custom and community driven Jina Pods and Apps tailored to specific use cases of neural search.<a class="headerlink" href="#jina-hub-is-a-centralized-registry-where-you-can-share-and-discover-custom-and-community-driven-jina-pods-and-apps-tailored-to-specific-use-cases-of-neural-search" title="Permalink to this headline">¶</a></h2>
-<p><img alt="hubView" src="../../../_images/hubView1.gif" /></p>
+  <div class="section" id="use-your-pod-image">
+<h1>Use Your Pod Image<a class="headerlink" href="#use-your-pod-image" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="use-the-pod-image-via-docker-cli">
+<h2>Use the Pod image via Docker CLI<a class="headerlink" href="#use-the-pod-image-via-docker-cli" title="Permalink to this headline">¶</a></h2>
+<p>The most powerful way to use this Pod image is via Docker CLI directly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run --rm -p <span class="m">55555</span>:55555 -p <span class="m">55556</span>:55556 jinaai/hub.examples.mwu_encoder --port-in <span class="m">55555</span> --port-out <span class="m">55556</span>
+</pre></div>
 </div>
-<div class="section" id="upload-and-share-images">
-<h2>Upload and Share Images<a class="headerlink" href="#upload-and-share-images" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../guides/publish-your-pod-image.html"><span class="doc">Share your custom Jina Pods </span></a> by simply uploading a Python file, a Dockerfile and a YAML, and leave the rest of the work to us. Building and version control is automatically handled on the cloud side.</p>
+<p>Note, the exposure of ports <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">55555:55555</span> <span class="pre">-p</span> <span class="pre">55556:55556</span></code> is required for other Pods (local/remote) to communicate this Pod. One may also want to use <code class="docutils literal notranslate"><span class="pre">--network</span> <span class="pre">host</span></code> and let the Pod share the network layer of the host.</p>
+<p>All parameters supported by <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">pod</span> <span class="pre">--help</span></code> can be followed after <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span> <span class="pre">jinaai/hub.examples.mwu_encoder</span></code>.</p>
+<p>One can mount a host path to the container via <code class="docutils literal notranslate"><span class="pre">--volumes</span></code> or <code class="docutils literal notranslate"><span class="pre">-v</span></code>. For example, to override the internal YAML config, one can do</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># assuming $pwd is the root dir of this repo </span>
+docker run --rm -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/hub/example/mwu_encoder_ext.yml:/ext.yml jinaai/hub.examples.mwu_encoder
+</pre></div>
 </div>
-<div class="section" id="cloud-native">
-<h2>Cloud Native<a class="headerlink" href="#cloud-native" title="Permalink to this headline">¶</a></h2>
-<p>As Jina Hub images are containerized, they can be easily leveraged in any Jina Flow, even in distributed environments.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>MWUEncoder@ 1[S]:look at me! im from an external yaml!
+MWUEncoder@ 1[S]:initialize MWUEncoder from a yaml config
+ BasePea-0@ 1[I]:setting up sockets...
+ BasePea-0@ 1[I]:input tcp://0.0.0.0:36109 (PULL_BIND) 	 output tcp://0.0.0.0:58191 (PUSH_BIND)	 control over tcp://0.0.0.0:52365 (PAIR_BIND)
+ BasePea-0@ 1[S]:ready and listening
+</pre></div>
 </div>
-<div class="section" id="open-source">
-<h2>Open Source<a class="headerlink" href="#open-source" title="Permalink to this headline">¶</a></h2>
-<p>Hub images are made and maintained by the community. You can <a class="reference external" href="https://github.com/jina-ai/jina-hub">contribute to the database of hub images</a> and help your fellow developers achieve their search goals!</p>
+<p>To override the predefined entrypoint via <code class="docutils literal notranslate"><span class="pre">--entrypoint</span></code>, e.g.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run --rm --entrypoint <span class="s2">&quot;jina&quot;</span> jinaai/hub.examples.mwu_encoder check
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-the-pod-image-via-jina-cli">
+<h2>Use the Pod image via Jina CLI<a class="headerlink" href="#use-the-pod-image-via-jina-cli" title="Permalink to this headline">¶</a></h2>
+<p>Another way to use the Pod image is simply give it to <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">pod</span></code> via <code class="docutils literal notranslate"><span class="pre">--uses</span></code>,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jina pod --uses docker://jinaai/hub.examples.mwu_encoder
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🐳 MWUEncoder@ 1[S]:look at me! im from internal yaml!
+🐳 MWUEncoder@ 1[S]:initialize MWUEncoder from a yaml config
+🐳 BasePea-0@ 1[I]:setting up sockets...
+🐳 BasePea-0@ 1[I]:input tcp://0.0.0.0:59608 (PULL_BIND) 	 output tcp://0.0.0.0:59609 (PUSH_BIND)	 control over tcp://0.0.0.0:59610 (PAIR_BIND)
+ContainerP@69041[S]:ready and listening
+🐳 BasePea-0@ 1[S]:ready and listening
+</pre></div>
+</div>
+<p>Note the 🐳 represents that the log is piping from a Docker container.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">jina</span> <span class="pre">pod</span> <span class="pre">--help</span></code> for more usage.</p>
+</div>
+<div class="section" id="use-the-pod-image-via-flow-api">
+<h2>Use the Pod image via Flow API<a class="headerlink" href="#use-the-pod-image-via-flow-api" title="Permalink to this headline">¶</a></h2>
+<p>Finally, one can use it via Flow API as well, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;my-encoder&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;docker://jinaai/hub.examples.mwu_encoder&#39;</span><span class="p">,</span>
+             <span class="n">volumes</span><span class="o">=</span><span class="s1">&#39;./abc&#39;</span><span class="p">,</span> 
+             <span class="n">port_in</span><span class="o">=</span><span class="mi">55555</span><span class="p">,</span> <span class="n">port_out</span><span class="o">=</span><span class="mi">55556</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;my-indexer&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;indexer.yml&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="how-to-change-the-default-drivers-of-the-executor-that-is-running-inside-the-docker-image">
+<h2>How to change the default drivers of the Executor that is running inside the Docker image?<a class="headerlink" href="#how-to-change-the-default-drivers-of-the-executor-that-is-running-inside-the-docker-image" title="Permalink to this headline">¶</a></h2>
+<p>Jina allows <code class="docutils literal notranslate"><span class="pre">uses_internal</span></code> as an argument while initialising Flow for this purpose. Pod images are docker images that normally have an
+<code class="docutils literal notranslate"><span class="pre">entrypoint</span></code> that looks like this:</p>
+<p><code class="docutils literal notranslate"><span class="pre">ENTRYPOINT</span> <span class="pre">[&quot;jina&quot;,</span> <span class="pre">&quot;pod&quot;,</span> <span class="pre">&quot;--uses&quot;,</span> <span class="pre">&quot;config.yml&quot;]</span></code></p>
+<p>This indicates that when the <code class="docutils literal notranslate"><span class="pre">pod</span></code> image is started, inside the docker container, a <code class="docutils literal notranslate"><span class="pre">Pod</span></code> is started with the preset <code class="docutils literal notranslate"><span class="pre">config.yml</span></code> containing
+the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> instance of the specific <code class="docutils literal notranslate"><span class="pre">executor</span></code>. By using <code class="docutils literal notranslate"><span class="pre">uses_internal</span></code>, jina overrides the <code class="docutils literal notranslate"><span class="pre">entrypoint</span></code> forcing the <code class="docutils literal notranslate"><span class="pre">Pod</span></code> inside the <code class="docutils literal notranslate"><span class="pre">docker</span></code> container
+to use the <code class="docutils literal notranslate"><span class="pre">yaml</span></code> configuration in <code class="docutils literal notranslate"><span class="pre">uses_internal</span></code>. This allows to use the same image while changing parameters of the <code class="docutils literal notranslate"><span class="pre">Executor</span></code> or using different `Drivers
+than the default ones.</p>
+<p>For instance, the <code class="docutils literal notranslate"><span class="pre">config.yml</span></code> for the ‘jinaai/hub.examples.mwu_encoder’ may look like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!MWUEncoder</span>
+<span class="nt">with</span><span class="p">:</span>
+  <span class="p p-Indicator">{}</span>
+<span class="nt">metas</span><span class="p">:</span>
+  <span class="nt">py_modules</span><span class="p">:</span> 
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">__init__.py</span>
+</pre></div>
+</div>
+<p>Imagine we want to have this <code class="docutils literal notranslate"><span class="pre">Executor</span></code> do encoding for <a class="reference external" href="https://docs.jina.ai/chapters/traversal/index.html"><code class="docutils literal notranslate"><span class="pre">chunks</span></code> of <code class="docutils literal notranslate"><span class="pre">chunks</span></code> of the <code class="docutils literal notranslate"><span class="pre">root</span></code> documents</a>. Then we may want to
+change the default driver’s settings and build a ‘custom_mwu_encoder.yml’ to be passed in <code class="docutils literal notranslate"><span class="pre">uses_internal</span></code> argument.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!MWUEncoder</span>
+<span class="nt">with</span><span class="p">:</span>
+  <span class="p p-Indicator">{}</span>
+<span class="nt">metas</span><span class="p">:</span>
+  <span class="nt">py_modules</span><span class="p">:</span> 
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">__init__.py</span>
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="nt">on</span><span class="p">:</span>
+    <span class="p p-Indicator">[</span><span class="nv">SearchRequest</span><span class="p p-Indicator">,</span> <span class="nv">IndexRequest</span><span class="p p-Indicator">]:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!EncodeDriver</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">traversal_paths</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;cc&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>Then, the Flow instantiation would look like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;my-encoder&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;docker://jinaai/hub.examples.mwu_encoder&#39;</span><span class="p">,</span>
+             <span class="n">volumes</span><span class="o">=</span><span class="s1">&#39;./abc&#39;</span><span class="p">,</span>  <span class="n">uses_internal</span><span class="o">=</span><span class="s1">&#39;custom_mwu_encoder.yml&#39;</span><span class="p">,</span>
+             <span class="n">port_in</span><span class="o">=</span><span class="mi">55555</span><span class="p">,</span> <span class="n">port_out</span><span class="o">=</span><span class="mi">55556</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;my-indexer&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;indexer.yml&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -320,11 +412,11 @@
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="../guides/index.html" class="btn btn-neutral float-right" title="Developer Guides"
+        <a href="publish-your-pod-image.html" class="btn btn-neutral float-right" title="Publish Your Pod Image to Jina Hub"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
-        <a href="../../dashboard/connect-jinaD.html" class="btn btn-neutral float-left" title="Connect Dashboard to JinaD"
+        <a href="build-pod-image.html" class="btn btn-neutral float-left" title="Build Your Pod into a Docker Image"
            accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
         
     </div>

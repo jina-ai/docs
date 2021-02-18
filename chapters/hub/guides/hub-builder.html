@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Introduction &mdash; Jina 1.0.2-master documentation</title>
+  <title>Jina Hub Builder &mdash; Jina 1.0.2-master documentation</title>
   
 
   
@@ -54,8 +54,8 @@
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Developer Guides" href="../guides/index.html" />
-    <link rel="prev" title="Connect Dashboard to JinaD" href="../../dashboard/connect-jinaD.html" /> 
+    <link rel="next" title="API References" href="../api_references/index.html" />
+    <link rel="prev" title="Publish Your Pod Image to Jina Hub" href="publish-your-pod-image.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -191,8 +191,14 @@
 </ul>
 <p class="caption"><span class="caption-text">Jina Hub</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/index.html">Developer Guides</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guides</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="build-pod-image.html">Build Your Pod into a Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="use-your-pod.html">Use Your Pod Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="publish-your-pod-image.html">Publish Your Pod Image to Jina Hub</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Jina Hub Builder</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../api_references/index.html">API References</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Jina Box</span></p>
@@ -266,7 +272,9 @@
     
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Introduction</li>
+          <li><a href="index.html">Developer Guides</a> &raquo;</li>
+        
+      <li>Jina Hub Builder</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -292,23 +300,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="jina-hub-is-a-centralized-registry-where-you-can-share-and-discover-custom-and-community-driven-jina-pods-and-apps-tailored-to-specific-use-cases-of-neural-search">
-<h2><a class="reference external" href="https://dashboard.jina.ai/#/hub">Jina Hub</a> is a centralized registry, where you can share and discover custom and community driven Jina Pods and Apps tailored to specific use cases of neural search.<a class="headerlink" href="#jina-hub-is-a-centralized-registry-where-you-can-share-and-discover-custom-and-community-driven-jina-pods-and-apps-tailored-to-specific-use-cases-of-neural-search" title="Permalink to this headline">¶</a></h2>
-<p><img alt="hubView" src="../../../_images/hubView1.gif" /></p>
+  <div class="section" id="jina-hub-builder">
+<h1>Jina Hub Builder<a class="headerlink" href="#jina-hub-builder" title="Permalink to this headline">¶</a></h1>
+<p>Jina’s hub-builder is a simple interface for building &amp; validating Jina Hub Executors. It is built on top of Jina Hub interface. It can be used as a GitHub action in the CI/CD workflow, or via CLI.</p>
+<div class="section" id="github-action-usage">
+<h2>Github action usage:<a class="headerlink" href="#github-action-usage" title="Permalink to this headline">¶</a></h2>
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">hub</span> <span class="pre">builder</span></code> as a part of the CI pipeline, to build and test images in the Pull Request. The following YAML can be directly used in the workflow <code class="docutils literal notranslate"><span class="pre">.github/workflows/hub-builder.yml</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span><span class="p">:</span> <span class="n">Hub</span> <span class="n">Builder</span>
+
+<span class="n">on</span><span class="p">:</span> <span class="p">[</span><span class="n">pull_request</span><span class="p">]</span>
+
+<span class="n">jobs</span><span class="p">:</span>
+  <span class="n">hub</span><span class="o">-</span><span class="n">builder</span><span class="p">:</span>
+    <span class="n">runs</span><span class="o">-</span><span class="n">on</span><span class="p">:</span> <span class="n">ubuntu</span><span class="o">-</span><span class="n">latest</span>
+    <span class="n">steps</span><span class="p">:</span>
+      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Checkout</span>
+        <span class="n">uses</span><span class="p">:</span> <span class="n">actions</span><span class="o">/</span><span class="n">checkout</span><span class="nd">@v2</span>
+      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Jina</span> <span class="n">Hub</span> <span class="n">Image</span> <span class="n">Builder</span>
+        <span class="n">uses</span><span class="p">:</span> <span class="n">jina</span><span class="o">-</span><span class="n">ai</span><span class="o">/</span><span class="n">hub</span><span class="o">-</span><span class="n">builder</span><span class="nd">@master</span>
+</pre></div>
 </div>
-<div class="section" id="upload-and-share-images">
-<h2>Upload and Share Images<a class="headerlink" href="#upload-and-share-images" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../guides/publish-your-pod-image.html"><span class="doc">Share your custom Jina Pods </span></a> by simply uploading a Python file, a Dockerfile and a YAML, and leave the rest of the work to us. Building and version control is automatically handled on the cloud side.</p>
+<p>On every new PR, the builder finds modifications in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> recursively and tries to build a Hub image using the latest files. That means, when you update an image, you must change <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> to trigger the build, i.e. you can simply bump the version field in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code>. This is done one by one for each modified Executor.</p>
+<div class="section" id="hub-builder-action-accepts-the-following-parameters">
+<h3>Hub builder action accepts the following parameters:<a class="headerlink" href="#hub-builder-action-accepts-the-following-parameters" title="Permalink to this headline">¶</a></h3>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">push</span></code> (boolean): if push to Docker Hub and MongoDB</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dockerhub_username</span></code> and <code class="docutils literal notranslate"><span class="pre">dockerhub_password</span></code>: username and password of Docker registry</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dockerhub_registry</span></code>: URL to the registry</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slack_webhook</span></code>: webhook for Slack notification</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jina_version</span></code>: version of Jina for building Hub image</p></li>
+</ol>
+<p>Note: the input argument <code class="docutils literal notranslate"><span class="pre">jina_version</span></code> can be different from the version of Jina for running the Pod in the container. The latter should be set in your <code class="docutils literal notranslate"><span class="pre">_jina_pod/requirements.txt</span></code>. The <code class="docutils literal notranslate"><span class="pre">jina_version</span></code> is the version of Jina when building the Pod image.</p>
 </div>
-<div class="section" id="cloud-native">
-<h2>Cloud Native<a class="headerlink" href="#cloud-native" title="Permalink to this headline">¶</a></h2>
-<p>As Jina Hub images are containerized, they can be easily leveraged in any Jina Flow, even in distributed environments.</p>
+<div class="section" id="output-of-the-action">
+<h3>Output of the Action<a class="headerlink" href="#output-of-the-action" title="Permalink to this headline">¶</a></h3>
+<p>There are two outputs you can use in the post-action:</p>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">success_targets</span></code>: Successfully built targets with their paths</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">failed_targets</span></code>: Failed built targets with their paths</p></li>
+</ol>
 </div>
-<div class="section" id="open-source">
-<h2>Open Source<a class="headerlink" href="#open-source" title="Permalink to this headline">¶</a></h2>
-<p>Hub images are made and maintained by the community. You can <a class="reference external" href="https://github.com/jina-ai/jina-hub">contribute to the database of hub images</a> and help your fellow developers achieve their search goals!</p>
 </div>
 </div>
 
@@ -320,11 +351,11 @@
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="../guides/index.html" class="btn btn-neutral float-right" title="Developer Guides"
+        <a href="../api_references/index.html" class="btn btn-neutral float-right" title="API References"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
-        <a href="../../dashboard/connect-jinaD.html" class="btn btn-neutral float-left" title="Connect Dashboard to JinaD"
+        <a href="publish-your-pod-image.html" class="btn btn-neutral float-left" title="Publish Your Pod Image to Jina Hub"
            accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
         
     </div>

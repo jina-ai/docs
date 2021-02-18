@@ -12,10 +12,10 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    :titlesonly:
    :glob:
 
-   ../build-pod-image
-   ../use-your-pod
-   ../publish-your-pod-image
-   ../hub-builder
+   build-pod-image
+   use-your-pod
+   publish-your-pod-image
+   hub-builder
 
 
    *

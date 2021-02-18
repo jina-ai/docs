@@ -88,19 +88,7 @@ Besides the file path, in Flow API `uses` can accept other types:
 | Inline YAML | `- !Buffer2URI | {mimetype: png}` | Don't forget `- !` in the beginning |
 | The name of an executor [listed here](../all_exec.html) | `NumpyIndexer` | Only the executors that have full default values can be directly used |
 | Built-in simple executors [listed here](../simple_exec.html) | `_clear` | Always starts with `_` |
-| Docker image | `docker://jinahub/pod.encoder.dummy_mwu_encoder:0.0.6-0.9.3` | Add `docker://` before the image name and set timeout_ready to -1 to avoid timeout error |
- 
-##### Add a Containerized Pod into the Flow
-
-To run a Pod in a Docker container, simply specify the `image` argument:
-
-```python
-f = (Flow().add(name='p1')
-           .add(name='p2', image='jinaai/hub.examples.mwu_encoder:latest')
-           .add(name='p3'))
-``` 
-
-This will run `p2` in a Docker container equipped with the image `jinaai/hub.examples.mwu_encoder:latest`. More information on using containerized Pod can be found [here](https://docs.jina.ai/chapters/hub/index.html). 
+| Docker image | `docker://jinahub/pod.encoder.dummy_mwu_encoder:0.0.6-1.0.2` | Add `docker://` before the image name and set timeout_ready to -1 to avoid timeout error |
 
 ##### Add a Remote Pod into the Flow
 
@@ -125,7 +113,7 @@ A very useful pattern is to combine the above two features together:
 
 f = (Flow().add(name='p1')
            .add(name='p2', host='192.168.0.100', port_expose=53100,
-                image='jinaai/hub.examples.mwu_encoder:latest')
+                uses='docker://jinahub/pod.encoder.dummy_mwu_encoder:0.0.6-1.0.2')
            .add(name='p3'))
 ```
 
