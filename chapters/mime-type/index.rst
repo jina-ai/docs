@@ -23,15 +23,15 @@ The following example illustrates which mime types are automatically derived fro
 
         d1 = Document()
         d1.text = 'my text 📩'
-        print(d1.mime_type)  # mime_type is 'text/plain'
+        assert d1.mime_type == 'text/plain'
 
         d2 = Document()
         d2.uri = 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Example.jpg'
-        print(d2.mime_type)  # mime_type is 'image/jpeg'
+        assert d2.mime_type == 'image/jpeg'
 
         d3 = Document()
         d3.buffer = (b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR...')
-        print(d3.mime_type)  # mime_type is 'image/png'
+        assert d3.mime_type == 'image/png'
 
 Manual mime type assignment
 ---------------------------
@@ -51,7 +51,7 @@ To have the full control over the mime type, it is also possible to set it manua
         ).encode('utf8')
         d = Document()
         d.buffer = (svg_content)
-        print(d.mime_type)  # automatically detects that mime_type is 'image/svg'
+        assert d.mime_type == 'image/svg'
         # the mime type can be overwritten
         d.mime_type = 'text/plain'
         # assigning an invalid mime type leads to a ``ValueError``
@@ -90,7 +90,7 @@ The following example illustrates a simple segmenter, which sets the ``mime_type
 Usage in driver
 ---------------
 Drivers can access the mime type of the documents in order to handle them accordingly.
-The following driver only encodes docments where the ``mime_type`` is ``'text/plain'``:
+The following driver only encodes documents where the ``mime_type`` is ``'text/plain'``:
 
 .. confval:: special_segment_driver.py
 
