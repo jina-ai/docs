@@ -217,7 +217,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 74 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
             
@@ -296,15 +296,16 @@
 <span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">RecursiveMixin</span>
 <span class="kn">from</span> <span class="nn">..types.querylang.queryset.dunderkey</span> <span class="kn">import</span> <span class="n">dunder_get</span>
 <span class="kn">from</span> <span class="nn">.search</span> <span class="kn">import</span> <span class="n">KVSearchDriver</span>
 <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">..types.document.helper</span> <span class="kn">import</span> <span class="n">DocGroundtruthPair</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">deprecated_alias</span>
 
 
 <div class="viewcode-block" id="BaseEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.BaseEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseEvaluateDriver</span><span class="p">(</span><span class="n">RecursiveMixin</span><span class="p">,</span> <span class="n">BaseExecutableDriver</span><span class="p">):</span>
@@ -322,7 +323,8 @@
 <span class="sd">    :param *args:</span>
 <span class="sd">    :param **kwargs:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;evaluate&#39;</span><span class="p">,</span>
                  <span class="n">running_avg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
@@ -379,7 +381,8 @@
 <span class="sd">    Evaluate on the values from certain field, the extraction is implemented with :meth:`dunder_get`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -400,33 +403,46 @@
         <span class="k">return</span> <span class="n">dunder_get</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="RankEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.RankEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">RankEvaluateDriver</span><span class="p">(</span><span class="n">FieldEvaluateDriver</span><span class="p">):</span>
+<div class="viewcode-block" id="RankEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.RankEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">RankEvaluateDriver</span><span class="p">(</span><span class="n">BaseEvaluateDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Drivers used to pass `matches` from documents and groundtruths to an executor and add the evaluation value</span>
 
 <span class="sd">        - Example fields:</span>
-<span class="sd">        [&#39;tags__id&#39;, &#39;id&#39;, &#39;score__value]</span>
+<span class="sd">            [&#39;tags__id&#39;, &#39;score__value]</span>
+
+<span class="sd">    :param fields: the fields names to be extracted from the Protobuf.</span>
+<span class="sd">            The differences with `:class:FieldEvaluateDriver` are:</span>
+<span class="sd">                - More than one field is allowed. For instance, for NDCGComputation you may need to have both `ID` and `Relevance` information.</span>
+<span class="sd">                - The fields are extracted from the `matches` of the `Documents` and the `Groundtruth` so it returns a sequence of values.</span>
+<span class="sd">    :param *args:</span>
+<span class="sd">    :param **kwargs:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fields&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;tags__id&#39;</span><span class="p">,</span>
+                 <span class="n">fields</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;tags__id&#39;</span><span class="p">,),</span>  <span class="c1"># str mantained for backwards compatibility</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param field: the field name to be extracted from the Protobuf</span>
-<span class="sd">        :param *args: *args for super()</span>
-<span class="sd">        :param **kwargs: **kwargs for super()</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">single_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <div class="viewcode-block" id="RankEvaluateDriver.extract"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.RankEvaluateDriver.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extract the field from the Document&#39;s matches.</span>
+        <span class="n">single_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_field</span>
+        <span class="k">if</span> <span class="n">single_field</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">single_field</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">]</span>
+            <span class="c1"># TODO: Clean this, optimization for `hello-world` because it passes a list of 6k elements in a single</span>
+            <span class="c1">#  match. See `pseudo_match` in helloworld/helper.py _get_groundtruths</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">flat</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">]</span>
 
-<span class="sd">        :param doc: the Document</span>
-<span class="sd">        :return: list of the fields</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">]</span>
-        <span class="c1"># flatten nested list but useless depth, e.g. [[1,2,3,4]]</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">flat</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ret</span></div></div>
 
 
 <div class="viewcode-block" id="NDArrayEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.NDArrayEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">NDArrayEvaluateDriver</span><span class="p">(</span><span class="n">FieldEvaluateDriver</span><span class="p">):</span>
