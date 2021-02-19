@@ -6,7 +6,7 @@ I'm Alex C-G, Open Source Evangelist for Jina. I'm all about getting our new con
 
 # Join Us on Slack!
 
-The best way to know more about contributing and how to get started is to **[join us on Slack](https://join.slack.com/t/jina-ai/shared_invite/zt-dkl7x8p0-rVCv~3Fdc3~Dpwx7T7XG8w)** and ask questions in our public channels.
+The best way to know more about contributing and how to get started is to **[join us on Slack](https://slack.jina.ai)** and ask questions in our public channels.
 
 In this guide we're going to go through the steps for each kind of contribution, and good and bad examples of what to do. We look forward to your contributions!
 
@@ -265,7 +265,7 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 
 #### General Documentation
 
-This covers files like [Jina 101](https://github.com/jina-ai/jina/tree/master/docs/chapters/101), [Input and Output Functions, etc](https://github.com/jina-ai/jina/blob/master/docs/chapters/io/index.md).
+This covers files like [Jina 101](https://101.jina.ai), [Input and Output Functions, etc](https://github.com/jina-ai/jina/blob/master/docs/chapters/io/index.md).
 
 These are typically written in Markdown, though some may be in RestructuredText.
 
