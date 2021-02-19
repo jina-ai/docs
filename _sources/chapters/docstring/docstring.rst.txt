@@ -136,7 +136,7 @@ You need to match exactly the term as in the Glossary. If you want to show diffe
 Documenting classes
 ----------------------------------------------------
 
-In classes you don't need to specify a return type. But you should document the constructor parameters here. Use all parameters that are under **__init__** and document them in the class itself.
+In classes you don't need to specify a return type. But you should document the constructor parameters here. Use all parameters that are under **__init__** and document them in the class itself. Do not add any docstring to the **__init__** method.
 
 *****************************************************
 Multi-line docstrings example of a function
@@ -193,7 +193,7 @@ Multi-line docstrings example of a class
         """
 
         def __init__(self, param1: int, param2: str):
-            """Specify what the contructor does"""
+            # don't add anything to the constructor
 
 
 Special Cases
