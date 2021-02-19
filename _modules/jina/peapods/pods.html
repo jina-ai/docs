@@ -545,48 +545,6 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">runtime_cls</span> <span class="o">=</span> <span class="s1">&#39;GRPCRuntime&#39;</span>
 
-<div class="viewcode-block" id="BasePod.optimize_connect_to_tail_of"><a class="viewcode-back" href="../../../api/jina.peapods.pods.html#jina.peapods.pods.BasePod.optimize_connect_to_tail_of">[docs]</a>    <span class="k">def</span> <span class="nf">optimize_connect_to_tail_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incoming_pod</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Removes the `head` arguments to make sure that the Peas are connected directly to the</span>
-<span class="sd">        `tail` of the incoming pod.</span>
-
-<span class="sd">        :param incoming_pod: :class:`BasePod` that connects its tail to this :class:`BasePod` head</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">parallel</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span><span class="p">:</span>
-            <span class="c1"># keep the port_in and socket_in of prev_args</span>
-            <span class="c1"># only reset its output</span>
-            <span class="n">incoming_pod</span><span class="o">.</span><span class="n">tail_args</span> <span class="o">=</span> <span class="n">_copy_to_head_args</span><span class="p">(</span><span class="n">incoming_pod</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="o">.</span><span class="n">is_push</span><span class="p">,</span>
-                                                        <span class="n">as_router</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="c1"># update peas to receive from it</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="n">incoming_pod</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="p">)</span>
-            <span class="c1"># remove the head node</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="c1"># head is no longer a router anymore</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">deducted_head</span> <span class="o">=</span> <span class="n">incoming_pod</span><span class="o">.</span><span class="n">tail_args</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;the current pod has no head router, deducting the head is confusing&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="BasePod.optimize_connect_to_head_of"><a class="viewcode-back" href="../../../api/jina.peapods.pods.html#jina.peapods.pods.BasePod.optimize_connect_to_head_of">[docs]</a>    <span class="k">def</span> <span class="nf">optimize_connect_to_head_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outgoing_pod</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Removes the `tail` arguments to make sure that the Peas are connected directly to the</span>
-<span class="sd">        `head` of the outgoing pod.</span>
-
-<span class="sd">        :param outgoing_pod: :class:`BasePod` that this :class:`BasePod` tries to send data to</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">parallel</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span><span class="p">:</span>
-            <span class="c1"># keep the port_out and socket_out of next_arts</span>
-            <span class="c1"># only reset its input</span>
-            <span class="n">outgoing_pod</span><span class="o">.</span><span class="n">head_args</span> <span class="o">=</span> <span class="n">_copy_to_tail_args</span><span class="p">(</span><span class="n">outgoing_pod</span><span class="o">.</span><span class="n">head_args</span><span class="p">,</span>
-                                                        <span class="n">as_router</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="c1"># update peas to receive from it</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="p">,</span> <span class="n">outgoing_pod</span><span class="o">.</span><span class="n">head_args</span><span class="p">)</span>
-            <span class="c1"># remove the tail node</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="c1"># tail is no longer a router anymore</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">deducted_tail</span> <span class="o">=</span> <span class="n">outgoing_pod</span><span class="o">.</span><span class="n">head_args</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;the current pod has no tail router, deducting the tail is confusing&#39;</span><span class="p">)</span></div>
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Checks if Pod is read.</span>
