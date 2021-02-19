@@ -6,7 +6,7 @@ A Guide to Jina Flow Evaluation Mode
    :description: A guide on Jina Flow Evaluation Mode
    :keywords: Jina, Flow evaluation
 
-.. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
+.. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
 
 .. contents:: Table of Contents
     :depth: 2

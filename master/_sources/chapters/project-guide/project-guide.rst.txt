@@ -6,7 +6,7 @@ Project set up guide
    :description: You will see the best practices on how to create a project on Jina.
    :keywords: Jina, set-up
 
-.. note:: This guide expects you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
+.. note:: This guide expects you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <http://101.jina.ai>`_ first.
 
 Here you will see the suggested structure for a project structure in Jina.
 

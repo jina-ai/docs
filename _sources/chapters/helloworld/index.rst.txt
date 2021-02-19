@@ -6,7 +6,7 @@ Jina "Hello, World!" 👋🌍
    :description: Jina "Hello, World!"s
    :keywords: Jina, hello world
 
-.. note:: This guide expects you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://docs.jina.ai/chapters/101/index.html>`_ first.
+.. note:: This guide expects you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
 
 .. contents:: Table of Contents
     :depth: 2
