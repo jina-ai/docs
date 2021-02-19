@@ -42,7 +42,7 @@ Remarks on POST :command:`:<port_expose>/api/<mode>`
    list of data URI, each corresponds to one document.
 -  You can specify other arguments in the request. For example,
    ``top_k``, ``batch_size``, ``first_doc_id``. The full list can be
-   `found in here <../cli/jina-client.html#client-specific%20arguments>`_. Please note that not all arguments are supported on
+   `found in here <../cli/jina-client.rst>`_. Please note that not all arguments are supported on
    the REST API level at the moment.
 -  The REST endpoint will be served at ``port_expose``
 

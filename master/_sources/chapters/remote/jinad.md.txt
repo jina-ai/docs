@@ -29,7 +29,7 @@ docker pull jinaai/jina:latest-daemon
 
 ### Using PyPi package
 
-> Notes: As one part of the jina package, `jinad` follows the same [installation instructions of jina](https://docs.jina.ai/chapters/install/via-pip.html) and you only need to cherry pick `[daemon]`
+> Notes: As one part of the jina package, `jinad` follows the same [installation instructions of jina](https://docs.jina.ai/chapters/install/os/via-pip.html) and you only need to cherry pick `[daemon]`
 
 On Linux/Mac, simply run:
 

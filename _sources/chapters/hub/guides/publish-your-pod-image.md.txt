@@ -54,7 +54,7 @@ Your image will be published as `jinaai/hub.executors.encoders.awesomeness`.
 | `avatar` | a picture that personalizes and distinguishes your image | None |
 | `platform` | a list of CPU architectures that your image is built on, each item should be [in this list](https://github.com/jina-ai/jina/blob/master/jina/resources/hub-builder/platforms.yml) | `[linux/amd64]` | 
 
-Please refer to [hub/examples/mwu_encoder/manifest.yml](hub/examples/mwu_encoder/manifest.yml) for the example.
+Please refer to [VSETextEncoder/manifest.yml](https://github.com/jina-ai/jina-hub/blob/master/encoders/nlp/VSETextEncoder/manifest.yml) for the example.
 
 ## Updating schema of Pods
 
@@ -74,7 +74,7 @@ The CICD pipeline will work on building, uploading and tagging the image on the 
 
 The image will be available at `jinaai/hub.executors.indexers.awesomeness:0.0.0` assuming your version number is defined as `0.0.0` in `manifest.yml`.
 
-You can use the image with [the ways described here](./use-your-pod.html#use-your-pod-image).  
+You can use the image with [the ways described here](./use-your-pod.md).  
 
 
 ## Why does my upload fail on CI/CD?
@@ -85,7 +85,7 @@ Common causes why your upload could fail:
 - [ ] The required field in `manifest.yml` is missing.
 - [ ] Some field value is not in the correct format, not passing the sanity check.
 - [ ] The pod bundle is badly placed.
-- [ ] The build is success but it fails on [three basic usage tests](./use-your-pod.html#use-your-pod-image).
+- [ ] The build is success but it fails on [three basic usage tests](./use-your-pod.md).
 
 Click "Details" and check out the log of the CICD pipeline:
 
