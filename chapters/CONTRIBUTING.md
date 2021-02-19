@@ -66,11 +66,11 @@ Right now we're working on a list of things we want help with and easy-to-fix bu
 1. Fork the Jina repo and clone onto your computer. By default, `git` won't clone `jina/hub` as it is a submodule maintained at [`jina-ai/jina-hub`](https://github.com/jina-ai/jina-hub). Please follow [the steps](#check-out-jina-hub-submodule) for details. 
 1. Create a [new branch](#naming-your-branch), for example `fix-jina-typo-1`.
 1. Work on this branch to do the fix/improvement.
-1. Check if your code changes follow the [code review guidelines](.github/CODE_REVIEW_GUIDELINES.md).
+1. Check if your code changes follow the [code review guidelines](https://github.com/jina-ai/jina/blob/master/.github/CODE_REVIEW_GUIDELINES.md).
 1. Commit the changes with the [correct commit style](#writing-your-commit-message).
 1. Make a pull request. 
 1. Submit your pull request and wait for all checks to pass.
-1. Request reviews from one of [the code owners](.github/CODEOWNERS).
+1. Request reviews from one of [the code owners](https://github.com/jina-ai/jina/blob/master/.github/CODEOWNERS).
 1. Get a LGTM 👍 and PR gets merged.
 
 **Note:** If you're just fixing a typo or grammatical issue, you can go straight to a pull request.
@@ -252,7 +252,7 @@ docker run jinaai/jina:my-local-version check
 
 It prints a list of components the current version of Jina supports, and then exits. Make sure yours are not in red.
 
-Once you submit the PR, your code will be tested in the environment of Python 3.7 and 3.8 with [full exta dependencies](extra-requirements.txt) (`pip install .[all]`) installed.
+Once you submit the PR, your code will be tested in the environment of Python 3.7 and 3.8 with [full exta dependencies](https://github.com/jina-ai/jina/blob/master/extra-requirements.txt) (`pip install .[all]`) installed.
 
 <a name="-contributing-documentation"></a>
 ## 📖 Contributing Documentation

@@ -7,7 +7,7 @@
 
 ### Upload and Share Images
 
-[Share your custom Jina Pods ](../hub/publish-your-pod-image.md) by simply uploading a Python file, a Dockerfile and a YAML, and leave the rest of the work to us. Building and version control is automatically handled on the cloud side.
+[Share your custom Jina Pods ](../hub/guides/publish-your-pod-image.md) by simply uploading a Python file, a Dockerfile and a YAML, and leave the rest of the work to us. Building and version control is automatically handled on the cloud side.
 
 ### Cloud Native
 
