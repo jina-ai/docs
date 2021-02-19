@@ -37,7 +37,7 @@ The `VectorIndexer`:
 
 ## Text Document Segmentation
 
-A common search pattern is storing long text documents in an index to retrieve them later using short sentences. A single embedding vector per long text document is not the proper way to do this: It makes it hard to extract a single semantically-meaningful vector from a long document. Jina solves this by introducing [Chunks](https://docs.jina.ai/chapters/glossary/glossary.html#term-Chunk). The common scenario is to have a `segmenter` segmenting the document into smaller parts (typically short sentences) followed by an NLP-based encoder. 
+A common search pattern is storing long text documents in an index to retrieve them later using short sentences. A single embedding vector per long text document is not the proper way to do this: It makes it hard to extract a single semantically-meaningful vector from a long document. Jina solves this by introducing [Chunks](https://docs.jina.ai/chapters/glossary/glossary.html#term-Chunk). The common scenario is to have a `segmenter` segmenting the document into smaller parts (typically short sentences) followed by an NLP-based encoder.
 
 ```yaml
 !Sentencizer
