@@ -5,4 +5,4 @@ API References
    :titlesonly:
    :glob:
 
-   ../hub-api
+   hub-api

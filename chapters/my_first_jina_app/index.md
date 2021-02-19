@@ -38,6 +38,7 @@ TODO urls
 - **[Jina 101](https://101.jina.ai)**: Get an idea of Jina's core components
 - **[Jina 102](https://docs.jina.ai/chapters/102/index.html)**: See how Jina's components are wired together
 
+
 ## 🐳 Try it in Docker
 
 Before downloading, configuring and testing your app, let's get an idea of the finished product:
@@ -237,6 +238,7 @@ TODO
 
 As you can see in [Jina 101](https://101.jina.ai), just as a plant manages nutrient flow and growth rate for its branches, Jina's Flow manages the states and context of a group of Pods, orchestrating them to accomplish one specific task. 
 
+
 We define Flows in `app.py` to index and query our dataset:
 
 ```python
@@ -338,6 +340,7 @@ with:
 ```
 
 The built-in `TransformerTorchEncoder` is the Pod's **[Executor](https://101.jina.ai/#executors)**. The `with` field specifies the parameters we pass to `TransformerTorchEncoder`.
+
 
 | Parameter                       | Effect                                                     |
 | ---                             | ---                                                        |

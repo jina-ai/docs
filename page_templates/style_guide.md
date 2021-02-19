@@ -75,3 +75,5 @@ Guides are publicly available and represent the Jina AI brand and the quality of
 	- **ID**, not id.
 	- **gRPC**, not gprc.
 	- **API, REST, ID** should all be in capital letters.
+
+16. Jina runs **on** the cloud, not **in** in the cloud. Our slogan is "An easier way to do neural search **on** the cloud".

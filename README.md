@@ -2,7 +2,7 @@
 
 ![CD](https://github.com/jina-ai/docs/workflows/CD/badge.svg?branch=master)
 ![Release](https://github.com/jina-ai/docs/workflows/Release/badge.svg?branch=master)
-
+![Link Check](https://github.com/jina-ai/docs/workflows/Linkcheck/badge.svg?branch=master)
 
 > “Open source is this magical thing right? You release code, and the code gnomes come and make it better for you.
 >
@@ -27,7 +27,9 @@ From @ericholscher [guide to writing docs](https://www.writethedocs.org/guide/wr
 
 Jina documentation adheres to the following hierarchical structure. Each Jina product has its own section, containing three subsections below.
 
-| **Overview** |A high level conceptual overview of the product. Introducing terms and broad architectural concepts. Content here should apply to all Jina users. For example, all users should understand what a Pod is, but only some users need to understand deployment on a GPU.
+| <!-- -->    | <!-- -->    |
+|-------------|-------------|
+| **Overview** |A high level conceptual overview of the product. Introducing terms and broad architectural concepts. Content here should apply to all Jina users. For example, all users should understand what a Pod is, but only some users need to understand deployment on a GPU.|
  |**Developer Guides**  | Are technical how-to guides/tutorials which describe product features or implementations. Assumes basic knowledge of the product and related terms. |
 | **API References**| Are detailed descriptions of the product API. Possibility auto-generated from docstrings or open API references. Describes how the methods work and which parameters can be used.  |
 
