@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.rank &mdash; Jina 1.0.2-master documentation</title>
+  <title>jina.drivers.rank &mdash; Jina 1.0.3-master documentation</title>
   
 
   
@@ -46,10 +46,8 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
         <script src="../../../_static/copybutton.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -84,10 +82,30 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.2-master</button>
+            <button class="dropbtn version">1.0.3-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.0.1">1.0.1</a>
+              
+              <a class="dropdown-item" href="/v1.0.0">1.0.0</a>
+              
+              <a class="dropdown-item" href="/v0.9.8">0.9.8</a>
+              
+              <a class="dropdown-item" href="/v0.9.7">0.9.7</a>
+              
+              <a class="dropdown-item" href="/v0.9.6">0.9.6</a>
+              
+              <a class="dropdown-item" href="/v0.9.5">0.9.5</a>
+              
+              <a class="dropdown-item" href="/v0.9.4">0.9.4</a>
+              
+              <a class="dropdown-item" href="/v0.9.34">0.9.34</a>
+              
+              <a class="dropdown-item" href="/v0.9.33">0.9.33</a>
+              
+              <a class="dropdown-item" href="/v0.9.3">0.9.3</a>
               
               <a class="dropdown-item" href="/v0.9.28">0.9.28</a>
               
@@ -199,7 +217,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 76 Drivers in Jina</a></li>
 </ul>
 
             
@@ -279,16 +297,15 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">RecursiveMixin</span>
 <span class="kn">from</span> <span class="nn">...types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">...types.score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
-
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">...types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
 
 
-<div class="viewcode-block" id="BaseRankDriver"><a class="viewcode-back" href="../../../api/jina.drivers.rank.html#jina.drivers.rank.BaseRankDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRankDriver</span><span class="p">(</span><span class="n">BaseExecutableDriver</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseRankDriver"><a class="viewcode-back" href="../../../api/jina.drivers.rank.html#jina.drivers.rank.BaseRankDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRankDriver</span><span class="p">(</span><span class="n">RecursiveMixin</span><span class="p">,</span> <span class="n">BaseExecutableDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Drivers inherited from this Driver will bind :meth:`rank` by default &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -326,11 +343,10 @@
 <span class="sd">            - Set the ``traversal_paths`` of this driver such that it traverses along the ``matches`` of the ``chunks`` at the level desired.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># if at the top-level already, no need to aggregate further</span>
         <span class="n">query_meta</span> <span class="o">=</span> <span class="n">context_doc</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
-
         <span class="n">old_match_scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">}</span>
         <span class="n">match_meta</span> <span class="o">=</span> <span class="p">{</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">}</span>
+
         <span class="c1"># if there are no matches, no need to sort them</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">old_match_scores</span><span class="p">:</span>
             <span class="k">return</span>
@@ -478,7 +494,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 14, 2021.
+        Last updated on Feb 19, 2021.
       </span>
 
         </p>
@@ -492,7 +508,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

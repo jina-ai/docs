@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.parsers.peapods.runtimes.distributed &mdash; Jina 1.0.2-master documentation</title>
+  <title>jina.parsers.peapods.runtimes.distributed &mdash; Jina 1.0.3-master documentation</title>
   
 
   
@@ -46,10 +46,8 @@
         <script src="../../../../../_static/jquery.js"></script>
         <script src="../../../../../_static/underscore.js"></script>
         <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/language_data.js"></script>
         <script src="../../../../../_static/clipboard.min.js"></script>
         <script src="../../../../../_static/copybutton.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
 
@@ -84,10 +82,30 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.2-master</button>
+            <button class="dropbtn version">1.0.3-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.0.1">1.0.1</a>
+              
+              <a class="dropdown-item" href="/v1.0.0">1.0.0</a>
+              
+              <a class="dropdown-item" href="/v0.9.8">0.9.8</a>
+              
+              <a class="dropdown-item" href="/v0.9.7">0.9.7</a>
+              
+              <a class="dropdown-item" href="/v0.9.6">0.9.6</a>
+              
+              <a class="dropdown-item" href="/v0.9.5">0.9.5</a>
+              
+              <a class="dropdown-item" href="/v0.9.4">0.9.4</a>
+              
+              <a class="dropdown-item" href="/v0.9.34">0.9.34</a>
+              
+              <a class="dropdown-item" href="/v0.9.33">0.9.33</a>
+              
+              <a class="dropdown-item" href="/v0.9.3">0.9.3</a>
               
               <a class="dropdown-item" href="/v0.9.28">0.9.28</a>
               
@@ -199,7 +217,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver.html">List of 76 Drivers in Jina</a></li>
 </ul>
 
             
@@ -275,18 +293,23 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.parsers.peapods.runtimes.distributed</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">jina.helper</span> <span class="kn">import</span> <span class="n">random_identity</span>
+<span></span><span class="sd">&quot;&quot;&quot;Argparser module for distributed runtimes&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">jina.helper</span> <span class="kn">import</span> <span class="n">random_identity</span>
 <span class="kn">from</span> <span class="nn">jina.parsers.helper</span> <span class="kn">import</span> <span class="n">add_arg_group</span>
 
 
 <div class="viewcode-block" id="mixin_distributed_feature_parser"><a class="viewcode-back" href="../../../../../api/jina.parsers.peapods.runtimes.distributed.html#jina.parsers.peapods.runtimes.distributed.mixin_distributed_feature_parser">[docs]</a><span class="k">def</span> <span class="nf">mixin_distributed_feature_parser</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Mixing in arguments required by :class:`BasePod` into the given parser. &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Mixing in arguments required by :class:`BasePod` into the given parser.</span>
+<span class="sd">    :param parser: the parser instance to which we add arguments</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">gp</span> <span class="o">=</span> <span class="n">add_arg_group</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distributed&#39;</span><span class="p">)</span>
 
     <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--silent-remote-logs&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Do not display the streaming of remote logs on local console&#39;</span><span class="p">)</span>
 
     <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--upload-files&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;FILE&#39;</span><span class="p">,</span>
+
                     <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">The files on the host to be uploaded to the remote</span>
 <span class="s1">workspace. This can be useful when your Pod has more</span>
@@ -435,7 +458,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 14, 2021.
+        Last updated on Feb 19, 2021.
       </span>
 
         </p>
@@ -449,7 +472,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

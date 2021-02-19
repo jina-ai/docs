@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.rank.aggregate &mdash; Jina 1.0.2-master documentation</title>
+  <title>jina.drivers.rank.aggregate &mdash; Jina 1.0.3-master documentation</title>
   
 
   
@@ -46,10 +46,8 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/language_data.js"></script>
         <script src="../../../../_static/clipboard.min.js"></script>
         <script src="../../../../_static/copybutton.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -84,10 +82,30 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.2-master</button>
+            <button class="dropbtn version">1.0.3-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.0.1">1.0.1</a>
+              
+              <a class="dropdown-item" href="/v1.0.0">1.0.0</a>
+              
+              <a class="dropdown-item" href="/v0.9.8">0.9.8</a>
+              
+              <a class="dropdown-item" href="/v0.9.7">0.9.7</a>
+              
+              <a class="dropdown-item" href="/v0.9.6">0.9.6</a>
+              
+              <a class="dropdown-item" href="/v0.9.5">0.9.5</a>
+              
+              <a class="dropdown-item" href="/v0.9.4">0.9.4</a>
+              
+              <a class="dropdown-item" href="/v0.9.34">0.9.34</a>
+              
+              <a class="dropdown-item" href="/v0.9.33">0.9.33</a>
+              
+              <a class="dropdown-item" href="/v0.9.3">0.9.3</a>
               
               <a class="dropdown-item" href="/v0.9.28">0.9.28</a>
               
@@ -199,7 +217,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver.html">List of 69 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver.html">List of 76 Drivers in Jina</a></li>
 </ul>
 
             
@@ -282,7 +300,7 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">....executors.rankers</span> <span class="kn">import</span> <span class="n">Chunk2DocRanker</span>
+<span class="kn">from</span> <span class="nn">....executors.rankers</span> <span class="kn">import</span> <span class="n">Chunk2DocRanker</span><span class="p">,</span> <span class="n">COL_STR_TYPE</span>
 <span class="kn">from</span> <span class="nn">....types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">....types.score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
 
@@ -292,8 +310,8 @@
     <span class="kn">from</span> <span class="nn">....types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
 
 
-<div class="viewcode-block" id="BaseAggregateMatchesRanker"><a class="viewcode-back" href="../../../../api/jina.drivers.rank.aggregate.html#jina.drivers.rank.aggregate.BaseAggregateMatchesRanker">[docs]</a><span class="k">class</span> <span class="nc">BaseAggregateMatchesRanker</span><span class="p">(</span><span class="n">BaseRankDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Drivers inherited from this Driver will focus on aggregating scores from `chunks` to its `parents`.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="BaseAggregateMatchesRankerDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.rank.aggregate.html#jina.drivers.rank.aggregate.BaseAggregateMatchesRankerDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseAggregateMatchesRankerDriver</span><span class="p">(</span><span class="n">BaseRankDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Drivers inherited from this Driver focus on aggregating scores from `chunks` to its `parents`.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">keep_source_matches_as_chunks</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -301,15 +319,15 @@
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        `keep_old_matches_as_chunks` is useful to keep track of the chunks that lead to a retrieved result.</span>
-
-<span class="sd">        .. note::</span>
-<span class="sd">            - The chunks of the matches will only contain the chunks that lead to the document matching, not all the chunks of the match.</span>
-
 <span class="sd">        :param keep_source_matches_as_chunks: A flag to indicate if the driver must return the old matches of the query or its chunks</span>
 <span class="sd">            (at a greater granularity level (k + 1)) as the chunks of the new computed `matches` (at granularity level k)</span>
+<span class="sd">            Set it to `True` when keeping track of the chunks that lead to a retrieved result.</span>
 <span class="sd">        :param *args: *args for super</span>
 <span class="sd">        :param **kwargs: **kwargs for super</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            When set `keep_source_matches_as_chunks=True`, the chunks of the match contains **ONLY** the chunks leading</span>
+<span class="sd">            to the match rather than **ALL** the chunks of the match.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -346,7 +364,7 @@
             <span class="n">query</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="Chunk2DocRankDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.rank.aggregate.html#jina.drivers.rank.aggregate.Chunk2DocRankDriver">[docs]</a><span class="k">class</span> <span class="nc">Chunk2DocRankDriver</span><span class="p">(</span><span class="n">BaseAggregateMatchesRanker</span><span class="p">):</span>
+<div class="viewcode-block" id="Chunk2DocRankDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.rank.aggregate.html#jina.drivers.rank.aggregate.Chunk2DocRankDriver">[docs]</a><span class="k">class</span> <span class="nc">Chunk2DocRankDriver</span><span class="p">(</span><span class="n">BaseAggregateMatchesRankerDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the</span>
 <span class="sd">    level above.</span>
 
@@ -403,9 +421,9 @@
         <span class="k">if</span> <span class="n">match_idx</span><span class="p">:</span>
             <span class="n">match_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span>
                                  <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_PARENT_ID</span><span class="p">,</span> <span class="n">COL_STR_TYPE</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_ID</span><span class="p">,</span> <span class="n">COL_STR_TYPE</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_QUERY_CHUNK_ID</span><span class="p">,</span> <span class="n">COL_STR_TYPE</span><span class="p">),</span>
                                      <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
                                  <span class="p">]</span>
                                  <span class="p">)</span>
@@ -418,7 +436,7 @@
                                        <span class="n">docs_scores</span><span class="o">=</span><span class="n">docs_scores</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="AggregateMatches2DocRankDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.rank.aggregate.html#jina.drivers.rank.aggregate.AggregateMatches2DocRankDriver">[docs]</a><span class="k">class</span> <span class="nc">AggregateMatches2DocRankDriver</span><span class="p">(</span><span class="n">BaseAggregateMatchesRanker</span><span class="p">):</span>
+<div class="viewcode-block" id="AggregateMatches2DocRankDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.rank.aggregate.html#jina.drivers.rank.aggregate.AggregateMatches2DocRankDriver">[docs]</a><span class="k">class</span> <span class="nc">AggregateMatches2DocRankDriver</span><span class="p">(</span><span class="n">BaseAggregateMatchesRankerDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This Driver is intended to take a `document` with matches at a `given granularity &gt; 0`, clear those matches and substitute</span>
 <span class="sd">    these matches by the documents at a lower granularity level.</span>
 <span class="sd">    Input-Output ::</span>
@@ -470,6 +488,7 @@
         <span class="n">match_meta</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">parent_id_chunk_id_map</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="n">matches_by_id</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">Document</span><span class="p">)</span>
+
         <span class="n">query_meta</span><span class="p">[</span><span class="n">context_doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">context_doc</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
             <span class="n">match_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_query_match_info</span><span class="p">(</span><span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="n">context_doc</span><span class="p">)</span>
@@ -481,9 +500,9 @@
         <span class="k">if</span> <span class="n">match_idx</span><span class="p">:</span>
             <span class="n">match_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">match_idx</span><span class="p">,</span>
                                  <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_PARENT_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_MATCH_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
-                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_ID</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">object</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_PARENT_ID</span><span class="p">,</span> <span class="n">COL_STR_TYPE</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_DOC_CHUNK_ID</span><span class="p">,</span> <span class="n">COL_STR_TYPE</span><span class="p">),</span>
+                                     <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_QUERY_CHUNK_ID</span><span class="p">,</span> <span class="n">COL_STR_TYPE</span><span class="p">),</span>
                                      <span class="p">(</span><span class="n">Chunk2DocRanker</span><span class="o">.</span><span class="n">COL_SCORE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
                                  <span class="p">]</span>
                                  <span class="p">)</span>
@@ -627,7 +646,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 14, 2021.
+        Last updated on Feb 19, 2021.
       </span>
 
         </p>
@@ -641,7 +660,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
