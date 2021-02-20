@@ -325,7 +325,7 @@
 
 
 <div class="viewcode-block" id="ExecutorType"><a class="viewcode-back" href="../../api/jina.executors.html#jina.executors.ExecutorType">[docs]</a><span class="k">class</span> <span class="nc">ExecutorType</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">JAMLCompatible</span><span class="p">),</span> <span class="nb">type</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;The class of Executor type, which is the metaclass of :class:`BaseExecutor`.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">register_class</span><span class="p">(</span><span class="n">_cls</span><span class="p">)</span>
@@ -348,6 +348,12 @@
 
 <div class="viewcode-block" id="ExecutorType.register_class"><a class="viewcode-back" href="../../api/jina.executors.html#jina.executors.ExecutorType.register_class">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">register_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register a class and wrap update, train, aggregate functions.</span>
+
+<span class="sd">        :param cls: The class.</span>
+<span class="sd">        :return: The class, after being registered.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">update_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">]</span>
         <span class="n">train_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span>
         <span class="n">aggregate_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;evaluate&#39;</span><span class="p">]</span>
@@ -409,6 +415,7 @@
                     <span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -572,11 +579,20 @@
 
 <div class="viewcode-block" id="BaseExecutor.get_shard_workspace"><a class="viewcode-back" href="../../api/jina.executors.html#jina.executors.BaseExecutor.get_shard_workspace">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_shard_workspace</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the path of the current shard.</span>
+
+<span class="sd">        :param workspace_folder: Folder of the workspace.</span>
+<span class="sd">        :param workspace_name: Name of the workspace.</span>
+<span class="sd">        :param pea_id: Id of the pea,</span>
+<span class="sd">        :return: Return the workspace of the shard of this Executor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO (Joan, Florian). We would prefer not to keep `pea_id` condition, but afraid many tests rely on this</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">pea_id</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">workspace_folder</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">workspace_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the name of the workspace.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>

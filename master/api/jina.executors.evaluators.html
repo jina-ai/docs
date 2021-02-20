@@ -372,6 +372,7 @@
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">jina.executors.evaluators.</span></code><code class="sig-name descname"><span class="pre">BaseEvaluator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/evaluators.html#BaseEvaluator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.evaluators.BaseEvaluator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="jina.executors.html#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a></p>
 <p>A <a class="reference internal" href="#jina.executors.evaluators.BaseEvaluator" title="jina.executors.evaluators.BaseEvaluator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEvaluator</span></code></a> is used to evaluate different messages coming from any kind of executor</p>
+<p>Constructor.</p>
 <dl class="py attribute">
 <dt id="jina.executors.evaluators.BaseEvaluator.metric">
 <code class="sig-name descname"><span class="pre">metric</span></code><em class="property"> <span class="pre">=</span> <span class="pre">''</span></em><a class="headerlink" href="#jina.executors.evaluators.BaseEvaluator.metric" title="Permalink to this definition">¶</a></dt>
@@ -381,26 +382,14 @@
 <dl class="py method">
 <dt id="jina.executors.evaluators.BaseEvaluator.post_init">
 <code class="sig-name descname"><span class="pre">post_init</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/evaluators.html#BaseEvaluator.post_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.evaluators.BaseEvaluator.post_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize class attributes/members that can/should not be (de)serialized in standard way.</p>
-<p>Examples:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>deep learning models</p></li>
-<li><p>index files</p></li>
-<li><p>numpy arrays</p></li>
-</ul>
-</div></blockquote>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>All class members created here will NOT be serialized when calling <code class="xref py py-func docutils literal notranslate"><span class="pre">save()</span></code>. Therefore if you
-want to store them, please override the <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code>.</p>
-</div>
+<dd><p>Initialize running stats.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="jina.executors.evaluators.BaseEvaluator.evaluate">
 <code class="sig-name descname"><span class="pre">evaluate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">actual</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desired</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/jina/executors/evaluators.html#BaseEvaluator.evaluate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.evaluators.BaseEvaluator.evaluate" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Evaluates difference between param:<cite>actual</cite> and <cite>param:desired</cite>, needs to be implemented in subclass.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
 </dd>
@@ -410,7 +399,8 @@ want to store them, please override the <code class="xref py py-func docutils li
 <dl class="py method">
 <dt id="jina.executors.evaluators.BaseEvaluator.mean">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">mean</span></code><a class="headerlink" href="#jina.executors.evaluators.BaseEvaluator.mean" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Get the running mean.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
 </dd>
@@ -420,7 +410,8 @@ want to store them, please override the <code class="xref py py-func docutils li
 <dl class="py method">
 <dt id="jina.executors.evaluators.BaseEvaluator.std">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">std</span></code><a class="headerlink" href="#jina.executors.evaluators.BaseEvaluator.std" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Get the running standard variance.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
 </dd>
@@ -430,7 +421,8 @@ want to store them, please override the <code class="xref py py-func docutils li
 <dl class="py method">
 <dt id="jina.executors.evaluators.BaseEvaluator.variance">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">variance</span></code><a class="headerlink" href="#jina.executors.evaluators.BaseEvaluator.variance" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Get the running variance.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
 </dd>

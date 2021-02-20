@@ -308,14 +308,16 @@
 
 <span class="c1"># mixin classes go first, base classes are read from right to left.</span>
 <div class="viewcode-block" id="BaseOnnxEncoder"><a class="viewcode-back" href="../../../../api/jina.executors.encoders.frameworks.html#jina.executors.encoders.frameworks.BaseOnnxEncoder">[docs]</a><span class="k">class</span> <span class="nc">BaseOnnxEncoder</span><span class="p">(</span><span class="n">OnnxDevice</span><span class="p">,</span> <span class="n">BaseEncoder</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_feature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :class:`BasePaddleEncoder` is the base class for implementing Encoders with models from :mod:`onnxruntime` library.</span>
 
-<span class="sd">        :param output_feature: the name of the layer for feature extraction.</span>
-<span class="sd">        :param model_path: the path of the model in the format of `.onnx`. Check a list of available pretrained</span>
-<span class="sd">            models at https://github.com/onnx/models#image_classification and download the git LFS to your local path.</span>
-<span class="sd">            The ``model_path`` is the local path of the ``.onnx`` file, e.g. ``/tmp/onnx/mobilenetv2-1.0.onnx``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    :param output_feature: the name of the layer for feature extraction.</span>
+<span class="sd">    :param model_path: the path of the model in the format of `.onnx`. Check a list of available pretrained</span>
+<span class="sd">        models at https://github.com/onnx/models#image_classification and download the git LFS to your local path.</span>
+<span class="sd">        The ``model_path`` is the local path of the ``.onnx`` file, e.g. ``/tmp/onnx/mobilenetv2-1.0.onnx``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_feature</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Constructor.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">outputs_name</span> <span class="o">=</span> <span class="n">output_feature</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raw_model_path</span> <span class="o">=</span> <span class="n">model_path</span>
@@ -358,14 +360,17 @@
 
 
 <div class="viewcode-block" id="BaseTFEncoder"><a class="viewcode-back" href="../../../../api/jina.executors.encoders.frameworks.html#jina.executors.encoders.frameworks.BaseTFEncoder">[docs]</a><span class="k">class</span> <span class="nc">BaseTFEncoder</span><span class="p">(</span><span class="n">TFDevice</span><span class="p">,</span> <span class="n">BaseEncoder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;:class:`BasePaddleEncoder` is the base class for implementing Encoders with models from :mod:`tensorflow` library.&quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="BaseTorchEncoder"><a class="viewcode-back" href="../../../../api/jina.executors.encoders.frameworks.html#jina.executors.encoders.frameworks.BaseTorchEncoder">[docs]</a><span class="k">class</span> <span class="nc">BaseTorchEncoder</span><span class="p">(</span><span class="n">TorchDevice</span><span class="p">,</span> <span class="n">BaseEncoder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base encoder class for :mod:`pytorch` library.&quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="BasePaddleEncoder"><a class="viewcode-back" href="../../../../api/jina.executors.encoders.frameworks.html#jina.executors.encoders.frameworks.BasePaddleEncoder">[docs]</a><span class="k">class</span> <span class="nc">BasePaddleEncoder</span><span class="p">(</span><span class="n">PaddleDevice</span><span class="p">,</span> <span class="n">BaseEncoder</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;:class:`BasePaddleEncoder` is the base class for implementing Encoders with models from :mod:`paddlepaddle` library.&quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
@@ -419,6 +424,7 @@
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the Mindspore Neural Networks Cells.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cell</span><span class="p">()</span>
 
 <div class="viewcode-block" id="BaseMindsporeEncoder.get_cell"><a class="viewcode-back" href="../../../../api/jina.executors.encoders.frameworks.html#jina.executors.encoders.frameworks.BaseMindsporeEncoder.get_cell">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
