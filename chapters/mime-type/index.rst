@@ -1,18 +1,21 @@
-A guide on mime types in Jina
+A Guide on MIME Types in Jina
 =============================
+
+This guide explains what a mime type is, how to assign them manually or automatically to a Document
+and how you can work with them on a Chunk or Driver level.
 
 Summary
 -------
-The mime type of a document is a string property (``document.mime_type``).
-It is used in order to store the type of the document.
-This information can be used by the drivers to handle documents differently based on their mime type.
-The mime type of a document can be set to one of the values in ``mimetypes.types_map.values()`` (e.g. video/mpeg, text/html, image/jpeg, application/msword...).
-It can be automatically derived from the content of the document or being overwritten manually.
-The mime type is set automatically when defining one of the content attributes ``uri``, ``text`` or ``buffer``.
+The MIME type of a Document is a string property (``document.mime_type``).
+It is used to store the type of the Document.
+This information can be used by the Drivers to handle Documents differently based on their MIME type.
+The MIME type of a Document can be set to one of the values in ``mimetypes.types_map.values()`` (e.g. video/mpeg, text/html, image/jpeg, application/msword...).
+It can be automatically derived from the content of the Document or being overwritten manually.
+The MIME type is set automatically when defining one of the content attributes ``uri``, ``text`` or ``buffer``.
 
-Automatic mime type assignment
+Automatic MIME Type Assignment
 ------------------------------
-The following example illustrates which mime types are automatically derived from the content attributes:
+The following example shows which MIME types are automatically derived from the content attributes:
 
 .. confval:: auto_assignment.py
 
@@ -33,9 +36,9 @@ The following example illustrates which mime types are automatically derived fro
         d3.buffer = (b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR...')
         assert d3.mime_type == 'image/png'
 
-Manual mime type assignment
+Manual MIME Type Assignment
 ---------------------------
-To have the full control over the mime type, it is also possible to set it manually like shown in the following example:
+To have full control over the MIME type, it is also possible to set it manually as shown in the following example:
 
 .. confval:: manual_assignment.py
 
@@ -52,22 +55,24 @@ To have the full control over the mime type, it is also possible to set it manua
         d = Document()
         d.buffer = (svg_content)
         assert d.mime_type == 'image/svg'
-        # the mime type can be overwritten
+        # the MIME type can be overwritten
         d.mime_type = 'text/plain'
-        # assigning an invalid mime type leads to a ``ValueError``
+        # assigning an invalid MIME type leads to a ``ValueError``
         d.mime_type = 'invalid/type' # raises exception
 
-Mime type in chunks
+MIME Type in Chunks
 -------------------
-Chunks are created by ``Segmenters``.
-For a variety of use cases, chunks have the same mime type as their parent documents.
-Examples are text documents where each sentence (chunk) is a text document on its own.
-Also when segmenting images or audio, most applications are creating chunks of the same mime type.
-However, there are scenarios where it makes sense to change the mime type on chunk level.
-A common examples would be for instance video documents where the chunks are images.
-The ``Segmenters`` are responsible for assigning the right mime type to the chunks they create.
-In case no mime type is set, the ``SegmentDriver`` assigns the mime type of the parent document as default value.
-The following example illustrates a simple segmenter, which sets the ``mime_type`` for each chunk it creates.
+Chunks can be created by ``Segmenters``.
+Also, Chunks can be created by the user and attached to the Documents before feeding them into the flow.
+There are many use cases where Chunks have the same MIME type as their parent Documents.
+For instance, when segmenting images or audio, Chunks of the same MIME type are created.
+
+In some use cases, a different parent and chunk mime type is required.
+Such as processing video, where the chunk would be images.
+A Segmenter is responsible for assigning the correct mime type to the chunks when they are created.
+
+In case no MIME type is set, the ``SegmentDriver`` assigns the MIME type of the parent Document as default value.
+The following example shows a simple Segmenter, which sets the ``mime_type`` for each Chunk it creates.
 
 .. confval:: dummy_segmenter.py
 
@@ -88,10 +93,10 @@ The following example illustrates a simple segmenter, which sets the ``mime_type
                 return results
 
 
-Usage in driver
+Usage in Driver
 ---------------
-Drivers can access the mime type of the documents in order to handle them accordingly.
-The following driver only encodes documents where the ``mime_type`` is ``'text/plain'``:
+Drivers can access the MIME type of the Document to handle them accordingly.
+The following Driver only encodes Documents where the ``mime_type`` is ``'text/plain'``:
 
 .. confval:: special_segment_driver.py
 
@@ -102,7 +107,7 @@ The following driver only encodes documents where the ``mime_type`` is ``'text/p
         from .. import DocumentSet
 
          class EncodeDriver(FastRecursiveMixin, BaseEncodeDriver):
-            """Extract the content from documents and call executor and do encoding
+            """Extract the content from Documents and call executor and do encoding
             """
 
             def _apply_all(self, leaves: Iterable['DocumentSet'], *args, **kwargs) -> None:
