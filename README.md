@@ -50,7 +50,7 @@ For getting started pages and developer guides:
 
 4.  Create a git new branch: `git checkout -b fix_pods` .
 
-5. Your commit messages should following the standard Jina format seen [here](https://github.com/jina-ai/jina#contributing).
+5. Your commit messages should following the standard Jina format seen [here](https://github.com/jina-ai/jina/blob/master/CONTRIBUTING.md#writing-your-commit-message).
 
 5.  Add your file to the chapters folder.
 
