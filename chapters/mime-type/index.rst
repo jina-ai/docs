@@ -103,22 +103,8 @@ The following Driver only encodes Documents where the ``mime_type`` is ``'text/p
     .. highlight:: python
     .. code-block:: python
 
-        from ..types.document import Document
-        from .. import DocumentSet
-
-         class EncodeDriver(FastRecursiveMixin, BaseEncodeDriver):
-            """Extract the content from Documents and call executor and do encoding
-            """
-
-            def _apply_all(self, leaves: Iterable['DocumentSet'], *args, **kwargs) -> None:
-                docs = DocumentSet.flatten(leaves)
-                contents, docs_pts = docs.all_contents
-                if docs_pts:
+         class EncodeTextDriver(...):
+            def _apply_all(...) -> None:
+                for doc in docs:
                     if doc.mime_type == 'text/plain':
                         embeds = self.exec_fn(contents)
-                        if len(docs_pts) != embeds.shape[0]:
-                            self.logger.error(
-                                f'mismatched {len(docs_pts)} docs from level {docs_pts[0].granularity} '
-                                f'and a {embeds.shape} shape embedding, the first dimension must be the same')
-                        for doc, embedding in zip(docs_pts, embeds):
-                            doc.embedding = embedding
