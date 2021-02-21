@@ -30,7 +30,7 @@ Now that we agreed on the concept of modality,
 we can describe cross-modal and multi-modal search.
 
  - Cross-modal search can be defined as a set of retrieval applications that try to effectively find relevant documents of modality A by querying with documents from modality B.
- - Multi-modal search can be defined as a set of retrieval applications that try to effectively project documents of different modalities into a common embedding space, and find relevant documents with respect to the fusion of multiple modalities
+ - Multi-modal search can be defined as a set of retrieval applications that can leverage multiple modalities at query time.
 
 The main difference between these two search modes is that for cross-modal, there is a direct mapping between a single document and a
 vector in embedding space, while for multi-modal this does not hold true, since 2 or more documents might be combined into a single vector.
@@ -53,7 +53,13 @@ It queries the text index using image embeddings and queries the image index usi
 Multi modal search
 --------------------
 
-In order to support multi-modal search and to make it easy to build such applications, Jina provides three components:
+Using several modalities as a single query to a Search System can be done in several ways.
+One way is to index the different modalities in different indexes to later merge the results of the search to use the information
+brought by each of the systems.
+
+Another option involves the projection of different modalities into a common embedding space to find relevant documents with respect to the fusion of multiple modalities.
+
+In order to support these patterns and to make it easy to build such applications, Jina provides three components:
 
 ``MultiModalDocument`` is a :term:`Document` composed by multiple documents with different modalities.
 It makes it easy for the client and for the ``MultimodalDriver`` to build and work with these constructions.
