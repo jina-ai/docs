@@ -46,3 +46,32 @@ jobs:
           directory: gh-pages
           github_token: ${{ secrets.JINA_DEV_BOT }}
           force: true
+
+  bumpVersionJob:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Checkout to Jina core
+        uses: actions/checkout@v2
+        with:
+          repository: jina-ai/jina
+          token: ${{ secrets.JINA_DEV_BOT }}
+      - name: Install released Jina version
+        run: |
+          pip install .  --no-cache-dir
+          RELEASE_VER=$(curl -sL https://api.github.com/repos/jina-ai/jina/releases/latest | grep '"tag_name":' | cut -d'"' -f4)
+          echo "RELEASE_VER=${RELEASE_VER}" >> $GITHUB_ENV
+      - name: Checkout to docs repo
+        uses: actions/checkout@v2
+      - name: Bump version to versions file
+        run: |
+          echo -e "${{env.RELEASE_VER}}" >> versions
+          git config --local user.email "dev-bot@jina.ai"
+          git config --local user.name "Jina Dev Bot"
+          git add versions
+          git commit -m "update ${{env.RELEASE_VER}} on ${{github.repository}}" -a || true
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v3
