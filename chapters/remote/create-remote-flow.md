@@ -64,7 +64,7 @@ def get_flow_info(flow_url, flow_id):
     try:
         r = requests.get(url=flow_info_api)
         if r.status_code == requests.codes.ok:
-            return str(r.json()["port"])
+            print('Flow is active')
         else:
             print('Remote Flow info retrieval failed')
     except requests.exceptions.RequestException as ex:
@@ -75,8 +75,7 @@ def main():
     jinad_port = '8000'
     flow_api = f'http://{host_ip}:{jinad_port}'
     flow_id = 'cdd53e16-5575-11eb-86b2-0ab9db700358'
-    flow_port = get_flow_info(flow_api, flow_id)
-    print(f'Flow serves at {host_ip}:{flow_port}')
+    get_flow_info(flow_api, flow_id)
 ``` 
 
 ### 3. Run Index/Query via client 
