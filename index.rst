@@ -12,6 +12,7 @@ Documentation types
 Each of the four Jina products has the following documentation types.
 
 - **Introduction**: New to a Jina product? Check out the Introduction pages. They contain an introduction to the main concepts and links to additional tutorial.
+- **Installation**: How to install the corresponding Jina product.
 - **Developer Guides**: Provides hands-on tutorials and in-depth information on features and implementations usecases.
 - **API References**: Contains a detailed description of the product APIs. The reference describes how the methods work and which parameters can be used.
 
@@ -26,6 +27,7 @@ Table of contents
    :caption: Jina Core
 
    chapters/core/introduction/index
+   chapters/core/setup/index
    chapters/core/guides/index
    chapters/core/api_references/index
 
