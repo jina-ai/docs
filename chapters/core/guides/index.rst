@@ -14,6 +14,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    :glob:
 
    ../../install/index
+   ../../my_first_jina_app
    ../../cross_multi_modality
    ../../crud
    ../../logging
