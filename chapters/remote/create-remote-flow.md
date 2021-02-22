@@ -13,13 +13,13 @@ As `jinad` hosts a service on the remote, we can use the `jinad` API `/flow/yaml
 import requests
 
 def create_flow(flow_url, yamlspec):
-    flow_creation_api = f'{flow_url}/flow/yaml/'
+    flow_creation_api = f'{flow_url}/flows'
     with open(yamlspec, 'rb') as f:
-        files = [('yamlspec', f)]
+        files = {'flow' : f}
         try:
-            r = requests.put(url=flow_creation_api, files=files, timeout=10)
-            if r.status_code == requests.codes.ok:
-                return r.json()['flow_id']
+            r = requests.post(url=flow_creation_api, files=files, timeout=10)
+            if r.status_code == requests.codes.created:
+                return r.json()
             else:
                 print('Remote Flow creation failed')
         except requests.exceptions.RequestException as ex:
@@ -60,7 +60,7 @@ Before using the Flow we created, we need to get detail information about the Fl
 import requests
 
 def get_flow_info(flow_url, flow_id):
-    flow_info_api = f'{flow_url}/flow/{flow_id}'
+    flow_info_api = f'{flow_url}/flows/{flow_id}'
     try:
         r = requests.get(url=flow_info_api)
         if r.status_code == requests.codes.ok:
@@ -108,7 +108,7 @@ After getting all the work done, we terminate the Flow by sending a `DELETE` req
 import requests
 
 def delete_flow(flow_api, flow_id):
-    flow_deletion_api = f'{flow_api}/flow?flow_id={flow_id}'
+    flow_deletion_api = f'{flow_api}/flows/{flow_id}'
     try:
         r = requests.delete(url=flow_deletion_api)
         if r.status_code == requests.codes.ok:
