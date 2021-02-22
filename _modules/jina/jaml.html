@@ -393,7 +393,9 @@
 
 <div class="viewcode-block" id="JAML.load_no_tags"><a class="viewcode-back" href="../../api/jina.jaml.html#jina.jaml.JAML.load_no_tags">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_no_tags</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load yaml object but ignore all customized tags, e.g. !Executor, !Driver, !Flow</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load yaml object but ignore all customized tags, e.g. !Executor, !Driver, !Flow.</span>
+
 <span class="sd">        :param stream: the output stream</span>
 <span class="sd">        :param **kwargs: other kwargs</span>
 <span class="sd">        :return: the Python object</span>
@@ -405,6 +407,15 @@
     <span class="k">def</span> <span class="nf">expand_dict</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">SimpleNamespace</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">resolve_cycle_ref</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">resolve_passes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Expand variables from YAML file.</span>
+
+<span class="sd">        :param d: yaml file loaded as python dict</span>
+<span class="sd">        :param context: context replacement variables in a dict, the value of the dict is the replacement.</span>
+<span class="sd">        :param resolve_cycle_ref: resolve internal reference if True.</span>
+<span class="sd">        :param resolve_passes: number of rounds to resolve internal reference.</span>
+<span class="sd">        :return: expanded dict.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">parse_arg</span>
         <span class="n">expand_map</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
         <span class="n">env_map</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
@@ -534,6 +545,7 @@
     <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Serialize a Python object into a YAML stream.</span>
+
 <span class="sd">        If stream is None, return the produced string instead.</span>
 
 <span class="sd">        :param data: the data to serialize</span>
@@ -545,7 +557,9 @@
 
 <div class="viewcode-block" id="JAML.register"><a class="viewcode-back" href="../../api/jina.jaml.html#jina.jaml.JAML.register">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;register a class for dumping loading</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Register a class for dumping loading.</span>
+
 <span class="sd">            - if it has attribute yaml_tag use that to register, else use class name</span>
 <span class="sd">            - if it has methods to_yaml/from_yaml use those to dump/load else dump attributes</span>
 <span class="sd">              as mapping</span>
@@ -553,13 +567,13 @@
 <span class="sd">        :param cls: the class to register</span>
 <span class="sd">        :return: the registered class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">tag</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;yaml_tag&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">yaml</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_to_yaml</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">def</span> <span class="nf">t_y</span><span class="p">(</span><span class="n">representer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;Inner function, get the representer.&quot;&quot;&quot;</span>
                 <span class="k">return</span> <span class="n">representer</span><span class="o">.</span><span class="n">represent_yaml_object</span><span class="p">(</span>
                     <span class="n">tag</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">flow_style</span><span class="o">=</span><span class="n">representer</span><span class="o">.</span><span class="n">default_flow_style</span>
                 <span class="p">)</span>
@@ -570,6 +584,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
 
             <span class="k">def</span> <span class="nf">f_y</span><span class="p">(</span><span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;Inner function, get the constructor.&quot;&quot;&quot;</span>
                 <span class="k">return</span> <span class="n">constructor</span><span class="o">.</span><span class="n">construct_yaml_object</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>
 
             <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">f_y</span><span class="p">,</span> <span class="n">JinaLoader</span><span class="p">)</span>
@@ -577,8 +592,11 @@
 
 
 <span class="k">class</span> <span class="nc">JAMLCompatibleType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Metaclass for :class:`JAMLCompatible`.</span>
-<span class="sd">    It enables any class inherit from :class:`JAMLCompatible` to auto-register itself at :class:`JAML`&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Metaclass for :class:`JAMLCompatible`.</span>
+
+<span class="sd">    It enables any class inherit from :class:`JAMLCompatible` to auto-register itself at :class:`JAML`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -588,6 +606,7 @@
 
 <div class="viewcode-block" id="JAMLCompatible"><a class="viewcode-back" href="../../api/jina.jaml.html#jina.jaml.JAMLCompatible">[docs]</a><span class="k">class</span> <span class="nc">JAMLCompatible</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">JAMLCompatibleType</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;:class:`JAMLCompatible` is a mixin class designed to be used with multiple inheritance.</span>
+
 <span class="sd">    It will add :meth:`to_yaml` and :meth:`from_yaml` to the target class,</span>
 <span class="sd">    making that class JAML-friendly.</span>
 
@@ -599,7 +618,8 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">representer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A low-level interface required by :mod:`pyyaml` write interface</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A low-level interface required by :mod:`pyyaml` write interface.</span>
 
 <span class="sd">        .. warning::</span>
 <span class="sd">            This function should not be used directly, please use :meth:`save_config`.</span>
@@ -614,7 +634,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">:</span> <span class="n">FullConstructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A low-level interface required by :mod:`pyyaml` load interface</span>
+        <span class="sd">&quot;&quot;&quot;A low-level interface required by :mod:`pyyaml` load interface.</span>
 
 <span class="sd">        .. warning::</span>
 <span class="sd">            This function should not be used directly, please use :meth:`load_config`.</span>
@@ -628,7 +648,8 @@
         <span class="k">return</span> <span class="n">get_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="JAMLCompatible.save_config"><a class="viewcode-back" href="../../api/jina.jaml.html#jina.jaml.JAMLCompatible.save_config">[docs]</a>    <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Save the object&#39;s config into a YAML file</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the object&#39;s config into a YAML file.</span>
 
 <span class="sd">        :param filename: file path of the yaml file, if not given then :attr:`config_abspath` is used</span>
 <span class="sd">        &quot;&quot;&quot;</span>
