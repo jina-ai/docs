@@ -127,7 +127,7 @@ These are the extra dependencies used by Jina:
 
 ## On Windows
 
-Currently we do not support native python on Windows.
+Currently we do not support native Python on Windows.
 
 If you are a Windows user, one workaround is to [run Jina on Windows Subsystem for Linux](on-wsl.md) or [run Jina in a Docker container](via-docker.md). If you manage to run Jina on Windows after some tweaks, please submit your changes [here](https://github.com/jina-ai/jina/issues/new).
 
@@ -136,13 +136,13 @@ Please refer to [run Jina in a Docker container](via-docker.md). If you manage t
 
 # Upgrade Jina
 
-If you have a previously installed version of Jina, you can upgrade it by running:
+If you have a previously installed version of Jina, you can upgrade it by running the following command:
 
 ```bash
 pip install -U jina
 ```
 
-For Docker users: 
+For Docker users the following command updates Jina in the Docker container:
 
 ```bash
 docker pull jinaai/jina
