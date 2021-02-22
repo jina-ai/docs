@@ -29,7 +29,7 @@ f = (Flow().add(name='p1', needs='gateway')
 
 The plot of the above topology looks like this:
 
-![](./simple-plot3.svg)
+![](./images/simple-plot3.svg)
 
 In the above, `p1`, `p2`, `p3` now subscribe to `gateway` and conduct their work in parallel. The last `.needs()` blocks all Pods until they finish their work.
 
@@ -45,7 +45,7 @@ f = (Flow().add(name='p1', needs='gateway')
            .needs(['p1','p3'], name='r1').plot())
 ```
 
-![](./simple-plot4.svg)
+![](./images/simple-plot4.svg)
 
 #### State-less vs state-ful
 

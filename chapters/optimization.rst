@@ -29,7 +29,7 @@ Before you start
 
 Make sure you install Jina via `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_ with ``jina[optimizer]``.
 
-Read the :class:`Evaluator` entry in the `glossary <https://docs.jina.ai/chapters/glossary/glossary.html>`_.
+Read the :class:`Evaluator` entry in the `glossary <https://docs.jina.ai/chapters/glossary.html>`_.
 
 Using the FlowOptimizer
 -----------------------

@@ -14,26 +14,26 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    :glob:
 
    ../../install/index
-   ../../cross-multi-modality/index
-   ../../crud/index
-   ../../logging/index
-   ../../prevent_duplicate_indexing/index
+   ../../cross_multi_modality
+   ../../crud
+   ../../logging
+   ../../prevent_duplicate_indexing
    ../../flow/index
    ../../flow/pattern
-   ../../io/index
-   ../../traversal/index
+   ../../io
+   ../../traversal
    ../../extend/*
    ../../remote/index
-   ../../parallel/index
-   ../../primitive_data_type/index
-   ../../project_guide/project_guide
+   ../../parallel
+   ../../primitive_data_type
+   ../../project_guide
    ../../traversal/index
    ../../simple_exec
    ../../cli/exit
    ../../envs
    ../../project-guide/project-guide
-   ../../optimization/index
-   ../../request_size/request_size
-   ../../evaluation/index
-   ../../incremental_indexing/index
+   ../../optimization
+   ../../request_size
+   ../../evaluation
+   ../../incremental_indexing
    ../../stress/index
