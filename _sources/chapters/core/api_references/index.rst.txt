@@ -6,7 +6,7 @@ API References
    :glob:
    :caption: Jina REST API Specification
 
-   ../../restapi/index
+   ../../restapi
 
 .. toctree::
    :titlesonly:
@@ -36,7 +36,7 @@ API References
     :glob:
     :caption: Jina Daemon API Specification
 
-    ../../daemon/index
+    ../../daemon
 
 .. toctree::
    :maxdepth: 2

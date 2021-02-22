@@ -55,7 +55,7 @@ Table of contents
    :maxdepth: 1
    :caption: Glossary
 
-   chapters/glossary/glossary
+   chapters/glossary
 
 .. toctree::
    :maxdepth: 1
@@ -68,7 +68,7 @@ Table of contents
    chapters/troubleshooting
    chapters/faq/dev
    chapters/faq/user
-   chapters/docstring/docstring
+   chapters/docstring
 
 
 .. toctree::

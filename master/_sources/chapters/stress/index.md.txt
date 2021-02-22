@@ -78,7 +78,7 @@ The parameters are organized in 4 groups:
 
 ### Sharding and scheduling parameters
 
-Jina allows for parallelization of data processing. You can read an overview of these options [here](https://docs.jina.ai/chapters/parallel/index.html). We use these to parallelize the various Pods. On the same topic, we also configure the `scheduling` strategy.
+Jina allows for parallelization of data processing. You can read an overview of these options [here](https://docs.jina.ai/chapters/parallel.html). We use these to parallelize the various Pods. On the same topic, we also configure the `scheduling` strategy.
 
 ### Functional/indexers parameters
 

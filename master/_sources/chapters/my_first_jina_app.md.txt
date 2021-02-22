@@ -4,7 +4,7 @@
 
 This tutorial guides you through building your own neural search app using the [Jina framework](https://github.com/jina-ai/jina/). 
 
-![](/images/jinabox-wikipedia.gif)
+![](./images/jinabox-wikipedia.gif)
 
 Our example program will be a simple neural search engine for text. It will take a user's input and return a list of sentences from Wikipedia that match most closely.
 
