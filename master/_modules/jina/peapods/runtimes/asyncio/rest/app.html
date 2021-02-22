@@ -216,7 +216,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec.html">List of 56 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
@@ -372,7 +372,10 @@
             <span class="s1">&#39;used_memory&#39;</span><span class="p">:</span> <span class="n">used_memory_readable</span><span class="p">()</span>
         <span class="p">}</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/api/</span><span class="si">{mode}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">deprecated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/api/</span><span class="si">{mode}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">deprecated</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">api</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this interface will be retired soon&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
@@ -391,10 +394,11 @@
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get_result_in_json</span><span class="p">(</span><span class="n">req_iter</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">MessageToDict</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">async</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">servicer</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">request_iterator</span><span class="o">=</span><span class="n">req_iter</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)]</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/index&#39;</span><span class="p">,</span>
-              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Index documents into Jina&#39;</span><span class="p">,</span>
-              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
-              <span class="p">)</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/index&#39;</span><span class="p">,</span>
+        <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Index documents into Jina&#39;</span><span class="p">,</span>
+        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaIndexRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
@@ -402,33 +406,36 @@
         <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/search&#39;</span><span class="p">,</span>
-              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Search documents from Jina&#39;</span><span class="p">,</span>
-              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
-              <span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaSearchRequestModel</span><span class="p">):</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/search&#39;</span><span class="p">,</span>
+        <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Search documents from Jina&#39;</span><span class="p">,</span>
+        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaSearchRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">SEARCH</span>
         <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span>
-             <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update documents in Jina&#39;</span><span class="p">,</span>
-             <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
-             <span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaUpdateRequestModel</span><span class="p">):</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">put</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span>
+        <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update documents in Jina&#39;</span><span class="p">,</span>
+        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">update_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaUpdateRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">UPDATE</span>
         <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/delete&#39;</span><span class="p">,</span>
-                <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete documents in Jina&#39;</span><span class="p">,</span>
-                <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
-                <span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaDeleteRequestModel</span><span class="p">):</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/delete&#39;</span><span class="p">,</span>
+        <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete documents in Jina&#39;</span><span class="p">,</span>
+        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaDeleteRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">DELETE</span>
