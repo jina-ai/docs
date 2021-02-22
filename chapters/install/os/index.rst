@@ -8,4 +8,5 @@ Installation
    on-rasp-linux
    on-wsl
    on-x
+   jina-check
    ../autocomplete
