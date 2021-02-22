@@ -5,7 +5,7 @@ In Jina, each Document is represented as a recursive representation (tree).
 A rooted recursive representation has a root node and every node has X children.
 In Jina, the root node is the document itself, while the *left* & *right* children are referred to as *chunks* and *matches* respectively.
 
-![rooted-binary-tree](img/overview.png)
+![rooted-binary-tree](./images/overview.png)
 
 The above image illustrates a basic document structure: A document (root node) and the two possible child nodes: *chunks* and *matches*.
 chunks are a sequence of documents which is attached to the root document with a higher `granularity` degree. `matches` is a sequence of documents which are semantically related to the root document.
@@ -60,7 +60,7 @@ root.id == root.chunks[0].parent_id
 
 This can be seen in the image below:
 
-![granularity](img/granularity.png)
+![granularity](./images/granularity.png)
 
 The code sample and graph above demonstrates the basic idea of a `chunk` in a Document.
 In the beginning, we initialized a Document with `granularity=0` (by default).
@@ -109,7 +109,7 @@ print(root.matches[0].adjacency)
 
 ```
 
-![adjacency](img/adjacency.png)
+![adjacency](./images/adjacency.png)
 
 In the code snippet and diagram above, we initialized a Document as `root` with the text: *What is love? Oh, baby do not hurt me.*.
 And a Document with text *What is love? Oh please do not hurt me* was added as a match to the `root`.
@@ -130,7 +130,7 @@ Jina has defined a recursive structure with **arbitrary width and depth** instea
 Roughly speaking, chunks can have the next level chunks and the same level matches; and so do matches.
 This could go on and on. The following figure illustrates this structure [Ref: New Features in Jina v0.5 You Should Know About](https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/).
 
-![recursive](img/recursive.png)
+![recursive](./images/recursive.png)
 
 This recursive structure provides Jina the flexibility to cover any complex use case that may require search at different semantic units.
 Besides, the recursive structure enables Jina rankers to accumulate scores from lower granularities to upper granularities, such as `Chunk2DocRankers`.
@@ -140,7 +140,7 @@ Each shot includes one or more frames. Such hierarchical structures can be very 
 
 If we look from a tree view (with a depth of 3):
 
-![tree-view](img/tree.png)
+![tree-view](./images/tree.png)
 
 ## Document Traversal with traversal paths
 
@@ -159,7 +159,7 @@ def traverse(self, traversal_path: str, callback_fn: Callable, *args, **kwargs) 
 This allows you to apply `callback_fn` based on `traversal_path`.
 The `traversal_path` is defined as below:
 
-![nodes](img/nodes.png)
+![nodes](./images/nodes.png)
 
 With these pre-defined node names, you're able to apply any callbacks (defined as `_apply_all` in the `driver`) to a specific node.
 In the below YAML configuration, the `VectorSearchDriver` was applied to node `c`, `KVSearchDriver` was applied to node `cm` (matches of chunks).

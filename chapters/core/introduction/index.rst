@@ -9,6 +9,6 @@ This section introduces fundamental concepts related to Jina Core.
    :maxdepth: 3
    :glob:
 
-   ../../101/*
-   ../../102/index
-   ../../helloworld/*
+   ../../101
+   ../../102
+   ../../helloworld

@@ -6,7 +6,7 @@ The following terminology is commonly used within the Jina framework. Jina is an
 .. glossary::
 
     Chunk
-        Chunks are semantic units from a larger parent Document. A Chunk is a Document itself. Subdividing parent Documents into Chunks is performed by the Segmenter class of Executors. Examples of individual units would be sentences from large documents or pixel patches from an image.  `For further information see the Understand Jina Recursive Document Representation guide. <https://docs.jina.ai/chapters/traversal/index.html?highlight=recursive>`_
+        Chunks are semantic units from a larger parent Document. A Chunk is a Document itself. Subdividing parent Documents into Chunks is performed by the Segmenter class of Executors. Examples of individual units would be sentences from large documents or pixel patches from an image.  `For further information see the Understand Jina Recursive Document Representation guide. <https://docs.jina.ai/chapters/traversal.html?highlight=recursive>`_
 
     Client
         A Python client that connects to Jina gateway.
@@ -115,7 +115,7 @@ The following terminology is commonly used within the Jina framework. Jina is an
         Searching is the process of retrieving previously indexed Documents for a given query. A query in Jina can be text, an image, a video or even more complex objects, like a pdf.
 
     Segmenter
-        Segmenters are a class of Executors. Segmenters divide large Documents into smaller parts. For example, they divide a text document into paragraphs. A user can determine the granularity or method by which data should be divided. `For further information see the Understand Jina Recursive Document Representation guide. <https://docs.jina.ai/chapters/traversal/index.html?highlight=recursive>`_
+        Segmenters are a class of Executors. Segmenters divide large Documents into smaller parts. For example, they divide a text document into paragraphs. A user can determine the granularity or method by which data should be divided. `For further information see the Understand Jina Recursive Document Representation guide. <https://docs.jina.ai/chapters/traversal.html?highlight=recursive>`_
 
     Semantic Search
         Semantic search is search with meaning, as distinguished from lexical search, where the search engine looks for literal matches of the query words or variants of them, without understanding the overall meaning of the query `[reference_3] <https://en.wikipedia.org/wiki/Semantic_search>`_

@@ -112,7 +112,7 @@ the Flow API :meth:`inspect` allows users to add pods with close to zero-overhea
         uses='!BaseRanker', name='ranker').inspect(
         uses='!BaseRankingEvaluator', name='rank_eval')
 
-.. image:: hang.svg
+.. image:: ./images/hang.svg
 
 The above example shows how the evaluation Pods are introduced using :meth:`inspect` without introducing any side-effect to the Flow.
 
@@ -126,15 +126,15 @@ The differences are shown in the figures below:
 
 ``Flow(inspect='HANG')``
 
-.. image:: hang.svg
+.. image:: ./images/hang.svg
 
 ``Flow(inspect='COLLECT')``
 
-.. image:: collect.svg
+.. image:: ./images/collect.svg
 
 ``Flow(inspect='REMOVE')``
 
-.. image:: remove.svg
+.. image:: ./images/remove.svg
 
 
 Conclusion
