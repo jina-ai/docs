@@ -2,7 +2,10 @@ Installing Jina Core
 ======================================
 
 .. toctree::
-   :glob:
 
-   os/*
-   *
+   os/via-pip
+   os/via-docker
+   os/on-rasp-linux
+   os/on-wsl
+   oson-x
+   autocomplete
