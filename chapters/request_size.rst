@@ -82,5 +82,5 @@ Different settings of ``request_size`` may influence the running performance. A 
 
 A simple extension of the above example generates a box plot showing the relationship between ``request_size`` and running time when we have 100 ``Documents`` to be indexed. This may help you to get more insights on choosing the ``request_size``.
 
-.. image:: request_size_runtime.png
+.. image:: ./images/request_size_runtime.png
     :alt: request_size vs running time

@@ -69,7 +69,7 @@ For getting started pages and developer guides:
 
 ## Updating Docstrings
 
-See details [here](https://docs.jina.ai/chapters/docstring/docstring.html).
+See details [here](https://docs.jina.ai/chapters/docstring.html).
 
 ## Jina style guide
 

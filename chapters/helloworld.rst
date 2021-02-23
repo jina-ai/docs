@@ -46,7 +46,7 @@ On Linux:
     docker run -v "$(pwd)/j:/j" jinaai/jina hello-world --workdir /j && xdg-open j/hello-world.html
 
 
-.. image:: hello-world-demo.png
+.. image:: ./images/hello-world-demo.png
    :width: 70%
    :align: center
 
@@ -64,7 +64,7 @@ With this script you will:
 #. After around 1 minute, a web page will open and show results like this:
 
 
-.. image:: hello-world.gif
+.. image:: ./images/hello-world.gif
    :width: 70%
    :align: center
 
@@ -99,7 +99,7 @@ And the implementation behind it? It's simple:
 
 .. confval:: Flow in Dashboard
 
-    .. image:: hello-world-flow.png
+    .. image:: ./images/hello-world-flow.png
        :align: center
 
 All the big words you can name: computer vision, :term:`neural search`, microservices, :term:`indexing`, :term:`querying/searching<searching>`, and :term:`shards` all happened in just one minute!

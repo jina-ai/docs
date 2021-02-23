@@ -90,7 +90,7 @@ metas:
     - __init__.py
 ```
 
-Imagine we want to have this `Executor` do encoding for [`chunks` of `chunks` of the `root` documents](https://docs.jina.ai/chapters/traversal/index.html). Then we may want to 
+Imagine we want to have this `Executor` do encoding for [`chunks` of `chunks` of the `root` documents](https://docs.jina.ai/chapters/traversal.html). Then we may want to 
 change the default driver's settings and build a 'custom_mwu_encoder.yml' to be passed in `uses_internal` argument.
 
 ```yaml

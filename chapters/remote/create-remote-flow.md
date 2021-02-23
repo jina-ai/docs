@@ -13,13 +13,13 @@ As `jinad` hosts a service on the remote, we can use the `jinad` API `/flow/yaml
 import requests
 
 def create_flow(flow_url, yamlspec):
-    flow_creation_api = f'{flow_url}/flow/yaml/'
+    flow_creation_api = f'{flow_url}/flows'
     with open(yamlspec, 'rb') as f:
-        files = [('yamlspec', f)]
+        files = {'flow' : f}
         try:
-            r = requests.put(url=flow_creation_api, files=files, timeout=10)
-            if r.status_code == requests.codes.ok:
-                return r.json()['flow_id']
+            r = requests.post(url=flow_creation_api, files=files, timeout=10)
+            if r.status_code == requests.codes.created:
+                return r.json()
             else:
                 print('Remote Flow creation failed')
         except requests.exceptions.RequestException as ex:
@@ -60,11 +60,11 @@ Before using the Flow we created, we need to get detail information about the Fl
 import requests
 
 def get_flow_info(flow_url, flow_id):
-    flow_info_api = f'{flow_url}/flow/{flow_id}'
+    flow_info_api = f'{flow_url}/flows/{flow_id}'
     try:
         r = requests.get(url=flow_info_api)
         if r.status_code == requests.codes.ok:
-            return str(r.json()["port"])
+            print('Flow is active')
         else:
             print('Remote Flow info retrieval failed')
     except requests.exceptions.RequestException as ex:
@@ -75,8 +75,7 @@ def main():
     jinad_port = '8000'
     flow_api = f'http://{host_ip}:{jinad_port}'
     flow_id = 'cdd53e16-5575-11eb-86b2-0ab9db700358'
-    flow_port = get_flow_info(flow_api, flow_id)
-    print(f'Flow serves at {host_ip}:{flow_port}')
+    get_flow_info(flow_api, flow_id)
 ``` 
 
 ### 3. Run Index/Query via client 
@@ -108,7 +107,7 @@ After getting all the work done, we terminate the Flow by sending a `DELETE` req
 import requests
 
 def delete_flow(flow_api, flow_id):
-    flow_deletion_api = f'{flow_api}/flow?flow_id={flow_id}'
+    flow_deletion_api = f'{flow_api}/flows/{flow_id}'
     try:
         r = requests.delete(url=flow_deletion_api)
         if r.status_code == requests.codes.ok:
