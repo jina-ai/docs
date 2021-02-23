@@ -17,7 +17,7 @@ Please make sure that the following requirements are met:
 
 * The Jina Core software package itself requires about 12M of disk space. Furthermore, it depends on other software packages to be installed in order to function properly (see list below). Make sure that enough disk space is available on your system.
 
-Fortunately, Jina Core has minimal software dependencies. The table below lists the corresponding software packages for [PyPi](https://pypi.org/) (left column), deb-based Linux distributions such as [Debian GNU/Linux](https://www.debian.org/), [Ubuntu](https://ubuntu.com/) and [Raspberry Pi OS](https://www.raspberrypi.org/software/) (middle column), and [Alpine Linux](https://alpinelinux.org/) (right column).
+Fortunately, Jina Core has minimal software dependencies. The table below lists the corresponding software packages for [PyPi](https://pypi.org/), deb-based Linux distributions such as [Debian GNU/Linux](https://www.debian.org/), [Ubuntu](https://ubuntu.com/) and [Raspberry Pi OS](https://www.raspberrypi.org/software/) and [Alpine Linux](https://alpinelinux.org/).
 
 | PyPi Name | Linux Package Name | Alpine Linux Package Name |
 |---|---|---|
