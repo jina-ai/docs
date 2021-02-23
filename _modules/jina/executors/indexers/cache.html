@@ -306,7 +306,7 @@
 
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">jina.executors.indexers</span> <span class="kn">import</span> <span class="n">BaseKVIndexer</span>
 
@@ -323,7 +323,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a new BaseCache.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create a new BaseCache.</span>
+
+<span class="sd">        :param *args: *args for super</span>
+<span class="sd">        :param **kwargs: **kwargs for super</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseCache.post_init"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.BaseCache.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -335,19 +339,25 @@
     <span class="sd">&quot;&quot;&quot;A key-value indexer that specializes in caching.</span>
 
 <span class="sd">    Serializes the cache to two files, one for ids, one for the actually cached field.</span>
-<span class="sd">    If field=`id`, then the second file is redundant. The class optimizes the process</span>
+<span class="sd">    If fields=[&quot;id&quot;], then the second file is redundant. The class optimizes the process</span>
 <span class="sd">    so that there are no duplicates.</span>
+
+<span class="sd">    Order of fields does NOT affect the caching.</span>
+
+<span class="sd">    :param index_filename: file name for storing the cache data</span>
+<span class="sd">    :param fields: fields to cache on (of Document)</span>
+<span class="sd">    :param *args: *args for super</span>
+<span class="sd">    :param **kwargs: **kwargs for super</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="DocCache.CacheHandler"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.CacheHandler">[docs]</a>    <span class="k">class</span> <span class="nc">CacheHandler</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;A handler for loading and serializing the in-memory cache of the DocCache.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;A handler for loading and serializing the in-memory cache of the DocCache.</span>
+
+<span class="sd">        :param path: Path to the file from which to build the actual paths.</span>
+<span class="sd">        :param logger: Instance of logger.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">logger</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;Create a new CacheHandler.</span>
-
-<span class="sd">            :param path: Path to the file from which to build the actual paths.</span>
-<span class="sd">            :param logger: Instance of logger.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">id_to_cache_val</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.ids&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span>
@@ -363,28 +373,23 @@
             <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_to_cache_val</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.ids&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">))</span>
             <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cache_val_to_id</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.cache&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">))</span></div></div>
 
-    <span class="n">supported_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">ID_KEY</span><span class="p">,</span> <span class="n">CONTENT_HASH_KEY</span><span class="p">]</span>
-    <span class="n">default_field</span> <span class="o">=</span> <span class="n">ID_KEY</span>
+    <span class="n">default_fields</span> <span class="o">=</span> <span class="p">(</span><span class="n">ID_KEY</span><span class="p">,)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a new DocCache.</span>
-
-<span class="sd">        :param index_filename: file name for storing the cache data</span>
-<span class="sd">        :param field: field to cache on (ID_KEY or CONTENT_HASH_KEY)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">index_filename</span><span class="p">:</span>
             <span class="c1"># create a new temp file if not exist</span>
             <span class="n">index_filename</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">index_filename</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_field</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">supported_fields</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Field &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="si">}</span><span class="s2">&#39; not in supported list of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">supported_fields</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># order shouldn&#39;t matter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fields</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_fields</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DocCache.add"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="DocCache.add"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add a document to the cache depending.</span>
 
 <span class="sd">        :param keys: document ids to be added</span>
 <span class="sd">        :param values: document cache values to be added</span>
+<span class="sd">        :param *args: *args for super</span>
+<span class="sd">        :param **kwargs: **kwargs for super</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">id_to_cache_val</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -394,31 +399,40 @@
 <div class="viewcode-block" id="DocCache.query"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Check whether the data exists in the cache.</span>
 
-<span class="sd">        :param key: either the id or the content_hash of a Document</span>
+<span class="sd">        :param key: the value that we cached by (combination of the Document fields)</span>
+<span class="sd">        :param *args: not used</span>
+<span class="sd">        :param **kwargs: not used</span>
 <span class="sd">        :return: status</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">cache_val_to_id</span></div>
 
-<div class="viewcode-block" id="DocCache.update"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="DocCache.update"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Update cached documents.</span>
 
 <span class="sd">        :param keys: list of Document.id</span>
-<span class="sd">        :param values: list of either `id` or `content_hash` of :class:`Document`</span>
+<span class="sd">        :param values: list of values (combination of the Document fields)</span>
+<span class="sd">        :param *args: not used</span>
+<span class="sd">        :param **kwargs: not used</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># if we don&#39;t cache anything else, no need</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">!=</span> <span class="n">ID_KEY</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">id_to_cache_val</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="n">old_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">id_to_cache_val</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">id_to_cache_val</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">cache_val_to_id</span><span class="p">[</span><span class="n">old_value</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">cache_val_to_id</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span></div>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">ID_KEY</span><span class="p">:</span>
+            <span class="c1"># if we don&#39;t cache anything else, no need</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">id_to_cache_val</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">old_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">id_to_cache_val</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">id_to_cache_val</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">cache_val_to_id</span><span class="p">[</span><span class="n">old_value</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">cache_val_to_id</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span></div>
 
 <div class="viewcode-block" id="DocCache.delete"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Delete documents from the cache.</span>
 
 <span class="sd">        :param keys: list of Document.id</span>
+<span class="sd">        :param *args: not used</span>
+<span class="sd">        :param **kwargs: not used</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">id_to_cache_val</span><span class="p">:</span>
@@ -429,15 +443,24 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">-=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="DocCache.get_add_handler"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.get_add_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the CacheHandler.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the CacheHandler.</span>
+
+
+<span class="sd">        .. # noqa: DAR201&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_query_handler</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DocCache.get_query_handler"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.get_query_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_query_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CacheHandler</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the CacheHandler.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the CacheHandler.</span>
+
+
+<span class="sd">        .. # noqa: DAR201&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">CacheHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_abspath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DocCache.get_create_handler"><a class="viewcode-back" href="../../../../api/jina.executors.indexers.cache.html#jina.executors.indexers.cache.DocCache.get_create_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_create_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the CacheHandler.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the CacheHandler.</span>
+
+
+<span class="sd">        .. # noqa: DAR201&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_query_handler</span><span class="p">()</span></div></div>
 </pre></div>
 
@@ -571,7 +594,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 22, 2021.
+        Last updated on Feb 23, 2021.
       </span>
 
         </p>
