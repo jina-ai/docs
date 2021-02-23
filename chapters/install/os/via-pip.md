@@ -1,4 +1,4 @@
-# Install Jina via `pip`
+# Install Jina Core via `pip`
 
 `pip` is a package-management system written in Python used to install and manage software packages. For Python 2.x the command is called `pip`, and for Python >= 3 it is called `pip3`. In many operating systems `pip` is linked to `pip3` so as of today, it makes no difference whether you call `pip` or `pip3`.
 
@@ -12,7 +12,7 @@ On Linux/Mac, simply run:
 pip install jina
 ```
 
-## Install from the Master Branch
+## Install from the master branch
 
 If you want to keep track of the master branch of our development repository:
 
@@ -22,7 +22,7 @@ pip install git+https://github.com/jina-ai/jina.git
 
 Be aware that the master branch may not be stable. We only recommend this branch for testing new features.
 
-## Install from Your Local Fork/Clone
+## Install from your local fork/clone
 
 If you are a developer and want to test your changes on-the-fly: 
 
@@ -37,7 +37,7 @@ In the dev mode, if you later switch to a different method of Jina installation,
 pip uninstall $(basename $(find . -name '*.egg-info') .egg-info)
 ```
 
-## Cherry-Pick Extra Dependencies
+## Cherry-pick extra dependencies
 
 Jina requires only five dependencies `numpy`, `pyzmq`, `protobuf`, `grpcio` and `pyyaml`. No third-party pre-trained models, deep learning/NLP/CV packages will be installed. 
 
@@ -55,13 +55,13 @@ Though not recommended, you can install Jina with full dependencies via:
 pip install "jina[all]"
 ``` 
 
-### To Install Cherry-Picked Dependencies From the Master Branch
+### To install cherry-picked dependencies from the master branch
 
 ```bash
 pip install "git+https://github.com/jina-ai/jina.git#egg=jina[http]" 
 ```
 
-### Extra Dependencies Explained
+### Extra dependencies explained
 
 These are the extra dependencies used by Jina:
 
