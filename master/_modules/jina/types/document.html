@@ -307,7 +307,7 @@
 <span class="kn">import</span> <span class="nn">urllib.request</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">blake2b</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">google.protobuf</span> <span class="kn">import</span> <span class="n">json_format</span>
@@ -316,15 +316,15 @@
 <span class="kn">from</span> <span class="nn">.converters</span> <span class="kn">import</span> <span class="n">png_to_buffer</span><span class="p">,</span> <span class="n">to_datauri</span><span class="p">,</span> <span class="n">guess_mime</span><span class="p">,</span> <span class="n">to_image_blob</span>
 <span class="kn">from</span> <span class="nn">..mixin</span> <span class="kn">import</span> <span class="n">ProtoTypeMixin</span>
 <span class="kn">from</span> <span class="nn">..ndarray.generic</span> <span class="kn">import</span> <span class="n">NdArray</span>
+<span class="kn">from</span> <span class="nn">..querylang.queryset.dunderkey</span> <span class="kn">import</span> <span class="n">dunder_get</span>
 <span class="kn">from</span> <span class="nn">..score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
 <span class="kn">from</span> <span class="nn">..sets.chunk</span> <span class="kn">import</span> <span class="n">ChunkSet</span>
 <span class="kn">from</span> <span class="nn">..sets.match</span> <span class="kn">import</span> <span class="n">MatchSet</span>
-<span class="kn">from</span> <span class="nn">..querylang.queryset.dunderkey</span> <span class="kn">import</span> <span class="n">dunder_get</span>
 <span class="kn">from</span> <span class="nn">...excepts</span> <span class="kn">import</span> <span class="n">BadDocType</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">is_url</span><span class="p">,</span> <span class="n">typename</span><span class="p">,</span> <span class="n">random_identity</span><span class="p">,</span> <span class="n">download_mermaid_url</span>
 <span class="kn">from</span> <span class="nn">...importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
-<span class="kn">from</span> <span class="nn">...proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
 <span class="kn">from</span> <span class="nn">...logging</span> <span class="kn">import</span> <span class="n">default_logger</span>
+<span class="kn">from</span> <span class="nn">...proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentContentType&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSourceType&#39;</span><span class="p">]</span>
 <span class="n">DIGEST_SIZE</span> <span class="o">=</span> <span class="mi">8</span>
@@ -335,6 +335,8 @@
 
 <span class="n">_document_fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields_by_camelcase_name</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span>
     <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields_by_name</span><span class="p">))</span>
+
+<span class="n">_all_mime_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mimetypes</span><span class="o">.</span><span class="n">types_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
 
 <div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">ProtoTypeMixin</span><span class="p">):</span>
@@ -871,7 +873,7 @@
 <span class="sd">        :param value: the acceptable MIME type, raise ``ValueError`` when MIME type is not</span>
 <span class="sd">                recognizable.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">types_map</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_all_mime_types</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">elif</span> <span class="n">value</span><span class="p">:</span>
             <span class="c1"># given but not recognizable, do best guess</span>
@@ -1079,30 +1081,6 @@
 <div class="viewcode-block" id="Document.CopyFrom"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.CopyFrom">[docs]</a>    <span class="k">def</span> <span class="nf">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Copy the content of target :param:doc into current document.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Document.traverse"><a class="viewcode-back" href="../../../api/jina.types.document.html#jina.Document.traverse">[docs]</a>    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Traverse leaves of the document.&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span><span class="n">DocumentSet</span><span class="p">([</span><span class="bp">self</span><span class="p">]),</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">traversal_path</span><span class="p">,</span> <span class="n">callback_fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_traverse_rec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="n">parent_doc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span>
-                      <span class="n">parent_edge_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">traversal_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">traversal_path</span><span class="p">:</span>
-            <span class="n">next_edge</span> <span class="o">=</span> <span class="n">traversal_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">next_edge</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span>
-                        <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">,</span> <span class="n">traversal_path</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">callback_fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="n">next_edge</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span>
-                        <span class="n">doc</span><span class="o">.</span><span class="n">chunks</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">,</span> <span class="n">traversal_path</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">callback_fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">next_edge</span><span class="si">}</span><span class="s1">&quot; in &quot;</span><span class="si">{</span><span class="n">traversal_path</span><span class="si">}</span><span class="s1">&quot; is not a valid traversal path&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-                <span class="n">callback_fn</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">parent_doc</span><span class="p">,</span> <span class="n">parent_edge_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__mermaid_str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
