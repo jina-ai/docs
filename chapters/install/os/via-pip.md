@@ -1,6 +1,6 @@
 # Install Jina Core via `pip`
 
-`pip` is a package-management system written in Python used to install and manage software packages. For Python 2.x the command is called `pip`, and for Python >= 3 it is called `pip3`. In many operating systems `pip` is linked to `pip3` so as of today, it makes no difference whether you call `pip` or `pip3`.
+`pip` is a package-management system written in Python used to install and manage software packages. For Python 2.x the command is called `pip`, and for Python >= 3 it is called `pip3`. In many operating systems `pip` is linked to `pip3`. Run the command `pip --version` to check the Python version that is in use, actually.
 
 If you prefer to run Jina natively on your host, please make sure you have Python >= 3.7 installed.
 
