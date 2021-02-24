@@ -48,7 +48,7 @@ Chose Drivers
 Different :term:`Rankers` will need different :term:`Drivers` to be equipped with.
 For :class:`Match2DocRanker`, we need to choose :class:`Matches2DocRankDriver` to get the scores from a :term:`Ranker` and help to resort the scores.
 
-    :class:`Matches2DocRankDriver` Input-Output ::
+    Input-Output ::
         Input:
         document: {granularity: 0, adjacency: k}
             |- matches: {granularity: 0, adjacency: k+1}
@@ -58,7 +58,7 @@ For :class:`Match2DocRanker`, we need to choose :class:`Matches2DocRankDriver` t
 
 For :class:`Chunk2DocRanker`, we need to choose :class:`Chunk2DocRankDriver` to extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the granularity level above.
 
-    :class:`Chunk2DocRankDriver`  Input-Output ::
+    Input-Output ::
         Input:
         document: {granularity: k-1}
                 |- chunks: {granularity: k}
@@ -78,7 +78,7 @@ For :class:`Chunk2DocRanker`, we need to choose :class:`Chunk2DocRankDriver` to 
 
 Or use :class:`AggregateMatches2DocRankDriver` to substitute matches by the documents at a lower granularity level.
 
-        :class:`AggregateMatches2DocRankDriver`  Input-Output ::
+        Input-Output ::
             Input:
             document: {granularity: k}
                 |- matches: {granularity: k}
@@ -139,8 +139,9 @@ Run with Flow API
 
      from jina.flow import Flow
 
-     f = (Flow()
-         .add(name='my_encoder', uses='docker://jinahub/pod.ranker.simpleaggregateranker:0.0.13-1.0.4'))
+     f = (Flow().add(name='my_encoder', uses='docker://jinahub/pod.ranker.simpleaggregateranker:0.0.13-1.0.4'))
+     # Or use YAML file.
+     #f = (Flow().add(name='my_encoder', uses='SimpleAggregateRanker.yml'))
 
 Run with Jina CLI
 ^^^^^^^^^^^^^^^^^^
