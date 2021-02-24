@@ -308,7 +308,7 @@ with:
   max_length: 96
 ```
 
-- The built-in `TransformerTorchEncoder` is the Pod's **[Executor](https://github.com/jina-ai/docs/blob/master/chapters/101.rst#executor)**. 
+- The built-in `TransformerTorchEncoder` is the Pod's **[Executor](https://docs.jina.ai/chapters/101.html#executor)**. 
 - The `with` field specifies the parameters we pass to `TransformerTorchEncoder`:
 
 | Parameter                       | Effect                                                     |
