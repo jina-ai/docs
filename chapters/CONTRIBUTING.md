@@ -6,7 +6,7 @@ I'm Alex C-G, Open Source Evangelist for Jina. I'm all about getting our new con
 
 # Join Us on Slack!
 
-The best way to know more about contributing and how to get started is to **[join us on Slack](https://join.slack.com/t/jina-ai/shared_invite/zt-dkl7x8p0-rVCv~3Fdc3~Dpwx7T7XG8w)** and ask questions in our public channels.
+The best way to know more about contributing and how to get started is to **[join us on Slack](https://slack.jina.ai)** and ask questions in our public channels.
 
 In this guide we're going to go through the steps for each kind of contribution, and good and bad examples of what to do. We look forward to your contributions!
 
@@ -66,11 +66,11 @@ Right now we're working on a list of things we want help with and easy-to-fix bu
 1. Fork the Jina repo and clone onto your computer. By default, `git` won't clone `jina/hub` as it is a submodule maintained at [`jina-ai/jina-hub`](https://github.com/jina-ai/jina-hub). Please follow [the steps](#check-out-jina-hub-submodule) for details. 
 1. Create a [new branch](#naming-your-branch), for example `fix-jina-typo-1`.
 1. Work on this branch to do the fix/improvement.
-1. Check if your code changes follow the [code review guidelines](.github/CODE_REVIEW_GUIDELINES.md).
+1. Check if your code changes follow the [code review guidelines](https://github.com/jina-ai/jina/blob/master/.github/CODE_REVIEW_GUIDELINES.md).
 1. Commit the changes with the [correct commit style](#writing-your-commit-message).
 1. Make a pull request. 
 1. Submit your pull request and wait for all checks to pass.
-1. Request reviews from one of [the code owners](.github/CODEOWNERS).
+1. Request reviews from one of [the code owners](https://github.com/jina-ai/jina/blob/master/.github/CODEOWNERS).
 1. Get a LGTM 👍 and PR gets merged.
 
 **Note:** If you're just fixing a typo or grammatical issue, you can go straight to a pull request.
@@ -252,7 +252,7 @@ docker run jinaai/jina:my-local-version check
 
 It prints a list of components the current version of Jina supports, and then exits. Make sure yours are not in red.
 
-Once you submit the PR, your code will be tested in the environment of Python 3.7 and 3.8 with [full exta dependencies](extra-requirements.txt) (`pip install .[all]`) installed.
+Once you submit the PR, your code will be tested in the environment of Python 3.7 and 3.8 with [full exta dependencies](https://github.com/jina-ai/jina/blob/master/extra-requirements.txt) (`pip install .[all]`) installed.
 
 <a name="-contributing-documentation"></a>
 ## 📖 Contributing Documentation
@@ -265,7 +265,7 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 
 #### General Documentation
 
-This covers files like [Jina 101](https://github.com/jina-ai/jina/tree/master/docs/chapters/101), [Input and Output Functions, etc](https://github.com/jina-ai/jina/blob/master/docs/chapters/io/index.md).
+This covers files like [Jina 101](https://101.jina.ai), [Input and Output Functions, etc](https://github.com/jina-ai/jina/blob/master/docs/chapters/io.md).
 
 These are typically written in Markdown, though some may be in RestructuredText.
 

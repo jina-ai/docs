@@ -3,9 +3,7 @@ FAQ for Developers
 
 #. What coding style do you use?
 
-    We follow :pep:`8` coding style with type-hint. We use `flake8` to do the lint.
-    Single quotes are preferred coding style for string notation.
-    F-strings are the preferred string formatting syntax.
+    We follow the :pep:`8` coding style, along with type annotations. Single quotes are the preferred coding style for string notation. F-strings are the preferred string formatting syntax. We follow the sphinx style for docstrings.
 
 
 #. What is the difference between :file:`extra-requirements.txt` and :file:`requirements.txt`? Should I add new dependencies to :file:`requirements.txt`?

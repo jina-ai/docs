@@ -1,0 +1,28 @@
+name: Linkcheck
+
+on:
+  push:
+    branches:
+    - 'any'
+  schedule:
+    - cron: 00 4 1 * *  # 04:00 UTC on the 1th day of each month
+
+jobs:
+  sphinx-linkcheck:
+    name: linkcheck
+    runs-on: 'ubuntu-latest'
+
+    steps:
+      - name: Checkout to docs repo
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Perform linkcheck
+        shell: bash -l {0}
+        run: |
+          make linkcheck

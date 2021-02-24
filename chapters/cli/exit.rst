@@ -1,10 +1,27 @@
+====================
 Gracefully Exit Jina
 ====================
+In this section, you will learn best practices to shut down a Flow and exit Jina correctly.
+
+.. contents:: Table of Contents
+    :depth: 4
+
+Feature description and expected outcome
+----------------------------------------
+Jina provides several methods to exit gracefully.
+Through these ways the Flow will terminate and release all resources.
+
+Before you start
+-----------------
+Make sure you install Jina via `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_.
+
+Implementation
+---------------
 
 In Python
----------
+^^^^^^^^^
 
-If you use ``with`` scope to start a Flow, then all resources (including Pods of all kinds) of the Flow will be released after your move out from the scope.
+If you use ``with`` scope to start a Flow, then all resources (including Pods of all kinds) of the Flow will be released after you move out from the scope.
 
 .. highlight:: python
 .. code:: python
@@ -25,14 +42,16 @@ If you use :meth:`start` method to start the Flow, then you have to call :meth:`
 
     f = (Flow.add(name='p1')
              .add(name='p2'))
-    f.start()
-    f.close()
+    try:
+        f.start()
+    finally:
+        f.close()
 
 
 
 
 In the Console
---------------
+^^^^^^^^^^^^^^
 
 If you are running Jina locally (e.g. :command:`jina flow`), you can :kbd:`Control-c` or :kbd:`Command-c` to terminate it at any time. All :class:`BasePod` will receive this signal and shut down accordingly.
 
