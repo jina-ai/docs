@@ -78,7 +78,7 @@ Providing `Documents` to search for works in the same way using the respective f
 Here, a `CSV` file is used to index `Documents`. The possible ways of feeding in the `CSV` are shown.
 The function `Flow.index_lines` can be used in combination with `line_format = '`CSV`'`.
 A simpler version is to use `F.index_csv` where the `line_format` parameter is not needed.
-The `CSV` data can be provided as file handler or directly as `str array`.
+The `CSV` data can be provided as a file handler or directly as `str array`.
 
     .. highlight:: csv
     .. code-block:: csv
@@ -190,7 +190,7 @@ The following example shows how to handle the output via callback functions.
             f.search([doc], on_done=handle_response, on_error=handle_error, on_always=handle_search_done)
 
 
-It can be handy to use the built-in `print` function as `on_done` callback.
+It can be useful to use the built-in `print` function as `on_done` callback.
 
     .. highlight:: python
     .. code-block:: python
@@ -213,43 +213,45 @@ Insights
 When using the `Flow.*` functions, `Jina` builds and sends Protobuf messages to the relevant `Pods`.
 For instance calling the `index_ndarray(...)` function sends the following message to the first `Pod`.
 
-```
-request {
-  request_id: 1
-  index {
-    docs {
-      id: 1
-      weight: 1.0
-      length: 100
-      blob {
-        buffer: "\004@\316\362/D\333?\244>\235\305\027\311\336?\267\210\251\311^\260\345?\366\n(\014\022m\356?\374\262\017\030\036\357\351?-c\300\337\217V\345?\241G\241\352\233\024\356?\340\346lUf\353\350?"
-        shape: 8
-        dtype: "float64"
-      }
-    }
-    docs {
-      id: 2
-      weight: 1.0
-      length: 100
-      blob {
-        buffer: "\312Wm\337\250\217\354?t\212\326\020\261\r\320?\254\262\300u<O\323?\340\210\222$\321\216\314?\310.q,+\347\311?&\316\361\310\252R\331?\214\016\201a\231\262\330?\342\231\262\221\343%\324?"
-        shape: 8
-        dtype: "float64"
-      }
-    }
-    docs {
-      id: 3
-      weight: 1.0
-      length: 100
-      blob {
-        buffer: "kT\250\372K%\345?\237\017+u\300\227\353?\3668\256\340\251\227\350?\327\006$\032$\002\341?\274\300\3573\371\262\343?\346\371\265dV\330\342?\370\210\360\002P3\340?\022i-\016\374\320\331?"
-        shape: 8
-        dtype: "float64"
-      }
-    }
-  }
-}
-```
+    .. highlight:: protobuf
+    .. code-block:: protobuf
+
+        request {
+          request_id: 1
+          index {
+            docs {
+              id: 1
+              weight: 1.0
+              length: 100
+              blob {
+                buffer: "\004@\316\362/D\333?\244>\235\305\027\311\336?\267\210\251\311^\260\345?\366\n(\014\022m\356?\374\262\017\030\036\357\351?-c\300\337\217V\345?\241G\241\352\233\024\356?\340\346lUf\353\350?"
+                shape: 8
+                dtype: "float64"
+              }
+            }
+            docs {
+              id: 2
+              weight: 1.0
+              length: 100
+              blob {
+                buffer: "\312Wm\337\250\217\354?t\212\326\020\261\r\320?\254\262\300u<O\323?\340\210\222$\321\216\314?\310.q,+\347\311?&\316\361\310\252R\331?\214\016\201a\231\262\330?\342\231\262\221\343%\324?"
+                shape: 8
+                dtype: "float64"
+              }
+            }
+            docs {
+              id: 3
+              weight: 1.0
+              length: 100
+              blob {
+                buffer: "kT\250\372K%\345?\237\017+u\300\227\353?\3668\256\340\251\227\350?\327\006$\032$\002\341?\274\300\3573\371\262\343?\346\371\265dV\330\342?\370\210\360\002P3\340?\022i-\016\374\320\331?"
+                shape: 8
+                dtype: "float64"
+              }
+            }
+          }
+        }
+
 
 The structure of this message is defined in the format of [protobuf](https://docs.jina.ai/chapters/proto/docs.html).
 Find more details of the data structure at [`jina.proto`](https://docs.jina.ai/chapters/proto/docs.html#jina.proto).
@@ -257,68 +259,16 @@ Find more details of the data structure at [`jina.proto`](https://docs.jina.ai/c
 `request` contains input data and related metadata.
 The input is a 3*8 matrix that is sent to the `Flow`, which matches 3 `request.index.docs`,
 and the `request.index.docs.blog.shape` is 8.
-The vector of the matrix is stored in `request.index.docs.blob`, and the `request.index.docs.blob.dtype` indicates the type of the vector.
+The vector of the matrix is stored in `request.index.docs.blob`,
+and the `request.index.docs.blob.dtype` indicates the type of the vector.
 
 
-More examples
--------------
+Request size
+----------
+The functions `Flow.index`, `Flow.update`, `Flow.delete`, `Flow.search` and `Flow.train`
+accept the `request_size` parameter. It sets the limit for `Documents` sent in one request.
+In case more `Documents` are provided, they split up into multiple requests.
 
-In this example, `PIL.Image.open` takes either the filename or file object as argument. We convert `buffer` to a file object here using `io.BytesIO`.
-
-Alternatively, if your input function is only sending the file name, like:
-
-```python
-def input_fn():
-    for g in all_gif_files:
-        yield g.encode()  # convert str to binary string b'str'
-```
-
-Then the corresponding `crafter` should change accordingly.
-
-```python
-
-from PIL import Image
-from jina.executors.crafters import BaseCrafter
-
-class GifCrafter(BaseCrafter):
-    def craft(self, buffer):
-        im = Image.open(buffer.decode())
-        # manipulate the image here
-        # ...
-``` 
-
-`buffer` now stores the file path, so we convert it back to a normal string with `.decode()` and read from the file path.
-
-You can also combine two types of data, like:
-
-```python
-def input_fn():
-    for g in all_gif_files:
-        with open(g, 'rb') as fp:
-            yield g.encode() + b'JINA_DELIM' + fp.read()
-```
-
-The `crafter` then can be implemented as:
-
-```python
-from jina.executors.crafters import BaseCrafter
-import io
-from PIL import Image
-
-class GifCrafter(BaseCrafter):
-
-    def craft(self, buffer, *args, **kwargs):
-        file_name, img_raw = buffer.split(b'JINA_DELIM')
-        im = Image.open(io.BytesIO(img_raw))
-        # manipulate the image and file_name here
-        # ...
-
-```
-
-As you can see from the examples above, we can use `buffer` to transfer strings and gif videos.
-
-`.index()`, `.search()` and `.train()` also accept `batch_size` which controls the number of `Documents` per request.
-However, this does not change the `crafter`'s implementation, as the `crafter` always works at the `Document` level.
 
 Further reading:
 - [`jina client --help`](../cli/jina-client.rst)
