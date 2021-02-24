@@ -48,44 +48,44 @@ Chose Drivers
 Different :term:`Rankers` will need different :term:`Drivers` to be equipped with.
 For :class:`Match2DocRanker`, we need to choose :class:`Matches2DocRankDriver` to get the scores from a :term:`Ranker` and help to resort the scores.
 
-    Input-Output ::
-        Input:
-        document: {granularity: 0, adjacency: k}
-            |- matches: {granularity: 0, adjacency: k+1}
-        Output:
-        document: {granularity: 0, adjacency: k}
-            |- matches: {granularity: 0, adjacency: k+1} (Sorted according to scores from Ranker Executor)
+Input-Output ::
+    Input:
+    document: {granularity: 0, adjacency: k}
+        |- matches: {granularity: 0, adjacency: k+1}
+    Output:
+    document: {granularity: 0, adjacency: k}
+        |- matches: {granularity: 0, adjacency: k+1} (Sorted according to scores from Ranker Executor)
 
 For :class:`Chunk2DocRanker`, we need to choose :class:`Chunk2DocRankDriver` to extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the granularity level above.
 
-    Input-Output ::
-        Input:
-        document: {granularity: k-1}
-                |- chunks: {granularity: k}
-                |    |- matches: {granularity: k}
-                |
-                |- chunks: {granularity: k}
-                    |- matches: {granularity: k}
-        Output:
-        document: {granularity: k-1}
-                |- chunks: {granularity: k}
-                |    |- matches: {granularity: k}
-                |
-                |- chunks: {granularity: k}
-                |    |- matches: {granularity: k}
-                |
-                |-matches: {granularity: k-1} (Ranked according to Ranker Executor)
+Input-Output ::
+    Input:
+    document: {granularity: k-1}
+            |- chunks: {granularity: k}
+            |    |- matches: {granularity: k}
+            |
+            |- chunks: {granularity: k}
+                |- matches: {granularity: k}
+    Output:
+    document: {granularity: k-1}
+            |- chunks: {granularity: k}
+            |    |- matches: {granularity: k}
+            |
+            |- chunks: {granularity: k}
+            |    |- matches: {granularity: k}
+            |
+            |-matches: {granularity: k-1} (Ranked according to Ranker Executor)
 
 Or use :class:`AggregateMatches2DocRankDriver` to substitute matches by the documents at a lower granularity level.
 
-        Input-Output ::
-            Input:
-            document: {granularity: k}
-                |- matches: {granularity: k}
+Input-Output ::
+    Input:
+    document: {granularity: k}
+        |- matches: {granularity: k}
 
-            Output:
-            document: {granularity: k}
-                |- matches: {granularity: k-1} (Sorted according to Ranker Executor)
+    Output:
+    document: {granularity: k}
+        |- matches: {granularity: k-1} (Sorted according to Ranker Executor)
 
 Rankers in Jina hub
 ^^^^^^^^^^^^^^^^^^^^
