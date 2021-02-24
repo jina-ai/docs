@@ -14,8 +14,8 @@ A Guide to Jina Ranker
 Motivation
 --------------------
 
-In searching system, query accuracy is the one of the most important aspects that users will concern. In most cases, we expect a well ordered query results to be presented.
-For one search request we may have multiple matches and we want to have the most relevant match or probably top-K matches presented to users. On the other hand, we may also want to agggegrate the top-K chunks to top-K matches.
+In a searching system, query accuracy is one of the most important aspects that users will concern. In most cases, we expect well-ordered query results to be presented.
+For one search request, we may have multiple matches and we want to have the most relevant match or probably top-K matches presented to users. On the other hand, we may also want to aggregate the top-K chunks to top-K matches.
 
 
 Before you start
@@ -35,7 +35,7 @@ Overview
 
 To achieve our objectives, Jina has a family of :term:`Executor` named :term:`Ranker`.
 Jina :term:`Ranker` inherits either the :class:`Match2DocRanker` or the :class:`Chunk2DocRanker`.
-For the :class:`Match2DocRanker`, it re-scores the matches with different mechanism. For the :class:`Chunk2DocRanker`, it agggegrates the chunks to documents.
+For the :class:`Match2DocRanker`, it re-scores the matches with different mechanisms. For the :class:`Chunk2DocRanker`, it aggegrates the chunks to documents.
 
 
 Match2DocRanker
@@ -52,9 +52,9 @@ Chunk2DocRanker
 
 Drivers
 ^^^^^^^^^
-Different Ranker will need different driver to be equipped with.
+Different :term:`Rankers` will need different :term:`Drivers` to be equipped with.
 For :class:`Match2DocRanker`, we need to choose :class:`Matches2DocRankDriver` to get the scores from a :term:`Ranker` and help to resort the scores.
-For :class:Chunk2DocRanker`, we need to choose :class:`Chunk2DocRankDriver` to extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the level above.
+For :class:`Chunk2DocRanker`, we need to choose :class:`Chunk2DocRankDriver` to extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the level above.
 
 Currently, Jina has 3 Rankers in Jina hub.
 
@@ -87,7 +87,7 @@ Currently, Jina has 3 Rankers in Jina hub.
 Ranker in action
 ----------------------
 
-Ranker can be used in several ways in Jina.
+:term:`Ranker` can be used in several ways in Jina.
 
 Run with Docker (docker run)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -145,11 +145,11 @@ Conventional local usage with uses argument (YAML configuration)
 Conclusion
 -----------------
 
-In this guide, we introduced why we need and how to use :term:`Ranker`. Apart from that, we provide some concrete examples of how to use :term:`Ranker`.
+In this guide, we introduce why we need and how to use :term:`Ranker`. Apart from that, we provide some concrete examples of how to use :term:`Ranker`.
 
 What's next
 -----------------
 
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://slack.jina.ai>`_ .
 
-To gain a deeper knowledge on the implementation of Jina Evaluators, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors/evaluators>`_.
+To gain a deeper knowledge on the implementation of Jina Ranker, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors/rankers>`_.
