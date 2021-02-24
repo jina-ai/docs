@@ -1,4 +1,4 @@
-Setup
+Installation 
 ======================================
 
 Jina Core includes the core components of Jina. Without it, neither the Jina Dashboard, nor the Jina Hub or the Jina Box will work.
