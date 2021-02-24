@@ -38,5 +38,4 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../evaluation
    ../../incremental_indexing
    ../../stress/index
-   ../../io/index
    ../../mime-type/index

@@ -1,13 +1,12 @@
 How to handle Input and Output for Flows
 =======================================
 
-This chapter explains how to provide input data to the `Flow API`.
-Moreover, it describes how to handle the output via callback functions.
+This chapter explains how input and output data is handled by the `Flow API`.
 
 Input
 -----
 The input data for the `Flow` operations `Flow.index`, `Flow.update` and `Flow.search` can be provided in three different ways.
-In the following, the input functionality is shown using the `Flow.index` function.
+In the following example, the input functionality is shown using the `Flow.index` function.
 For `Flow.update` and `Flow.search`, the input is provided the same way.
 
 #. A single `Document` can be sent through the `Flow` as shown below.
@@ -68,9 +67,8 @@ The `Flow.delete` function accepts `Document` ids instead of `Documents`.
         with f:
             f.delete(input_function_delete)
 
-Special Input Functions
+Special input functions
 -----------------------
-
 There are some functions of the `Flow API` which simplify the input handling:
 `Flow.index_lines`, `Flow.index_ndjson`, `Flow.index_csv`, `Flow.index_files`, `Flow.index_ndarray`
 `Flow.search_lines`, `Flow.search_ndjson`, `Flow.search_csv`, `Flow.search_files` and `Flow.search_ndarray`
@@ -166,8 +164,9 @@ A field resolver can be used in case the fields of the source file have to be ma
 
 Output
 ------
-
 The output of the `Flow` operations is handled via callback functions `on_done`, `on_error` and `on_always`.
+In addition, it is possible to retrieve the results directly when setting the attribute `return_results = True`.
+The following example shows how to handle the output via callback functions.
 
     .. highlight:: python
     .. code-block:: python
@@ -192,16 +191,25 @@ The output of the `Flow` operations is handled via callback functions `on_done`,
 
 
 It can be handy to use the built-in `print` function as `on_done` callback.
+
     .. highlight:: python
     .. code-block:: python
 
         with f:
             f.search(input_fn, on_done=print)
 
+When setting `return_results = True`, the results are returned directly.
+It can be used in combination with `Callbacks` as well.
+
+    .. highlight:: python
+    .. code-block:: python
+
+        with Flow(return_results=True) as f:
+            result = f.search('first', on_done=handle)
+
     
 Insights
 --------
-
 When using the `Flow.*` functions, `Jina` builds and sends Protobuf messages to the relevant `Pods`.
 For instance calling the `index_ndarray(...)` function sends the following message to the first `Pod`.
 
@@ -244,7 +252,7 @@ request {
 ```
 
 The structure of this message is defined in the format of [protobuf](https://docs.jina.ai/chapters/proto/docs.html).
-Check more details of the data structure at [`jina.proto`](https://docs.jina.ai/chapters/proto/docs.html#jina.proto).
+Find more details of the data structure at [`jina.proto`](https://docs.jina.ai/chapters/proto/docs.html#jina.proto).
 
 `request` contains input data and related metadata.
 The input is a 3*8 matrix that is sent to the `Flow`, which matches 3 `request.index.docs`,
@@ -252,7 +260,7 @@ and the `request.index.docs.blog.shape` is 8.
 The vector of the matrix is stored in `request.index.docs.blob`, and the `request.index.docs.blob.dtype` indicates the type of the vector.
 
 
-More Examples
+More examples
 -------------
 
 In this example, `PIL.Image.open` takes either the filename or file object as argument. We convert `buffer` to a file object here using `io.BytesIO`.
