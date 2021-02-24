@@ -21,8 +21,7 @@ For one search request, we may have multiple matches and we want to have the mos
 Before you start
 -------------------
 
-You have installed the latest stable release of Jina Core according to the instructions found `here <https://docs.jina.ai/chapters/core/setup/index.html>`_
-And read `Understand Jina Recursive Document Representation guide. <https://docs.jina.ai/chapters/traversal.html?highlight=recursive>`_
+You have installed the latest stable release of Jina Core according to the instructions found `here <https://docs.jina.ai/chapters/core/setup/index.html>`_ and read `Understand Jina Recursive Document Representation guide. <https://docs.jina.ai/chapters/traversal.html?highlight=recursive>`_
 
 Overview
 -----------------
@@ -37,13 +36,6 @@ Match2DocRanker
 
 :class:`Match2DocRanker` re-scores the matches for a :term:`Document`. This Ranker is only responsible for calculating new scores and not for the actual sorting. The sorting is handled in the respective :class:`Matches2DocRankDriver`.
 
-Input-Output ::
-    Input:
-    document: {granularity: 0, adjacency: k}
-        |- matches: {granularity: 0, adjacency: k+1}
-    Output:
-    document: {granularity: 0, adjacency: k}
-        |- matches: {granularity: 0, adjacency: k+1} (Sorted according to scores from Ranker Executor)
 
 Chunk2DocRanker
 ^^^^^^^^^^^^^^^
@@ -55,11 +47,50 @@ Chose Drivers
 ^^^^^^^^^^^^^
 Different :term:`Rankers` will need different :term:`Drivers` to be equipped with.
 For :class:`Match2DocRanker`, we need to choose :class:`Matches2DocRankDriver` to get the scores from a :term:`Ranker` and help to resort the scores.
+
+    :class:`Matches2DocRankDriver` Input-Output ::
+        Input:
+        document: {granularity: 0, adjacency: k}
+            |- matches: {granularity: 0, adjacency: k+1}
+        Output:
+        document: {granularity: 0, adjacency: k}
+            |- matches: {granularity: 0, adjacency: k+1} (Sorted according to scores from Ranker Executor)
+
 For :class:`Chunk2DocRanker`, we need to choose :class:`Chunk2DocRankDriver` to extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the granularity level above.
+
+    :class:`Chunk2DocRankDriver`  Input-Output ::
+        Input:
+        document: {granularity: k-1}
+                |- chunks: {granularity: k}
+                |    |- matches: {granularity: k}
+                |
+                |- chunks: {granularity: k}
+                    |- matches: {granularity: k}
+        Output:
+        document: {granularity: k-1}
+                |- chunks: {granularity: k}
+                |    |- matches: {granularity: k}
+                |
+                |- chunks: {granularity: k}
+                |    |- matches: {granularity: k}
+                |
+                |-matches: {granularity: k-1} (Ranked according to Ranker Executor)
+
 Or use :class:`AggregateMatches2DocRankDriver` to substitute matches by the documents at a lower granularity level.
+
+        :class:`AggregateMatches2DocRankDriver`  Input-Output ::
+            Input:
+            document: {granularity: k}
+                |- matches: {granularity: k}
+
+            Output:
+            document: {granularity: k}
+                |- matches: {granularity: k-1} (Sorted according to Ranker Executor)
 
 Rankers in Jina hub
 ^^^^^^^^^^^^^^^^^^^^
+
+Jina provides some built-in Rankers in Jina hub. You are welcome to add customized Rankers by referring to the guide `here <https://docs.jina.ai/chapters/extend/executor.html>`_.
 
 .. list-table:: Jina Rankers
    :widths: 25 25 50 25 25
@@ -128,7 +159,7 @@ Conventional local usage with uses argument (YAML configuration)
 
         jina pod --uses SimpleAggregateRanker.yml
 
-``SimpleAggregateRanker.yml`` can be configured as follows::
+``SimpleAggregateRanker.yml`` can be configured as follows:
 
 .. highlight:: yaml
 .. code-block:: yaml
