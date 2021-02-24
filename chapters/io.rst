@@ -5,9 +5,9 @@ This chapter explains how input and output data is handled by the `Flow API`.
 
 Input
 -----
-The input data for the `Flow` operations `Flow.index`, `Flow.update` and `Flow.search` can be provided in three different ways.
-In the following example, the input functionality is shown using the `Flow.index` function.
-For `Flow.update` and `Flow.search`, the input is provided the same way.
+The input data for the `Flow` functions `flow.index(...)`, `flow.update(...)` and `flow.search(...)` can be provided in three different ways.
+In the following example, the input functionality is shown using the `Flor.index(...)` function.
+For `flow.update(...)` and `flow.search(...)`, the input is provided the same way.
 
 #. A single `Document` can be sent through the `Flow` as shown below.
 
@@ -50,7 +50,7 @@ For `Flow.update` and `Flow.search`, the input is provided the same way.
         with AsyncFlow() as f:
             async f.index(input_fn()):
 
-The `Flow.delete` function accepts `Document` ids instead of `Documents`.
+The `flow.delete(...)` function accepts `Document` ids instead of `Documents`.
 
     .. highlight:: python
     .. code-block:: python
@@ -70,14 +70,14 @@ The `Flow.delete` function accepts `Document` ids instead of `Documents`.
 Special input functions
 -----------------------
 There are some functions of the `Flow API` which simplify the input handling:
-`Flow.index_lines`, `Flow.index_ndjson`, `Flow.index_csv`, `Flow.index_files`, `Flow.index_ndarray`
-`Flow.search_lines`, `Flow.search_ndjson`, `Flow.search_csv`, `Flow.search_files` and `Flow.search_ndarray`
+`flow.index_lines(...)`, `flow.index_ndjson(...)`, `flow.index_csv(...)`, `flow.index_files(...)`, `flow.index_ndarray(...)`
+`flow.search_lines(...)`, `flow.search_ndjson(...)`, `flow.search_csv(...)`, `flow.search_files(...)` and `flow.search_ndarray(...)`
 
-The following examples show the usage of the `Flow.index_*` functions.
+The following examples show the usage of the `flow.index_*(...)` functions.
 Providing `Documents` to search for works in the same way using the respective functions.
 Here, a `CSV` file is used to index `Documents`. The possible ways of feeding in the `CSV` are shown.
-The function `Flow.index_lines` can be used in combination with `line_format = '`CSV`'`.
-A simpler version is to use `F.index_csv` where the `line_format` parameter is not needed.
+The function `flow.index_lines(...)` can be used in combination with `line_format = '`CSV`'`.
+A simpler version is to use `F.index_csv(...)` where the `line_format` parameter is not needed.
 The `CSV` data can be provided as a file handler or directly as `str array`.
 
     .. highlight:: csv
@@ -128,7 +128,7 @@ It's similar when using JSON lines.
         with f:
             f.index_csv(open('input.jsonlines').readlines(), line_format='json')
 
-The `Flow.index_files` function can be used if multiple files have to be fed into the `Flow`.
+The `flow.index_files(...)` function can be used if multiple files have to be fed into the `Flow`.
 
     .. highlight:: python
     .. code-block:: python
@@ -136,7 +136,7 @@ The `Flow.index_files` function can be used if multiple files have to be fed int
         with f:
             f.index_files('*.png', on_done=print)
 
-Using `Flow.index_ndarray` and `Flow.search_ndarray`, numpy arrays can be fed into the `Flow`.
+Using `flow.index_ndarray(...)` and `flow.search_ndarray(...)`, numpy arrays can be fed into the `Flow`.
 
     .. highlight:: python
     .. code-block:: python
@@ -210,7 +210,7 @@ It can be used in combination with `Callbacks` as well.
     
 Insights
 --------
-When using the `Flow.*` functions, `Jina` builds and sends Protobuf messages to the relevant `Pods`.
+When using the `flow.*` functions, `Jina` builds and sends Protobuf messages to the relevant `Pods`.
 For instance calling the `index_ndarray(...)` function sends the following message to the first `Pod`.
 
     .. highlight:: protobuf
@@ -265,7 +265,7 @@ and the `request.index.docs.blob.dtype` indicates the type of the vector.
 
 Request size
 ----------
-The functions `Flow.index`, `Flow.update`, `Flow.delete`, `Flow.search` and `Flow.train`
+The functions `flow.index(...)`, `flow.update(...)`, `flow.delete(...)`, `flow.search(...)` and `flow.train(...)`
 accept the `request_size` parameter. It sets the limit for `Documents` sent in one request.
 In case more `Documents` are provided, they split up into multiple requests.
 
