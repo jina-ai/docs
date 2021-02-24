@@ -26,7 +26,7 @@ The first thing you need is to have Jina installed and ready to run. There are d
 
 To see other ways to install Jina, we have an `installation guide <https://docs.jina.ai/chapters/install/os/index.html>`_. here.
 
-Set-up with Jina Jub
+Set-up with Jina Hub
 ====================
 
 .. highlight:: bash
