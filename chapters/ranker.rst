@@ -48,7 +48,7 @@ Chose Drivers
 Different :term:`Rankers` will need different :term:`Drivers` to be equipped with.
 For :class:`Match2DocRanker`, we need to choose :class:`Matches2DocRankDriver` to get the scores from a :term:`Ranker` and help to resort the scores.
 
-Input-class:`Matches2DocRankDriver` Output:
+class:`Matches2DocRankDriver` Input-Output:
 
 .. highlight:: text
 .. code-block:: text
