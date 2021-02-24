@@ -223,7 +223,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 51 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 50 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
@@ -323,7 +323,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BaseEncoder.encode"><a class="viewcode-back" href="../../../api/jina.executors.encoders.html#jina.executors.encoders.BaseEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Encode the data, needs to be implemented in subclass.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Encode the data, needs to be implemented in subclass.</span>
+<span class="sd">        :param data: the data to be encoded</span>
+<span class="sd">        :param args: additional positional arguments</span>
+<span class="sd">        :param kwargs: additional key-value arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
 
@@ -333,7 +338,8 @@
 <div class="viewcode-block" id="BaseNumericEncoder.encode"><a class="viewcode-back" href="../../../api/jina.executors.encoders.html#jina.executors.encoders.BaseNumericEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param data: a `B x ([T] x D)` numpy ``ndarray``, `B` is the size of the batch</span>
-<span class="sd">        :return: a `B x D` numpy ``ndarray``</span>
+<span class="sd">        :param args: additional positional arguments</span>
+<span class="sd">        :param kwargs: additional key-value arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
@@ -356,38 +362,16 @@
 <div class="viewcode-block" id="BaseTextEncoder"><a class="viewcode-back" href="../../../api/jina.executors.encoders.html#jina.executors.encoders.BaseTextEncoder">[docs]</a><span class="k">class</span> <span class="nc">BaseTextEncoder</span><span class="p">(</span><span class="n">BaseEncoder</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    BaseTextEncoder encodes data from an array of string type (data.dtype.kind == &#39;U&#39;) of size B into a ndarray of B x D.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="BaseTextEncoder.encode"><a class="viewcode-back" href="../../../api/jina.executors.encoders.html#jina.executors.encoders.BaseTextEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param data: an 1d array of string type (data.dtype.kind == &#39;U&#39;) in size B</span>
-<span class="sd">        :return: an ndarray of `B x D`</span>
+<span class="sd">        :param args: additional positional arguments</span>
+<span class="sd">        :param kwargs: additional key-value arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
-
-
-<div class="viewcode-block" id="PipelineEncoder"><a class="viewcode-back" href="../../../api/jina.executors.encoders.html#jina.executors.encoders.PipelineEncoder">[docs]</a><span class="k">class</span> <span class="nc">PipelineEncoder</span><span class="p">(</span><span class="n">CompoundExecutor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;PipelineEncoder encodes data through a pipeline which consists of executors.&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="PipelineEncoder.encode"><a class="viewcode-back" href="../../../api/jina.executors.encoders.html#jina.executors.encoders.PipelineEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Encode the data from the executors.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        <span class="k">for</span> <span class="n">be</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">be</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">data</span></div>
-
-<div class="viewcode-block" id="PipelineEncoder.train"><a class="viewcode-back" href="../../../api/jina.executors.encoders.html#jina.executors.encoders.PipelineEncoder.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Train the data from the executors.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">be</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">be</span><span class="o">.</span><span class="n">is_trained</span><span class="p">:</span>
-                <span class="n">be</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">):</span>
-                <span class="n">data</span> <span class="o">=</span> <span class="n">be</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
