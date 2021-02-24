@@ -224,7 +224,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 74 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
             
@@ -309,7 +309,7 @@
 <span class="kn">import</span> <span class="nn">urllib.parse</span>
 <span class="kn">import</span> <span class="nn">urllib.request</span>
 <span class="kn">import</span> <span class="nn">webbrowser</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">.checker</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">credentials_file</span>
@@ -367,8 +367,12 @@
             <span class="c1"># low-level client</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_raw_client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;unix://var/run/docker.sock&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HubIO.new"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a new executor using cookiecutter template.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="HubIO.new"><a class="viewcode-back" href="../../../api/jina.docker.hubio.html#jina.docker.hubio.HubIO.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">no_input</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new executor using cookiecutter template.</span>
+<span class="sd">        </span>
+<span class="sd">        :param no_input: Argument to avoid prompting dialogue (just to be used for testing)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">cookiecutter.main</span> <span class="kn">import</span> <span class="n">cookiecutter</span>
             <span class="kn">import</span> <span class="nn">click</span>  <span class="c1"># part of cookiecutter</span>
@@ -380,8 +384,8 @@
             <span class="n">cookiecutter_template</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/jina-ai/cookiecutter-jina-hub.git&#39;</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">cookiecutter</span><span class="p">(</span><span class="n">cookiecutter_template</span><span class="p">,</span> <span class="n">overwrite_if_exists</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">overwrite</span><span class="p">,</span>
-                         <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
+            <span class="n">cookiecutter</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">cookiecutter_template</span><span class="p">,</span> <span class="n">overwrite_if_exists</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">overwrite</span><span class="p">,</span>
+                         <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">no_input</span><span class="o">=</span><span class="n">no_input</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">click</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Abort</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;nothing is created, bye!&#39;</span><span class="p">)</span></div>
 
@@ -528,25 +532,8 @@
         <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;pushing </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">batch_unit</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">decode</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="n">t</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-                <span class="k">if</span> <span class="s1">&#39;error&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;authentication required&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="s1">&#39;error&#39;</span><span class="p">]:</span>
-                    <span class="k">raise</span> <span class="n">DockerLoginFailed</span><span class="p">(</span><span class="s1">&#39;user not logged in to docker.&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;🎉 </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> is now published!&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">readme_path</span><span class="p">:</span>
-            <span class="c1"># unfortunately Docker Hub Personal Access Tokens cannot be used as they are not supported by the API</span>
-            <span class="n">_volumes</span> <span class="o">=</span> <span class="p">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">readme_path</span><span class="p">)):</span> <span class="p">{</span><span class="s1">&#39;bind&#39;</span><span class="p">:</span> <span class="s1">&#39;/workspace&#39;</span><span class="p">}}</span>
-            <span class="n">_env</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;DOCKERHUB_USERNAME&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
-                <span class="s1">&#39;DOCKERHUB_PASSWORD&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
-                <span class="s1">&#39;DOCKERHUB_REPOSITORY&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">repository</span><span class="p">,</span>
-                <span class="s1">&#39;README_FILEPATH&#39;</span><span class="p">:</span> <span class="s1">&#39;/workspace/README.md&#39;</span><span class="p">,</span>
-            <span class="p">}</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">containers</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s1">&#39;peterevans/dockerhub-description:2.1&#39;</span><span class="p">,</span>
-                                        <span class="n">auto_remove</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                                        <span class="n">volumes</span><span class="o">=</span><span class="n">_volumes</span><span class="p">,</span>
-                                        <span class="n">environment</span><span class="o">=</span><span class="n">_env</span><span class="p">)</span>
 
         <span class="n">share_link</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;https://api.jina.ai/hub/?jh=</span><span class="si">{</span><span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">quote_plus</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
 
