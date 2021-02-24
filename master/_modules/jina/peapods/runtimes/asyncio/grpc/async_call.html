@@ -303,6 +303,7 @@
             
   <h1>Source code for jina.peapods.runtimes.asyncio.grpc.async_call</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">.....helper</span> <span class="kn">import</span> <span class="n">random_identity</span><span class="p">,</span> <span class="n">typename</span>
 <span class="kn">from</span> <span class="nn">.....logging</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
@@ -310,11 +311,11 @@
 <span class="kn">from</span> <span class="nn">.....proto</span> <span class="kn">import</span> <span class="n">jina_pb2_grpc</span>
 <span class="kn">from</span> <span class="nn">.....types.message</span> <span class="kn">import</span> <span class="n">Message</span>
 <span class="kn">from</span> <span class="nn">.....types.request</span> <span class="kn">import</span> <span class="n">Request</span>
-
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AsyncPrefetchCall&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="AsyncPrefetchCall"><a class="viewcode-back" href="../../../../../../api/jina.peapods.runtimes.asyncio.grpc.async_call.html#jina.peapods.runtimes.asyncio.grpc.async_call.AsyncPrefetchCall">[docs]</a><span class="k">class</span> <span class="nc">AsyncPrefetchCall</span><span class="p">(</span><span class="n">jina_pb2_grpc</span><span class="o">.</span><span class="n">JinaRPCServicer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;JinaRPCServicer &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">zmqlet</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -325,12 +326,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">random_identity</span><span class="p">()</span>
 
 <div class="viewcode-block" id="AsyncPrefetchCall.Call"><a class="viewcode-back" href="../../../../../../api/jina.peapods.runtimes.asyncio.grpc.async_call.html#jina.peapods.runtimes.asyncio.grpc.async_call.AsyncPrefetchCall.Call">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">Call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_iterator</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Async gRPC call.</span>
+
+<span class="sd">        :param request_iterator: iterator of request.</span>
+<span class="sd">        :param context: gRPC context:</span>
+<span class="sd">        :yield: task</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Request&#39;</span><span class="p">:</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Add route into the `message` and return response of the message.</span>
+
+<span class="sd">            :param msg: gRPC message.</span>
+<span class="sd">            :return: message with route added.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">msg</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">response</span>
 
         <span class="k">async</span> <span class="k">def</span> <span class="nf">prefetch_req</span><span class="p">(</span><span class="n">num_req</span><span class="p">,</span> <span class="n">fetch_to</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Fetch and send request.</span>
+
+<span class="sd">            :param num_req: number of requests</span>
+<span class="sd">            :param fetch_to: the task list storing requests</span>
+<span class="sd">            :return: False if append task to :param:`fetch_to` else False</span>
+<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_req</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">request_iterator</span><span class="p">,</span> <span class="s1">&#39;__anext__&#39;</span><span class="p">):</span>

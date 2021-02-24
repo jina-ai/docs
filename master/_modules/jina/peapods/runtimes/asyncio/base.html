@@ -312,14 +312,22 @@
 
 
 <div class="viewcode-block" id="AsyncZMQRuntime"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.base.html#jina.peapods.runtimes.asyncio.base.AsyncZMQRuntime">[docs]</a><span class="k">class</span> <span class="nc">AsyncZMQRuntime</span><span class="p">(</span><span class="n">ZMQRuntime</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runtime procedure in the async manners.</span>
+
+<span class="sd">    Base class of :class:`AsyncNewLoopRuntime`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AsyncZMQRuntime.run_forever"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.base.html#jina.peapods.runtimes.asyncio.base.AsyncZMQRuntime.run_forever">[docs]</a>    <span class="k">def</span> <span class="nf">run_forever</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Running method to block the main thread.&quot;&quot;&quot;</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loop_body</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="AsyncZMQRuntime.async_cancel"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.base.html#jina.peapods.runtimes.asyncio.base.AsyncZMQRuntime.async_cancel">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;An async method to cancel.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="AsyncZMQRuntime.async_run_forever"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.base.html#jina.peapods.runtimes.asyncio.base.AsyncZMQRuntime.async_run_forever">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_run_forever</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The async method to run until it is stopped.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_wait_for_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -342,21 +350,34 @@
 
 
 <div class="viewcode-block" id="AsyncNewLoopRuntime"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.base.html#jina.peapods.runtimes.asyncio.base.AsyncNewLoopRuntime">[docs]</a><span class="k">class</span> <span class="nc">AsyncNewLoopRuntime</span><span class="p">(</span><span class="n">AsyncZMQRuntime</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The runtime to start a new event loop.</span>
+
+<span class="sd">    Base class for :class:`GRPCRuntime` and :class:`RESTRuntime`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="AsyncNewLoopRuntime.run_forever"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.base.html#jina.peapods.runtimes.asyncio.base.AsyncNewLoopRuntime.run_forever">[docs]</a>    <span class="k">def</span> <span class="nf">run_forever</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Running method to block the main thread.</span>
+
+<span class="sd">        Run the event loop until a Future is done.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loop_body</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="AsyncNewLoopRuntime.setup"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.base.html#jina.peapods.runtimes.asyncio.base.AsyncNewLoopRuntime.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Setup the event loop.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">async_setup</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="AsyncNewLoopRuntime.teardown"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.base.html#jina.peapods.runtimes.asyncio.base.AsyncNewLoopRuntime.teardown">[docs]</a>    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Stop and close the event loop.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="AsyncNewLoopRuntime.async_setup"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.base.html#jina.peapods.runtimes.asyncio.base.AsyncNewLoopRuntime.async_setup">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The async method to setup.&quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 </pre></div>
 

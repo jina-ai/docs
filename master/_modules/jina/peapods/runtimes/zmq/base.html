@@ -309,25 +309,37 @@
 
 
 <div class="viewcode-block" id="ZMQRuntime"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.zmq.base.html#jina.peapods.runtimes.zmq.base.ZMQRuntime">[docs]</a><span class="k">class</span> <span class="nc">ZMQRuntime</span><span class="p">(</span><span class="n">BaseRuntime</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;Runtime procedure leveraging ZMQ.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span> <span class="o">=</span> <span class="n">Zmqlet</span><span class="o">.</span><span class="n">get_ctrl_address</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ctrl_with_ipc</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 <div class="viewcode-block" id="ZMQRuntime.cancel"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.zmq.base.html#jina.peapods.runtimes.zmq.base.ZMQRuntime.cancel">[docs]</a>    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send cancel control message.&quot;&quot;&quot;</span>
         <span class="n">send_ctrl_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s1">&#39;TERMINATE&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">timeout_ctrl</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send get status control message.</span>
+
+<span class="sd">        :return: control message.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">send_ctrl_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s1">&#39;STATUS&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">timeout_ctrl</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if status is ready.</span>
+
+<span class="sd">        :return: True if status is ready else False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span>
         <span class="k">return</span> <span class="n">status</span> <span class="ow">and</span> <span class="n">status</span><span class="o">.</span><span class="n">is_ready</span></div>
 
 
 <div class="viewcode-block" id="ZMQManyRuntime"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.zmq.base.html#jina.peapods.runtimes.zmq.base.ZMQManyRuntime">[docs]</a><span class="k">class</span> <span class="nc">ZMQManyRuntime</span><span class="p">(</span><span class="n">BaseRuntime</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Multiple Runtime leveraging ZMQ.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">many_ctrl_addr</span> <span class="o">=</span> <span class="p">[]</span>
@@ -346,12 +358,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">port_expose</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">port_expose</span>
 
 <div class="viewcode-block" id="ZMQManyRuntime.cancel"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.zmq.base.html#jina.peapods.runtimes.zmq.base.ZMQManyRuntime.cancel">[docs]</a>    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send cancel control messages to all control address.&quot;&quot;&quot;</span>
         <span class="c1"># TODO: can use send_message_async to avoid sequential waiting</span>
         <span class="k">for</span> <span class="n">ctrl_addr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">many_ctrl_addr</span><span class="p">:</span>
             <span class="n">send_ctrl_message</span><span class="p">(</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s1">&#39;TERMINATE&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout_ctrl</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Send get status control messages to all control address.</span>
+
+<span class="sd">        :return: received messages</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: can use send_ctrl_message to avoid sequential waiting</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ctrl_addr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">many_ctrl_addr</span><span class="p">:</span>
@@ -360,6 +378,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if all the status are ready.</span>
+
+<span class="sd">        :return: True if all status are ready else False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span>
         <span class="k">return</span> <span class="n">status</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">is_ready</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">status</span><span class="p">)</span></div>
 </pre></div>

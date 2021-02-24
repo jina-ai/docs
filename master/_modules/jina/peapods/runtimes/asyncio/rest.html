@@ -308,13 +308,24 @@
 
 
 <div class="viewcode-block" id="RESTRuntime"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.rest.html#jina.peapods.runtimes.asyncio.rest.RESTRuntime">[docs]</a><span class="k">class</span> <span class="nc">RESTRuntime</span><span class="p">(</span><span class="n">AsyncNewLoopRuntime</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;Runtime for REST.&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="RESTRuntime.async_setup"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.rest.html#jina.peapods.runtimes.asyncio.rest.RESTRuntime.async_setup">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The async method setup the runtime.</span>
+
+<span class="sd">        Setup the uvicorn server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">uvicorn</span> <span class="kn">import</span> <span class="n">Config</span><span class="p">,</span> <span class="n">Server</span>
 
         <span class="k">class</span> <span class="nc">UviServer</span><span class="p">(</span><span class="n">Server</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;The uvicorn server.&quot;&quot;&quot;</span>
             <span class="k">async</span> <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sockets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Setup uvicorn server.</span>
+
+<span class="sd">                :param sockets: sockets of server.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
                 <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">loaded</span><span class="p">:</span>
                     <span class="n">config</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
@@ -325,6 +336,11 @@
                     <span class="k">return</span>
 
             <span class="k">async</span> <span class="k">def</span> <span class="nf">serve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sockets</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                Start the server.</span>
+
+<span class="sd">                :param sockets: sockets of server.</span>
+<span class="sd">                &quot;&quot;&quot;</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_loop</span><span class="p">()</span>
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">sockets</span><span class="o">=</span><span class="n">sockets</span><span class="p">)</span>
 
@@ -342,9 +358,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> is listening at: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RESTRuntime.async_run_forever"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.rest.html#jina.peapods.runtimes.asyncio.rest.RESTRuntime.async_run_forever">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_run_forever</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Running method of ther server.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">serve</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="RESTRuntime.async_cancel"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.rest.html#jina.peapods.runtimes.asyncio.rest.RESTRuntime.async_cancel">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Stop the server.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_server</span><span class="o">.</span><span class="n">should_exit</span> <span class="o">=</span> <span class="kc">True</span></div></div>
 </pre></div>
 
