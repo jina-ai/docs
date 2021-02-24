@@ -300,7 +300,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.drivers.predict</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -312,9 +312,15 @@
 
 
 <div class="viewcode-block" id="BasePredictDriver"><a class="viewcode-back" href="../../../api/jina.drivers.predict.html#jina.drivers.predict.BasePredictDriver">[docs]</a><span class="k">class</span> <span class="nc">BasePredictDriver</span><span class="p">(</span><span class="n">FastRecursiveMixin</span><span class="p">,</span> <span class="n">BaseExecutableDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Drivers inherited from this Driver will bind :meth:`predict` by default &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Drivers inherited from :class:`BasePredictDriver` will bind :meth:`predict` by default</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;predict&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="sd">    :param fields: name of fields to be used to predict tags, default &quot;embeddings&quot;</span>
+<span class="sd">    :param *args: *args for super</span>
+<span class="sd">    :param **kwargs: **kwargs for super</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;predict&#39;</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;embedding&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -336,10 +342,15 @@
             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">embed_vecs</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;embedding&#39;</span><span class="p">:</span>
+            <span class="n">predict_input</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span>
+            <span class="n">predict_input</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_contents</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="si">}</span><span class="s1"> is not a valid field name for </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1">, must be one of embeddings, contents&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">docs_pts</span><span class="p">:</span>
-            <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">embed_vecs</span><span class="p">)</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">predict_input</span><span class="p">)</span>
             <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prediction2label</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>  <span class="c1"># type: List[Union[str, List[str]]]</span>
             <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
                 <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
@@ -468,10 +479,15 @@
             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">embed_vecs</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;embedding&#39;</span><span class="p">:</span>
+            <span class="n">predict_input</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span>
+            <span class="n">predict_input</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_contents</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="si">}</span><span class="s1"> is not a valid field name for </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1">, must be one of embeddings, contents&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">docs_pts</span><span class="p">:</span>
-            <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">embed_vecs</span><span class="p">)</span>
+            <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">predict_input</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">pred</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">,</span> <span class="n">prediction</span><span class="p">):</span>
                 <span class="n">doc</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">pred</span></div>
 </pre></div>
@@ -606,7 +622,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 23, 2021.
+        Last updated on Feb 24, 2021.
       </span>
 
         </p>
