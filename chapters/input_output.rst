@@ -1,15 +1,15 @@
 How to handle Input and Output for Flows
 =======================================
 
-This chapter explains how input and output data is handled by the `Flow API`.
+This chapter explains how input and output data is handled by the ``Flow API``.
 
 Input
 -----
-The input data for the `Flow` functions `flow.index(...)`, `flow.update(...)` and `flow.search(...)` can be provided in three different ways.
-In the following example, the input functionality is shown using the `Flor.index(...)` function.
-For `flow.update(...)` and `flow.search(...)`, the input is provided the same way.
+The input data for the ``Flow`` functions ``flow.index(...)``, ``flow.update(...)`` and ``flow.search(...)`` can be provided in three different ways.
+In the following example, the input functionality is shown using the ``Flor.index(...)`` function.
+For ``flow.update(...)`` and ``flow.search(...)``, the input is provided the same way.
 
-#. A single `Document` can be sent through the `Flow` as shown below.
+#. A single ``Document`` can be sent through the ``Flow`` as shown below.
 
     .. highlight:: python
     .. code-block:: python
@@ -17,7 +17,7 @@ For `flow.update(...)` and `flow.search(...)`, the input is provided the same wa
         with f:
             f.index(Document('doc content'))
 
-#. An Iterable of `Documents` can be provided instead. The following example shows a `Generator` fed into a `Flow`.
+#. An Iterable of ``Documents`` can be provided instead. The following example shows a ``Generator`` fed into a ``Flow``.
 
     .. highlight:: python
     .. code-block:: python
@@ -37,7 +37,7 @@ For `flow.update(...)` and `flow.search(...)`, the input is provided the same wa
         with f:
             f.index(input_function)
 
-#. An `AsyncIterable` can be used as well.
+#. An ``AsyncIterable`` can be used as well.
 
     .. highlight:: python
     .. code-block:: python
@@ -50,7 +50,7 @@ For `flow.update(...)` and `flow.search(...)`, the input is provided the same wa
         with AsyncFlow() as f:
             async f.index(input_fn()):
 
-The `flow.delete(...)` function accepts `Document` ids instead of `Documents`.
+The ``flow.delete(...)`` function accepts ``Document`` ids instead of ``Documents``.
 
     .. highlight:: python
     .. code-block:: python
@@ -69,16 +69,16 @@ The `flow.delete(...)` function accepts `Document` ids instead of `Documents`.
 
 Special input functions
 -----------------------
-There are some functions of the `Flow API` which simplify the input handling:
-`flow.index_lines(...)`, `flow.index_ndjson(...)`, `flow.index_csv(...)`, `flow.index_files(...)`, `flow.index_ndarray(...)`
-`flow.search_lines(...)`, `flow.search_ndjson(...)`, `flow.search_csv(...)`, `flow.search_files(...)` and `flow.search_ndarray(...)`
+There are some functions of the ``Flow API`` which simplify the input handling:
+``flow.index_lines(...)``, ``flow.index_ndjson(...)``, ``flow.index_csv(...)``, ``flow.index_files(...)``, ``flow.index_ndarray(...)``
+``flow.search_lines(...)``, ``flow.search_ndjson(...)``, ``flow.search_csv(...)``, ``flow.search_files(...)`` and ``flow.search_ndarray(...)``
 
-The following examples show the usage of the `flow.index_*(...)` functions.
-Providing `Documents` to search for works in the same way using the respective functions.
-Here, a `CSV` file is used to index `Documents`. The possible ways of feeding in the `CSV` are shown.
-The function `flow.index_lines(...)` can be used in combination with `line_format = '`CSV`'`.
-A simpler version is to use `F.index_csv(...)` where the `line_format` parameter is not needed.
-The `CSV` data can be provided as a file handler or directly as `str array`.
+The following examples show the usage of the ``flow.index_*(...)`` functions.
+Providing ``Documents`` to search for works in the same way using the respective functions.
+Here, a ``CSV`` file is used to index ``Documents``. The possible ways of feeding in the ``CSV`` are shown.
+The function ``flow.index_lines(...)`` can be used in combination with ``line_format = 'CSV'``.
+A simpler version is to use ``F.index_csv(...)`` where the ``line_format`` parameter is not needed.
+The ``CSV`` data can be provided as a file handler or directly as ``str array``.
 
     .. highlight:: csv
     .. code-block:: csv
@@ -128,7 +128,7 @@ It's similar when using JSON lines.
         with f:
             f.index_csv(open('input.jsonlines').readlines(), line_format='json')
 
-The `flow.index_files(...)` function can be used if multiple files have to be fed into the `Flow`.
+The ``flow.index_files(...)`` function can be used if multiple files have to be fed into the ``Flow``.
 
     .. highlight:: python
     .. code-block:: python
@@ -136,7 +136,7 @@ The `flow.index_files(...)` function can be used if multiple files have to be fe
         with f:
             f.index_files('*.png', on_done=print)
 
-Using `flow.index_ndarray(...)` and `flow.search_ndarray(...)`, numpy arrays can be fed into the `Flow`.
+Using ``flow.index_ndarray(...)`` and ``flow.search_ndarray(...)``, numpy arrays can be fed into the ``Flow``.
 
     .. highlight:: python
     .. code-block:: python
@@ -164,8 +164,8 @@ A field resolver can be used in case the fields of the source file have to be ma
 
 Output
 ------
-The output of the `Flow` operations is handled via callback functions `on_done`, `on_error` and `on_always`.
-In addition, it is possible to retrieve the results directly when setting the attribute `return_results = True`.
+The output of the ``Flow`` operations is handled via callback functions ``on_done``, ``on_error`` and ``on_always``.
+In addition, it is possible to retrieve the results directly when setting the attribute ``return_results = True``.
 The following example shows how to handle the output via callback functions.
 
     .. highlight:: python
@@ -181,7 +181,7 @@ The following example shows how to handle the output via callback functions.
 
 
         def handle_error():
-            # in case of an Exception, the flow execution continues and calls this `on_error` handler
+            # in case of an Exception, the flow execution continues and calls this ``on_error`` handler
 
         def handle_search_done():
             # this handler is always called regardless of Exceptions
@@ -190,7 +190,7 @@ The following example shows how to handle the output via callback functions.
             f.search([doc], on_done=handle_response, on_error=handle_error, on_always=handle_search_done)
 
 
-It can be useful to use the built-in `print` function as `on_done` callback.
+It can be useful to use the built-in ``print`` function as ``on_done`` callback.
 
     .. highlight:: python
     .. code-block:: python
@@ -198,8 +198,8 @@ It can be useful to use the built-in `print` function as `on_done` callback.
         with f:
             f.search(input_fn, on_done=print)
 
-When setting `return_results = True`, the results are returned directly.
-It can be used in combination with `Callbacks` as well.
+When setting ``return_results = True``, the results are returned directly.
+It can be used in combination with ``Callbacks`` as well.
 
     .. highlight:: python
     .. code-block:: python
@@ -210,8 +210,8 @@ It can be used in combination with `Callbacks` as well.
     
 Insights
 --------
-When using the `flow.*` functions, `Jina` builds and sends Protobuf messages to the relevant `Pods`.
-For instance calling the `index_ndarray(...)` function sends the following message to the first `Pod`.
+When using the ``flow.*`` functions, ``Jina`` builds and sends Protobuf messages to the relevant ``Pods``.
+For instance calling the ``index_ndarray(...)`` function sends the following message to the first ``Pod``.
 
     .. highlight:: protobuf
     .. code-block:: protobuf
@@ -253,25 +253,20 @@ For instance calling the `index_ndarray(...)` function sends the following messa
         }
 
 
-The structure of this message is defined in the format of [protobuf](https://docs.jina.ai/chapters/proto/docs.html).
-Find more details of the data structure at [`jina.proto`](https://docs.jina.ai/chapters/proto/docs.html#jina.proto).
+The structure of this message is defined in the format of `protobuf <https://docs.jina.ai/chapters/proto/docs.html>`_
+Find more details of the data structure at `jina.proto <https://docs.jina.ai/chapters/proto/docs.html#jina.proto>`_
 
-`request` contains input data and related metadata.
-The input is a 3*8 matrix that is sent to the `Flow`, which matches 3 `request.index.docs`,
-and the `request.index.docs.blog.shape` is 8.
-The vector of the matrix is stored in `request.index.docs.blob`,
-and the `request.index.docs.blob.dtype` indicates the type of the vector.
+``request`` contains input data and related metadata.
+The input is a 3*8 matrix that is sent to the ``Flow``, which matches 3 ``request.index.docs``,
+and the ``request.index.docs.blog.shape`` is 8.
+The vector of the matrix is stored in ``request.index.docs.blob``,
+and the ``request.index.docs.blob.dtype`` indicates the type of the vector.
 
 
 Request size
 ----------
-The functions `flow.index(...)`, `flow.update(...)`, `flow.delete(...)`, `flow.search(...)` and `flow.train(...)`
-accept the `request_size` parameter. It sets the limit for `Documents` sent in one request.
-In case more `Documents` are provided, they split up into multiple requests.
+The functions ``flow.index(...)``, ``flow.update(...)``, ``flow.delete(...)``, ``flow.search(...)`` and ``flow.train(...)``
+accept the ``request_size`` parameter. It sets the limit for ``Documents`` sent in one request.
+In case more ``Documents`` are provided, they split up into multiple requests.
 
-
-Further reading:
-- [`jina client --help`](../cli/jina-client.rst)
-- [Jina `Document` Protobuf](../proto/index.rst)
-- [`prefetch` in `jina gateway`](../cli/jina-gateway.rst)
 

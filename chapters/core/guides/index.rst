@@ -21,7 +21,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../prevent_duplicate_indexing
    ../../flow/index
    ../../flow/pattern
-   ../../io
+   ../../input_output
    ../../traversal
    ../../extend/*
    ../../remote/index
