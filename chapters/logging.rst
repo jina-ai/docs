@@ -172,35 +172,35 @@ depending on the kind of message, sends it to a local temporary file, from where
 .. highlight:: xml
 .. code-block:: xml
 
-<source>
-  @type forward
-  @id http_input
+    <source>
+      @type forward
+      @id http_input
 
-  port 24224
-</source>
+      port 24224
+    </source>
 
-## match tag=myapp.** and forward and write to file in local
-<match jina.**>
-  @type file
-  path /tmp/jina-log
-  append true
-  <buffer>
+    ## match tag=myapp.** and forward and write to file in local
+    <match jina.**>
       @type file
-      flush_mode interval
-      flush_interval 1s
-  </buffer>
-</match>
+      path /tmp/jina-log
+      append true
+      <buffer>
+          @type file
+          flush_mode interval
+          flush_interval 1s
+      </buffer>
+    </match>
 
-<match jina-profile.**>
-  @type file
-  path /tmp/jina-profile
-  append true
-  <buffer>
+    <match jina-profile.**>
       @type file
-      flush_mode interval
-      flush_interval 1s
-  </buffer>
-</match>
+      path /tmp/jina-profile
+      append true
+      <buffer>
+          @type file
+          flush_mode interval
+          flush_interval 1s
+      </buffer>
+    </match>
 
 
 This is the default configuration, that works well together with the configuration provided in `logging.fluentd.yml`,
@@ -210,13 +210,13 @@ logs. By default it expects a fluentd daemon to run in every local and remote Pe
 .. highlight:: yaml
 .. code-block:: yaml
 
-# this configuration describes where is the fluentD daemon running and waiting for logs to be emitted.
-# FluentD then will have its own configuration to forward the messages according to its own syntax
-# prefix will help fluentD filter data. This will be prepended for FluentD to easily filter incoming messages
-tag: jina
-profile-tag: jina-profile
-host: 0.0.0.0
-port: 24224
+    # this configuration describes where is the fluentD daemon running and waiting for logs to be emitted.
+    # FluentD then will have its own configuration to forward the messages according to its own syntax
+    # prefix will help fluentD filter data. This will be prepended for FluentD to easily filter incoming messages
+    tag: jina
+    profile-tag: jina-profile
+    host: 0.0.0.0
+    port: 24224
 
 
 To better understand fluentd configuration and to see how you can adapt to your needs, please see [https://docs.fluentd.org/configuration](https://docs.fluentd.org/configuration)
