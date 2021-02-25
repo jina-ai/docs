@@ -36,13 +36,13 @@ On some Linux systems, PyPi may not provide the wheels on that OS. In this case,
 For deb-based Linux distributions the most common way is by using your favourite package manager such as `apt`, `apt-get`, or `aptitude`. The command for `apt` is as follows:
 
 ```bash
-# apt install python3-numpy python3-zmq python3-protobuf python3-grpcio python3-ruamel.yaml
+apt install python3-numpy python3-zmq python3-protobuf python3-grpcio python3-ruamel.yaml
 ```
 
 For Alpine Linux, the corresponding `apk` command is as follows:
 
 ```bash
-# apk add py3-numpy py3-pyzmq py3-protobuf py3-grpcio py3-ruamel.yaml
+apk add py3-numpy py3-pyzmq py3-protobuf py3-grpcio py3-ruamel.yaml
 ```
 
 ### Step 2: Install Jina Core via `pip`
@@ -50,7 +50,7 @@ For Alpine Linux, the corresponding `apk` command is as follows:
 As of February 2021, Jina Core has not yet been packaged for any Linux distribution. We therefore resort to `pip`, and simply install Jina Core as follows:
 
 ```bash
-# pip install jina
+pip install jina
 ```
 
 As of February 2021, Jina Core requires version 1.33 of the Python-bindings for gRPC. Please note that the currently provided packages `python3-grpcio` (Debian GNU/Linux 10 and 11) and `py3-grpcio` (Alpine Linux) are too old. Automatically, they will be replaced by a newer version from PyPi as an unmet dependency.
