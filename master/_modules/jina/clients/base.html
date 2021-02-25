@@ -350,11 +350,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The mode for this client (index, query etc.).&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the mode for this client (index, query etc.).</span>
+
+<span class="sd">        :return: Mode of the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span>
 
     <span class="nd">@mode</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">RequestType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the mode.</span>
+
+<span class="sd">        :param value: Request type. (e.g. INDEX, SEARCH, DELETE, UPDATE, CONTROL, TRAIN)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">RequestType</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">value</span>
@@ -366,6 +375,7 @@
         <span class="sd">&quot;&quot;&quot;Validate the input_fn and print the first request if success.</span>
 
 <span class="sd">        :param input_fn: the input function</span>
+<span class="sd">        :param kwargs: keyword arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
             <span class="n">input_fn</span> <span class="o">=</span> <span class="n">input_fn</span><span class="p">()</span>
@@ -387,7 +397,12 @@
             <span class="k">raise</span> <span class="n">BadClientInput</span> <span class="kn">from</span> <span class="nn">ex</span></div>
 
     <span class="k">def</span> <span class="nf">_get_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">],</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Get request in generator.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get request in generator.</span>
+
+<span class="sd">        :param kwargs: Keyword arguments.</span>
+<span class="sd">        :return: Iterator of request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_kwargs</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
         <span class="n">_kwargs</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_fn</span>
         <span class="c1"># override by the caller-specific kwargs</span>
@@ -408,9 +423,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">input_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InputFnType</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;An iterator of bytes, each element represents a Document&#39;s raw content.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An iterator of bytes, each element represents a Document&#39;s raw content.</span>
 
 <span class="sd">        ``input_fn`` defined in the protobuf</span>
+
+<span class="sd">        :return: input function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_fn</span>
@@ -419,6 +437,11 @@
 
     <span class="nd">@input_fn</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">input_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_gen</span><span class="p">:</span> <span class="n">InputFnType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the input data.</span>
+
+<span class="sd">        :param bytes_gen: input function type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bytes_gen</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_input_fn</span> <span class="o">=</span> <span class="n">bytes_gen</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
