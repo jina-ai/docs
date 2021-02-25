@@ -4,8 +4,8 @@
 <html lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta content="A list of environment variables that ``jina`` uses during runtime." name="description" />
-<meta content="Jina, environment variables" name="keywords" />
+  <meta content="A guide on Jina Ranker" name="description" />
+<meta content="Jina, Ranker" name="keywords" />
 
   <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>OS Environment Variables Used in Jina &mdash; Jina 1.0.5-master documentation</title>
+  <title>A Guide to Jina Ranker &mdash; Jina 1.0.5-master documentation</title>
   
 
   
@@ -56,8 +56,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Flow Optimization" href="optimization.html" />
-    <link rel="prev" title="Gracefully Exit Jina" href="cli/exit.html" /> 
+    <link rel="next" title="Incremental Indexing" href="incremental_indexing.html" />
+    <link rel="prev" title="A Guide to Jina Flow Evaluation Mode" href="evaluation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -210,11 +210,11 @@
 <li class="toctree-l2"><a class="reference internal" href="project_guide.html">Project set up guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simple_exec.html">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cli/exit.html">Gracefully Exit Jina</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l2"><a class="reference internal" href="envs.html">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optimization.html">Flow Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="request_size.html">Understanding the Request Size parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="evaluation.html">A Guide to Jina Flow Evaluation Mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ranker.html">A Guide to Jina Ranker</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">A Guide to Jina Ranker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="incremental_indexing.html">Incremental Indexing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stress/index.html">Jina Cloud Benchmark &amp; Deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mime-type/index.html">A Guide on MIME Types in Jina</a></li>
@@ -306,7 +306,7 @@
         
           <li><a href="core/guides/index.html">Developer Guides</a> &raquo;</li>
         
-      <li>OS Environment Variables Used in Jina</li>
+      <li>A Guide to Jina Ranker</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -332,298 +332,191 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="os-environment-variables-used-in-jina">
-<h1>OS Environment Variables Used in Jina<a class="headerlink" href="#os-environment-variables-used-in-jina" title="Permalink to this headline">¶</a></h1>
-<p>Here is the list of environment variables that <code class="docutils literal notranslate"><span class="pre">jina</span></code> uses during runtime.</p>
+  <div class="section" id="a-guide-to-jina-ranker">
+<h1><a class="toc-backref" href="#id4">A Guide to Jina Ranker</a><a class="headerlink" href="#a-guide-to-jina-ranker" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>These enviroment variables must be set <strong>before</strong> starting <code class="docutils literal notranslate"><span class="pre">jina</span></code> or before any <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">jina</span></code> in Python. Changing the variables while <code class="docutils literal notranslate"><span class="pre">jina</span></code> is running may result in unexpected result and exceptions.</p>
-<p>For example:</p>
-<blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;JINA_ARRAY_QUANT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;fp16&#39;</span>
-
-<span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+<p>This guide assumes you have a basic understanding of Jina, if you haven’t, please check out <a class="reference external" href="https://101.jina.ai">Jina 101</a> first.</p>
+</div>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#a-guide-to-jina-ranker" id="id4">A Guide to Jina Ranker</a></p>
+<ul>
+<li><p><a class="reference internal" href="#motivation" id="id5">Motivation</a></p></li>
+<li><p><a class="reference internal" href="#before-you-start" id="id6">Before you start</a></p></li>
+<li><p><a class="reference internal" href="#overview" id="id7">Overview</a></p></li>
+<li><p><a class="reference internal" href="#ranker-in-action" id="id8">Ranker in action</a></p></li>
+<li><p><a class="reference internal" href="#conclusion" id="id9">Conclusion</a></p></li>
+<li><p><a class="reference internal" href="#what-s-next" id="id10">What’s next</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="motivation">
+<h2><a class="toc-backref" href="#id5">Motivation</a><a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<p>In a search system, query accuracy is one of the most important aspects that will concern users. In most cases, we expect well-ordered query results to be presented.
+For one search request, we may have multiple matches and we want to have the most relevant match or top-K matches presented to users. On the other hand, we may also want to aggregate the top-K chunks to top-K matches.</p>
+</div>
+<div class="section" id="before-you-start">
+<h2><a class="toc-backref" href="#id6">Before you start</a><a class="headerlink" href="#before-you-start" title="Permalink to this headline">¶</a></h2>
+<p>You have installed the latest stable release of Jina Core according to the instructions found <a class="reference external" href="https://docs.jina.ai/chapters/core/setup/index.html">here</a> and read <a class="reference external" href="https://docs.jina.ai/chapters/traversal.html?highlight=recursive">Understand Jina Recursive Document Representation guide.</a></p>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id7">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>To achieve our objectives, Jina has a family of <a class="reference internal" href="glossary.html#term-Executor"><span class="xref std std-term">Executor</span></a> named <a class="reference internal" href="glossary.html#term-Ranker"><span class="xref std std-term">Ranker</span></a>.
+Jina <a class="reference internal" href="glossary.html#term-Ranker"><span class="xref std std-term">Ranker</span></a> inherits either the <code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code> or the <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code>.
+For the <code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code>, it re-scores the matches with different mechanisms. For the <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code>, it aggegrates the chunks to Documents.</p>
+<div class="section" id="match2docranker">
+<h3>Match2DocRanker<a class="headerlink" href="#match2docranker" title="Permalink to this headline">¶</a></h3>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code> re-scores the matches for a <a class="reference internal" href="glossary.html#term-Document"><span class="xref std std-term">Document</span></a>. This Ranker is only responsible for calculating new scores and not for the actual sorting. The sorting is handled in the respective <code class="xref py py-class docutils literal notranslate"><span class="pre">Matches2DocRankDriver</span></code>.</p>
+</div>
+<div class="section" id="chunk2docranker">
+<h3>Chunk2DocRanker<a class="headerlink" href="#chunk2docranker" title="Permalink to this headline">¶</a></h3>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code> translates the chunk-wise score to the doc-wise score. If you want to aggregate the already existed top-k chunks into top-k  Documents, <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code> will be your choice.</p>
+</div>
+<div class="section" id="chose-drivers">
+<h3>Chose Drivers<a class="headerlink" href="#chose-drivers" title="Permalink to this headline">¶</a></h3>
+<p>Different <span class="xref std std-term">Rankers</span> will need different <span class="xref std std-term">Drivers</span> to be equipped with.
+For <code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code>, we need to choose <code class="xref py py-class docutils literal notranslate"><span class="pre">Matches2DocRankDriver</span></code> to get the scores from a <a class="reference internal" href="glossary.html#term-Ranker"><span class="xref std std-term">Ranker</span></a> and help to resort the scores.</p>
+<p>class:<cite>Matches2DocRankDriver</cite> Input-Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Input:
+document: {granularity: 0, adjacency: k}
+    |- matches: {granularity: 0, adjacency: k+1}
+Output:
+document: {granularity: 0, adjacency: k}
+    |- matches: {granularity: 0, adjacency: k+1} (Sorted according to scores from Ranker Executor)
 </pre></div>
 </div>
-</div></blockquote>
+<p>For <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code>, we need to choose <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRankDriver</span></code> to extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the granularity level above.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRankDriver</span></code> Input-Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Input:
+document: {granularity: k-1}
+        |- chunks: {granularity: k}
+        |    |- matches: {granularity: k}
+        |
+        |- chunks: {granularity: k}
+            |- matches: {granularity: k}
+Output:
+document: {granularity: k-1}
+        |- chunks: {granularity: k}
+        |    |- matches: {granularity: k}
+        |
+        |- chunks: {granularity: k}
+        |    |- matches: {granularity: k}
+        |
+        |-matches: {granularity: k-1} (Ranked according to Ranker Executor)
+</pre></div>
 </div>
-<dl class="std confval">
-<dt id="confval-JINA_ARRAY_QUANT">
-<code class="sig-name descname"><span class="pre">JINA_ARRAY_QUANT</span></code><a class="headerlink" href="#confval-JINA_ARRAY_QUANT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Quantization scheme when storing ndarray into protobuf message, useful for reducing the network latency and saving bandwidth. Possible values: <code class="docutils literal notranslate"><span class="pre">fp16</span></code> (almost lossless), <code class="docutils literal notranslate"><span class="pre">uint8</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
+<p>Or use <code class="xref py py-class docutils literal notranslate"><span class="pre">AggregateMatches2DocRankDriver</span></code> to substitute matches by the documents at a lower granularity level.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">AggregateMatches2DocRankDriver</span></code> Input-Output:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Input:
+document: {granularity: k}
+    |- matches: {granularity: k}
 
-<dl class="std confval">
-<dt id="confval-JINA_BINARY_DELIMITER">
-<code class="sig-name descname"><span class="pre">JINA_BINARY_DELIMITER</span></code><a class="headerlink" href="#confval-JINA_BINARY_DELIMITER" title="Permalink to this definition">¶</a></dt>
-<dd><p>The delimiter used in <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePbIndexer</span></code>. Often use a delimiter phrase that you can determine does not occur. (Think of the mime message boundaries)</p>
-</dd></dl>
+Output:
+document: {granularity: k}
+    |- matches: {granularity: k-1} (Sorted according to Ranker Executor)
+</pre></div>
+</div>
+</div>
+<div class="section" id="rankers-in-jina-hub">
+<h3>Rankers in Jina hub<a class="headerlink" href="#rankers-in-jina-hub" title="Permalink to this headline">¶</a></h3>
+<p>Jina provides some built-in Rankers in Jina hub. You are welcome to add customized Rankers by referring to the guide <a class="reference external" href="https://docs.jina.ai/chapters/extend/executor.html">here</a>.</p>
+<table class="colwidths-given docutils align-default" id="id3">
+<caption><span class="caption-text">Jina Rankers</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 33%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Drivers</p></th>
+<th class="head"><p>Documentation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">BiMatchRanker</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code></p></td>
+<td><p>Computes the score taking into account from both query and doc perspective.</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRankDriver</span></code></p></td>
+<td><p><a class="reference external" href="https://github.com/jina-ai/jina-hub/blob/master/rankers/BiMatchRanker/README.md">https://github.com/jina-ai/jina-hub/blob/master/rankers/BiMatchRanker/README.md</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleAggregateRanker</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code></p></td>
+<td><p>Aggregates the score of the matched doc from the matched chunks. For each matched doc, the score is aggregated from all the matched chunks belonging to that doc.</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRankDriver</span></code></p></td>
+<td><p><a class="reference external" href="https://github.com/jina-ai/jina-hub/blob/master/rankers/SimpleAggregateRanker/README.md">https://github.com/jina-ai/jina-hub/blob/master/rankers/SimpleAggregateRanker/README.md</a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">LevenshteinRanker</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code></p></td>
+<td><p>Computes the Levenshtein distance between a query and its matches.</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Matches2DocRankDriver</span></code></p></td>
+<td><p><a class="reference external" href="https://github.com/jina-ai/jina-hub/blob/master/rankers/LevenshteinRanker/README.md">https://github.com/jina-ai/jina-hub/blob/master/rankers/LevenshteinRanker/README.md</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="ranker-in-action">
+<h2><a class="toc-backref" href="#id8">Ranker in action</a><a class="headerlink" href="#ranker-in-action" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="glossary.html#term-Ranker"><span class="xref std std-term">Ranker</span></a> can be used in several ways in Jina.</p>
+<div class="section" id="run-with-docker-docker-run">
+<h3>Run with Docker (docker run)<a class="headerlink" href="#run-with-docker-docker-run" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run jinahub/pod.ranker.simpleaggregateranker:0.0.13-1.0.4 --port-in <span class="m">55555</span> --port-out <span class="m">55556</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-with-flow-api">
+<h3>Run with Flow API<a class="headerlink" href="#run-with-flow-api" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
 
-<dl class="std confval">
-<dt id="confval-JINA_CONTRIB_MODULE">
-<code class="sig-name descname"><span class="pre">JINA_CONTRIB_MODULE</span></code><a class="headerlink" href="#confval-JINA_CONTRIB_MODULE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Paths of the third party components.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_CONTRIB_MODULE_IS_LOADING">
-<code class="sig-name descname"><span class="pre">JINA_CONTRIB_MODULE_IS_LOADING</span></code><a class="headerlink" href="#confval-JINA_CONTRIB_MODULE_IS_LOADING" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to True when loading the third party components.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_CONTROL_PORT">
-<code class="sig-name descname"><span class="pre">JINA_CONTROL_PORT</span></code><a class="headerlink" href="#confval-JINA_CONTROL_PORT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control port of all pods.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset. A random port will be used for each <code class="xref py py-func docutils literal notranslate"><span class="pre">BasePod()</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_DEFAULT_HOST">
-<code class="sig-name descname"><span class="pre">JINA_DEFAULT_HOST</span></code><a class="headerlink" href="#confval-JINA_DEFAULT_HOST" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default host address of Jina.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p><cite>0.0.0.0</cite></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_DISABLE_UVLOOP">
-<code class="sig-name descname"><span class="pre">JINA_DISABLE_UVLOOP</span></code><a class="headerlink" href="#confval-JINA_DISABLE_UVLOOP" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">uvloop</span></code> is ultra fast implementation of the asyncio event loop on top of libuv. Since Jina 0.3.6, Jina relies on <code class="docutils literal notranslate"><span class="pre">uvloop</span></code> to manage the sockets and streams.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_EXECUTOR_WORKDIR">
-<code class="sig-name descname"><span class="pre">JINA_EXECUTOR_WORKDIR</span></code><a class="headerlink" href="#confval-JINA_EXECUTOR_WORKDIR" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default executor working directory, where dumping and IO output happens.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_FULL_CLI">
-<code class="sig-name descname"><span class="pre">JINA_FULL_CLI</span></code><a class="headerlink" href="#confval-JINA_FULL_CLI" title="Permalink to this definition">¶</a></dt>
-<dd><p>When set, show all Jina subcommands.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_IPC_SOCK_TMP">
-<code class="sig-name descname"><span class="pre">JINA_IPC_SOCK_TMP</span></code><a class="headerlink" href="#confval-JINA_IPC_SOCK_TMP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temp directory when using IPC sockets for the control port, not used on Windows system or when the control port is over TCP sockets.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_CONFIG">
-<code class="sig-name descname"><span class="pre">JINA_LOG_CONFIG</span></code><a class="headerlink" href="#confval-JINA_LOG_CONFIG" title="Permalink to this definition">¶</a></dt>
-<dd><p>The configuration file for the logger. If unset then will load from logging.default.yml under resources.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_ID">
-<code class="sig-name descname"><span class="pre">JINA_LOG_ID</span></code><a class="headerlink" href="#confval-JINA_LOG_ID" title="Permalink to this definition">¶</a></dt>
-<dd><p>The identifier of a logger so that it can be used as group identifier by <code class="docutils literal notranslate"><span class="pre">fluentd</span></code>. It is set when Pea starts a new process
-to allow grouping by pod identifier for pea and executor logger.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_LEVEL">
-<code class="sig-name descname"><span class="pre">JINA_LOG_LEVEL</span></code><a class="headerlink" href="#confval-JINA_LOG_LEVEL" title="Permalink to this definition">¶</a></dt>
-<dd><p>The log verbosity of the Jina logger. Possible values are <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, <code class="docutils literal notranslate"><span class="pre">INFO</span></code>, <code class="docutils literal notranslate"><span class="pre">SUCCESS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, <code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">INFO</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_NO_COLOR">
-<code class="sig-name descname"><span class="pre">JINA_LOG_NO_COLOR</span></code><a class="headerlink" href="#confval-JINA_LOG_NO_COLOR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show colored logs in stdout, set to any non-empty value to disable the color log, e.g. if you want to pipe the log into other apps.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_WORKSPACE">
-<code class="sig-name descname"><span class="pre">JINA_LOG_WORKSPACE</span></code><a class="headerlink" href="#confval-JINA_LOG_WORKSPACE" title="Permalink to this definition">¶</a></dt>
-<dd><p>A temporary work space during context.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_POD_NAME">
-<code class="sig-name descname"><span class="pre">JINA_POD_NAME</span></code><a class="headerlink" href="#confval-JINA_POD_NAME" title="Permalink to this definition">¶</a></dt>
-<dd><p>The Pod name set when a Pod started when <code class="docutils literal notranslate"><span class="pre">--log-with-pod-name</span></code> is on, this should not given manually by users.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_RAISE_ERROR_EARLY">
-<code class="sig-name descname"><span class="pre">JINA_RAISE_ERROR_EARLY</span></code><a class="headerlink" href="#confval-JINA_RAISE_ERROR_EARLY" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise exception immedidately instead of passing it forward in the flow. Useful in debugging.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_RANDOM_PORTS">
-<code class="sig-name descname"><span class="pre">JINA_RANDOM_PORTS</span></code><a class="headerlink" href="#confval-JINA_RANDOM_PORTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to any non-empty will trigger the random search for available port.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_RANDOM_PORT_MAX">
-<code class="sig-name descname"><span class="pre">JINA_RANDOM_PORT_MAX</span></code><a class="headerlink" href="#confval-JINA_RANDOM_PORT_MAX" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to ‘65535’ as the max value when searching random port.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_RANDOM_PORT_MIN">
-<code class="sig-name descname"><span class="pre">JINA_RANDOM_PORT_MIN</span></code><a class="headerlink" href="#confval-JINA_RANDOM_PORT_MIN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to ‘49153’ as the min value when searching random port.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_SOCKET_HWM">
-<code class="sig-name descname"><span class="pre">JINA_SOCKET_HWM</span></code><a class="headerlink" href="#confval-JINA_SOCKET_HWM" title="Permalink to this definition">¶</a></dt>
-<dd><p>High-watermarks of ZMQ send &amp; receive sockets. Reference: <a class="reference external" href="http://api.zeromq.org/master:zmq-setsockopt">http://api.zeromq.org/master:zmq-setsockopt</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>4</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_TEST_PRETRAINED">
-<code class="sig-name descname"><span class="pre">JINA_TEST_PRETRAINED</span></code><a class="headerlink" href="#confval-JINA_TEST_PRETRAINED" title="Permalink to this definition">¶</a></dt>
-<dd><p>If set, then all pretrained model-related tests will be conducted in the unit test.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_TEST_GPU">
-<code class="sig-name descname"><span class="pre">JINA_TEST_GPU</span></code><a class="headerlink" href="#confval-JINA_TEST_GPU" title="Permalink to this definition">¶</a></dt>
-<dd><p>If set, then all gpu-related tests will be conducted in the unit test.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_VCS_VERSION">
-<code class="sig-name descname"><span class="pre">JINA_VCS_VERSION</span></code><a class="headerlink" href="#confval-JINA_VCS_VERSION" title="Permalink to this definition">¶</a></dt>
-<dd><p>Git version of <code class="docutils literal notranslate"><span class="pre">jina</span></code>. This is used when <code class="docutils literal notranslate"><span class="pre">--check-version</span></code> is turned on. For official docker image of <code class="docutils literal notranslate"><span class="pre">jina</span></code>, <code class="docutils literal notranslate"><span class="pre">JINA_VCS_VERSION</span></code> is automatically set to the git version during the building procedure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>the git head version for <code class="docutils literal notranslate"><span class="pre">jina</span></code> image. If you are using <code class="docutils literal notranslate"><span class="pre">jina</span></code> locally outside docker container then this is unset.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_WARN_UNNAMED">
-<code class="sig-name descname"><span class="pre">JINA_WARN_UNNAMED</span></code><a class="headerlink" href="#confval-JINA_WARN_UNNAMED" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to any non-empty value to turn on the warning for unnamed executors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_WORKSPACE">
-<code class="sig-name descname"><span class="pre">JINA_WORKSPACE</span></code><a class="headerlink" href="#confval-JINA_WORKSPACE" title="Permalink to this definition">¶</a></dt>
-<dd><p>The work space used in optimizers/discovery.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
+<span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;my_encoder&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;docker://jinahub/pod.ranker.simpleaggregateranker:0.0.13-1.0.4&#39;</span><span class="p">))</span>
+<span class="c1"># Or use YAML file.</span>
+<span class="c1">#f = (Flow().add(name=&#39;my_encoder&#39;, uses=&#39;SimpleAggregateRanker.yml&#39;))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-with-jina-cli">
+<h3>Run with Jina CLI<a class="headerlink" href="#run-with-jina-cli" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jina pod --uses docker://jinahub/pod.ranker.simpleaggregateranker:0.0.13-1.0.4
+</pre></div>
+</div>
+</div>
+<div class="section" id="conventional-local-usage-with-uses-argument-yaml-configuration">
+<h3>Conventional local usage with uses argument (YAML configuration)<a class="headerlink" href="#conventional-local-usage-with-uses-argument-yaml-configuration" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jina pod --uses SimpleAggregateRanker.yml
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">SimpleAggregateRanker.yml</span></code> can be configured as follows:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!SimpleAggregateRanker</span>
+<span class="nt">with</span><span class="p">:</span>
+  <span class="nt">aggregate_function</span><span class="p">:</span> <span class="s">&#39;min&#39;</span>
+  <span class="nt">inverse_score</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">requests</span><span class="p">:</span>
+  <span class="nt">on</span><span class="p">:</span>
+    <span class="nt">ControlRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!ControlReqDriver</span> <span class="p p-Indicator">{}</span>
+    <span class="nt">SearchRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!Chunk2DocRankDriver</span> <span class="p p-Indicator">{}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2><a class="toc-backref" href="#id9">Conclusion</a><a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>In this guide, we introduced why we need and how to use <a class="reference internal" href="glossary.html#term-Ranker"><span class="xref std std-term">Ranker</span></a>. Apart from that, we provided some concrete examples of how to use <a class="reference internal" href="glossary.html#term-Ranker"><span class="xref std std-term">Ranker</span></a>.</p>
+</div>
+<div class="section" id="what-s-next">
+<h2><a class="toc-backref" href="#id10">What’s next</a><a class="headerlink" href="#what-s-next" title="Permalink to this headline">¶</a></h2>
+<p>If you still have questions, feel free to <a class="reference external" href="https://github.com/jina-ai/jina/issues">submit an issue</a> or post a message in our <a class="reference external" href="https://slack.jina.ai">community slack channel</a> .</p>
+<p>To gain a deeper knowledge on the implementation of Jina Ranker, you can find the source code <a class="reference external" href="https://github.com/jina-ai/jina/tree/master/jina/executors/rankers">here</a>.</p>
+</div>
 </div>
 
 
@@ -634,11 +527,11 @@ to allow grouping by pod identifier for pea and executor logger.</p>
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="optimization.html" class="btn btn-neutral float-right" title="Flow Optimization"
+        <a href="incremental_indexing.html" class="btn btn-neutral float-right" title="Incremental Indexing"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
-        <a href="cli/exit.html" class="btn btn-neutral float-left" title="Gracefully Exit Jina"
+        <a href="evaluation.html" class="btn btn-neutral float-left" title="A Guide to Jina Flow Evaluation Mode"
            accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
         
     </div>

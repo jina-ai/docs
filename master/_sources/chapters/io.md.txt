@@ -9,7 +9,7 @@ This chapter explains the input and output functions of Jina's Flow API.
 - Use a crafter to handle the input
 - Shortcuts such as `index_lines`, `index_ndarray` and `index_files` are available to input predefined formats. 
 
-In the [Flow API](../flow/index.md), we highlight that you can use `.index()`, `.search()` and `.train()` to feed index data and search queries to a Flow:
+In the [Flow API](./flow/index.md), we highlight that you can use `.index()`, `.search()` and `.train()` to feed index data and search queries to a Flow:
 
 ```python
 with f:
@@ -328,9 +328,9 @@ As you can see from the examples above, we can use `buffer` to transfer strings 
 `.index()`, `.search()` and `.train()` also accept `batch_size` which controls the number of Documents per request. However, this does not change the `crafter`'s implementation, as the `crafter` always works at the Document level. 
 
 Further reading:
-- [`jina client --help`](../cli/jina-client.rst)
-- [Jina `Document` Protobuf](../proto/index.rst)
-- [`prefetch` in `jina gateway`](../cli/jina-gateway.rst)
+- [`jina client --help`](./cli/jina-client.rst)
+- [Jina `Document` Protobuf](./proto/index.rst)
+- [`prefetch` in `jina gateway`](./cli/jina-gateway.rst)
 
 
 ## Output Function
