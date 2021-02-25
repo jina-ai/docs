@@ -12,7 +12,7 @@ Logging configuration in Jina
 Motivation
 -------------------
 
-In order to better understand, monitor and debug the running and lifetime of Jina's peas, pods and flow, Jina offers logging to help log the messages.
+In order to better understand, monitor, and debug the running and lifetime of Jina's peas, pods, and flow, Jina offers logging to help log the messages.
 
 Before you start
 -------------------
@@ -25,8 +25,9 @@ Overview
 Jina logging message at first glance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In order not to get lost in logs, let's take a look at one example first. This will help you quickly understand the content of Jina's logging message.
-Jina logs messages with different formats in different situations. The following example follows one of the most used format which you can view in console.
+Let's take a look at a logging example first. This will help you quickly understand the content of Jina's logging message.
+
+Jina logs messages with different formats in different situations. This example follows one of the most used formats which you can view in the console.
 
 .. highlight:: bash
 .. code-block:: bash
@@ -44,7 +45,7 @@ It follows the following format:
 
 Where ``name`` is the name of the Pod, ``process`` is the process ID, ``levelname`` is the level.
 Jina logs messages in 6 different levels (DEBUG, INFO, WARNING, ERROR, CRITICAL, SUCCESS).
-The default level can be controlled by 'JINA_LOG_LEVEL' environment variable or in YAML configuration.
+The default level can be controlled by ``JINA_LOG_LEVEL`` environment variable or in YAML configuration.
 
 
 Logging handler
@@ -53,7 +54,7 @@ Logging handler
 You can choose the way to monitor and save logs by using different logging handlers. Jina logger supports different ``Handlers`` to control where the messages are sent/stored:
 
 .. list-table:: Logging handler
-   :widths: 25 50 25
+   :widths: 25 50 25 30
    :header-rows: 1
 
    * - Name
@@ -88,7 +89,10 @@ Jina logging can be configured in YAML file.
 
         from jina.flow import Flow
         from jina import Document
-        f = Flow().add(log_config='logging_cfg.yml').add()
+
+        f = Flow(log_config='logging_cfg.yml').add().add()
+        # If you want to set the configuration for a certain Pod
+        #f = Flow().add(log_config='logging_cfg.yml').add()
 
 In YAML file you can customized the logger, choose the handler you need to monitor and save logs. ``logging_cfg.yml`` can be configured as follows:
 
