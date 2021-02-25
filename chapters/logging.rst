@@ -167,9 +167,11 @@ inside every machine running a jina instance or Pea. Then the default configurat
 where the Flow and the dashboard will be run. (This default behavior will evolve)
 
 See default `fluent.conf` configuration provided by jina. It takes every input coming in the listening 24224 port and 
-depending on the kind of message, sends it to a local temporary file, from where the Flow will read the incoming file (beta version).
+depending on the kind of message, sends it to a local temporary file, from where the Flow will read the incoming file.
 
-```xml
+.. highlight:: xml
+.. code-block:: xml
+
 <source>
   @type forward
   @id http_input
@@ -199,13 +201,15 @@ depending on the kind of message, sends it to a local temporary file, from where
       flush_interval 1s
   </buffer>
 </match>
-```
+
 
 This is the default configuration, that works well together with the configuration provided in `logging.fluentd.yml`,
 which controls the tags assigned to the different type of logs, as well as the host and port where the handler will send the 
 logs. By default it expects a fluentd daemon to run in every local and remote Pea (this is the most scalable configuration)
 
-```yaml
+.. highlight:: yaml
+.. code-block:: yaml
+
 # this configuration describes where is the fluentD daemon running and waiting for logs to be emitted.
 # FluentD then will have its own configuration to forward the messages according to its own syntax
 # prefix will help fluentD filter data. This will be prepended for FluentD to easily filter incoming messages
@@ -213,7 +217,7 @@ tag: jina
 profile-tag: jina-profile
 host: 0.0.0.0
 port: 24224
-``` 
+
 
 To better understand fluentd configuration and to see how you can adapt to your needs, please see [https://docs.fluentd.org/configuration](https://docs.fluentd.org/configuration)
 
