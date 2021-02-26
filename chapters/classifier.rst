@@ -35,4 +35,14 @@ For examples, you may want to choose :class:`BinaryPredictDriver` to receive dat
 
 Details of :class:`PredictDriver` can be found `here <https://docs.jina.ai/api/jina.drivers.predict.html>`_.
 
+What's Next
+====================
+
+Thanks for your time & effort while reading this guide!
+
+We don't have implementations of :class:`Classifier` in Jina hub, and we are looking forward your contribution!
+
+If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
+
+To gain a deeper knowledge on the implementation of Jina :class:`Classifier`, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors/classifiers>`_.
 
