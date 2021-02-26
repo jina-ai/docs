@@ -56,8 +56,7 @@ Drivers
 
 The :term:`Driver` are the ones that handle the input and output messages from the :term:`Executor`.
 
-As well as we have different Executors for different tasks, we also need different Drivers for different Execturos.
-
+As well as we have different Executors for different tasks, we also need different Drivers for different Execturos, and you can find the `list here <https://docs.jina.ai/chapters/all_driver.html>`_.
 
 Executors in action
 ----------------------
@@ -101,12 +100,10 @@ Or directly with Jina CLI. Now let's use an Indexer, the `RedisBDIndexer <https:
 
         jina pod --uses docker://jinahub/pod.indexer.redisdbindexer:MODULE_VERSION-JINA_VERSION
 
-
-
 Conclusion
 -----------------
 
-In this guide, we introduced why we need and how to use :term:`Executors` and how they need :term:`Drivers` to communicate. Apart from that, we provided some concrete examples of how to use them.
+In this guide, we introduced why we need and how to use :term:`Executors` and how they need :term:`Drivers` to communicate. Apart from that, we provided some concrete examples of how to use them. Now that you now what they are and how to use them, you might be wondering how to create them, we have a guide on that for `Executors <https://docs.jina.ai/api/jina.executors.html>`_ and `Drivers <https://docs.jina.ai/api/jina.drivers.html>`_.
 
 What's next
 -----------------
