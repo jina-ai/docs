@@ -1,5 +1,5 @@
 ==============================
-Logging configuration in Jina
+Logging Configuration in Jina
 ==============================
 
 .. meta::
@@ -12,7 +12,7 @@ Logging configuration in Jina
 Motivation
 -------------------
 
-In order to better understand, monitor, and debug the running and lifetime of Jina's peas, pods, and flow, Jina offers logging to help log the messages.
+In order to better monitor, and debug the running and lifetime of Jina's peas, pods, and flow, Jina offers logging to help log the messages.
 
 Before you start
 -------------------
@@ -22,7 +22,7 @@ You have installed the latest stable release of Jina according to the instructio
 Overview
 -------------------
 
-Jina logging message at first glance
+Jina logging messages at first glance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Let's start from an logging example. Jina logs messages with different formats in different situations. The example below follows the most commonly used format:
@@ -34,7 +34,7 @@ Let's start from an logging example. Jina logs messages with different formats i
    pod1@25908[I]:input tcp://0.0.0.0:63915 (PULL_BIND) output tcp://0.0.0.0:63916 (PUSH_BIND) control over tcp://0.0.0.0:63914 (PAIR_BIND)
    pod1@25903[S]:ready and listening
 
-It follows the following format:
+This is how the message is composed:
 
 .. highlight:: text
 .. code-block:: text
@@ -42,7 +42,7 @@ It follows the following format:
     name@process[levelname]:message
 
 Where ``name`` is the name of the Pod, ``process`` is the process ID, ``levelname`` is the level.
-Jina logs messages in 6 different levels (DEBUG, INFO, WARNING, ERROR, CRITICAL, SUCCESS).
+Jina has six different levels of log messages (DEBUG, INFO, WARNING, ERROR, CRITICAL, SUCCESS).
 The default level can be controlled by ``JINA_LOG_LEVEL`` environment variable or in YAML configuration.
 
 
@@ -77,10 +77,10 @@ You can choose the way to monitor and save logs by using different logging handl
      - FluentD then will have its own configuration to forward the messages according to its own syntax
 
 
-Logging configuration in Action
+Logging Configuration in Action
 --------------------------------------
 
-Jina logging can be configured in YAML file.
+Jina logging can be configured in a YAML file.
 
 .. highlight:: python
 .. code-block:: python
@@ -92,7 +92,7 @@ Jina logging can be configured in YAML file.
         # If you want to set the configuration for a certain Pod
         #f = Flow().add(log_config='logging_cfg.yml').add()
 
-In YAML file you can customized the logger, choose the handler you need to monitor and save logs. ``logging_cfg.yml`` can be configured as follows:
+In a YAML file you can customized the logger, choose the handler you need to monitor and save logs. ``logging_cfg.yml`` can be configured as follows:
 
 .. highlight:: yaml
 .. code-block:: yaml
@@ -161,10 +161,9 @@ FluentD
 output plugins and configurations. 
  
 Although fluentd can be configured to forward logs to the user's preferred destinations, Jina offers a default configuration under `/resources` folder which expects a fluentd daemon to be running
-inside every machine running a Jina instance or Pea. Then the default configuration must be adapted to send the logs to the specific server
-where the Flow and the dashboard will be run. (This default behavior will evolve)
+inside every machine running a Jina instance or Pea. Then the default configuration must be adapted to send the logs to the specific server where the Flow and the dashboard will be run. (This default behavior will evolve)
 
-See default `fluent.conf` configuration provided by Jina. It takes every input coming in the listening 24224 port and
+See the default `fluent.conf` configuration provided by Jina. It takes every input coming in the listening 24224 port and
 depending on the kind of message, sends it to a local temporary file, from where the Flow will read the incoming file.
 
 .. highlight:: xml
@@ -234,7 +233,7 @@ Conclusion
 
 In this guide, we introduced what is Jina Logger and how we can configure the logging in Jina.
 
-What's next
+What's Next
 -----------------
 
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://slack.jina.ai>`_ .
