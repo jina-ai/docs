@@ -24,7 +24,7 @@ or create your own evaluation metric.
 
 In this tutorial, we'll guide you through the steps.
 First of all, we will introduce the general steps on how to customize a Jina Executor.
-At the end, we will give a concrete example of integrating the text encoder & image encoder based on OpenAI's latest published `CLIP <https://github.com/openai/CLIP>`_ model.
+At the end, we will give a concrete example of integrating the text encoder & image encoder on top of OpenAI's latest published `CLIP <https://github.com/openai/CLIP>`_ model.
 
 Overview
 ^^^^^^^^^
