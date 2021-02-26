@@ -18,7 +18,7 @@ These `Executors <https://docs.jina.ai/chapters/all_exec.html>`_ has been catego
 
 However, when the existing Executors does not fit your specific use case,
 you might be curious on how to **extent** Jina.
-For example, how to integrate a new deep learning model,
+For example, integrate a new deep learning model,
 add a new indexing algorithm,
 or create your own evaluation metric.
 
@@ -39,9 +39,21 @@ To make an extension of a Jina `Executor`, please follow the steps listed below:
 Implementation
 ^^^^^^^^^^^^^^^
 
-
 Decide which :class:`Executor` class to inherit from
-----------------------------------------------------
+-----------------------------------------------------
+
+When adding a customised Executor, the first thing is to inherit the "correct" class based on the use case.
+The built-in Executor types are:
+
+1. `Encoder`: encode document as vector embeddings.
+2. `Indexer`: save and retrieve vectors and key-value pairs from storage.
+3. `Crafter`:  transform the content of documents.
+4. `Segmenter`:  segment document into smaller pieces of documents.
+5. `Ranker`: calculate scores of documents.
+6. `Classifier`: enrich document with a model.
+7. `Evaluator`: evaluate score based on output and GroundTruth.
+8. `CompoundExecutor`: combine multiple executors into one.
+
 
 The list of executors supported by the current Jina can be found `here <https://docs.jina.ai/chapters/all_exec.html>`_. As one can see, all executors are inherited from :class:`jina.executors.BaseExecutor`. So do you want to inherit directly from :class:`BaseExecutor` for your extension as well? In general you don't. Rule of thumb, you always pick the executor that shares the similar logic to inherit.
 
