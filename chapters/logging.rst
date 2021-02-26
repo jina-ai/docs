@@ -163,10 +163,10 @@ Fluentd is expected to be used as a daemon receiving messages from the Jina logg
 output plugins and configurations. 
  
 Although fluentd can be configured to forward logs to the user's preferred destinations, Jina offers a default configuration under `/resources` folder which expects a fluentd daemon to be running
-inside every machine running a jina instance or Pea. Then the default configuration must be adapted to send the logs to the specific server 
+inside every machine running a Jina instance or Pea. Then the default configuration must be adapted to send the logs to the specific server
 where the Flow and the dashboard will be run. (This default behavior will evolve)
 
-See default `fluent.conf` configuration provided by jina. It takes every input coming in the listening 24224 port and 
+See default `fluent.conf` configuration provided by Jina. It takes every input coming in the listening 24224 port and
 depending on the kind of message, sends it to a local temporary file, from where the Flow will read the incoming file.
 
 .. highlight:: xml
