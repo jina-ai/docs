@@ -77,6 +77,34 @@ Rule of thumb, you always pick the executor that shares the similar logic to inh
    * - `BaseMultimodalEncoder`
      - `BaseExecutor`
      - Encode input from different modalities.
+   * - `BaseIndexer`
+     - `BaseExecutor`
+     - Save and retrieve vectors and key-value pairs from storage.
+   * - `BaseVectorIndexer`
+     - `BaseIndexer`
+     - Save and retrieve vectors from storage.
+   * - `NumpyIndexer`
+     - `BaseVectorIndexer`
+     - Use numpy array for storage.
+   * - `BaseKVIndexer`
+     - `BaseIndexer`
+     - Save and retrieve key-value pairs from storage.
+   * - `BaseCrafter`
+     - `BaseExecutor`
+     - Transform the content of Documents.
+   * - `BaseSegmenter`
+     - `BaseExecutor`
+     - Segment Document into small pieces of Document.
+   * - `BaseRanker`
+     - `BaseExecutor`
+     - Calculate scores of Documents.
+   * - `Chunk2DocRanker`
+     - `BaseRanker`
+     - Translates the chunk-wise score (distance) to the doc-wise score.
+   * - `Match2DocRanker`
+     - `BaseRanker`
+     - Re-scores the matches for a document.
+
 
 Override :meth:`__init__` and :meth:`post_init`
 ------------------------------------------------
