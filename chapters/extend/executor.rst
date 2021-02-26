@@ -56,8 +56,27 @@ The built-in Executor types are:
 
 Rule of thumb, you always pick the executor that shares the similar logic to inherit.
 
-.. note:: If your algorithm is so unique and does not fit any any of the category below, you may want to `submit an issue for discussion <https://github.com/jina-ai/jina/issues>`_ before you start.
+.. note:: If your algorithm is so unique and does not fit any any of the category above, you may want to `submit an issue for discussion <https://github.com/jina-ai/jina/issues>`_ before you start.
 
+.. list-table:: Summary of Executors
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Name
+     - Base Class
+     - Description
+   * - `BaseEncoder`
+     - `BaseExecutor`
+     - Represent the chunks as vector embeddings.
+   * - `BaseNumericEncoder`
+     - `BaseEncoder`
+     - Represent numpy array object (e.g. image, video, audio) as vector embeddings.
+   * - `BaseTextEncoder`
+     - `BaseEncoder`
+     - Represent string object as vector embeddings.
+   * - `BaseMultimodalEncoder`
+     - `BaseExecutor`
+     - Encode input from different modalities.
 
 Override :meth:`__init__` and :meth:`post_init`
 ------------------------------------------------
