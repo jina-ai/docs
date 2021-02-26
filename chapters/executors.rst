@@ -14,7 +14,7 @@ A Guide on What Are Jina Executors and How to Use Them
 Motivation
 --------------------
 
-In Jina the Executors represent an algorithmic class and they are a key part to take the full potential of Jina. We have `several of them <https://docs.jina.ai/chapters/all_exec.html`_ and they all live in the `Hub <https://hub.jina.ai/#/home>`_, facilitating the work-flow while creating your app. Here we will see what exactly are they and how you can use them.
+In Jina the Executors represent an algorithmic class and they are a key part to take the full potential of Jina. We have `several of them <https://docs.jina.ai/chapters/all_exec.html>`_  and they all live in the `Hub <https://hub.jina.ai/#/home>`_, facilitating the work-flow while creating your app. Here we will see what exactly are they and how you can use them.
 
 
 Before you start
