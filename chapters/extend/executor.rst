@@ -54,68 +54,10 @@ The built-in Executor types are:
 7. `Evaluator`: evaluate score based on output and GroundTruth.
 8. `CompoundExecutor`: combine multiple executors into one.
 
+Rule of thumb, you always pick the executor that shares the similar logic to inherit.
 
-The list of executors supported by the current Jina can be found `here <https://docs.jina.ai/chapters/all_exec.html>`_. As one can see, all executors are inherited from :class:`jina.executors.BaseExecutor`. So do you want to inherit directly from :class:`BaseExecutor` for your extension as well? In general you don't. Rule of thumb, you always pick the executor that shares the similar logic to inherit.
+.. note:: If your algorithm is so unique and does not fit any any of the category below, you may want to `submit an issue for discussion <https://github.com/jina-ai/jina/issues>`_ before you start.
 
-If your algorithm is so unique and does not fit any any of the category below, you may want to `submit an issue for discussion <https://github.com/jina-ai/jina/issues/new>`_ before you start.
-
-.. note:: Inherit from class ``X`` when ...
-
-    * :class:`jina.executors.encoders.BaseEncoder`
-
-      You want to represent the chunks as vector embeddings.
-
-      * :class:`jina.executors.encoders.BaseNumericEncoder`
-
-        You want to represent numpy array object (e.g. image, video, audio) as vector embeddings.
-
-      * :class:`jina.executors.encoders.BaseTextEncoder`
-
-        You want to represent string object as vector embeddings.
-
-    * :class:`jina.executors.indexers.BaseIndexer`
-
-      You want to save and retrieve vectors and key-value information from storage.
-
-      * :class:`jina.executors.indexers.BaseVectorIndexer`
-
-        You want to save and retrieve vectors from storage.
-
-        * :class:`jina.executors.indexers.NumpyIndexer`
-
-          You vector-indexer uses a simple numpy array for storage, you only want to specify the query logic.
-
-      * :class:`jina.executors.indexers.BaseKVIndexer`
-
-        You want to save and retrieve key-value pair from storage.
-
-    * :class:`jina.executors.craters.BaseCrafter`
-
-      You want to segment/transform the documents and chunks.
-
-      * :class:`jina.executors.craters.BaseDocCrafter`
-
-        You want to transform the documents by modifying some fields.
-
-        * :class:`jina.executors.craters.BaseChunkCrafter`
-
-          You want to transform the chunks by modifying some fields.
-
-        * :class:`jina.executors.craters.BaseSegmenter`
-
-          You want to segment the documents into chunks.
-
-    * :class:`jina.executors.Chunk2DocRanker`
-
-      You want to segment/transform the documents and chunks.
-
-    * :class:`jina.executors.CompoundExecutor`
-
-      You want to combine multiple executors in one.
-
-    * :class:`jina.executors.BaseClassifier`
-
-      You want to enrich the documents and chunks with a classifer.
 
 Override :meth:`__init__` and :meth:`post_init`
 ------------------------------------------------
