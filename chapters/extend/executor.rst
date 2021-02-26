@@ -29,6 +29,13 @@ At the end, we will give a concrete example of integrating the text encoder & im
 Overview
 ^^^^^^^^^
 
+To make an extension of a Jina `Executor`, please follow the steps listed below:
+
+1. Decide which `Executor` class to inherit from.
+2. Overwrite :meth:`__init__` and :meth:`post_init`.
+3. Overwrite the **Core** method of the `Executor`.
+4. (Optional) Implement the save logic.
+
 Implementation
 ^^^^^^^^^^^^^^^
 
@@ -101,9 +108,6 @@ If your algorithm is so unique and does not fit any any of the category below, y
 Override :meth:`__init__` and :meth:`post_init`
 ------------------------------------------------
 
-Override :meth:`__init__`
-------------------------------------------------
-
 You can put simple type attributes that define the behavior of your ``Executor`` into :meth:`__init__`. Simple types represent all `pickle`-able types, including: integer, bool, string, tuple of simple types, list of simple types, map of simple type. For example,
 
 .. highlight:: python
@@ -127,8 +131,6 @@ Remember to add ``super().__init__(*args, **kwargs)`` to your :meth:`__init__`. 
     All attributes declared in :meth:`__init__` will be persisted during :meth:`save`  and :meth:`load`.
 
 
-Override :meth:`post_init`
-------------------------------------------------
 
 So what if the data you need to load is not in simple type. For example, a deep learning graph, a big pretrained model, a gRPC stub, a tensorflow session, a thread? The you can put them into :meth:`post_init`.
 
