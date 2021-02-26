@@ -37,6 +37,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../request_size
    ../../evaluation
    ../../ranker
+   ../../classifier
    ../../incremental_indexing
    ../../stress/index
    ../../mime-type/index

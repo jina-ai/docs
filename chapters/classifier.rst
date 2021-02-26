@@ -6,20 +6,19 @@ Classifier allows you to perform classification and regression based on given in
 .. contents:: Table of Contents
     :depth: 3
 
-What is Classifier in Jina?
-------------------------------------------
-:class:`Classifier` is one of the members in Jina executors family. Just like Machine Learning/Deep Learning classification
-models, :class:`Classifier` can be used to generated tags for data in Jina.
-
-Why introduce Classifier in Jina?
+Motivation
 ------------------------------------------
 :class:`Classifier` can be used for document meta data enrichment. :class:`Classifier` may help to generate and add tags to Documents automatically
 to serve as a smart annotation method. It can enable future features such as smart sub-flow routing.
 
-
 Before you start
 -----------------
 You may want to check `here <https://github.com/jina-ai/jina/pull/1194>`_ to learn more details about the implementation of :class:`Classifier`.
+
+Overview
+------------------------------------------
+:class:`Classifier` is one of the members in Jina executors family. Just like Machine Learning/Deep Learning classification
+models, :class:`Classifier` can be used to generated tags for data in Jina.
 
 BaseClassifier
 ---------------------------------
