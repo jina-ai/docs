@@ -228,8 +228,8 @@ For the logging using fluentd to work and therefore for the dashboard to properl
 start fluentd daemon. It can be done in every remote and local machine or just in the host where the FluentDHandler will send the logs.
 
 - Install [https://docs.fluentd.org/installation](https://docs.fluentd.org/installation)
-- Run `fluentd -c ${FLUENTD_CONF_FILE}` (Default conf file `${JINA_RESOURCES_PATH}/fluent.conf`)
-)
+- Run ``fluentd -c ${FLUENTD_CONF_FILE}`` (Default conf file ``${JINA_RESOURCES_PATH}/fluent.conf``)
+
 
 Conclusion
 -----------------
