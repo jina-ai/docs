@@ -16,7 +16,7 @@ In order to better understand, monitor, and debug the running and lifetime of Ji
 
 Before you start
 -------------------
-You have installed the latest stable release of Jina Core according to the instructions found `here <https://docs.jina.ai/chapters/core/setup/index.html>`_ .
+You have installed the latest stable release of Jina according to the instructions found `here <https://docs.jina.ai/chapters/core/setup/index.html>`_ .
 
 
 Overview
