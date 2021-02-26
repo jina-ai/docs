@@ -1,5 +1,11 @@
-Guideline When Adding New Executor
-==================================
+Development Guide: Add new Executors
+=====================================
+
+.. meta::
+   :description: Development Guide: Add new Executors
+   :keywords: Jina, executor, model integration
+
+.. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
 
 New deep learning model? New indexing algorithm? When the existing executors/drivers do not fit your requirement, and you can not find a useful one from `Jina Hub <https://hub.jina.ai>`_, you can simply extend Jina to what you need without even touching the Jina codebase.
 
