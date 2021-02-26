@@ -25,9 +25,7 @@ Overview
 Jina logging message at first glance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Let's take a look at a logging example first. This will help you quickly understand the content of Jina's logging message.
-
-Jina logs messages with different formats in different situations. The example below follows the most commonly used format:
+Let's start from an logging example. Jina logs messages with different formats in different situations. The example below follows the most commonly used format:
 
 .. highlight:: bash
 .. code-block:: bash
@@ -222,7 +220,7 @@ logs. By default it expects a fluentd daemon to run in every local and remote Pe
 To better understand fluentd configuration and to see how you can adapt to your needs, please see `Fluentd docs <https://docs.fluentd.org/configuration>`_.
 
 Start fluentd daemon
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
 
 For the logging using fluentd to work and therefore for the dashboard to properly have access to the logs, the user needs to
 start fluentd daemon. It can be done in every remote and local machine or just in the host where the FluentDHandler will send the logs.
