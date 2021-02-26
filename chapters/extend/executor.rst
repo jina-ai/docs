@@ -22,20 +22,15 @@ For example, how to integrate a new deep learning model,
 add a new indexing algorithm,
 or create your own evaluation metric.
 
-In this guideline, we'll guide you through the steps.
+In this tutorial, we'll guide you through the steps.
+First of all, we will introduce the general steps on how to customize a Jina Executor.
+At the end, we will give a concrete example of integrating the text encoder & image encoder based on OpenAI's latest published `CLIP <https://github.com/openai/CLIP>`_ model.
 
+Overview
+^^^^^^^^^
 
-
-
-
-New deep learning model? New indexing algorithm? When the existing executors/drivers do not fit your requirement, and you can not find a useful one from `Jina Hub <https://hub.jina.ai>`_, you can simply extend Jina to what you need without even touching the Jina codebase.
-
-In this chapter, we will show you the guideline of making an extension for a :class:`jina.executors.BaseExecutor`. Generally speaking, the steps are the following:
-
-#. Decide which :class:`Executor` class to inherit from;
-#. Override :meth:`__init__` and :meth:`post_init`;
-#. Override the *core* method of the base class;
-#. (Optional) implement the save logic.
+Implementation
+^^^^^^^^^^^^^^^
 
 
 Decide which :class:`Executor` class to inherit from
@@ -107,7 +102,7 @@ Override :meth:`__init__` and :meth:`post_init`
 ------------------------------------------------
 
 Override :meth:`__init__`
-^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------------
 
 You can put simple type attributes that define the behavior of your ``Executor`` into :meth:`__init__`. Simple types represent all `pickle`-able types, including: integer, bool, string, tuple of simple types, list of simple types, map of simple type. For example,
 
@@ -133,7 +128,7 @@ Remember to add ``super().__init__(*args, **kwargs)`` to your :meth:`__init__`. 
 
 
 Override :meth:`post_init`
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------------------------
 
 So what if the data you need to load is not in simple type. For example, a deep learning graph, a big pretrained model, a gRPC stub, a tensorflow session, a thread? The you can put them into :meth:`post_init`.
 
@@ -223,7 +218,7 @@ In the example below, the ``tokenizer`` is loaded in :meth:`post_init` and saved
 
 
 How Can I Use My Extension
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can use the extension by specifying ``py_modules`` in the YAML file. For example, your extension Python file is called ``my_encoder.py``, which describes :class:`MyEncoder`. Then you can define a YAML file (say ``my.yml``) as follows:
 
@@ -248,11 +243,11 @@ Then simply use it in Jina CLI by specifying ``jina pod --uses=my.yml``, or ``Fl
     If you use customized executor inside a :class:`jina.executors.CompoundExecutor`, then you only need to set ``metas.py_modules`` at the root level, not at the sub-component level.
 
 
-I Want to Contribute it to Jina
--------------------------------
+Customize Executor in Action: Integrate CLIP model with Jina
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We are really glad to hear that! We have done quite some effort to help you contribute and share your extensions with others.
+Conclusion & What's Next
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can easily pack your extension and share it with others via Docker image. For more information, please check out `Jina Hub <https://hub.jina.ai>`_. Just make a pull request there and our CICD system will take care of building, testing and uploading.
 
 
