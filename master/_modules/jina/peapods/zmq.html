@@ -224,7 +224,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 73 Drivers in Jina</a></li>
 </ul>
 
             
@@ -574,19 +574,22 @@
         <span class="k">except</span> <span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sending message error: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">, gateway cancelled?&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AsyncZmqlet.recv_message"><a class="viewcode-back" href="../../../api/jina.peapods.zmq.html#jina.peapods.zmq.AsyncZmqlet.recv_message">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="s1">&#39;Request&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="AsyncZmqlet.recv_message"><a class="viewcode-back" href="../../../api/jina.peapods.zmq.html#jina.peapods.zmq.AsyncZmqlet.recv_message">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="s1">&#39;Request&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Receive a protobuf message in async manner.</span>
 
 <span class="sd">        :param callback: Callback function to receive message</span>
-<span class="sd">        :return: Received protobuf message.</span>
+<span class="sd">        :return: Received protobuf message. Or None in case of any error.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">recv_message_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">send_recv_kwargs</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span> <span class="o">+=</span> <span class="n">msg</span><span class="o">.</span><span class="n">size</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">msg_recv</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">callback</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span> <span class="o">+=</span> <span class="n">msg</span><span class="o">.</span><span class="n">size</span>
+                <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">callback</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Received message is empty.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;receiving message error: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">, gateway cancelled?&#39;</span><span class="p">)</span></div>
 
