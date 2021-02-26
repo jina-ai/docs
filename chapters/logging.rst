@@ -63,19 +63,19 @@ You can choose the way to monitor and save logs by using different logging handl
      - Notes
    * - FileHandler
      - Jina offers the possibility to put the logs in local files either as simple text or as json format.
-     - %(asctime)s:{name:>15}@%(process)2d[%(levelname).1s]:%(message)s'
-     - output: 'jina-{uptime}.log'
+     - asctime:name@process[levelname]:message
+     - output: jina-uptime.log
    * - StreamHandler
      - Jina logger uses a `StreamHandler` to print the logs in each Pea's local stdout, which you can view in console.
-     - '{name:>15}@%(process)2d[%(levelname).1s]:%(message)s'
+     - name@process[levelname]:message
      -
    * - SysLogHandler
-     -  Jina uses SysLogHandler to output logs to system logs.
-     - '{name:>15}@%(process)2d[%(levelname).1s]:%(message)s'
-     -  When host and port not given then record it locally, /dev/log on linux /var/run/syslog on mac.
+     - Jina uses SysLogHandler to output logs to system logs.
+     - name@process[levelname]:message
+     - When host and port not given then record it locally, /dev/log on linux /var/run/syslog on mac.
    * - FluentHandler
-     - Given the distributed nature of Jina's Peas and Pods, Jina offers a flexible solution that lets the user configure how and where the logs are forwarded. This is specially useful for log analytics such as the one offered by [dahsboard](https://dashboard.jina.ai/).
-     - %(hostname)s' '%(process)s' '%(levelname)s'
+     - Given the distributed nature of Jina's Peas and Pods, Jina offers a flexible solution that lets the user configure how and where the logs are forwarded.
+     - Need to set ``hostname``, ``process`` ``levelname``
      - FluentD then will have its own configuration to forward the messages according to its own syntax
 
 
@@ -241,4 +241,4 @@ What's next
 
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://slack.jina.ai>`_ .
 
-To gain a deeper knowledge on the implementation of Jina Ranker, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors/rankers>`_.
+To gain a deeper knowledge on the implementation of Jina logging, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/logging>`_.
