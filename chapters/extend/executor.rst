@@ -7,6 +7,27 @@ Development Guide: Add new Executors
 
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
 
+.. contents:: Table of Contents
+    :depth: 2
+
+Motivation
+^^^^^^^^^^^
+
+As a Jina user, you might already noticed that `Jina-hub <https://github.com/jina-ai/jina-hub>`_ is the open open-registry for hosting Jina executors.
+These `Executors <https://docs.jina.ai/chapters/all_exec.html>`_ has been categorised into folders by their types, such as `Encoder`, `Ranker`, `Crafter` etc.
+
+However, when the existing Executors does not fit your specific use case,
+you might be curious on how to **extent** Jina.
+For example, how to integrate a new deep learning model,
+add a new indexing algorithm,
+or create your own evaluation metric.
+
+In this guideline, we'll guide you through the steps.
+
+
+
+
+
 New deep learning model? New indexing algorithm? When the existing executors/drivers do not fit your requirement, and you can not find a useful one from `Jina Hub <https://hub.jina.ai>`_, you can simply extend Jina to what you need without even touching the Jina codebase.
 
 In this chapter, we will show you the guideline of making an extension for a :class:`jina.executors.BaseExecutor`. Generally speaking, the steps are the following:
