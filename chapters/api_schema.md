@@ -1,11 +1,11 @@
 # Jina API Schema for 3rd-Party Applications
 
 
-Every time [jina-ai/jina](https://github.com/jina-ai/jina) is updated or released, the schema of Jina command line interface is exposed to JSON and YAML files. They can be used or referred in the 3rd-party applications. For example, [our dashboard](https://dashboard.jina.ai) is using this schema to arrange UI elements. The schema is tagged with [the Jina's version](https://github.com/jina-ai/jina/blob/master/RELEASE.md#version-explained). 
+Every time [jina-ai/jina](https://github.com/jina-ai/jina) is updated or released, the schema of Jina command line interface is exposed to JSON and YAML files. They can be used or referred in the 3rd-party applications. For example, Jina [dashboard](https://dashboard.jina.ai) is using this schema to arrange UI elements. The schema is tagged with [the Jina's version](https://github.com/jina-ai/jina/blob/master/RELEASE.md#version-explained). 
 
 ## Schema URL
 
-- [`https://api.jina.ai/latest`](https://api.jina.ai/latest) gives you the latest stable API schema (corresponds to the last Sunday release) in JSON
+- [`https://api.jina.ai/latest`](https://api.jina.ai/latest) gives you the latest stable API schema (corresponds to the last release) in JSON
 - [`https://api.jina.ai/master`](https://api.jina.ai/master) gives you the latest development API schema (corresponds to the last master update of [jina-ai/jina](https://github.com/jina-ai/jina) in JSON
 
 ```bash
@@ -47,5 +47,4 @@ where `VER` is [the Jina's version](https://github.com/jina-ai/jina/blob/master/
 |`.version`| Jina version given by `jina -v`  |
 |`.authors`|  `dev-team@jina.ai`  |
 |`.description`|  `Jina is the cloud-native neural search solution powered by state-of-the-art AI and deep learning technology`  |
-|`.docs`|  `https://docs.jina.ai`  |
 |`.license`|   `Apache 2.0` |
