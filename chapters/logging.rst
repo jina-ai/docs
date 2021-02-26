@@ -27,7 +27,7 @@ Jina logging message at first glance
 
 Let's take a look at a logging example first. This will help you quickly understand the content of Jina's logging message.
 
-Jina logs messages with different formats in different situations. This example follows one of the most used formats which you can view in the console.
+Jina logs messages with different formats in different situations. The example below follows the most commonly used format:
 
 .. highlight:: bash
 .. code-block:: bash
