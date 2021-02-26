@@ -157,9 +157,9 @@ What's more
 
 FluentD
 ^^^^^^^^^
-Fluentd is an open source data collector for unified logging layer [https://www.fluentd.org/](https://www.fluentd.org/).
+`Fluentd <https://github.com/fluent/fluentd>`_ is an open source data collector for unified logging layer.
 
-Fluentd is expected to be used as a daemon receiving messages from the Jina logger and forwarding them to specific outputs using its
+`Fluentd <https://github.com/fluent/fluentd>`_ is expected to be used as a daemon receiving messages from the Jina logger and forwarding them to specific outputs using its
 output plugins and configurations. 
  
 Although fluentd can be configured to forward logs to the user's preferred destinations, Jina offers a default configuration under `/resources` folder which expects a fluentd daemon to be running
@@ -203,7 +203,7 @@ depending on the kind of message, sends it to a local temporary file, from where
     </match>
 
 
-This is the default configuration, that works well together with the configuration provided in `logging.fluentd.yml`,
+This is the default configuration, that works well together with the configuration provided in ``logging.fluentd.yml``,
 which controls the tags assigned to the different type of logs, as well as the host and port where the handler will send the 
 logs. By default it expects a fluentd daemon to run in every local and remote Pea (this is the most scalable configuration)
 
@@ -219,7 +219,7 @@ logs. By default it expects a fluentd daemon to run in every local and remote Pe
     port: 24224
 
 
-To better understand fluentd configuration and to see how you can adapt to your needs, please see [https://docs.fluentd.org/configuration](https://docs.fluentd.org/configuration)
+To better understand fluentd configuration and to see how you can adapt to your needs, please see `Fluentd docs <https://docs.fluentd.org/configuration>`_.
 
 Start fluentd daemon
 ^^^^^^^^^^^^^^^
@@ -227,7 +227,7 @@ Start fluentd daemon
 For the logging using fluentd to work and therefore for the dashboard to properly have access to the logs, the user needs to
 start fluentd daemon. It can be done in every remote and local machine or just in the host where the FluentDHandler will send the logs.
 
-- Install [https://docs.fluentd.org/installation](https://docs.fluentd.org/installation)
+- Install `https://docs.fluentd.org/installation <https://docs.fluentd.org/installation>`_ .
 - Run ``fluentd -c ${FLUENTD_CONF_FILE}`` (Default conf file ``${JINA_RESOURCES_PATH}/fluent.conf``)
 
 
