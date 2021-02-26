@@ -14,7 +14,7 @@ The end result will be close to [Wikipedia sentence search](https://github.com/j
 
 You should be familiar with these before you start:
 
-- **[What is Neural Search?](https://docs.jina.ai/chapters/what-is-neural-search/)** See how Jina is different from traditional search
+- **[What is Neural Search?](https://jina.ai/2020/07/06/What-is-Neural-Search-and-Why-Should-I-Care.html)** See how Jina is different from traditional search
 - **[Jina 101](https://docs.jina.ai/chapters/101/)**: Learn about Jina's core components
 - **[Jina 102](https://docs.jina.ai/chapters/102/)**: See how Jina's components are connected together
 
@@ -308,7 +308,7 @@ with:
   max_length: 96
 ```
 
-- The built-in `TransformerTorchEncoder` is the Pod's **[Executor](https://github.com/jina-ai/jina/tree/master/docs/chapters/101#executors)**. 
+- The built-in `TransformerTorchEncoder` is the Pod's **[Executor](https://docs.jina.ai/chapters/101.html#executor)**. 
 - The `with` field specifies the parameters we pass to `TransformerTorchEncoder`:
 
 | Parameter                       | Effect                                                     |
