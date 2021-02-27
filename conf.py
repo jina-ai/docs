@@ -37,7 +37,7 @@ version = __version__
 release = __version__
 
 templates_path = ['template']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'tests', 'page_templates']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'tests', 'page_templates', '.github']
 pygments_style = 'rainbow_dash'
 html_theme = 'sphinx_rtd_theme'
 
