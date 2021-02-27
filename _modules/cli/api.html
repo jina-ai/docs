@@ -350,24 +350,35 @@
 
 
 <div class="viewcode-block" id="export_api"><a class="viewcode-back" href="../../api/cli.api.html#cli.api.export_api">[docs]</a><span class="k">def</span> <span class="nf">export_api</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Namespace&#39;</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">json</span>
     <span class="kn">from</span> <span class="nn">.export</span> <span class="kn">import</span> <span class="n">api_to_dict</span>
+    <span class="kn">from</span> <span class="nn">jina.jaml</span> <span class="kn">import</span> <span class="n">JAML</span>
     <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">__version__</span>
     <span class="kn">from</span> <span class="nn">jina.logging</span> <span class="kn">import</span> <span class="n">default_logger</span>
+    <span class="kn">from</span> <span class="nn">jina.schemas</span> <span class="kn">import</span> <span class="n">get_full_schema</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">yaml_path</span><span class="p">:</span>
+        <span class="n">dump_api</span> <span class="o">=</span> <span class="n">api_to_dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">yp</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">yaml_path</span><span class="p">:</span>
             <span class="n">f_name</span> <span class="o">=</span> <span class="p">(</span><span class="n">yp</span> <span class="o">%</span> <span class="n">__version__</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">yp</span> <span class="k">else</span> <span class="n">yp</span>
-            <span class="kn">from</span> <span class="nn">jina.jaml</span> <span class="kn">import</span> <span class="n">JAML</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">api_to_dict</span><span class="p">(),</span> <span class="n">fp</span><span class="p">)</span>
+                <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dump_api</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
             <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;API is exported to </span><span class="si">{</span><span class="n">f_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">json_path</span><span class="p">:</span>
+        <span class="n">dump_api</span> <span class="o">=</span> <span class="n">api_to_dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">jp</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">json_path</span><span class="p">:</span>
             <span class="n">f_name</span> <span class="o">=</span> <span class="p">(</span><span class="n">jp</span> <span class="o">%</span> <span class="n">__version__</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">jp</span> <span class="k">else</span> <span class="n">jp</span>
-            <span class="kn">import</span> <span class="nn">json</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">api_to_dict</span><span class="p">(),</span> <span class="n">fp</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dump_api</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;API is exported to </span><span class="si">{</span><span class="n">f_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">schema_path</span><span class="p">:</span>
+        <span class="n">dump_api</span> <span class="o">=</span> <span class="n">get_full_schema</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">jp</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">schema_path</span><span class="p">:</span>
+            <span class="n">f_name</span> <span class="o">=</span> <span class="p">(</span><span class="n">jp</span> <span class="o">%</span> <span class="n">__version__</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">jp</span> <span class="k">else</span> <span class="n">jp</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dump_api</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;API is exported to </span><span class="si">{</span><span class="n">f_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
@@ -543,7 +554,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 26, 2021.
+        Last updated on Feb 27, 2021.
       </span>
 
         </p>

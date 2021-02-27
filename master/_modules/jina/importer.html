@@ -310,6 +310,8 @@
 <span class="n">IMPORTED</span><span class="o">.</span><span class="n">executors</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">IMPORTED</span><span class="o">.</span><span class="n">drivers</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">IMPORTED</span><span class="o">.</span><span class="n">hub</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">IMPORTED</span><span class="o">.</span><span class="n">schema_executors</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">IMPORTED</span><span class="o">.</span><span class="n">schema_drivers</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <div class="viewcode-block" id="import_classes"><a class="viewcode-back" href="../../api/jina.importer.html#jina.importer.import_classes">[docs]</a><span class="k">def</span> <span class="nf">import_classes</span><span class="p">(</span><span class="n">namespace</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -592,6 +594,8 @@
 <span class="k">def</span> <span class="nf">_import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">,</span> <span class="n">import_type</span><span class="p">,</span> <span class="n">depend_tree</span><span class="p">,</span> <span class="n">load_stat</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
     <span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">colored</span>
+    <span class="kn">from</span> <span class="nn">.schemas.helper</span> <span class="kn">import</span> <span class="n">_jina_class_to_schema</span>
+
     <span class="n">bad_imports</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">_mod_obj</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module_name</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">_attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">_mod_obj</span><span class="p">):</span>
@@ -603,6 +607,9 @@
             <span class="n">_update_depend_tree</span><span class="p">(</span><span class="n">_cls_obj</span><span class="p">,</span> <span class="n">module_name</span><span class="p">,</span> <span class="n">depend_tree</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">_cls_obj</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;ExecutorType&#39;</span><span class="p">:</span>
                 <span class="n">_load_default_exc_config</span><span class="p">(</span><span class="n">_cls_obj</span><span class="p">)</span>
+                <span class="n">IMPORTED</span><span class="o">.</span><span class="n">schema_executors</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Jina::Executors::</span><span class="si">{</span><span class="n">_cls_obj</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_jina_class_to_schema</span><span class="p">(</span><span class="n">_cls_obj</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">IMPORTED</span><span class="o">.</span><span class="n">schema_drivers</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Jina::Drivers::</span><span class="si">{</span><span class="n">_cls_obj</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_jina_class_to_schema</span><span class="p">(</span><span class="n">_cls_obj</span><span class="p">)</span>
             <span class="c1"># TODO: _success_msg is never used</span>
             <span class="n">_success_msg</span> <span class="o">=</span> <span class="n">colored</span><span class="p">(</span><span class="s1">&#39;▸&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">vvv</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">vvv</span> <span class="ow">in</span> <span class="n">_cls_obj</span><span class="o">.</span><span class="n">mro</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">load_stat</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">_attr</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">_success_msg</span><span class="p">))</span>
@@ -742,7 +749,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 26, 2021.
+        Last updated on Feb 27, 2021.
       </span>
 
         </p>
