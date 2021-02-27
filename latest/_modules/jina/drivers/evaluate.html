@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.evaluate &mdash; Jina 1.0.5-master documentation</title>
+  <title>jina.drivers.evaluate &mdash; Jina 1.0.6-master documentation</title>
   
 
   
@@ -82,10 +82,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.5-master</button>
+            <button class="dropbtn version">1.0.6-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.0.4">1.0.4</a>
+              
+              <a class="dropdown-item" href="/v1.0.3">1.0.3</a>
+              
+              <a class="dropdown-item" href="/v1.0.2">1.0.2</a>
               
               <a class="dropdown-item" href="/v1.0.1">1.0.1</a>
               
@@ -179,6 +185,7 @@
               <p class="caption"><span class="caption-text">Jina Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/setup/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/guides/index.html">Developer Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/api_references/index.html">API References</a></li>
 </ul>
@@ -200,7 +207,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Glossary</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/glossary/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -212,11 +219,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring/docstring.html">Docstring Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring.html">Docstring Guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 50 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
@@ -333,7 +340,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_running_avg</span> <span class="o">=</span> <span class="n">running_avg</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load the ground truth pairs</span>
+        <span class="sd">&quot;&quot;&quot;Load the ground truth pairs.</span>
 
 <span class="sd">        :param *args: *args for _traverse_apply</span>
 <span class="sd">        :param **kwargs: **kwargs for _traverse_apply</span>
@@ -363,12 +370,11 @@
             <span class="n">evaluation</span><span class="o">.</span><span class="n">ref_id</span> <span class="o">=</span> <span class="n">groundtruth</span><span class="o">.</span><span class="n">id</span>
 
 <div class="viewcode-block" id="BaseEvaluateDriver.extract"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.BaseEvaluateDriver.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Extracting the to-be-evaluated field from the document.</span>
-<span class="sd">        Drivers inherit from :class:`BaseEvaluateDriver` must implement this method.</span>
+        <span class="sd">&quot;&quot;&quot;Extract the to-be-evaluated field from the document.</span>
 
+<span class="sd">        Drivers inherit from :class:`BaseEvaluateDriver` must implement this method.</span>
 <span class="sd">        This function will be invoked two times in :meth:`_apply_all`:</span>
 <span class="sd">        once with actual doc, once with groundtruth doc.</span>
-
 
 <span class="sd">        .. # noqa: DAR401</span>
 <span class="sd">        :param doc: the Document</span>
@@ -378,24 +384,22 @@
 
 <div class="viewcode-block" id="FieldEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.FieldEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">FieldEvaluateDriver</span><span class="p">(</span><span class="n">BaseEvaluateDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Evaluate on the values from certain field, the extraction is implemented with :meth:`dunder_get`</span>
+<span class="sd">    Evaluate on the values from certain field, the extraction is implemented with :meth:`dunder_get`.</span>
+
+<span class="sd">    :param field: the field name to be extracted from the Protobuf.</span>
+<span class="sd">    :param *args: *args for super</span>
+<span class="sd">    :param **kwargs: **kwargs for super</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param field: the field name to be extracted from the Protobuf</span>
-<span class="sd">        :param *args: *args for super</span>
-<span class="sd">        :param **kwargs: **kwargs for super</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
 
 <div class="viewcode-block" id="FieldEvaluateDriver.extract"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.FieldEvaluateDriver.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Extract the field from the Document</span>
+        <span class="sd">&quot;&quot;&quot;Extract the field from the Document.</span>
 
 <span class="sd">        :param doc: the Document</span>
 <span class="sd">        :return: the data in the field</span>
@@ -404,7 +408,7 @@
 
 
 <div class="viewcode-block" id="RankEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.RankEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">RankEvaluateDriver</span><span class="p">(</span><span class="n">BaseEvaluateDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Drivers used to pass `matches` from documents and groundtruths to an executor and add the evaluation value</span>
+    <span class="sd">&quot;&quot;&quot;Drivers used to pass `matches` from documents and groundtruths to an executor and add the evaluation value.</span>
 
 <span class="sd">        - Example fields:</span>
 <span class="sd">            [&#39;tags__id&#39;, &#39;score__value]</span>
@@ -419,7 +423,7 @@
 
     <span class="nd">@deprecated_alias</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fields&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">fields</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;tags__id&#39;</span><span class="p">,),</span>  <span class="c1"># str mantained for backwards compatibility</span>
+                 <span class="n">fields</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,),</span>  <span class="c1"># str maintained for backwards compatibility</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -427,12 +431,25 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">single_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get single field.</span>
+
+<span class="sd">        Property to guarantee compatibility when only one field is provided either as a string or as a unit length tuple.</span>
+
+<span class="sd">        :return: a list of fields</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <div class="viewcode-block" id="RankEvaluateDriver.extract"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.RankEvaluateDriver.extract">[docs]</a>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract values of the matches from documents with fields as keys.</span>
+
+<span class="sd">        :param doc: Documents to be extracted.</span>
+<span class="sd">        :return: a list of tuples consisting of the values from the fields.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">single_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">single_field</span>
         <span class="k">if</span> <span class="n">single_field</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">dunder_get</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">single_field</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">]</span>
@@ -446,7 +463,7 @@
 
 
 <div class="viewcode-block" id="NDArrayEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.NDArrayEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">NDArrayEvaluateDriver</span><span class="p">(</span><span class="n">FieldEvaluateDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Drivers used to pass `embedding` from documents and groundtruths to an executor and add the evaluation value</span>
+    <span class="sd">&quot;&quot;&quot;Drivers used to pass `embedding` from documents and groundtruths to an executor and add the evaluation value.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        - Valid fields:</span>
@@ -459,7 +476,7 @@
 
 
 <div class="viewcode-block" id="TextEvaluateDriver"><a class="viewcode-back" href="../../../api/jina.drivers.evaluate.html#jina.drivers.evaluate.TextEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">TextEvaluateDriver</span><span class="p">(</span><span class="n">FieldEvaluateDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Drivers used to pass a content field from documents and groundtruths to an executor and add the evaluation value</span>
+    <span class="sd">&quot;&quot;&quot;Drivers used to pass a content field from documents and groundtruths to an executor and add the evaluation value.</span>
 
 <span class="sd">    .. note::</span>
 <span class="sd">        - Valid fields:</span>
@@ -629,7 +646,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 21, 2021.
+        Last updated on Feb 27, 2021.
       </span>
 
         </p>

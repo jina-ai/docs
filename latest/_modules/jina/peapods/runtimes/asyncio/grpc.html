@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.runtimes.asyncio.grpc &mdash; Jina 1.0.5-master documentation</title>
+  <title>jina.peapods.runtimes.asyncio.grpc &mdash; Jina 1.0.6-master documentation</title>
   
 
   
@@ -82,10 +82,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.5-master</button>
+            <button class="dropbtn version">1.0.6-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.0.4">1.0.4</a>
+              
+              <a class="dropdown-item" href="/v1.0.3">1.0.3</a>
+              
+              <a class="dropdown-item" href="/v1.0.2">1.0.2</a>
               
               <a class="dropdown-item" href="/v1.0.1">1.0.1</a>
               
@@ -179,6 +185,7 @@
               <p class="caption"><span class="caption-text">Jina Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/core/introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/core/setup/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/core/guides/index.html">Developer Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/core/api_references/index.html">API References</a></li>
 </ul>
@@ -200,7 +207,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Glossary</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/glossary/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -212,11 +219,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/faq/user.html">FAQ for End-Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/docstring/docstring.html">Docstring Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/docstring.html">Docstring Guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec.html">List of 50 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
@@ -306,8 +313,13 @@
 
 
 <div class="viewcode-block" id="GRPCRuntime"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.grpc.html#jina.peapods.runtimes.asyncio.grpc.GRPCRuntime">[docs]</a><span class="k">class</span> <span class="nc">GRPCRuntime</span><span class="p">(</span><span class="n">AsyncNewLoopRuntime</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;Runtime for gRPC.&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="GRPCRuntime.async_setup"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.grpc.html#jina.peapods.runtimes.asyncio.grpc.GRPCRuntime.async_setup">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The async method to setup.</span>
+
+<span class="sd">        Create the gRPC server and expose the port for communication.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">proxy</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">unsetenv</span><span class="p">(</span><span class="s1">&#39;http_proxy&#39;</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">unsetenv</span><span class="p">(</span><span class="s1">&#39;https_proxy&#39;</span><span class="p">)</span>
@@ -321,9 +333,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> is listening at: </span><span class="si">{</span><span class="n">bind_addr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GRPCRuntime.async_cancel"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.grpc.html#jina.peapods.runtimes.asyncio.grpc.GRPCRuntime.async_cancel">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The async method to stop server.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GRPCRuntime.async_run_forever"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.asyncio.grpc.html#jina.peapods.runtimes.asyncio.grpc.GRPCRuntime.async_run_forever">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">async_run_forever</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The async running of server.&quot;&quot;&quot;</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">wait_for_termination</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 </pre></div>
@@ -458,7 +472,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 21, 2021.
+        Last updated on Feb 27, 2021.
       </span>
 
         </p>

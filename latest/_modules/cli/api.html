@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>cli.api &mdash; Jina 1.0.5-master documentation</title>
+  <title>cli.api &mdash; Jina 1.0.6-master documentation</title>
   
 
   
@@ -82,10 +82,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.5-master</button>
+            <button class="dropbtn version">1.0.6-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.0.4">1.0.4</a>
+              
+              <a class="dropdown-item" href="/v1.0.3">1.0.3</a>
+              
+              <a class="dropdown-item" href="/v1.0.2">1.0.2</a>
               
               <a class="dropdown-item" href="/v1.0.1">1.0.1</a>
               
@@ -179,6 +185,7 @@
               <p class="caption"><span class="caption-text">Jina Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/core/introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/core/setup/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/core/guides/index.html">Developer Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/core/api_references/index.html">API References</a></li>
 </ul>
@@ -200,7 +207,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Glossary</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/glossary/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -212,11 +219,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/faq/user.html">FAQ for End-Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/docstring/docstring.html">Docstring Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/docstring.html">Docstring Guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec.html">List of 50 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
@@ -325,12 +332,6 @@
     <span class="n">pod</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="log"><a class="viewcode-back" href="../../api/cli.api.html#cli.api.log">[docs]</a><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Namespace&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Receive piped log output and beautify the log&quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">jina.logging.pipe</span> <span class="kn">import</span> <span class="n">PipeLogger</span>
-    <span class="n">PipeLogger</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
-
-
 <div class="viewcode-block" id="check"><a class="viewcode-back" href="../../api/cli.api.html#cli.api.check">[docs]</a><span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Namespace&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check jina config, settings, imports, network etc&quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">jina.checker</span> <span class="kn">import</span> <span class="n">ImportChecker</span>
@@ -349,35 +350,46 @@
 
 
 <div class="viewcode-block" id="export_api"><a class="viewcode-back" href="../../api/cli.api.html#cli.api.export_api">[docs]</a><span class="k">def</span> <span class="nf">export_api</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Namespace&#39;</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">json</span>
     <span class="kn">from</span> <span class="nn">.export</span> <span class="kn">import</span> <span class="n">api_to_dict</span>
+    <span class="kn">from</span> <span class="nn">jina.jaml</span> <span class="kn">import</span> <span class="n">JAML</span>
     <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">__version__</span>
     <span class="kn">from</span> <span class="nn">jina.logging</span> <span class="kn">import</span> <span class="n">default_logger</span>
+    <span class="kn">from</span> <span class="nn">jina.schemas</span> <span class="kn">import</span> <span class="n">get_full_schema</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">yaml_path</span><span class="p">:</span>
+        <span class="n">dump_api</span> <span class="o">=</span> <span class="n">api_to_dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">yp</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">yaml_path</span><span class="p">:</span>
             <span class="n">f_name</span> <span class="o">=</span> <span class="p">(</span><span class="n">yp</span> <span class="o">%</span> <span class="n">__version__</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">yp</span> <span class="k">else</span> <span class="n">yp</span>
-            <span class="kn">from</span> <span class="nn">jina.jaml</span> <span class="kn">import</span> <span class="n">JAML</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">api_to_dict</span><span class="p">(),</span> <span class="n">fp</span><span class="p">)</span>
+                <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dump_api</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
             <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;API is exported to </span><span class="si">{</span><span class="n">f_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">json_path</span><span class="p">:</span>
+        <span class="n">dump_api</span> <span class="o">=</span> <span class="n">api_to_dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">jp</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">json_path</span><span class="p">:</span>
             <span class="n">f_name</span> <span class="o">=</span> <span class="p">(</span><span class="n">jp</span> <span class="o">%</span> <span class="n">__version__</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">jp</span> <span class="k">else</span> <span class="n">jp</span>
-            <span class="kn">import</span> <span class="nn">json</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">api_to_dict</span><span class="p">(),</span> <span class="n">fp</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dump_api</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;API is exported to </span><span class="si">{</span><span class="n">f_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">schema_path</span><span class="p">:</span>
+        <span class="n">dump_api</span> <span class="o">=</span> <span class="n">get_full_schema</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">jp</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">schema_path</span><span class="p">:</span>
+            <span class="n">f_name</span> <span class="o">=</span> <span class="p">(</span><span class="n">jp</span> <span class="o">%</span> <span class="n">__version__</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">jp</span> <span class="k">else</span> <span class="n">jp</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dump_api</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;API is exported to </span><span class="si">{</span><span class="n">f_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="hello_world"><a class="viewcode-back" href="../../api/cli.api.html#cli.api.hello_world">[docs]</a><span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Namespace&#39;</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">jina.helloworld</span> <span class="kn">import</span> <span class="n">hello_world</span>
+    <span class="kn">from</span> <span class="nn">jina.helloworld.fashion</span> <span class="kn">import</span> <span class="n">hello_world</span>
     <span class="n">hello_world</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="hello"><a class="viewcode-back" href="../../api/cli.api.html#cli.api.hello">[docs]</a><span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;Namespace&#39;</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">hello</span> <span class="o">==</span> <span class="s1">&#39;fashion&#39;</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">jina.helloworld</span> <span class="kn">import</span> <span class="n">hello_world</span>
+        <span class="kn">from</span> <span class="nn">jina.helloworld.fashion</span> <span class="kn">import</span> <span class="n">hello_world</span>
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">hello</span> <span class="o">==</span> <span class="s1">&#39;chatbot&#39;</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">jina.helloworld.chatbot</span> <span class="kn">import</span> <span class="n">hello_world</span>
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">hello</span> <span class="o">==</span> <span class="s1">&#39;multimodal&#39;</span><span class="p">:</span>
@@ -542,7 +554,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 21, 2021.
+        Last updated on Feb 27, 2021.
       </span>
 
         </p>

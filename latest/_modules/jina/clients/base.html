@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.clients.base &mdash; Jina 1.0.5-master documentation</title>
+  <title>jina.clients.base &mdash; Jina 1.0.6-master documentation</title>
   
 
   
@@ -82,10 +82,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.5-master</button>
+            <button class="dropbtn version">1.0.6-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.0.4">1.0.4</a>
+              
+              <a class="dropdown-item" href="/v1.0.3">1.0.3</a>
+              
+              <a class="dropdown-item" href="/v1.0.2">1.0.2</a>
               
               <a class="dropdown-item" href="/v1.0.1">1.0.1</a>
               
@@ -179,6 +185,7 @@
               <p class="caption"><span class="caption-text">Jina Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/setup/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/guides/index.html">Developer Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/api_references/index.html">API References</a></li>
 </ul>
@@ -200,7 +207,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Glossary</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/glossary/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -212,11 +219,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring/docstring.html">Docstring Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring.html">Docstring Guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 50 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
@@ -300,6 +307,7 @@
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">AsyncIterator</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
 
 <span class="kn">import</span> <span class="nn">grpc</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
@@ -343,11 +351,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The mode for this client (index, query etc.).&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the mode for this client (index, query etc.).</span>
+
+<span class="sd">        :return: Mode of the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span>
 
     <span class="nd">@mode</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">RequestType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the mode.</span>
+
+<span class="sd">        :param value: Request type. (e.g. INDEX, SEARCH, DELETE, UPDATE, CONTROL, TRAIN)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">RequestType</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">value</span>
@@ -359,6 +376,7 @@
         <span class="sd">&quot;&quot;&quot;Validate the input_fn and print the first request if success.</span>
 
 <span class="sd">        :param input_fn: the input function</span>
+<span class="sd">        :param kwargs: keyword arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">input_fn</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
             <span class="n">input_fn</span> <span class="o">=</span> <span class="n">input_fn</span><span class="p">()</span>
@@ -380,7 +398,12 @@
             <span class="k">raise</span> <span class="n">BadClientInput</span> <span class="kn">from</span> <span class="nn">ex</span></div>
 
     <span class="k">def</span> <span class="nf">_get_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">],</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">]]:</span>
-        <span class="sd">&quot;&quot;&quot;Get request in generator.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get request in generator.</span>
+
+<span class="sd">        :param kwargs: Keyword arguments.</span>
+<span class="sd">        :return: Iterator of request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_kwargs</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
         <span class="n">_kwargs</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_fn</span>
         <span class="c1"># override by the caller-specific kwargs</span>
@@ -401,9 +424,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">input_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InputFnType</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;An iterator of bytes, each element represents a Document&#39;s raw content.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        An iterator of bytes, each element represents a Document&#39;s raw content.</span>
 
 <span class="sd">        ``input_fn`` defined in the protobuf</span>
+
+<span class="sd">        :return: input function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_fn</span>
@@ -412,6 +438,11 @@
 
     <span class="nd">@input_fn</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">input_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_gen</span><span class="p">:</span> <span class="n">InputFnType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the input data.</span>
+
+<span class="sd">        :param bytes_gen: input function type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">bytes_gen</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_input_fn</span> <span class="o">=</span> <span class="n">bytes_gen</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -445,6 +476,8 @@
                         <span class="k">yield</span> <span class="n">resp</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;user cancel the process&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;process error: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">, terminate signal send?&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">_call</span><span class="o">.</span><span class="n">AioRpcError</span> <span class="k">as</span> <span class="n">rpc_ex</span><span class="p">:</span>
             <span class="c1"># Since this object is guaranteed to be a grpc.Call, might as well include that in its name.</span>
             <span class="n">my_code</span> <span class="o">=</span> <span class="n">rpc_ex</span><span class="o">.</span><span class="n">code</span><span class="p">()</span>
@@ -626,7 +659,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 21, 2021.
+        Last updated on Feb 27, 2021.
       </span>
 
         </p>

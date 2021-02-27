@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.zmq &mdash; Jina 1.0.5-master documentation</title>
+  <title>jina.peapods.zmq &mdash; Jina 1.0.6-master documentation</title>
   
 
   
@@ -82,10 +82,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.5-master</button>
+            <button class="dropbtn version">1.0.6-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.0.4">1.0.4</a>
+              
+              <a class="dropdown-item" href="/v1.0.3">1.0.3</a>
+              
+              <a class="dropdown-item" href="/v1.0.2">1.0.2</a>
               
               <a class="dropdown-item" href="/v1.0.1">1.0.1</a>
               
@@ -179,6 +185,7 @@
               <p class="caption"><span class="caption-text">Jina Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/setup/index.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/guides/index.html">Developer Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/api_references/index.html">API References</a></li>
 </ul>
@@ -200,7 +207,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Glossary</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/glossary/glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/glossary.html">Glossary</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Community</span></p>
 <ul>
@@ -212,11 +219,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/dev.html">FAQ for Developers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/faq/user.html">FAQ for End-Users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring/docstring.html">Docstring Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/docstring.html">Docstring Guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 57 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec.html">List of 50 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver.html">List of 75 Drivers in Jina</a></li>
 </ul>
 
@@ -319,17 +326,16 @@
     <span class="sd">&quot;&quot;&quot;A `Zmqlet` object can send/receive data to/from ZeroMQ socket and invoke callback function. It</span>
 <span class="sd">    has three sockets for input, output and control.</span>
 
+<span class="sd">    :param args: the parsed arguments from the CLI</span>
+<span class="sd">    :param logger: the logger to use</span>
+<span class="sd">    :param ctrl_addr: control address</span>
+
 <span class="sd">    .. warning::</span>
 <span class="sd">        Starting from v0.3.6, :class:`ZmqStreamlet` replaces :class:`Zmqlet` as one of the key components in :class:`jina.peapods.runtimes.zmq.zed.ZEDRuntime`.</span>
 <span class="sd">        It requires :mod:`tornado` and :mod:`uvloop` to be installed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="s1">&#39;JinaLogger&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ctrl_addr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param args: the parsed arguments from the CLI</span>
-<span class="sd">        :param logger: the logger to use</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identity</span> <span class="o">=</span> <span class="n">random_identity</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
@@ -355,6 +361,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">send_idle</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Zmqlet.register_pollin"><a class="viewcode-back" href="../../../api/jina.peapods.zmq.html#jina.peapods.zmq.Zmqlet.register_pollin">[docs]</a>    <span class="k">def</span> <span class="nf">register_pollin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Register :attr:`in_sock`, :attr:`ctrl_sock` and :attr:`out_sock` (if :attr:`out_sock_type` is zmq.ROUTER) in poller.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">poller</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Poller</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">poller</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">poller</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl_sock</span><span class="p">,</span> <span class="n">zmq</span><span class="o">.</span><span class="n">POLLIN</span><span class="p">)</span>
@@ -557,6 +564,7 @@
 <span class="sd">        :param msg: the protobuf message to send</span>
 <span class="sd">        :param sleep: the sleep time of every two sends in millisecond.</span>
 <span class="sd">                A near-zero value could result in bad load balancing in the proceeding pods.</span>
+<span class="sd">        :param kwargs: keyword arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># await asyncio.sleep(sleep)  # preventing over-speed sending</span>
         <span class="k">try</span><span class="p">:</span>
@@ -566,13 +574,22 @@
         <span class="k">except</span> <span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sending message error: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">, gateway cancelled?&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AsyncZmqlet.recv_message"><a class="viewcode-back" href="../../../api/jina.peapods.zmq.html#jina.peapods.zmq.AsyncZmqlet.recv_message">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="s1">&#39;Request&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="AsyncZmqlet.recv_message"><a class="viewcode-back" href="../../../api/jina.peapods.zmq.html#jina.peapods.zmq.AsyncZmqlet.recv_message">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="s1">&#39;Request&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Receive a protobuf message in async manner.</span>
+
+<span class="sd">        :param callback: Callback function to receive message</span>
+<span class="sd">        :return: Received protobuf message. Or None in case of any error.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">recv_message_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">send_recv_kwargs</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span> <span class="o">+=</span> <span class="n">msg</span><span class="o">.</span><span class="n">size</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">msg_recv</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">callback</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span> <span class="o">+=</span> <span class="n">msg</span><span class="o">.</span><span class="n">size</span>
+                <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">callback</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Received message is empty.&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;receiving message error: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">, gateway cancelled?&#39;</span><span class="p">)</span></div>
 
@@ -591,6 +608,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ZmqStreamlet.register_pollin"><a class="viewcode-back" href="../../../api/jina.peapods.zmq.html#jina.peapods.zmq.ZmqStreamlet.register_pollin">[docs]</a>    <span class="k">def</span> <span class="nf">register_pollin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Register :attr:`in_sock`, :attr:`ctrl_sock` and :attr:`out_sock` in poller.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="kn">import</span> <span class="nn">tornado.ioloop</span>
             <span class="n">get_or_reuse_loop</span><span class="p">()</span>
@@ -635,6 +653,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="o">.</span><span class="n">on_recv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_in_sock_callback</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ZmqStreamlet.start"><a class="viewcode-back" href="../../../api/jina.peapods.zmq.html#jina.peapods.zmq.ZmqStreamlet.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="s1">&#39;Message&#39;</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open all sockets and start the ZMQ context associated to this `Zmqlet`.</span>
+
+<span class="sd">        :param callback: callback function to receive the protobuf message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">_callback</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sock_type</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">_parse_from_frames</span><span class="p">(</span><span class="n">sock_type</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span> <span class="o">+=</span> <span class="n">msg</span><span class="o">.</span><span class="n">size</span>
@@ -661,6 +684,7 @@
 <span class="sd">    :param address: the socket address to send</span>
 <span class="sd">    :param cmd: the control command to send</span>
 <span class="sd">    :param timeout: the waiting time (in ms) for the response</span>
+<span class="sd">    :return: received message</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># control message is short, set a timeout and ask for quick response</span>
     <span class="k">with</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span> <span class="k">as</span> <span class="n">ctx</span><span class="p">:</span>
@@ -684,6 +708,7 @@
 <span class="sd">    :param sock: the target socket to send</span>
 <span class="sd">    :param msg: the protobuf message</span>
 <span class="sd">    :param timeout: waiting time (in seconds) for sending</span>
+<span class="sd">    :param kwargs: keyword arguments</span>
 <span class="sd">    :return: the size (in bytes) of the sent message</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">num_bytes</span> <span class="o">=</span> <span class="mi">0</span>
@@ -727,6 +752,7 @@
 <span class="sd">    :param sock: the target socket to send</span>
 <span class="sd">    :param msg: the protobuf message</span>
 <span class="sd">    :param timeout: waiting time (in seconds) for sending</span>
+<span class="sd">    :param kwargs: keyword arguments</span>
 <span class="sd">    :return: the size (in bytes) of the sent message</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
@@ -755,6 +781,7 @@
 
 <span class="sd">    :param sock: the socket to pull from</span>
 <span class="sd">    :param timeout: max wait time for pulling, -1 means wait forever</span>
+<span class="sd">    :param kwargs: keyword arguments</span>
 <span class="sd">    :return: a tuple of two pieces</span>
 
 <span class="sd">            - the received protobuf message</span>
@@ -781,6 +808,7 @@
 
 <span class="sd">    :param sock: the socket to pull from</span>
 <span class="sd">    :param timeout: max wait time for pulling, -1 means wait forever</span>
+<span class="sd">    :param kwargs: keyword arguments</span>
 <span class="sd">    :return: a tuple of two pieces</span>
 
 <span class="sd">            - the received protobuf message</span>
@@ -834,7 +862,11 @@
 
 
 <span class="k">def</span> <span class="nf">_get_random_ipc</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Get a random IPC address for control port &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a random IPC address for control port</span>
+
+<span class="sd">    :return: random IPC address</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;JINA_IPC_SOCK_TMP&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmp</span><span class="p">):</span>
@@ -1040,7 +1072,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Feb 21, 2021.
+        Last updated on Feb 27, 2021.
       </span>
 
         </p>
