@@ -3,7 +3,7 @@
 set -ex
 
 DOC_DIR=.
-HTML_DIR=${DOC_DIR}/_build/html
+HTML_DIR=${DOC_DIR}/_build/dirhtml
 
 # backup the old version's doc as later we do make clean, they all gone.
 mkdir -p ${HTML_DIR}
@@ -36,18 +36,18 @@ cd -
 # create markdown for List [X] drivers in Jina & List [X] executors in Jina to chapters/
 cd ${DOC_DIR} && jina check --summary-driver chapters/all_driver.md && cd -
 cd ${DOC_DIR} && jina check --summary-exec chapters/all_exec.md && cd -
-cd ${DOC_DIR} && make html && cd -
+cd ${DOC_DIR} && make dirhtml && cd -
 
 if [[ $1 == "commit" ]]; then
   cd ${DOC_DIR}
-  cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/html/
+  cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/dirhtml/
   cd -
   cd ${HTML_DIR}
   rsync -avr . master  # sync everything under the root to master/
   cd -
   cd ${DOC_DIR}/bak
-  rsync -avr --ignore-missing-args ./v* ../_build/html/ --ignore-existing  # revert backup back
-  rsync -avr --ignore-missing-args ./latest ../_build/html/ --ignore-existing  # revert backup back
+  rsync -avr --ignore-missing-args ./v* ../_build/dirhtml/ --ignore-existing  # revert backup back
+  rsync -avr --ignore-missing-args ./latest ../_build/dirhtml/ --ignore-existing  # revert backup back
   cd -
   cd ${HTML_DIR}
   rm -rf bak
@@ -62,7 +62,7 @@ if [[ $1 == "commit" ]]; then
   cd -
 elif [[ $1 == "release" ]]; then
   cd ${DOC_DIR}
-  cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/html/
+  cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/dirhtml/
   echo -e "${RELEASE_VER}" >> versions
   cd -
   cd ${HTML_DIR}
@@ -71,7 +71,7 @@ elif [[ $1 == "release" ]]; then
   rsync -avr --exclude=master --exclude=latest . "${RELEASE_VER}"  # sync to versions
   cd -
   cd ${DOC_DIR}/bak
-  rsync -avr --ignore-missing-args ./v* ../_build/html/ --ignore-existing  # revert backup back
+  rsync -avr --ignore-missing-args ./v* ../_build/dirhtml/ --ignore-existing  # revert backup back
   cd -
   cd ${HTML_DIR}
   rm -rf bak

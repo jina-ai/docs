@@ -46,6 +46,8 @@ html_baseurl = 'https://docs.jina.ai'
 sitemap_url_scheme = '{link}'
 sitemap_locales = [None]
 sitemap_filename = "sitemap.xml"
+
+
 version_choices = [('master', 'master')]
 with open('versions') as fp:
     s = [(f'v{v.strip()}', v.strip()) for v in fp if (v.strip() and not v.startswith('#'))]
@@ -147,6 +149,7 @@ linkcheck_ignore = [
 linkcheck_timeout = 20
 linkcheck_retries = 2
 linkcheck_anchors = False
+
 
 def setup(app):
     from sphinx.domains.python import PyField
