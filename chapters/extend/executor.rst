@@ -104,6 +104,15 @@ Rule of thumb, you always pick the executor that shares the similar logic to inh
    * - `Match2DocRanker`
      - `BaseRanker`
      - Re-scores the matches for a document.
+   * - `BaseClassifier`
+     - `BaseExecutor`
+     - Enrich the documents and chunks with a classifier.
+   * - `BaseEvaluator`
+     - `BaseExecutor`
+     - Evaluate score based on output and GroundTruth.
+   * - `CompoundExecutor`
+     - `BaseExecutor`
+     - Combine multiple executors in one.
 
 
 Override :meth:`__init__` and :meth:`post_init`
