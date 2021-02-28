@@ -58,7 +58,7 @@ Rule of thumb, you always pick the executor that shares the similar logic to inh
 
 .. note:: If your algorithm is so unique and does not fit any any of the category above, you may want to `submit an issue for discussion <https://github.com/jina-ai/jina/issues>`_ before you start.
 
-.. list-table:: Summary of Executors
+.. list-table:: Built-in Executors to Inherit
    :widths: 25 25 50
    :header-rows: 1
 
@@ -144,9 +144,9 @@ Remember to add ``super().__init__(*args, **kwargs)`` to your :meth:`__init__`. 
 
 So what if the data you need to load is not in simple type. For example, a deep learning graph, a big pretrained model, a gRPC stub, a tensorflow session, a thread? The you can put them into :meth:`post_init`.
 
-Another scenario is when you know there is a better persistence method other than ``pickle``. For example, your hyperparameters matrix in numpy ``ndarray`` is certainly pickable. However, one can simply read and write it via standard file IO, and it is likely more efficient than ``pickle``. In this case, you do the data loading in :meth:`post_init`.
+Another scenario is when you know there is a better persistence method other than ``pickle``. For example, your hyperparameters matrix in numpy ``ndarray`` is certainly pickable. However, you can simply read and write it via standard file IO, and it is likely more efficient than ``pickle``. In this case, you do the data loading in :meth:`post_init`.
 
-Here is a good example.
+Please check the example below:
 
 
 .. highlight:: python
@@ -174,7 +174,7 @@ Here is a good example.
 
 .. note::
 
-    :meth:`post_init` is also a good place to introduce package dependency, e.g. ``import x`` or ``from x import y``. Naively, one can always put all imports upfront at the top of the file. However, this will throw an ``ModuleNotFound`` exception when this package is not installed locally. Sometimes it may break the whole system because of this one missing dependency.
+    :meth:`post_init` is also a good place to introduce package dependency, e.g. ``import x`` or ``from x import y``. Naively, you can always put all imports upfront at the top of the file. However, this will throw an ``ModuleNotFound`` exception when this package is not installed locally. Sometimes it may break the whole system because of this one missing dependency.
 
     Rule of thumb, only import packages where you really need them. Often these dependencies are only required in :meth:`post_init` and the core method, which we shall see later.
 
@@ -191,6 +191,8 @@ Each :class:`Executor` has a core method, which defines the algorithmic behavior
 +-------------------------+-----------------------------+
 | :class:`BaseCrafter`    |  :meth:`craft`              |
 +-------------------------+-----------------------------+
+| :class:`BaseSegmenter`  |   :meth:`segment`           |
++-------------------------+-----------------------------+
 | :class:`BaseIndexer`    |  :meth:`add`, :meth:`query` |
 +-------------------------+-----------------------------+
 | :class:`BaseRanker`     |  :meth:`score`              |
@@ -200,7 +202,7 @@ Each :class:`Executor` has a core method, which defines the algorithmic behavior
 | :class:`BaseEvaluator`  |   :meth:`evaluate`          |
 +-------------------------+-----------------------------+
 
-Feel free to override other methods/properties as you need. But frankly, most of the extension can be done by simply overriding the core methods listed above. Nothing more. You can read the source code of our executors for details.
+Feel free to override other methods/properties as you need. But frankly, most of the extension can be done by simply overriding the core methods listed above.
 
 
 Implement the persistence logic
