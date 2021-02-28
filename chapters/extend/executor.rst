@@ -268,7 +268,7 @@ Thanks for your time and effort while reading this guide!
 Please checkout `Jina-Hub <https://github.com/jina-ai/jina-hub>`_ to explore the executors.
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
 
-To gain a deeper knowledge on the implementation of Jina primitive data types, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors>`_.
+To gain a deeper knowledge on the implementation of Jina Executors, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors>`_.
 
 
 
