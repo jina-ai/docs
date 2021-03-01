@@ -335,7 +335,7 @@ In the code sample above, we called CLIP's :meth:`encode_text` to use the pre-tr
 
 .. note:: The example above is a minimum working example of a `CLIPTextEncoder`, for full features such as GPU support, batching and dockerization, please checkout `Jina-hub <https://github.com/jina-ai/jina-hub/tree/master/encoders>`_.
 
-The same applies to `CLIPImageEncoder`, the only difference is to use `self.model.encode_image` in :meth:`encode`.
+The same applies to `CLIPImageEncoder`, the only difference is to use :meth:`self.model.encode_image` in :meth:`encode`.
 Last but not least, create the YAML configuration for the encoder and use it with Jina CLI or Flow API.
 
 .. highlight:: yaml
@@ -345,6 +345,9 @@ Last but not least, create the YAML configuration for the encoder and use it wit
     metas:
       py_modules:
         - __init__.py
+
+Then use it in Jina CLI by specifying ``jina pod --uses=clip_text_encoder.yml``,
+or ``Flow().add(uses='clip_text_encoder.yml')`` in Flow API.
 
 
 What's Next
