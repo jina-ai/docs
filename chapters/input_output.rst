@@ -1,5 +1,5 @@
 How to handle Input and Output for Flows
-=======================================
+========================================
 
 This chapter explains how input and output data is handled by the ``Flow API``.
 
@@ -264,7 +264,7 @@ and the ``request.index.docs.blob.dtype`` indicates the type of the vector.
 
 
 Request size
-----------
+------------
 The functions ``flow.index(...)``, ``flow.update(...)``, ``flow.delete(...)``, ``flow.search(...)`` and ``flow.train(...)``
 accept the ``request_size`` parameter. It sets the limit for ``Documents`` sent in one request.
 In case more ``Documents`` are provided, they split up into multiple requests.
