@@ -142,7 +142,8 @@ Remember to add ``super().__init__(*args, **kwargs)`` to your :meth:`__init__`. 
 
 
 
-So what if the data you need to load is not in simple type. For example, a deep learning graph, a big pretrained model, a gRPC stub, a tensorflow session, a thread? The you can put them into :meth:`post_init`.
+What if the data you need to load cannot be stored in a simple type?
+For example, a deep learning graph, a big pretrained model, a gRPC stub, a tensorflow session, a thread? The you can put them into :meth:`post_init`.
 
 Another scenario is when you know there is a better persistence method other than ``pickle``. For example, your hyperparameters matrix in numpy ``ndarray`` is certainly pickable. However, you can simply read and write it via standard file IO, and it is likely more efficient than ``pickle``. In this case, you do the data loading in :meth:`post_init`.
 
@@ -176,7 +177,7 @@ Please check the example below:
 
     :meth:`post_init` is also a good place to introduce package dependency, e.g. ``import x`` or ``from x import y``. Naively, you can always put all imports upfront at the top of the file. However, this will throw an ``ModuleNotFound`` exception when this package is not installed locally. Sometimes it may break the whole system because of this one missing dependency.
 
-    Rule of thumb, only import packages where you really need them. Often these dependencies are only required in :meth:`post_init` and the core method, which we shall see later.
+    As a rule of thumb, only import packages where you really need them. Often these dependencies are only required in :meth:`post_init` and the core method, which we shall see later.
 
 Override the *core* method of the base class
 --------------------------------------------
@@ -202,7 +203,7 @@ Each :class:`Executor` has a core method, which defines the algorithmic behavior
 | :class:`BaseEvaluator`  |   :meth:`evaluate`          |
 +-------------------------+-----------------------------+
 
-Feel free to override other methods/properties as you need. But frankly, most of the extension can be done by simply overriding the core methods listed above.
+Feel free to override other methods/properties as you need. But probably, most of the extension can be done by simply overriding the core methods listed above.
 
 
 Implement the persistence logic
@@ -264,7 +265,7 @@ Customize Executor in Action: CLIP Encoder
 It can be instructed in natural language to predict the most relevant text snippet given an image.
 
 The pre-trained CLIP model is able to transform both images and text into the same latent space,
-where they can be compared using a similarity measure.
+where image and text emebddings can be compared using a similarity measure.
 We will use CLIP as an example to see how to create :term:`Encoder` powered by CLIP model,
 for text-to-image search.
 You can refer to our `cross model search <https://github.com/jina-ai/examples/tree/master/cross-modal-search>`_ to find the example.
