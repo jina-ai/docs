@@ -13,7 +13,7 @@ Development Guide: Add new Executors
 Motivation
 ^^^^^^^^^^^
 
-As a Jina user, you might already noticed that `Jina-hub <https://github.com/jina-ai/jina-hub>`_ is the open open-registry for hosting Jina executors.
+As a Jina user, you might already noticed that `Jina-hub <https://github.com/jina-ai/jina-hub>`_ is the open-registry for hosting Jina executors.
 These `Executors <https://docs.jina.ai/chapters/all_exec.html>`_ has been categorised into folders by their types, such as `Encoder`, `Ranker`, `Crafter` etc.
 
 However, when the existing Executors does not fit your specific use case,
