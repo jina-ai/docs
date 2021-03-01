@@ -32,7 +32,7 @@ Overview
 To make an extension of a Jina `Executor`, please follow the steps listed below:
 
 1. Decide which `Executor` class to inherit from.
-2. Overwrite :meth:`__init__` and :meth:`post_init`.
+2. Override :meth:`__init__` and :meth:`post_init`.
 3. Overwrite the **Core** method of the `Executor`.
 4. (Optional) Implement the save logic.
 
@@ -67,7 +67,7 @@ Rule of thumb, you always pick the executor that shares the similar logic to inh
      - Description
    * - `BaseEncoder`
      - `BaseExecutor`
-     - Represent the chunks as vector embeddings.
+     - Represent the documents as vector embeddings.
    * - `BaseNumericEncoder`
      - `BaseEncoder`
      - Represent numpy array object (e.g. image, video, audio) as vector embeddings.
@@ -257,8 +257,95 @@ Then simply use it in Jina CLI by specifying ``jina pod --uses=my.yml``, or ``Fl
     If you use customized executor inside a :class:`jina.executors.CompoundExecutor`, then you only need to set ``metas.py_modules`` at the root level, not at the sub-component level.
 
 
-Customize Executor in Action: Integrate CLIP model with Jina
+Customize Executor in Action: CLIP Encoder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+`CLIP <https://github.com/openai/CLIP>`_ (Contrastive Language-Image Pre-Training) is a neural network trained on a variety of (image, text) pairs.
+It can be instructed in natural language to predict the most relevant text snippet given an image.
+
+The pre-trained CLIP model is able to transform both images and text into the same latent space,
+where they can be compared using a similarity measure.
+We will use CLIP as an example to see how to create :term:`Encoder` powered by CLIP model,
+for text-to-image search.
+You can refer to our `cross model search <https://github.com/jina-ai/examples/tree/master/cross-modal-search>`_ to find the example.
+
+Since CLIP maps image and text into a common latent space,
+it's objective is to represent documents as vector embeddings.
+So we need to inherit from `BaseEncoder` class.
+To encode a piece of text using CLIP, we might create a `CLIPTextEncoder` and inherit from `BaseTextEncoder`.
+To encoder an image using CLIP, we might create a `CLIPImageEncoder` and inherit from `BaseNumericEncoder`.
+
+The next step is to override :meth:`__init__` and :meth:`post_init`.
+For :meth:`__init__`, we could specify a new parameter called `model_name` since CLIP has 2 pre-trained models,
+i.e. ResNet50 and ViT-B/32.
+As was mentioned before, it is a good practice to load pre-trained model inside :meth:`post_init`, now we have an Encoder like this:
+
+.. highlight:: python
+.. code-block:: python
+
+    class CLIPTextEncoder(BaseTextEncoder):
+        """Encode text into vector embeddings powered by OpenAI's CLIP model."""
+
+        def __init__(
+            self,
+            model_name: str ='ViT-B/32',
+            *args, **kwargs
+        ):
+            super().__init__(*args, **kwargs)
+            self.model_name = model_name
+
+        def post_init(self):
+            """Load pre-trained CLIP model."""
+            import clip
+            model, _ = clip.load(self.model_name, self.device)
+            self.model = model
+
+        # the rest of the code
+
+In the end, we need to overwrite the *core* method of the Executor.
+Since it is an Encoder, we need to overwrite the :meth:`encode`.
+
+.. highlight:: python
+.. code-block:: python
+
+    class CLIPTextEncoder(BaseTextEncoder):
+        """Encode text into vector embeddings powered by OpenAI's CLIP model."""
+
+        def __init__(
+            self,
+            model_name: str ='ViT-B/32',
+            *args, **kwargs
+        ):
+            super().__init__(*args, **kwargs)
+            self.model_name = model_name
+
+        def post_init(self):
+            """Load pre-trained CLIP model."""
+            import clip
+            model, _ = clip.load(self.model_name, self.device)
+            self.model = model
+
+        def encode(self, data: 'np.ndarray', *args, **kwargs) -> 'np.ndarray':
+            tensor = clip.tokenize(data)
+            with torch.no_grad():
+                encoded_data = self.model.encode_text(tensor)
+            return encoded_data.cpu().numpy()
+
+In the code sample above, we called CLIP's :meth:`encode_text` to use the pre-trained CLIP model and encode input data into vector embeddings.
+
+.. note:: The example above is a minimum working example of a `CLIPTextEncoder`, for full features such as GPU support, batching and dockerization, please checkout `Jina-hub <https://github.com/jina-ai/jina-hub/tree/master/encoders>`_.
+
+The same applies to `CLIPImageEncoder`, the only difference is to use `self.model.encode_image` in :meth:`encode`.
+Last but not least, create the YAML configuration for the encoder and use it with Jina CLI or Flow API.
+
+.. highlight:: yaml
+.. code-block:: yaml
+
+    !CLIPTextEncoder
+    metas:
+      py_modules:
+        - __init__.py
+
 
 What's Next
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -269,8 +356,3 @@ Please checkout `Jina-Hub <https://github.com/jina-ai/jina-hub>`_ to explore the
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
 
 To gain a deeper knowledge on the implementation of Jina Executors, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors>`_.
-
-
-
-
-
