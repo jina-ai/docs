@@ -86,8 +86,8 @@ git clone https://github.com/jina-ai/docs.git
 pip install -r requirements.txt
 
 # Clean & build docs locally
-make html
+make dirhtml
 
 # Serve the docs website with Python 3
-python -m http.server 8080 -d _build/html
+python -m http.server 8080 -d _build/dirhtml
 ```
