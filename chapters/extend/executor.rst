@@ -348,7 +348,7 @@ Last but not least, create the YAML configuration for the encoder and use it wit
 
 Then use it in Jina CLI by specifying ``jina pod --uses=clip_text_encoder.yml``,
 or ``Flow().add(uses='clip_text_encoder.yml')`` in Flow API.
-
+And you have a good foundation to build your index/query Flow powered by CLIP.
 
 What's Next
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
