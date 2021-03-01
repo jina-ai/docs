@@ -145,7 +145,8 @@ Remember to add ``super().__init__(*args, **kwargs)`` to your :meth:`__init__`. 
 What if the data you need to load cannot be stored in a simple type?
 For example, a deep learning graph, a big pretrained model, a gRPC stub, a tensorflow session, a thread? The you can put them into :meth:`post_init`.
 
-Another scenario is when you know there is a better persistence method other than ``pickle``. For example, your hyperparameters matrix in numpy ``ndarray`` is certainly pickable. However, you can simply read and write it via standard file IO, and it is likely more efficient than ``pickle``. In this case, you do the data loading in :meth:`post_init`.
+It is also interesting to override :meth:`post_init` when there is a better persistence method other than pickle.
+For example, your hyperparameters matrix in numpy ``ndarray`` is certainly pickable. However, you can simply read and write it via standard file IO, and it is likely more efficient than ``pickle``. In this case, you do the data loading in :meth:`post_init`.
 
 Please check the example below:
 
