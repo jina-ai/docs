@@ -302,7 +302,7 @@ As was mentioned before, it is a good practice to load pre-trained model inside 
 
         # the rest of the code
 
-In the end, we need to overwrite the *core* method of the Executor.
+At the end, we need to overwrite the *core* method of the Executor.
 Since it is an Encoder, we need to overwrite the :meth:`encode`.
 
 .. highlight:: python
@@ -362,6 +362,7 @@ To make sure your work has a good shape, Jina provides a wizard to help you crea
 It will generate a standard Executor project like this:
 
 .. highlight:: text
+.. code-block:: text
 
     CLIPTextEncoder/
     ├── Dockerfile
