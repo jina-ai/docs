@@ -17,7 +17,7 @@ As a Jina user, you might already noticed that `Jina-hub <https://github.com/jin
 These `Executors <https://docs.jina.ai/chapters/all_exec.html>`_ has been categorised into folders by their types, such as `Encoder`, `Ranker`, `Crafter` etc.
 
 However, when the existing Executors does not fit your specific use case,
-you might be curious on how to **extent** Jina.
+you might be curious on how to **extend** Jina.
 For example, integrate a new deep learning model,
 add a new indexing algorithm,
 or create your own evaluation metric.
