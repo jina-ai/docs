@@ -37,11 +37,17 @@ version = __version__
 release = __version__
 
 templates_path = ['template']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'tests', 'page_templates']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'tests', 'page_templates', '.github']
 pygments_style = 'rainbow_dash'
 html_theme = 'sphinx_rtd_theme'
 
 base_url = '/'
+html_baseurl = 'https://docs.jina.ai'
+sitemap_url_scheme = '{link}'
+sitemap_locales = [None]
+sitemap_filename = "sitemap.xml"
+
+
 version_choices = [('master', 'master')]
 with open('versions') as fp:
     s = [(f'v{v.strip()}', v.strip()) for v in fp if (v.strip() and not v.startswith('#'))]
@@ -75,6 +81,7 @@ html_context = {
 }
 
 html_static_path = ['_static']
+html_extra_path = ['html_extra']
 html_logo = '.github/artworks/jina-prod-logo.svg'
 html_css_files = ['main.css']
 htmlhelp_basename = slug
@@ -100,6 +107,7 @@ extensions = [
     'sphinx_markdown_tables',
     'sphinx_copybutton',
     'notfound.extension',
+    'sphinx_sitemap',
 ]
 
 # -- Custom 404 page
@@ -141,6 +149,7 @@ linkcheck_ignore = [
 linkcheck_timeout = 20
 linkcheck_retries = 2
 linkcheck_anchors = False
+
 
 def setup(app):
     from sphinx.domains.python import PyField
