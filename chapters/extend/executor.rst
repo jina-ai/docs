@@ -346,13 +346,61 @@ Last but not least, create the YAML configuration for the encoder and use it wit
       py_modules:
         - __init__.py
 
-Then use it in Jina CLI by specifying ``jina pod --uses=clip_text_encoder.yml``,
-or ``Flow().add(uses='clip_text_encoder.yml')`` in Flow API.
+Then use it in Jina CLI by specifying ``jina pod --uses=config.yml``,
+or ``Flow().add(uses='config.yml')`` in Flow API.
 And you have a good foundation to build your index/query Flow powered by CLIP.
 
-What's Next
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Share Your Work!
+^^^^^^^^^^^^^^^^^^^^^
 
+If you would like to share your customized Executor with the community, more than welcome!
+We use `cookiecutter <https://github.com/cookiecutter/cookiecutter>`_ to create Jina Executor from the template.
+
+.. note:: Install Docker and run `pip install "jina[devel]"` before you start.
+
+To make sure your work has a good shape, Jina provides a wizard to help you create a Executor, start it with `jina hub new --type pod`.
+It will generate a standard Executor project like this:
+
+.. highlight:: text
+
+    CLIPTextEncoder/
+    ├── Dockerfile
+    ├── manifest.yml
+    ├── README.md
+    ├── config.yml
+    ├── requirements.txt
+    ├── __init__.py
+    └── tests/
+        ├── test_CLIPTextEncoder.py
+        └── __init__.py
+
+And you can put your customized Encoder, such as `CLIPTextEncoder` inside `__init__.py`.
+The YAML configurations should be placed in `config.yml`.
+
+To ensure your customised Executor, such as `CLIPTextEncoder` performs exactly the same as the original CLIP model,
+please add tests inside `tests` folder.
+For example, encode some text data with the raw CLIP model, and assert we get the same result with `CLIPTextEncoder`.
+
+Please build and test your Encoder locally with:
+
+.. highlight:: shell
+.. code-block:: shell
+
+    jina hub build -t jinahub/type.kind.jina-image-name:image_version-jina_version <your_folder>
+
+Once tested, you should login to jina hub with `jina hub login`, copy/paste the token into GitHub to verify your account.
+Now you are able to push your work to jina hub:
+
+.. highlight:: shell
+.. code-block:: shell
+
+    jina hub push jinahub/type.kind.jina-image-name:image-jina_version
+
+In our example, the type is `pod`, kind is `encoders` and `jina-image-name` is `cliptextencoder` and `clipimageencoder`.
+
+
+What's next
+^^^^^^^^^^^
 Thanks for your time and effort while reading this guide!
 
 Please checkout `Jina-Hub <https://github.com/jina-ai/jina-hub>`_ to explore the executors.
