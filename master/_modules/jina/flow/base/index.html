@@ -495,7 +495,7 @@
 <div class="viewcode-block" id="BaseFlow.needs_all"><a class="viewcode-back" href="../../../../api/jina.flow.base/#jina.flow.base.BaseFlow.needs_all">[docs]</a>    <span class="k">def</span> <span class="nf">needs_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;joiner&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BaseFlow&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Collect all hanging Pods so far and add a blocker to the Flow; wait until all handing peas completed.</span>
-<span class="sd">        </span>
+
 <span class="sd">        :param name: the name of this joiner (default is ``joiner``)</span>
 <span class="sd">        :param *args: *args for .add or .needs</span>
 <span class="sd">        :param **kwargs: **kwargs for .add or .needs</span>
@@ -730,7 +730,27 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">class</span> <span class="nc">CatchAllCleanupContextManager</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            This context manager guarantees, that the :method:``__exit__`` of the</span>
+<span class="sd">            sub context is called, even when there is an Exception in the</span>
+<span class="sd">            :method:``__enter__``.</span>
+
+<span class="sd">            :param sub_context: The context, that should be taken care of.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_context</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sub_context</span> <span class="o">=</span> <span class="n">sub_context</span>
+
+            <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">pass</span>
+
+            <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sub_context</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">CatchAllCleanupContextManager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">)</span>
@@ -739,8 +759,8 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">unsetenv</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gateway&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;gateway&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;gateway&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_level</span> <span class="o">=</span> <span class="n">FlowBuildLevel</span><span class="o">.</span><span class="n">EMPTY</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;flow is closed and all resources are released, current build level is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_level</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
