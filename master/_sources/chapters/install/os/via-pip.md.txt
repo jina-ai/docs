@@ -12,8 +12,6 @@ On Linux/Mac, simply run:
 pip install jina
 ```
 
-Jina is currently unavailable on the Conda platform. For more details [see here](https://github.com/jina-ai/jina/issues/1621) .
-
 
 ## Install from the master branch
 
