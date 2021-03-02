@@ -324,6 +324,8 @@
 <div class="viewcode-block" id="as_aggregate_method"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.as_aggregate_method">[docs]</a><span class="k">def</span> <span class="nf">as_aggregate_method</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Mark a function so that it keeps track of the number of documents evaluated and a running sum</span>
 <span class="sd">    to have always access to average value</span>
+<span class="sd">    :param func: the function to decorate</span>
+<span class="sd">    :return: the wrapped function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -339,6 +341,8 @@
     <span class="sd">&quot;&quot;&quot;Mark the function as the updating function of this executor,</span>
 <span class="sd">    calling this function will change the executor so later you can save the change via :func:`save`</span>
 <span class="sd">    Will set the is_updated property after function is called.</span>
+<span class="sd">    :param func: the function to decorate</span>
+<span class="sd">    :return: the wrapped function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -353,6 +357,8 @@
 <div class="viewcode-block" id="as_train_method"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.as_train_method">[docs]</a><span class="k">def</span> <span class="nf">as_train_method</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Mark a function as the training function of this executor.</span>
 <span class="sd">    Will set the is_trained property after function is called.</span>
+<span class="sd">    :param func: the function to decorate</span>
+<span class="sd">    :return: the wrapped function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -373,7 +379,6 @@
 <span class="sd">    :param cls: class</span>
 <span class="sd">    :param func_lst: function list to wrap</span>
 <span class="sd">    :param wrapper: the wrapper</span>
-<span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">f_name</span> <span class="ow">in</span> <span class="n">func_lst</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f_name</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f_name</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">mro</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]):</span>
@@ -386,6 +391,7 @@
 
 <span class="sd">    :param func: the function to decorate</span>
 <span class="sd">    :param dtype: the converted dtype of the ``numpy.ndarray``</span>
+<span class="sd">    :return: the wrapped function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -402,7 +408,10 @@
 
 <div class="viewcode-block" id="require_train"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.require_train">[docs]</a><span class="k">def</span> <span class="nf">require_train</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Mark an :class:`BaseExecutor` function as training required, so it can only be called</span>
-<span class="sd">    after the function decorated by ``@as_train_method``. &quot;&quot;&quot;</span>
+<span class="sd">    after the function decorated by ``@as_train_method``.</span>
+<span class="sd">     :param func: the function to decorate</span>
+<span class="sd">     :return: the wrapped function</span>
+<span class="sd">     &quot;&quot;&quot;</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -418,7 +427,10 @@
 
 
 <div class="viewcode-block" id="store_init_kwargs"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.store_init_kwargs">[docs]</a><span class="k">def</span> <span class="nf">store_init_kwargs</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Mark the args and kwargs of :func:`__init__` later to be stored via :func:`save_config` in YAML &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Mark the args and kwargs of :func:`__init__` later to be stored via :func:`save_config` in YAML</span>
+<span class="sd">    :param func: the function to decorate</span>
+<span class="sd">    :return: the wrapped function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -452,12 +464,15 @@
 
     <span class="k">return</span> <span class="n">arg_wrapper</span></div>
 
-<span class="k">def</span> <span class="nf">_get_slice</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">total_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+
+<span class="k">def</span> <span class="nf">_get_slice</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">total_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span>
+    <span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">islice</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">total_size</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="n">total_size</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">data</span>
+
 
 <span class="k">def</span> <span class="nf">_get_size</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
@@ -665,9 +680,9 @@
             <span class="n">full_data_size</span> <span class="o">=</span> <span class="n">_get_size</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">],</span> <span class="n">split_over_axis</span><span class="p">)</span>
             <span class="n">total_size</span> <span class="o">=</span> <span class="n">_get_total_size</span><span class="p">(</span><span class="n">full_data_size</span><span class="p">,</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">num_batch</span><span class="p">)</span>
             <span class="n">final_result</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">yield_dict</span> <span class="o">=</span> <span class="p">[</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="n">Dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">num_data</span><span class="p">)]</span>
-            <span class="n">data_iterators</span> <span class="o">=</span> <span class="p">[</span><span class="n">batch_iterator</span><span class="p">(</span><span class="n">_get_slice</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="n">total_size</span><span class="p">),</span> <span class="n">b_size</span> <span class="p">,</span> <span class="n">split_over_axis</span><span class="p">,</span>
-                            <span class="n">yield_dict</span><span class="o">=</span><span class="n">yield_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_data</span><span class="p">)]</span>
+            <span class="n">yield_dict</span> <span class="o">=</span> <span class="p">[</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="n">Dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_data</span><span class="p">)]</span>
+            <span class="n">data_iterators</span> <span class="o">=</span> <span class="p">[</span><span class="n">batch_iterator</span><span class="p">(</span><span class="n">_get_slice</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="n">total_size</span><span class="p">),</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">split_over_axis</span><span class="p">,</span>
+                                             <span class="n">yield_dict</span><span class="o">=</span><span class="n">yield_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_data</span><span class="p">)]</span>
 
             <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">data_iterators</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span>
@@ -687,6 +702,52 @@
         <span class="k">return</span> <span class="n">_batching</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_batching</span></div>
+
+
+<div class="viewcode-block" id="single"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.single">[docs]</a><span class="k">def</span> <span class="nf">single</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+           <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Guarantee that the input of a function is provided as a single instance and not in batches</span>
+
+<span class="sd">    :param func: function to decorate</span>
+<span class="sd">    :param merge_over_axis: merge over which axis into a single result</span>
+<span class="sd">    :param slice_on: the location of the data. When using inside a class,</span>
+<span class="sd">            ``slice_on`` should take ``self`` into consideration.</span>
+<span class="sd">    :return: the merged result as if run :func:`func` once on the input.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            class OneByOneCrafter:</span>
+<span class="sd">                @single</span>
+<span class="sd">                def craft(self, text: str) -&gt; Dict:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_single</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="c1"># priority: decorator &gt; class_attribute</span>
+            <span class="c1"># by default data is in args[1] (self needs to be taken into account)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">]</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+            <span class="n">default_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;batching disabled for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">final_result</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">_merge_results_after_batching</span><span class="p">(</span><span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">arg_wrapper</span>
+
+    <span class="k">return</span> <span class="n">_single</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
