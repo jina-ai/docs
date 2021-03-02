@@ -228,7 +228,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 74 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 75 Drivers in Jina</a></li>
 </ul>
 
             
@@ -347,14 +347,18 @@
 <span class="sd">    For example:</span>
 <span class="sd">        .. highlight:: python</span>
 <span class="sd">        .. code-block:: python</span>
-<span class="sd">            @deprecated_alias(buffer=(&#39;input_fn&#39;, 0), callback=(&#39;on_done&#39;, 1), output_fn=(&#39;on_done&#39;, 1))</span>
+<span class="sd">            @deprecated_alias(input_fn=(&#39;inputs&#39;, 0), buffer=(&#39;input_fn&#39;, 0), callback=(&#39;on_done&#39;, 1), output_fn=(&#39;on_done&#39;, 1))</span>
+
+<span class="sd">    :param aliases: maps aliases to new arguments</span>
+<span class="sd">    :return: wrapper</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">rename_kwargs</span><span class="p">(</span><span class="n">func_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">aliases</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_rename_kwargs</span><span class="p">(</span><span class="n">func_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">aliases</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Raise warnings or exceptions for deprecated arguments.</span>
 
 <span class="sd">        :param func_name: Name of the function.</span>
+<span class="sd">        :param kwargs: key word arguments from the function which is decorated.</span>
 <span class="sd">        :param aliases: kwargs with key as the deprecated arg name and value be a tuple, (new_name, deprecate_level).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">new_arg</span> <span class="ow">in</span> <span class="n">aliases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -376,12 +380,23 @@
                     <span class="k">raise</span> <span class="n">NotSupportedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">alias</span><span class="si">}</span><span class="s1"> has been renamed to `</span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s1">`&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">deco</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set Decorator function.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set Decorator function.</span>
+
+<span class="sd">        :param f: function the decorator is used for</span>
+<span class="sd">        :return: wrapper</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;Set wrapper function.&quot;&quot;&quot;</span>
-            <span class="n">rename_kwargs</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">aliases</span><span class="p">)</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Set wrapper function.</span>
+<span class="sd">            :param args: wrapper arguments</span>
+<span class="sd">            :param kwargs: wrapper key word arguments</span>
+
+<span class="sd">            :return: result of renamed function.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">_rename_kwargs</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">aliases</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">wrapper</span>
@@ -444,6 +459,7 @@
 <span class="sd">    :param axis: Determine which axis to iterate for np.ndarray data.</span>
 <span class="sd">    :param yield_slice: Return tuple type of data if True else return np.ndarray type.</span>
 <span class="sd">    :param yield_dict: Return dict type of data if True else return tuple type.</span>
+<span class="sd">    :yield: data</span>
 <span class="sd">    :return: An Iterator of batch data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -650,7 +666,7 @@
 
 <span class="sd">    :param d: Target Dict.</span>
 <span class="sd">    :param expand_fn: Parsed environment variables.</span>
-<span class="sd">    :param resolve_cycle_ref:</span>
+<span class="sd">    :param resolve_cycle_ref: Defines if cyclic references should be resolved.</span>
 <span class="sd">    :return: Expanded variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">expand_map</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
@@ -796,36 +812,36 @@
 
 <span class="sd">    :param text: The target text.</span>
 <span class="sd">    :param color: The color of text. Chosen from the following.</span>
-<span class="sd">    {</span>
-<span class="sd">        &#39;grey&#39;: 30,</span>
-<span class="sd">        &#39;red&#39;: 31,</span>
-<span class="sd">        &#39;green&#39;: 32,</span>
-<span class="sd">        &#39;yellow&#39;: 33,</span>
-<span class="sd">        &#39;blue&#39;: 34,</span>
-<span class="sd">        &#39;magenta&#39;: 35,</span>
-<span class="sd">        &#39;cyan&#39;: 36,</span>
-<span class="sd">        &#39;white&#39;: 37</span>
-<span class="sd">    }</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;grey&#39;: 30,</span>
+<span class="sd">            &#39;red&#39;: 31,</span>
+<span class="sd">            &#39;green&#39;: 32,</span>
+<span class="sd">            &#39;yellow&#39;: 33,</span>
+<span class="sd">            &#39;blue&#39;: 34,</span>
+<span class="sd">            &#39;magenta&#39;: 35,</span>
+<span class="sd">            &#39;cyan&#39;: 36,</span>
+<span class="sd">            &#39;white&#39;: 37</span>
+<span class="sd">        }</span>
 <span class="sd">    :param on_color: The on_color of text. Chosen from the following.</span>
-<span class="sd">    {</span>
-<span class="sd">        &#39;on_grey&#39;: 40,</span>
-<span class="sd">        &#39;on_red&#39;: 41,</span>
-<span class="sd">        &#39;on_green&#39;: 42,</span>
-<span class="sd">        &#39;on_yellow&#39;: 43,</span>
-<span class="sd">        &#39;on_blue&#39;: 44,</span>
-<span class="sd">        &#39;on_magenta&#39;: 45,</span>
-<span class="sd">        &#39;on_cyan&#39;: 46,</span>
-<span class="sd">        &#39;on_white&#39;: 47</span>
-<span class="sd">    }</span>
+<span class="sd">        {</span>
+<span class="sd">            &#39;on_grey&#39;: 40,</span>
+<span class="sd">            &#39;on_red&#39;: 41,</span>
+<span class="sd">            &#39;on_green&#39;: 42,</span>
+<span class="sd">            &#39;on_yellow&#39;: 43,</span>
+<span class="sd">            &#39;on_blue&#39;: 44,</span>
+<span class="sd">            &#39;on_magenta&#39;: 45,</span>
+<span class="sd">            &#39;on_cyan&#39;: 46,</span>
+<span class="sd">            &#39;on_white&#39;: 47</span>
+<span class="sd">        }</span>
 <span class="sd">    :param attrs: Attributes of color. Chosen from the following.</span>
-<span class="sd">    {</span>
-<span class="sd">       &#39;bold&#39;: 1,</span>
-<span class="sd">       &#39;dark&#39;: 2,</span>
-<span class="sd">       &#39;underline&#39;: 4,</span>
-<span class="sd">       &#39;blink&#39;: 5,</span>
-<span class="sd">       &#39;reverse&#39;: 7,</span>
-<span class="sd">       &#39;concealed&#39;: 8</span>
-<span class="sd">    }</span>
+<span class="sd">        {</span>
+<span class="sd">           &#39;bold&#39;: 1,</span>
+<span class="sd">           &#39;dark&#39;: 2,</span>
+<span class="sd">           &#39;underline&#39;: 4,</span>
+<span class="sd">           &#39;blink&#39;: 5,</span>
+<span class="sd">           &#39;reverse&#39;: 7,</span>
+<span class="sd">           &#39;concealed&#39;: 8</span>
+<span class="sd">        }</span>
 <span class="sd">    :return: Colored text.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s1">&#39;JINA_LOG_NO_COLOR&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
@@ -855,6 +871,7 @@
 <span class="sd">        Convert dict to an argparse-friendly list.</span>
 
 <span class="sd">        :param kwargs: dictionary of key-values to be converted</span>
+<span class="sd">        :return: argument list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -879,6 +896,7 @@
 
 <span class="sd">        :param kwargs: dictionary of key-values to be converted</span>
 <span class="sd">        :param parser: the parser for building kwargs into a namespace</span>
+<span class="sd">        :return: argument list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">ArgNamespace</span><span class="o">.</span><span class="n">kwargs2list</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -896,6 +914,7 @@
 
 <span class="sd">        :param kwargs: dictionary of key-values to be converted</span>
 <span class="sd">        :param parser: the parser for building kwargs into a namespace</span>
+<span class="sd">        :return: argument namespace, positional arguments and unknown arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">ArgNamespace</span><span class="o">.</span><span class="n">kwargs2list</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -920,6 +939,7 @@
 <span class="sd">        :param args: the namespace to parse</span>
 <span class="sd">        :param parser: the parser for referring the default values</span>
 <span class="sd">        :param taboo: exclude keys in the final result</span>
+<span class="sd">        :return: non defaults</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">taboo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">taboo</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -935,6 +955,7 @@
         <span class="sd">&quot;&quot;&quot;Convert argparse.Namespace to dict to be uploaded via REST.</span>
 
 <span class="sd">        :param args: namespace or dict or namespace to dict.</span>
+<span class="sd">        :return: pea args</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">Namespace</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
@@ -1103,6 +1124,8 @@
 <span class="sd">        .. code-block:: python</span>
 <span class="sd">            get_readable_time(seconds=1000)</span>
 
+<span class="sd">    :param args: arguments for datetime.timedelta</span>
+<span class="sd">    :param kwargs: key word arguments for datetime.timedelta</span>
 <span class="sd">    :return: Datetime in human readable format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">datetime</span>
@@ -1166,7 +1189,6 @@
 <span class="sd">    Convert all the tuple type values from a dict to list.</span>
 
 <span class="sd">    :param d: Dict type of data.</span>
-<span class="sd">    :return: Converted dict with list type values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
@@ -1261,8 +1283,10 @@
 <span class="k">def</span> <span class="nf">change_cwd</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Change the current working dir to ``path`` in a context and set it back to the original one when leaves the context.</span>
+<span class="sd">    Yields nothing</span>
 
 <span class="sd">    :param path: Target path.</span>
+<span class="sd">    :yields: nothing</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">curdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -1279,6 +1303,7 @@
 
 <span class="sd">    :param key: Old environment variable.</span>
 <span class="sd">    :param val: New environment variable.</span>
+<span class="sd">    :yields: nothing</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">old_var</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
