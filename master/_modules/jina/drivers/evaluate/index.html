@@ -228,7 +228,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 75 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
 </ul>
 
             
@@ -311,15 +311,16 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">RecursiveMixin</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span>
 <span class="kn">from</span> <span class="nn">..types.querylang.queryset.dunderkey</span> <span class="kn">import</span> <span class="n">dunder_get</span>
 <span class="kn">from</span> <span class="nn">.search</span> <span class="kn">import</span> <span class="n">KVSearchDriver</span>
 <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">..types.document.helper</span> <span class="kn">import</span> <span class="n">DocGroundtruthPair</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">deprecated_alias</span>
+<span class="kn">from</span> <span class="nn">..types.sets.doc_groundtruth</span> <span class="kn">import</span> <span class="n">DocumentGroundtruthSequence</span>
 
 
-<div class="viewcode-block" id="BaseEvaluateDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.evaluate/#jina.drivers.evaluate.BaseEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseEvaluateDriver</span><span class="p">(</span><span class="n">RecursiveMixin</span><span class="p">,</span> <span class="n">BaseExecutableDriver</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseEvaluateDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.evaluate/#jina.drivers.evaluate.BaseEvaluateDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseEvaluateDriver</span><span class="p">(</span><span class="n">BaseExecutableDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The Base Driver for evaluation operations.</span>
 
 <span class="sd">    .. warning::</span>
@@ -335,7 +336,8 @@
 <span class="sd">    :param **kwargs:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">executor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;evaluate&#39;</span><span class="p">,</span>
                  <span class="n">running_avg</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                  <span class="o">*</span><span class="n">args</span><span class="p">,</span>
@@ -349,9 +351,13 @@
 <span class="sd">        :param *args: *args for _traverse_apply</span>
 <span class="sd">        :param **kwargs: **kwargs for _traverse_apply</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">docs_groundtruths</span> <span class="o">=</span> <span class="p">[</span><span class="n">DocGroundtruthPair</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">groundtruth</span><span class="p">)</span> <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">groundtruth</span> <span class="ow">in</span>
-                             <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">groundtruths</span><span class="p">)]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_apply</span><span class="p">(</span><span class="n">docs_groundtruths</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">docs_groundtruths</span> <span class="o">=</span> <span class="n">DocumentGroundtruthSequence</span><span class="p">([</span>
+            <span class="n">DocGroundtruthPair</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">groundtruth</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">groundtruth</span>
+            <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">groundtruths</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="n">traversal_result</span> <span class="o">=</span> <span class="n">docs_groundtruths</span><span class="o">.</span><span class="n">traverse_flatten</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="n">traversal_result</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

@@ -228,7 +228,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 75 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
 </ul>
 
             
@@ -314,6 +314,7 @@
     <span class="n">Tuple</span><span class="p">,</span>
     <span class="n">Optional</span><span class="p">,</span>
     <span class="n">Sequence</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">google.protobuf.struct_pb2</span> <span class="kn">import</span> <span class="n">Struct</span>
@@ -325,6 +326,7 @@
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">convert_tuple_to_list</span>
 <span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAMLCompatible</span>
 <span class="kn">from</span> <span class="nn">..types.querylang</span> <span class="kn">import</span> <span class="n">QueryLang</span>
+<span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
 
 <span class="c1"># noinspection PyUnreachableCode</span>
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
@@ -334,7 +336,7 @@
     <span class="kn">from</span> <span class="nn">..logging.logger</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
     <span class="kn">from</span> <span class="nn">..types.message</span> <span class="kn">import</span> <span class="n">Message</span>
     <span class="kn">from</span> <span class="nn">..types.request</span> <span class="kn">import</span> <span class="n">Request</span>
-    <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">QueryLangSet</span><span class="p">,</span> <span class="n">DocumentSet</span>
+    <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">QueryLangSet</span>
     <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 
 
@@ -548,6 +550,19 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">expect_parts</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The DocumentSet after applying the traversal</span>
+
+
+<span class="sd">        .. # noqa: DAR201&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">DocumentSet</span><span class="p">([</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">msg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the current request, shortcut to ``self.runtime.message``</span>
 
@@ -609,94 +624,49 @@
         <span class="k">return</span> <span class="n">d</span></div>
 
 
-<div class="viewcode-block" id="RecursiveMixin"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.RecursiveMixin">[docs]</a><span class="k">class</span> <span class="nc">RecursiveMixin</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A mixin to traverse a set of Documents with a specific path. to be mixed in with :class:`BaseRecursiveDriver`&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ContextAwareRecursiveMixin"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.ContextAwareRecursiveMixin">[docs]</a><span class="k">class</span> <span class="nc">ContextAwareRecursiveMixin</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     The full datastructure version of :class:`FlatRecursiveMixin`, to be mixed in with :class:`BaseRecursiveDriver`.</span>
+<span class="sd">     It uses :meth:`traverse` in :class:`DocumentSet` and allows direct manipulation of Chunk-/Match-/DocumentSets.</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     .. seealso::</span>
+<span class="sd">        https://github.com/jina-ai/jina/issues/1932</span>
 
-
-<span class="sd">        .. # noqa: DAR102</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">(</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span>
-
-    <span class="k">def</span> <span class="nf">_apply_root</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
-        <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="c1"># TODO(Han): probably want to publicize this, as it is not obvious for driver</span>
-    <span class="c1">#  developer which one should be inherited</span>
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
-        <span class="n">context_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
-        <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Apply function works on a list of docs, modify the docs in-place</span>
-
-<span class="sd">        :param docs: a list of :class:`jina.Document` objects to work on; they could come from ``matches``/``chunks``.</span>
-<span class="sd">        :param context_doc: the owner of ``docs``</span>
-<span class="sd">        :param field: where ``docs`` comes from, either ``matches`` or ``chunks``</span>
-<span class="sd">        :param *args: *args</span>
-<span class="sd">        :param **kwargs: **kwargs</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Call the Driver.</span>
+        <span class="sd">&quot;&quot;&quot;Traverse with _apply_all</span>
 
-<span class="sd">        :param *args: *args for ``_traverse_apply``</span>
-<span class="sd">        :param **kwargs: **kwargs for ``_traverse_apply``</span>
+<span class="sd">        :param *args: *args forwarded to ``_apply_all``</span>
+<span class="sd">        :param **kwargs: **kwargs forwarded to ``_apply_all``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">document_sets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="n">document_sets</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_traverse_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_apply_root</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="s1">&#39;docs&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">doc</span><span class="p">],</span>
-                    <span class="kc">None</span><span class="p">,</span>
-                    <span class="kc">None</span><span class="p">,</span>
-                    <span class="n">path</span><span class="p">,</span>
-                    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-                <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">doc_sequences</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;DocumentSet&#39;</span><span class="p">],</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply function works on an Iterable of DocumentSet, modify the docs in-place.</span>
 
-    <span class="k">def</span> <span class="nf">_traverse_rec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">parent_doc</span><span class="p">,</span> <span class="n">parent_edge_type</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
-            <span class="n">next_edge</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">next_edge</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span>
-                        <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-                    <span class="p">)</span>
-                <span class="k">if</span> <span class="n">next_edge</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_rec</span><span class="p">(</span>
-                        <span class="n">doc</span><span class="o">.</span><span class="n">chunks</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-                    <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">parent_doc</span><span class="p">,</span> <span class="n">parent_edge_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+<span class="sd">        Each DocumentSet refers to a leaf (e.g. roots, matches or chunks wrapped</span>
+<span class="sd">        in a :class:`jina.DocumentSet`) in the traversal_paths. Modifications on the</span>
+<span class="sd">        DocumentSets (e.g. adding or deleting Documents) are directly applied on the underlying objects.</span>
+<span class="sd">        Adding a chunk to a ChunkSet results in adding a chunk to the parent Document.</span>
+
+<span class="sd">        :param doc_sequences: the Documents that should be handled</span>
+<span class="sd">        :param *args: driver specific arguments, which might be forwarded to the Executor</span>
+<span class="sd">        :param **kwargs: driver specific arguments, which might be forwarded to the Executor</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="FastRecursiveMixin"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.FastRecursiveMixin">[docs]</a><span class="k">class</span> <span class="nc">FastRecursiveMixin</span><span class="p">:</span>
+<div class="viewcode-block" id="FlatRecursiveMixin"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.FlatRecursiveMixin">[docs]</a><span class="k">class</span> <span class="nc">FlatRecursiveMixin</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The optimized version of :class:`RecursiveMixin`, to be mixed in with :class:`BaseRecursiveDriver`</span>
-<span class="sd">    it uses :meth:`traverse` in :class:`DocumentSet` and yield much better performance for index and encode drivers.</span>
+<span class="sd">    The batch optimized version of :class:`ContextAwareRecursiveMixin`, to be mixed in with :class:`BaseRecursiveDriver`.</span>
+<span class="sd">    It uses :meth:`traverse_flattened_per_path` in :class:`DocumentSet` and yield much better performance</span>
+<span class="sd">    when no context is needed and batching is possible.</span>
 
 <span class="sd">    .. seealso::</span>
 <span class="sd">       https://github.com/jina-ai/jina/issues/1932</span>
@@ -706,31 +676,34 @@
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Traverse with _apply_all</span>
 
-<span class="sd">        :param *args: *args for ``_apply_all``</span>
-<span class="sd">        :param **kwargs: **kwargs for ``_apply_all``</span>
+<span class="sd">        :param *args: *args forwarded to ``_apply_all``</span>
+<span class="sd">        :param **kwargs: **kwargs forwarded to ``_apply_all``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">path_documents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="o">.</span><span class="n">traverse_flattened_per_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">documents</span> <span class="ow">in</span> <span class="n">path_documents</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_apply_all</span><span class="p">(</span><span class="n">documents</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The DocumentSet after applying the traversal</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply function works on a list of docs, modify the docs in-place.</span>
 
+<span class="sd">        The list refers to all reachable leafes of a single ``traversal_path``.</span>
 
-<span class="sd">        .. # noqa: DAR201&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+<span class="sd">        :param docs: the Documents that should be handled</span>
+<span class="sd">        :param *args: driver specific arguments, which might be forwarded to the Executor</span>
+<span class="sd">        :param **kwargs: driver specific arguments, which might be forwarded to the Executor</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">DocumentSet</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">)</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="o">.</span><span class="n">traverse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span></div>
+<span class="sd">        &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="BaseRecursiveDriver"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.BaseRecursiveDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRecursiveDriver</span><span class="p">(</span><span class="n">BaseDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A :class:`BaseRecursiveDriver` is an abstract Driver class containing information about the `traversal_paths`</span>
 <span class="sd">    that a `Driver` must apply its logic.</span>
-<span class="sd">    It is intended to be mixed in with either :class:`FastRecursiveMixin` or :class:`RecursiveMixin`</span>
+<span class="sd">    It is intended to be mixed in with either :class:`FlatRecursiveMixin` or :class:`ContextAwareRecursiveMixin`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

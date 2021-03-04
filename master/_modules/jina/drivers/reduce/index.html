@@ -228,7 +228,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 75 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
 </ul>
 
             
@@ -307,18 +307,17 @@
 <span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">RecursiveMixin</span><span class="p">,</span> <span class="n">BaseRecursiveDriver</span>
-
-<span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
-    <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ContextAwareRecursiveMixin</span><span class="p">,</span> <span class="n">BaseRecursiveDriver</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span>
+<span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">ChunkSet</span><span class="p">,</span> <span class="n">MatchSet</span><span class="p">,</span> <span class="n">DocumentSet</span>
 
 
-<div class="viewcode-block" id="ReduceAllDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.reduce/#jina.drivers.reduce.ReduceAllDriver">[docs]</a><span class="k">class</span> <span class="nc">ReduceAllDriver</span><span class="p">(</span><span class="n">RecursiveMixin</span><span class="p">,</span> <span class="n">BaseRecursiveDriver</span><span class="p">):</span>
+<div class="viewcode-block" id="ReduceAllDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.reduce/#jina.drivers.reduce.ReduceAllDriver">[docs]</a><span class="k">class</span> <span class="nc">ReduceAllDriver</span><span class="p">(</span><span class="n">ContextAwareRecursiveMixin</span><span class="p">,</span> <span class="n">BaseRecursiveDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;:class:`ReduceAllDriver` merges chunks/matches from all requests, recursively.</span>
 
 <span class="sd">    .. note::</span>
@@ -329,76 +328,73 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">traversal_paths</span><span class="o">=</span><span class="n">traversal_paths</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># all pointers of the docs, provide the weak ref to all docs in partial reqs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[str, Any]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_apply_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">docs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">:</span>
-            <span class="n">docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_apply_root</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">):</span>
         <span class="n">request</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">request</span>
-        <span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">ClearField</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">ClearField</span><span class="p">(</span><span class="s1">&#39;docs&#39;</span><span class="p">)</span>
         <span class="n">request</span><span class="o">.</span><span class="n">docs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
-            <span class="n">context_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
-            <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_sequences</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;DocumentSet&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">doc_pointers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">docs</span> <span class="ow">in</span> <span class="n">doc_sequences</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="p">(</span><span class="n">ChunkSet</span><span class="p">,</span> <span class="n">MatchSet</span><span class="p">)):</span>
+                <span class="n">context_id</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">reference_doc</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">if</span> <span class="n">context_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">doc_pointers</span><span class="p">:</span>
+                    <span class="n">doc_pointers</span><span class="p">[</span><span class="n">context_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">reference_doc</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">ChunkSet</span><span class="p">):</span>
+                        <span class="n">doc_pointers</span><span class="p">[</span><span class="n">context_id</span><span class="p">]</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">doc_pointers</span><span class="p">[</span><span class="n">context_id</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_apply_root</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span></div>
 
-        <span class="k">if</span> <span class="n">context_doc</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">[</span><span class="n">context_doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">context_doc</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">[</span><span class="n">context_doc</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="CollectEvaluationDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.reduce/#jina.drivers.reduce.CollectEvaluationDriver">[docs]</a><span class="k">class</span> <span class="nc">CollectEvaluationDriver</span><span class="p">(</span><span class="n">ReduceAllDriver</span><span class="p">):</span>
+<div class="viewcode-block" id="CollectEvaluationDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.reduce/#jina.drivers.reduce.CollectEvaluationDriver">[docs]</a><span class="k">class</span> <span class="nc">CollectEvaluationDriver</span><span class="p">(</span><span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">BaseRecursiveDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Merge all evaluations into one, grouped by ``doc.id`` &quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">traversal_paths</span><span class="o">=</span><span class="n">traversal_paths</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
-            <span class="n">context_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
-            <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
             <span class="o">*</span><span class="n">args</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">context_doc</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">[</span><span class="n">context_doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">context_doc</span><span class="o">.</span><span class="n">evaluations</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">[</span><span class="n">context_doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">context_doc</span><span class="o">.</span><span class="n">evaluations</span><span class="p">)</span></div>
+        <span class="n">doc_pointers</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">doc_pointers</span><span class="p">:</span>
+                <span class="n">doc_pointers</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">evaluations</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">doc_pointers</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">evaluations</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ConcatEmbedDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.reduce/#jina.drivers.reduce.ConcatEmbedDriver">[docs]</a><span class="k">class</span> <span class="nc">ConcatEmbedDriver</span><span class="p">(</span><span class="n">ReduceAllDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Concat all embeddings into one, grouped by ```doc.id``` &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="ConcatEmbedDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.reduce/#jina.drivers.reduce.ConcatEmbedDriver">[docs]</a><span class="k">class</span> <span class="nc">ConcatEmbedDriver</span><span class="p">(</span><span class="n">BaseRecursiveDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Concat all embeddings into one, grouped by ``doc.id`` &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">traversal_paths</span><span class="o">=</span><span class="n">traversal_paths</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># all pointers of the docs, provide the weak ref to all docs in partial reqs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[str, Any]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_traverse_apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="p">,</span> <span class="n">concatenate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot;Performs the concatenation of all embeddings in `self.docs`.</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
-            <span class="n">context_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
-            <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">concatenate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">doc</span> <span class="o">=</span> <span class="n">context_doc</span>
-        <span class="k">if</span> <span class="n">concatenate</span><span class="p">:</span>
-            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">doc_pointers</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="p">)</span></div>
+<span class="sd">        :param *args: *args not used. Only for complying with parent class interface.</span>
+<span class="sd">        :param **kwargs: **kwargs not used. Only for complying with parent class interface.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_documents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docs</span><span class="o">.</span><span class="n">traverse_flatten</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span>
+        <span class="n">doc_pointers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collect_embeddings</span><span class="p">(</span><span class="n">all_documents</span><span class="p">)</span>
+
+        <span class="n">last_request_documents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span><span class="o">.</span><span class="n">traverse_flatten</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traversal_paths</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_concat_apply</span><span class="p">(</span><span class="n">last_request_documents</span><span class="p">,</span> <span class="n">doc_pointers</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_collect_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">):</span>
+        <span class="n">doc_pointers</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+            <span class="n">doc_pointers</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">embedding</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">doc_pointers</span>
+
+    <span class="k">def</span> <span class="nf">_concat_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">doc_pointers</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">doc_pointers</span><span class="p">[</span><span class="n">doc</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

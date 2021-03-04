@@ -228,7 +228,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 75 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
 </ul>
 
             
@@ -303,7 +303,8 @@
             
   <h1>Source code for jina.types.sets.document</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">MutableSequence</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
+
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -318,6 +319,7 @@
     <span class="kn">from</span> <span class="nn">google.protobuf.internal.containers</span> <span class="kn">import</span> <span class="n">RepeatedCompositeFieldContainer</span> <span class="k">as</span> <span class="n">RepeatedContainer</span>
 
 <span class="kn">from</span> <span class="nn">...proto.jina_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
+<span class="kn">from</span> <span class="nn">.traversable</span> <span class="kn">import</span> <span class="n">TraversableSequence</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..document</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -325,7 +327,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DocumentSet&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="DocumentSet"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet">[docs]</a><span class="k">class</span> <span class="nc">DocumentSet</span><span class="p">(</span><span class="n">MutableSequence</span><span class="p">):</span>
+<div class="viewcode-block" id="DocumentSet"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet">[docs]</a><span class="k">class</span> <span class="nc">DocumentSet</span><span class="p">(</span><span class="n">TraversableSequence</span><span class="p">,</span> <span class="n">MutableSequence</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :class:`DocumentSet` is a mutable sequence of :class:`Document`.</span>
 <span class="sd">    It gives an efficient view of a list of Document. One can iterate over it like</span>
@@ -335,7 +337,7 @@
 <span class="sd">    :type docs_proto: Union[&#39;RepeatedContainer&#39;, Sequence[&#39;Document&#39;]]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs_proto</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;RepeatedContainer&#39;</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]]):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs_proto</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;RepeatedContainer&#39;</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]]):</span>
         <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span> <span class="o">=</span> <span class="n">docs_proto</span>
@@ -436,46 +438,6 @@
 <div class="viewcode-block" id="DocumentSet.sort"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sort the list of :class:`DocumentSet`.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="DocumentSet.traverse"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.traverse">[docs]</a>    <span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a DocumentSet that traverses this :class:`DocumentSet` object according to the</span>
-<span class="sd">        ``traversal_paths``.</span>
-
-<span class="sd">        :param traversal_paths: a list of string that represents the traversal path</span>
-
-
-<span class="sd">        Example on ``traversal_paths``:</span>
-
-<span class="sd">            - [`r`]: docs in this DocumentSet</span>
-<span class="sd">            - [`m`]: all match-documents at adjacency 1</span>
-<span class="sd">            - [`c`]: all child-documents at granularity 1</span>
-<span class="sd">            - [`cc`]: all child-documents at granularity 2</span>
-<span class="sd">            - [`mm`]: all match-documents at adjacency 2</span>
-<span class="sd">            - [`cm`]: all match-document at adjacency 1 and granularity 1</span>
-<span class="sd">            - [`r`, `c`]: docs in this DocumentSet and all child-documents at granularity 1</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">def</span> <span class="nf">_traverse</span><span class="p">(</span><span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
-                <span class="n">loc</span> <span class="o">=</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">loc</span> <span class="o">==</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
-                    <span class="k">yield from</span> <span class="n">_traverse</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-                <span class="k">elif</span> <span class="n">loc</span> <span class="o">==</span> <span class="s1">&#39;m&#39;</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-                        <span class="k">yield from</span> <span class="n">_traverse</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">matches</span><span class="p">,</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-                <span class="k">elif</span> <span class="n">loc</span> <span class="o">==</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
-                        <span class="k">yield from</span> <span class="n">_traverse</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">chunks</span><span class="p">,</span> <span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">yield from</span> <span class="n">docs</span>
-
-        <span class="k">def</span> <span class="nf">_traverse_all</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">traversal_paths</span><span class="p">:</span>
-                <span class="k">yield from</span> <span class="n">_traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">DocumentSet</span><span class="p">(</span><span class="n">_traverse_all</span><span class="p">())</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
