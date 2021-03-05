@@ -46,3 +46,30 @@ jobs:
           directory: gh-pages
           github_token: ${{ secrets.JINA_DEV_BOT }}
           force: true
+  postReleaseJob:
+    needs: releaseJob
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update CHANGELOG, RELEASE, versions
+        run: |
+          wget https://raw.githubusercontent.com/jina-ai/jina/master/CONTRIBUTING.md -P ./chapters/
+          wget https://raw.githubusercontent.com/jina-ai/jina/master/RELEASE.md -P ./chapters/
+          wget https://raw.githubusercontent.com/jina-ai/jina/master/CHANGELOG.md -P ./chapters/
+          echo -e ${{env.RELEASE_VER}} >> versions
+          git config --local user.email "dev-bot@jina.ai"
+          git config --local user.name "Jina Dev Bot"
+          git add .
+          git commit -m "update ${{env.JINA_VERSION}} on ${{github.repository}}" -a || true
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.JINA_DEV_BOT }}
+          branch: docs-post-release
+          delete-branch: true
+          title: 'docs: post release updates'
+          body: |
+            Update docs
+            - Update versions with latest release version
+            - Update RELEASE.md, CHANGELOG.md, CONTRIBUTING.md
+          draft: false
+
