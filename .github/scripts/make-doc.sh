@@ -28,11 +28,6 @@ docker run --rm \
   pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 cd -
 
-# sync contributing.md, release.md and changelog.md to chapters/
-wget https://raw.githubusercontent.com/jina-ai/jina/master/CONTRIBUTING.md -P $(pwd)/chapters/
-wget https://raw.githubusercontent.com/jina-ai/jina/master/RELEASE.md -P $(pwd)/chapters/
-wget https://raw.githubusercontent.com/jina-ai/jina/master/CHANGELOG.md -P $(pwd)/chapters/
-cd -
 # create markdown for List [X] drivers in Jina & List [X] executors in Jina to chapters/
 cd ${DOC_DIR} && jina check --summary-driver chapters/all_driver.md && cd -
 cd ${DOC_DIR} && jina check --summary-exec chapters/all_exec.md && cd -
@@ -63,7 +58,6 @@ if [[ $1 == "commit" ]]; then
 elif [[ $1 == "release" ]]; then
   cd ${DOC_DIR}
   cp README.md .github/artworks/jinahub.jpg .github/artworks/jina-logo-dark.png _build/dirhtml/
-  echo -e "${RELEASE_VER}" >> versions
   cd -
   cd ${HTML_DIR}
   rsync -avr . master  # sync everything under the root to master/
