@@ -2,7 +2,7 @@
 
 set -ex
 
-DOC_DIR=.
+DOC_DIR=/home/runner/work/docs/docs
 HTML_DIR=${DOC_DIR}/_build/dirhtml
 
 # backup the old version's doc as later we do make clean, they all gone.
