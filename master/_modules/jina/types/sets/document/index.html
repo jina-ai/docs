@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -315,10 +315,14 @@
 
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># when protobuf using Cpp backend</span>
-    <span class="kn">from</span> <span class="nn">google.protobuf.pyext._message</span> <span class="kn">import</span> <span class="n">RepeatedCompositeContainer</span> <span class="k">as</span> <span class="n">RepeatedContainer</span>
+    <span class="kn">from</span> <span class="nn">google.protobuf.pyext._message</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">RepeatedCompositeContainer</span> <span class="k">as</span> <span class="n">RepeatedContainer</span><span class="p">,</span>
+    <span class="p">)</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="c1"># when protobuf using Python backend</span>
-    <span class="kn">from</span> <span class="nn">google.protobuf.internal.containers</span> <span class="kn">import</span> <span class="n">RepeatedCompositeFieldContainer</span> <span class="k">as</span> <span class="n">RepeatedContainer</span>
+    <span class="kn">from</span> <span class="nn">google.protobuf.internal.containers</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">RepeatedCompositeFieldContainer</span> <span class="k">as</span> <span class="n">RepeatedContainer</span><span class="p">,</span>
+    <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">...proto.jina_pb2</span> <span class="kn">import</span> <span class="n">DocumentProto</span>
 <span class="kn">from</span> <span class="nn">.traversable</span> <span class="kn">import</span> <span class="n">TraversableSequence</span>
@@ -370,11 +374,13 @@
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">..document</span> <span class="kn">import</span> <span class="n">Document</span>
+
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">Document</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">..document</span> <span class="kn">import</span> <span class="n">Document</span>
+
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">Document</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -479,7 +485,8 @@
 
         <span class="k">if</span> <span class="n">bad_docs</span> <span class="ow">and</span> <span class="n">docs_pts</span><span class="p">:</span>
             <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bad_docs</span><span class="p">)</span><span class="si">}</span><span class="s1"> no-</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1"> docs at granularity </span><span class="si">{</span><span class="n">docs_pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bad_docs</span><span class="p">)</span><span class="si">}</span><span class="s1"> no-</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1"> docs at granularity </span><span class="si">{</span><span class="n">docs_pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">contents</span><span class="p">,</span> <span class="n">DocumentSet</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">)</span>
 
@@ -490,17 +497,21 @@
 <div class="viewcode-block" id="DocumentSet.new"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Create a new empty document appended to the end of the set.&quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..document</span> <span class="kn">import</span> <span class="n">Document</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">())</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">..document</span> <span class="kn">import</span> <span class="n">Document</span>
+
         <span class="n">content</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Document</span><span class="p">(</span><span class="n">d</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
             <span class="n">content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;in total </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="p">)</span><span class="si">}</span><span class="s1"> items&#39;</span>
         <span class="k">return</span> <span class="n">content</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="p">)}</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="p">)}</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span>
         <span class="n">content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39; at </span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s1">&gt;&#39;</span></div>
@@ -636,7 +647,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -316,9 +316,12 @@
 
 <div class="viewcode-block" id="ZMQRuntime"><a class="viewcode-back" href="../../../../../../api/jina.peapods.runtimes.zmq.base/#jina.peapods.runtimes.zmq.base.ZMQRuntime">[docs]</a><span class="k">class</span> <span class="nc">ZMQRuntime</span><span class="p">(</span><span class="n">BaseRuntime</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Runtime procedure leveraging ZMQ.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span> <span class="o">=</span> <span class="n">Zmqlet</span><span class="o">.</span><span class="n">get_ctrl_address</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ctrl_with_ipc</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span> <span class="o">=</span> <span class="n">Zmqlet</span><span class="o">.</span><span class="n">get_ctrl_address</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ctrl_with_ipc</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
 <div class="viewcode-block" id="ZMQRuntime.cancel"><a class="viewcode-back" href="../../../../../../api/jina.peapods.runtimes.zmq.base/#jina.peapods.runtimes.zmq.base.ZMQRuntime.cancel">[docs]</a>    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Send cancel control message.&quot;&quot;&quot;</span>
@@ -331,7 +334,9 @@
 
 <span class="sd">        :return: control message.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">send_ctrl_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s1">&#39;STATUS&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">timeout_ctrl</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">send_ctrl_message</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s1">&#39;STATUS&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">timeout_ctrl</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -346,6 +351,7 @@
 
 <div class="viewcode-block" id="ZMQManyRuntime"><a class="viewcode-back" href="../../../../../../api/jina.peapods.runtimes.zmq.base/#jina.peapods.runtimes.zmq.base.ZMQManyRuntime">[docs]</a><span class="k">class</span> <span class="nc">ZMQManyRuntime</span><span class="p">(</span><span class="n">BaseRuntime</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Multiple Runtime leveraging ZMQ.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">many_ctrl_addr</span> <span class="o">=</span> <span class="p">[]</span>
@@ -355,10 +361,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">first_args</span><span class="o">.</span><span class="n">host</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">port_expose</span> <span class="o">=</span> <span class="n">first_args</span><span class="o">.</span><span class="n">port_expose</span>
             <span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]:</span>
-                <span class="n">ctrl_addr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Zmqlet</span><span class="o">.</span><span class="n">get_ctrl_address</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ctrl_with_ipc</span><span class="p">)</span>
+                <span class="n">ctrl_addr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">Zmqlet</span><span class="o">.</span><span class="n">get_ctrl_address</span><span class="p">(</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ctrl_with_ipc</span>
+                <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">many_ctrl_addr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ctrl_addr</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">many_ctrl_addr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Zmqlet</span><span class="o">.</span><span class="n">get_ctrl_address</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ctrl_with_ipc</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">many_ctrl_addr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">Zmqlet</span><span class="o">.</span><span class="n">get_ctrl_address</span><span class="p">(</span>
+                    <span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ctrl_with_ipc</span>
+                <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">timeout_ctrl</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">timeout_ctrl</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">host</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">port_expose</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">port_expose</span>
@@ -379,7 +391,9 @@
         <span class="c1"># TODO: can use send_ctrl_message to avoid sequential waiting</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ctrl_addr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">many_ctrl_addr</span><span class="p">:</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">send_ctrl_message</span><span class="p">(</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s1">&#39;STATUS&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout_ctrl</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">send_ctrl_message</span><span class="p">(</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s1">&#39;STATUS&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout_ctrl</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@property</span>
@@ -523,7 +537,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

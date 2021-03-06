@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -427,8 +427,10 @@
         <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">routes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">resolve_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Create a new :class:`CompoundExecutor` object</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">routes</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">resolve_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new :class:`CompoundExecutor` object</span>
 
 <span class="sd">        :param routes: a map of function routes. The key is the function name, the value is a tuple of two pieces,</span>
 <span class="sd">            where the first element is the name of the referred component (``metas.name``) and the second element</span>
@@ -519,7 +521,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return ``True``  if any components is updated&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_updated</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">))</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_updated</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">components</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">is_updated</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">)</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_updated</span>
 
     <span class="nd">@is_updated</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">is_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -543,12 +547,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
             <span class="n">c</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>  <span class="c1"># do i really need to save the compound executor itself</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+            <span class="n">filename</span><span class="o">=</span><span class="n">filename</span>
+        <span class="p">)</span>  <span class="c1"># do i really need to save the compound executor itself</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">components</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">AnyExecutor</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return all component executors as a list. The list follows the order as defined in the YAML config or the</span>
-<span class="sd">        pre-given order when calling the setter. &quot;&quot;&quot;</span>
+<span class="sd">        pre-given order when calling the setter.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_components</span>
 
     <span class="nd">@components</span><span class="o">.</span><span class="n">setter</span>
@@ -558,23 +564,30 @@
 <span class="sd">        :param comps: a function returns a list of executors</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">comps</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;components must be a callable function that returns &#39;</span>
-                            <span class="s1">&#39;a List[BaseExecutor]&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;components must be a callable function that returns &#39;</span>
+                <span class="s1">&#39;a List[BaseExecutor]&#39;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Important to handle when loading a CompoundExecutor when `inner` executors have not been loaded from yaml</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_init_from_yaml&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_components</span> <span class="o">=</span> <span class="n">comps</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;components expect a list of executors, receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">)</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;components expect a list of executors, receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_components</span><span class="p">)</span><span class="si">!r}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_comp_workspace</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_routes</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_routes</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;components is omitted from construction, as it is initialized from yaml config&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s1">&#39;components is omitted from construction, as it is initialized from yaml config&#39;</span>
+            <span class="p">)</span>
 
 <div class="viewcode-block" id="CompoundExecutor.get_component_workspace_from_compound_workspace"><a class="viewcode-back" href="../../../../api/jina.executors.compound/#jina.executors.compound.CompoundExecutor.get_component_workspace_from_compound_workspace">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_component_workspace_from_compound_workspace</span><span class="p">(</span><span class="n">compound_workspace</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">compound_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                                        <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_component_workspace_from_compound_workspace</span><span class="p">(</span>
+        <span class="n">compound_workspace</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">compound_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the name of workspace.</span>
 
@@ -584,16 +597,22 @@
 <span class="sd">        :return: The name of workspace.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">os</span>
-        <span class="k">return</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">get_shard_workspace</span><span class="p">(</span><span class="n">compound_workspace</span><span class="p">,</span> <span class="n">compound_name</span><span class="p">,</span> <span class="n">pea_id</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span>
-                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">pea_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pea_id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> \
-            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compound_workspace</span><span class="p">,</span> <span class="n">compound_name</span><span class="p">)</span></div>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">get_shard_workspace</span><span class="p">(</span><span class="n">compound_workspace</span><span class="p">,</span> <span class="n">compound_name</span><span class="p">,</span> <span class="n">pea_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">pea_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pea_id</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">compound_workspace</span><span class="p">,</span> <span class="n">compound_name</span><span class="p">)</span>
+        <span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_set_comp_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># overrides the workspace setting for all components</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">workspace</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="p">:</span>
-                <span class="n">c_workspace</span> <span class="o">=</span> <span class="n">CompoundExecutor</span><span class="o">.</span><span class="n">get_component_workspace_from_compound_workspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="p">,</span>
-                                                                                               <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea_id</span><span class="p">)</span>
+                <span class="n">c_workspace</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">CompoundExecutor</span><span class="o">.</span><span class="n">get_component_workspace_from_compound_workspace</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">workspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea_id</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Setting workspace of </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">c_workspace</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">c</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="n">c_workspace</span>
 
@@ -603,7 +622,9 @@
                 <span class="k">for</span> <span class="n">kk</span><span class="p">,</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">kk</span><span class="p">,</span> <span class="n">vv</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CompoundExecutor.add_route"><a class="viewcode-back" href="../../../../api/jina.executors.compound/#jina.executors.compound.CompoundExecutor.add_route">[docs]</a>    <span class="k">def</span> <span class="nf">add_route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_stored</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="CompoundExecutor.add_route"><a class="viewcode-back" href="../../../../api/jina.executors.compound/#jina.executors.compound.CompoundExecutor.add_route">[docs]</a>    <span class="k">def</span> <span class="nf">add_route</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_stored</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Create a new function for this executor which refers to the component&#39;s function</span>
 
 <span class="sd">        This will create a new function :func:`fn_name` which actually refers to ``components[comp_name].comp_fn_name``.</span>
@@ -617,7 +638,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">comp_name</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">comp_name</span>
+                <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">))</span>
+            <span class="p">):</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">comp_fn_name</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">is_stored</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_routes</span><span class="p">:</span>
@@ -648,11 +673,14 @@
                     <span class="n">fns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_FnWrapper</span><span class="p">([</span><span class="n">vv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="p">])</span>
                     <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_r</span><span class="p">,</span> <span class="n">fns</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;function &quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&quot; appears multiple times in </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;a new function &quot;</span><span class="si">{</span><span class="n">new_r</span><span class="si">}</span><span class="s1">&quot; is added to </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> by iterating over all&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;a new function &quot;</span><span class="si">{</span><span class="n">new_r</span><span class="si">}</span><span class="s1">&quot; is added to </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> by iterating over all&#39;</span>
+                    <span class="p">)</span>
                     <span class="n">new_routes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_r</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;function &quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&quot; appears multiple times in </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">, it needs to be resolved manually before using.&#39;</span><span class="p">)</span>
+                        <span class="sa">f</span><span class="s1">&#39;function &quot;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&quot; appears multiple times in </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">, it needs to be resolved manually before using.&#39;</span>
+                    <span class="p">)</span>
                     <span class="n">bad_routes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">new_routes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;new functions added: </span><span class="si">{</span><span class="n">new_routes</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -819,7 +847,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

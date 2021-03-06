@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -366,8 +366,10 @@
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_trained</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; has been trained already, &#39;</span>
-                                <span class="s1">&#39;training it again will override the previous training&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s1">&quot; has been trained already, &#39;</span>
+                <span class="s1">&#39;training it again will override the previous training&#39;</span>
+            <span class="p">)</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_trained</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">f</span>
@@ -376,14 +378,16 @@
 
 
 <div class="viewcode-block" id="wrap_func"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.wrap_func">[docs]</a><span class="k">def</span> <span class="nf">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func_lst</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Wrapping a class method only once, inherited but not overrided method will not be wrapped again</span>
+    <span class="sd">&quot;&quot;&quot;Wrapping a class method only once, inherited but not overrided method will not be wrapped again</span>
 
 <span class="sd">    :param cls: class</span>
 <span class="sd">    :param func_lst: function list to wrap</span>
 <span class="sd">    :param wrapper: the wrapper</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">f_name</span> <span class="ow">in</span> <span class="n">func_lst</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f_name</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f_name</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">mro</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f_name</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f_name</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">mro</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="p">):</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f_name</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f_name</span><span class="p">)))</span></div>
 
 
@@ -413,7 +417,7 @@
 <span class="sd">    after the function decorated by ``@as_train_method``.</span>
 <span class="sd">     :param func: the function to decorate</span>
 <span class="sd">     :return: the wrapped function</span>
-<span class="sd">     &quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -421,7 +425,9 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_trained</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;training is required before calling &quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;training is required before calling &quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> has no attribute &quot;is_trained&quot;&#39;</span><span class="p">)</span>
 
@@ -437,7 +443,9 @@
     <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s1">&#39;__init__&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;this decorator should only be used on __init__ method of an executor&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;this decorator should only be used on __init__ method of an executor&#39;</span>
+            <span class="p">)</span>
         <span class="n">taboo</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">}</span>
         <span class="n">_defaults</span> <span class="o">=</span> <span class="n">get_default_metas</span><span class="p">()</span>
         <span class="n">taboo</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_defaults</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -453,8 +461,10 @@
                 <span class="n">tmp</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;store_args_kwargs&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">args</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
-            <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;kwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">taboo</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;kwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">taboo</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_init_kwargs_dict&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
@@ -467,8 +477,9 @@
     <span class="k">return</span> <span class="n">arg_wrapper</span></div>
 
 
-<span class="k">def</span> <span class="nf">_get_slice</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">total_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span>
-    <span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">_get_slice</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">total_size</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">islice</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">total_size</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -508,21 +519,25 @@
             <span class="n">reduced_result</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">num_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_cols</span><span class="p">):</span>
-                <span class="n">reduced_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">final_result</span><span class="p">],</span> <span class="n">merge_over_axis</span><span class="p">))</span>
+                <span class="n">reduced_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">final_result</span><span class="p">],</span> <span class="n">merge_over_axis</span><span class="p">)</span>
+                <span class="p">)</span>
             <span class="n">final_result</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">reduced_result</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">final_result</span>
 
 
-<div class="viewcode-block" id="batching"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.batching">[docs]</a><span class="k">def</span> <span class="nf">batching</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="n">num_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="n">split_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-             <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-             <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-             <span class="n">label_on</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-             <span class="n">ordinal_idx_arg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="batching"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.batching">[docs]</a><span class="k">def</span> <span class="nf">batching</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">split_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">label_on</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ordinal_idx_arg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Split the input of a function into small batches and call :func:`func` on each batch</span>
 <span class="sd">    , collect the merged result and return. This is useful when the input is too big to fit into memory</span>
 
@@ -562,14 +577,17 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">]</span>
             <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-            <span class="n">b_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span> <span class="k">else</span> <span class="n">batch_size</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">b_size</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">batch_size</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span> <span class="k">else</span> <span class="n">batch_size</span>
+            <span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="c1"># no batching if b_size is None</span>
             <span class="k">if</span> <span class="n">b_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="n">default_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;batching enabled for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1"> batch_size=</span><span class="si">{</span><span class="n">b_size</span><span class="si">}</span><span class="s1"> &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;num_batch=</span><span class="si">{</span><span class="n">num_batch</span><span class="si">}</span><span class="s1"> axis=</span><span class="si">{</span><span class="n">split_over_axis</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;num_batch=</span><span class="si">{</span><span class="n">num_batch</span><span class="si">}</span><span class="s1"> axis=</span><span class="si">{</span><span class="n">split_over_axis</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
 
             <span class="n">full_data_size</span> <span class="o">=</span> <span class="n">_get_size</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">split_over_axis</span><span class="p">)</span>
             <span class="n">total_size</span> <span class="o">=</span> <span class="n">_get_total_size</span><span class="p">(</span><span class="n">full_data_size</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_batch</span><span class="p">)</span>
@@ -581,10 +599,14 @@
             <span class="n">yield_slice</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">)</span>
             <span class="n">slice_idx</span> <span class="o">=</span> <span class="kc">None</span>
 
-            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batch_iterator</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="n">total_size</span><span class="p">],</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">split_over_axis</span><span class="p">,</span> <span class="n">yield_slice</span><span class="o">=</span><span class="n">yield_slice</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batch_iterator</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">[:</span><span class="n">total_size</span><span class="p">],</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">split_over_axis</span><span class="p">,</span> <span class="n">yield_slice</span><span class="o">=</span><span class="n">yield_slice</span>
+            <span class="p">):</span>
                 <span class="k">if</span> <span class="n">yield_slice</span><span class="p">:</span>
                     <span class="n">slice_idx</span> <span class="o">=</span> <span class="n">b</span>
-                    <span class="n">new_memmap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                    <span class="n">new_memmap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span>
+                        <span class="n">data</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+                    <span class="p">)</span>
                     <span class="n">b</span> <span class="o">=</span> <span class="n">new_memmap</span><span class="p">[</span><span class="n">slice_idx</span><span class="p">]</span>
                     <span class="n">slice_idx</span> <span class="o">=</span> <span class="n">slice_idx</span><span class="p">[</span><span class="n">split_over_axis</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">slice_idx</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">slice_idx</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -617,13 +639,15 @@
         <span class="k">return</span> <span class="n">_batching</span></div>
 
 
-<div class="viewcode-block" id="batching_multi_input"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.batching_multi_input">[docs]</a><span class="k">def</span> <span class="nf">batching_multi_input</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                         <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                         <span class="n">num_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                         <span class="n">split_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                         <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                         <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-                         <span class="n">num_data</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="batching_multi_input"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.batching_multi_input">[docs]</a><span class="k">def</span> <span class="nf">batching_multi_input</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">num_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">split_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">num_data</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Split the input of a function into small batches and call :func:`func` on each batch</span>
 <span class="sd">    , collect the merged result and return. This is useful when the input is too big to fit into memory</span>
 
@@ -676,15 +700,25 @@
             <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
             <span class="n">default_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;batching enabled for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1"> batch_size=</span><span class="si">{</span><span class="n">b_size</span><span class="si">}</span><span class="s1"> &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;num_batch=</span><span class="si">{</span><span class="n">num_batch</span><span class="si">}</span><span class="s1"> axis=</span><span class="si">{</span><span class="n">split_over_axis</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;num_batch=</span><span class="si">{</span><span class="n">num_batch</span><span class="si">}</span><span class="s1"> axis=</span><span class="si">{</span><span class="n">split_over_axis</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
 
             <span class="c1"># assume all datas have the same length</span>
             <span class="n">full_data_size</span> <span class="o">=</span> <span class="n">_get_size</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">],</span> <span class="n">split_over_axis</span><span class="p">)</span>
             <span class="n">total_size</span> <span class="o">=</span> <span class="n">_get_total_size</span><span class="p">(</span><span class="n">full_data_size</span><span class="p">,</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">num_batch</span><span class="p">)</span>
             <span class="n">final_result</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">yield_dict</span> <span class="o">=</span> <span class="p">[</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="n">Dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_data</span><span class="p">)]</span>
-            <span class="n">data_iterators</span> <span class="o">=</span> <span class="p">[</span><span class="n">batch_iterator</span><span class="p">(</span><span class="n">_get_slice</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="n">total_size</span><span class="p">),</span> <span class="n">b_size</span><span class="p">,</span> <span class="n">split_over_axis</span><span class="p">,</span>
-                                             <span class="n">yield_dict</span><span class="o">=</span><span class="n">yield_dict</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_data</span><span class="p">)]</span>
+            <span class="n">yield_dict</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="n">Dict</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_data</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">data_iterators</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">batch_iterator</span><span class="p">(</span>
+                    <span class="n">_get_slice</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">i</span><span class="p">],</span> <span class="n">total_size</span><span class="p">),</span>
+                    <span class="n">b_size</span><span class="p">,</span>
+                    <span class="n">split_over_axis</span><span class="p">,</span>
+                    <span class="n">yield_dict</span><span class="o">=</span><span class="n">yield_dict</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_data</span><span class="p">)</span>
+            <span class="p">]</span>
 
             <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">data_iterators</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">]</span> <span class="o">=</span> <span class="n">batch</span>
@@ -706,9 +740,11 @@
         <span class="k">return</span> <span class="n">_batching</span></div>
 
 
-<div class="viewcode-block" id="single"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.single">[docs]</a><span class="k">def</span> <span class="nf">single</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-           <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-           <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="single"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.single">[docs]</a><span class="k">def</span> <span class="nf">single</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Guarantee that the input of a function is provided as a single instance and not in batches</span>
 
@@ -735,8 +771,7 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">]</span>
             <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
-            <span class="n">default_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;batching disabled for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">default_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;batching disabled for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="n">final_result</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
@@ -882,7 +917,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

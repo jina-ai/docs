@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -341,7 +341,12 @@
 <span class="sd">        It requires :mod:`tornado` and :mod:`uvloop` to be installed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="s1">&#39;JinaLogger&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ctrl_addr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">args</span><span class="p">:</span> <span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span>
+        <span class="n">logger</span><span class="p">:</span> <span class="s1">&#39;JinaLogger&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ctrl_addr</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">identity</span> <span class="o">=</span> <span class="n">random_identity</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
@@ -351,7 +356,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span> <span class="o">=</span> <span class="n">ctrl_addr</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_with_ipc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ipc://&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_with_ipc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ctrl_address</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ctrl_with_ipc</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_with_ipc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ctrl_address</span><span class="p">(</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">ctrl_with_ipc</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bytes_sent</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span> <span class="o">=</span> <span class="mi">0</span>
@@ -383,7 +390,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">poller</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Zmqlet.get_ctrl_address"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.Zmqlet.get_ctrl_address">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_ctrl_address</span><span class="p">(</span><span class="n">host</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">port_ctrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">ctrl_with_ipc</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">get_ctrl_address</span><span class="p">(</span>
+        <span class="n">host</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">port_ctrl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">ctrl_with_ipc</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Get the address of the control socket</span>
 
 <span class="sd">        :param host: the host in the arguments</span>
@@ -439,31 +448,52 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;setting up sockets...&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_with_ipc</span><span class="p">:</span>
-                <span class="n">ctrl_sock</span><span class="p">,</span> <span class="n">ctrl_addr</span> <span class="o">=</span> <span class="n">_init_socket</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_BIND</span><span class="p">,</span>
-                                                    <span class="n">use_ipc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl_with_ipc</span><span class="p">)</span>
+                <span class="n">ctrl_sock</span><span class="p">,</span> <span class="n">ctrl_addr</span> <span class="o">=</span> <span class="n">_init_socket</span><span class="p">(</span>
+                    <span class="n">ctx</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span>
+                    <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_BIND</span><span class="p">,</span>
+                    <span class="n">use_ipc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl_with_ipc</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">ctrl_sock</span><span class="p">,</span> <span class="n">ctrl_addr</span> <span class="o">=</span> <span class="n">_init_socket</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">__default_host__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_BIND</span><span class="p">)</span>
+                <span class="n">ctrl_sock</span><span class="p">,</span> <span class="n">ctrl_addr</span> <span class="o">=</span> <span class="n">_init_socket</span><span class="p">(</span>
+                    <span class="n">ctx</span><span class="p">,</span> <span class="n">__default_host__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_ctrl</span><span class="p">,</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_BIND</span>
+                <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;control over </span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-            <span class="n">in_sock</span><span class="p">,</span> <span class="n">in_addr</span> <span class="o">=</span> <span class="n">_init_socket</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host_in</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_in</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">socket_in</span><span class="p">,</span>
-                                            <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
-                                            <span class="n">ssh_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_server</span><span class="p">,</span>
-                                            <span class="n">ssh_keyfile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_keyfile</span><span class="p">,</span>
-                                            <span class="n">ssh_password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_password</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;input </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host_in</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_in</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">in_sock</span><span class="p">,</span> <span class="n">in_addr</span> <span class="o">=</span> <span class="n">_init_socket</span><span class="p">(</span>
+                <span class="n">ctx</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host_in</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_in</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">socket_in</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
+                <span class="n">ssh_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_server</span><span class="p">,</span>
+                <span class="n">ssh_keyfile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_keyfile</span><span class="p">,</span>
+                <span class="n">ssh_password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_password</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;input </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host_in</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_in</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
 
-            <span class="n">out_sock</span><span class="p">,</span> <span class="n">out_addr</span> <span class="o">=</span> <span class="n">_init_socket</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">socket_out</span><span class="p">,</span>
-                                              <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
-                                              <span class="n">ssh_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_server</span><span class="p">,</span>
-                                              <span class="n">ssh_keyfile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_keyfile</span><span class="p">,</span>
-                                              <span class="n">ssh_password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_password</span>
-                                              <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;output </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host_out</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_out</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">out_sock</span><span class="p">,</span> <span class="n">out_addr</span> <span class="o">=</span> <span class="n">_init_socket</span><span class="p">(</span>
+                <span class="n">ctx</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host_out</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_out</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">socket_out</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">,</span>
+                <span class="n">ssh_server</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_server</span><span class="p">,</span>
+                <span class="n">ssh_keyfile</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_keyfile</span><span class="p">,</span>
+                <span class="n">ssh_password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">ssh_password</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;output </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host_out</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_out</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;input </span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="n">in_addr</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">socket_in</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">) &#39;</span>
                 <span class="sa">f</span><span class="s1">&#39;output </span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="n">out_addr</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">socket_out</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">) &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;control over </span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_BIND</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;control over </span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="n">ctrl_addr</span><span class="p">,</span> <span class="s2">&quot;yellow&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_BIND</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">)&#39;</span>
+            <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">in_sock_type</span> <span class="o">=</span> <span class="n">in_sock</span><span class="o">.</span><span class="n">type</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">out_sock_type</span> <span class="o">=</span> <span class="n">out_sock</span><span class="o">.</span><span class="n">type</span>
@@ -500,14 +530,20 @@
 
 <div class="viewcode-block" id="Zmqlet.print_stats"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.Zmqlet.print_stats">[docs]</a>    <span class="k">def</span> <span class="nf">print_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Print out the network stats of of itself &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;#sent: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg_sent</span><span class="si">}</span><span class="s1"> &#39;</span>
-                         <span class="sa">f</span><span class="s1">&#39;#recv: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg_recv</span><span class="si">}</span><span class="s1"> &#39;</span>
-                         <span class="sa">f</span><span class="s1">&#39;sent_size: </span><span class="si">{</span><span class="n">get_readable_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bytes_sent</span><span class="p">)</span><span class="si">}</span><span class="s1"> &#39;</span>
-                         <span class="sa">f</span><span class="s1">&#39;recv_size: </span><span class="si">{</span><span class="n">get_readable_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">profile_logger</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s1">&#39;msg_sent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg_sent</span><span class="p">,</span>
-                             <span class="s1">&#39;msg_recv&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg_recv</span><span class="p">,</span>
-                             <span class="s1">&#39;bytes_sent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bytes_sent</span><span class="p">,</span>
-                             <span class="s1">&#39;bytes_recv&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span><span class="p">})</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;#sent: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg_sent</span><span class="si">}</span><span class="s1"> &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;#recv: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">msg_recv</span><span class="si">}</span><span class="s1"> &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;sent_size: </span><span class="si">{</span><span class="n">get_readable_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bytes_sent</span><span class="p">)</span><span class="si">}</span><span class="s1"> &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;recv_size: </span><span class="si">{</span><span class="n">get_readable_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+        <span class="n">profile_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;msg_sent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg_sent</span><span class="p">,</span>
+                <span class="s1">&#39;msg_recv&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg_recv</span><span class="p">,</span>
+                <span class="s1">&#39;bytes_sent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bytes_sent</span><span class="p">,</span>
+                <span class="s1">&#39;bytes_recv&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Zmqlet.send_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.Zmqlet.send_message">[docs]</a>    <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Send a message via the output socket</span>
@@ -534,7 +570,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">msg_sent</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;idle and i </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="si">}</span><span class="s1"> told the router&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Zmqlet.recv_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.Zmqlet.recv_message">[docs]</a>    <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="s1">&#39;Message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="Zmqlet.recv_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.Zmqlet.recv_message">[docs]</a>    <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="s1">&#39;Message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Receive a protobuf message from the input socket</span>
 
 <span class="sd">        :param callback: the callback function, which modifies the recevied message inplace.</span>
@@ -574,13 +612,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># await asyncio.sleep(sleep)  # preventing over-speed sending</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">num_bytes</span> <span class="o">=</span> <span class="k">await</span> <span class="n">send_message_async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_sock</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">send_recv_kwargs</span><span class="p">)</span>
+            <span class="n">num_bytes</span> <span class="o">=</span> <span class="k">await</span> <span class="n">send_message_async</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">out_sock</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">send_recv_kwargs</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bytes_sent</span> <span class="o">+=</span> <span class="n">num_bytes</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">msg_sent</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sending message error: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">, gateway cancelled?&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="AsyncZmqlet.recv_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.AsyncZmqlet.recv_message">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="s1">&#39;Request&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">]:</span>
+<div class="viewcode-block" id="AsyncZmqlet.recv_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.AsyncZmqlet.recv_message">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="s1">&#39;Request&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Message&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Receive a protobuf message in async manner.</span>
 
@@ -600,7 +642,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;receiving message error: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">, gateway cancelled?&#39;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># sleep a bit until handshake is done</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>  <span class="c1"># sleep a bit until handshake is done</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -617,6 +659,7 @@
         <span class="sd">&quot;&quot;&quot;Register :attr:`in_sock`, :attr:`ctrl_sock` and :attr:`out_sock` in poller.&quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="kn">import</span> <span class="nn">tornado.ioloop</span>
+
             <span class="n">get_or_reuse_loop</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">io_loop</span> <span class="o">=</span> <span class="n">tornado</span><span class="o">.</span><span class="n">ioloop</span><span class="o">.</span><span class="n">IOLoop</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span> <span class="o">=</span> <span class="n">ZMQStream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_loop</span><span class="p">)</span>
@@ -632,7 +675,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span><span class="p">:</span>
             <span class="c1"># wait until the close signal is received</span>
-            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">01</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opened_socks</span><span class="p">:</span>
                 <span class="n">s</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -664,6 +707,7 @@
 
 <span class="sd">        :param callback: callback function to receive the protobuf message</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">_callback</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">sock_type</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="n">_parse_from_frames</span><span class="p">(</span><span class="n">sock_type</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bytes_recv</span> <span class="o">+=</span> <span class="n">msg</span><span class="o">.</span><span class="n">size</span>
@@ -708,7 +752,9 @@
         <span class="k">return</span> <span class="n">r</span></div>
 
 
-<div class="viewcode-block" id="send_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.send_message">[docs]</a><span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="n">sock</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="s1">&#39;ZMQStream&#39;</span><span class="p">],</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="send_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.send_message">[docs]</a><span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span>
+    <span class="n">sock</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="s1">&#39;ZMQStream&#39;</span><span class="p">],</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Send a protobuf message to a socket</span>
 
 <span class="sd">    :param sock: the target socket to send</span>
@@ -725,7 +771,8 @@
     <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">Again</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;cannot send message to sock </span><span class="si">{</span><span class="n">sock</span><span class="si">}</span><span class="s1"> after timeout=</span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s1">ms, please check the following:&#39;</span>
-            <span class="s1">&#39;is the server still online? is the network broken? are &quot;port&quot; correct?&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;is the server still online? is the network broken? are &quot;port&quot; correct?&#39;</span>
+        <span class="p">)</span>
     <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ZMQError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
         <span class="n">default_logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
     <span class="k">finally</span><span class="p">:</span>
@@ -751,8 +798,9 @@
         <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">RCVTIMEO</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="send_message_async"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.send_message_async">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">send_message_async</span><span class="p">(</span><span class="n">sock</span><span class="p">:</span> <span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-                             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<div class="viewcode-block" id="send_message_async"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.send_message_async">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">send_message_async</span><span class="p">(</span>
+    <span class="n">sock</span><span class="p">:</span> <span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Send a protobuf message to a socket in async manner</span>
 
 <span class="sd">    :param sock: the target socket to send</span>
@@ -768,7 +816,8 @@
     <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">Again</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;cannot send message to sock </span><span class="si">{</span><span class="n">sock</span><span class="si">}</span><span class="s1"> after timeout=</span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s1">ms, please check the following:&#39;</span>
-            <span class="s1">&#39;is the server still online? is the network broken? are &quot;port&quot; correct? &#39;</span><span class="p">)</span>
+            <span class="s1">&#39;is the server still online? is the network broken? are &quot;port&quot; correct? &#39;</span>
+        <span class="p">)</span>
     <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ZMQError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
         <span class="n">default_logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
@@ -783,7 +832,7 @@
 
 
 <div class="viewcode-block" id="recv_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.recv_message">[docs]</a><span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span><span class="n">sock</span><span class="p">:</span> <span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; Receive a protobuf message from a socket</span>
+    <span class="sd">&quot;&quot;&quot;Receive a protobuf message from a socket</span>
 
 <span class="sd">    :param sock: the socket to pull from</span>
 <span class="sd">    :param timeout: max wait time for pulling, -1 means wait forever</span>
@@ -801,16 +850,18 @@
     <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">Again</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;no response from sock </span><span class="si">{</span><span class="n">sock</span><span class="si">}</span><span class="s1"> after timeout=</span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s1">ms, please check the following:&#39;</span>
-            <span class="s1">&#39;is the server still online? is the network broken? are &quot;port&quot; correct? &#39;</span><span class="p">)</span>
+            <span class="s1">&#39;is the server still online? is the network broken? are &quot;port&quot; correct? &#39;</span>
+        <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ex</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">RCVTIMEO</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="recv_message_async"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.recv_message_async">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">recv_message_async</span><span class="p">(</span><span class="n">sock</span><span class="p">:</span> <span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-                             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot; Receive a protobuf message from a socket in async manner</span>
+<div class="viewcode-block" id="recv_message_async"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.recv_message_async">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">recv_message_async</span><span class="p">(</span>
+    <span class="n">sock</span><span class="p">:</span> <span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Message&#39;</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Receive a protobuf message from a socket in async manner</span>
 
 <span class="sd">    :param sock: the socket to pull from</span>
 <span class="sd">    :param timeout: max wait time for pulling, -1 means wait forever</span>
@@ -829,7 +880,8 @@
     <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">Again</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TimeoutError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s1">&#39;no response from sock </span><span class="si">{</span><span class="n">sock</span><span class="si">}</span><span class="s1"> after timeout=</span><span class="si">{</span><span class="n">timeout</span><span class="si">}</span><span class="s1">ms, please check the following:&#39;</span>
-            <span class="s1">&#39;is the server still online? is the network broken? are &quot;port&quot; correct? &#39;</span><span class="p">)</span>
+            <span class="s1">&#39;is the server still online? is the network broken? are &quot;port&quot; correct? &#39;</span>
+        <span class="p">)</span>
     <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ZMQError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
         <span class="n">default_logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">CancelledError</span><span class="p">:</span>
@@ -876,17 +928,26 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;JINA_IPC_SOCK_TMP&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmp</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;This directory for sockets (</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s1">) does not seems to exist.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;This directory for sockets (</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s1">) does not seems to exist.&#39;</span>
+            <span class="p">)</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">random_identity</span><span class="p">())</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span><span class="o">.</span><span class="n">name</span>
     <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;ipc://</span><span class="si">{</span><span class="n">tmp</span><span class="si">}</span><span class="s1">&#39;</span>
 
 
-<span class="k">def</span> <span class="nf">_init_socket</span><span class="p">(</span><span class="n">ctx</span><span class="p">:</span> <span class="s1">&#39;zmq.Context&#39;</span><span class="p">,</span> <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-                 <span class="n">socket_type</span><span class="p">:</span> <span class="s1">&#39;SocketType&#39;</span><span class="p">,</span> <span class="n">identity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">use_ipc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ssh_server</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ssh_keyfile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ssh_password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">_init_socket</span><span class="p">(</span>
+    <span class="n">ctx</span><span class="p">:</span> <span class="s1">&#39;zmq.Context&#39;</span><span class="p">,</span>
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">port</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">socket_type</span><span class="p">:</span> <span class="s1">&#39;SocketType&#39;</span><span class="p">,</span>
+    <span class="n">identity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">use_ipc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">ssh_server</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ssh_keyfile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ssh_password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="n">sock</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">SocketType</span><span class="o">.</span><span class="n">PULL_BIND</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">ctx</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">),</span>
         <span class="n">SocketType</span><span class="o">.</span><span class="n">PULL_CONNECT</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">ctx</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">PULL</span><span class="p">),</span>
@@ -916,7 +977,8 @@
             <span class="c1"># JEP2, if it is bind, then always bind to local</span>
             <span class="k">if</span> <span class="n">host</span> <span class="o">!=</span> <span class="n">__default_host__</span><span class="p">:</span>
                 <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;host is set from </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">__default_host__</span><span class="si">}</span><span class="s1"> as the socket is in BIND type&#39;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s1">&#39;host is set from </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">__default_host__</span><span class="si">}</span><span class="s1"> as the socket is in BIND type&#39;</span>
+                <span class="p">)</span>
                 <span class="n">host</span> <span class="o">=</span> <span class="n">__default_host__</span>
             <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">sock</span><span class="o">.</span><span class="n">bind_to_random_port</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tcp://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -924,9 +986,11 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">sock</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tcp://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ZMQError</span><span class="p">:</span>
-                    <span class="n">default_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;error when binding port </span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">, this port is occupied. &#39;</span>
-                                         <span class="sa">f</span><span class="s1">&#39;If you are using Linux, try `lsof -i :</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">` to see which process &#39;</span>
-                                         <span class="sa">f</span><span class="s1">&#39;occupies the port.&#39;</span><span class="p">)</span>
+                    <span class="n">default_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;error when binding port </span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">, this port is occupied. &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;If you are using Linux, try `lsof -i :</span><span class="si">{</span><span class="n">port</span><span class="si">}</span><span class="s1">` to see which process &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;occupies the port.&#39;</span>
+                    <span class="p">)</span>
                     <span class="k">raise</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1078,7 +1142,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

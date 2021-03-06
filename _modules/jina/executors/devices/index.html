@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -353,7 +353,7 @@
 <span class="sd">                # use your awesome model to encode/craft/score</span>
 <span class="sd">                import torch</span>
 <span class="sd">                torch.set_grad_enabled(False)</span>
-<span class="sd">                </span>
+
 <span class="sd">                _input = torch.as_tensor(data, device=self.device)</span>
 <span class="sd">                _output = self.model(_input).cpu()</span>
 
@@ -371,6 +371,7 @@
 <span class="sd">            please use the environment variable `CUDA_VISIBLE_DEVICES`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">torch</span>
+
         <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda:0&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_gpu</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TorchDevice.to_device"><a class="viewcode-back" href="../../../../api/jina.executors.devices/#jina.executors.devices.TorchDevice.to_device">[docs]</a>    <span class="k">def</span> <span class="nf">to_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -418,11 +419,13 @@
 <span class="sd">            please use the environment variable `CUDA_VISIBLE_DEVICES`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">paddle.fluid</span> <span class="k">as</span> <span class="nn">fluid</span>
+
         <span class="k">return</span> <span class="n">fluid</span><span class="o">.</span><span class="n">CUDAPlace</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_gpu</span> <span class="k">else</span> <span class="n">fluid</span><span class="o">.</span><span class="n">CPUPlace</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PaddleDevice.to_device"><a class="viewcode-back" href="../../../../api/jina.executors.devices/#jina.executors.devices.PaddleDevice.to_device">[docs]</a>    <span class="k">def</span> <span class="nf">to_device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load the model to device.&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">paddle.fluid</span> <span class="k">as</span> <span class="nn">fluid</span>
+
         <span class="k">return</span> <span class="n">fluid</span><span class="o">.</span><span class="n">Executor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div></div>
 
 
@@ -463,6 +466,7 @@
 <span class="sd">            please use the environment variable `CUDA_VISIBLE_DEVICES`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
         <span class="n">cpus</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">list_physical_devices</span><span class="p">(</span><span class="n">device_type</span><span class="o">=</span><span class="s1">&#39;CPU&#39;</span><span class="p">)</span>
         <span class="n">gpus</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">list_physical_devices</span><span class="p">(</span><span class="n">device_type</span><span class="o">=</span><span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_gpu</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">gpus</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -472,6 +476,7 @@
 <div class="viewcode-block" id="TFDevice.to_device"><a class="viewcode-back" href="../../../../api/jina.executors.devices/#jina.executors.devices.TFDevice.to_device">[docs]</a>    <span class="k">def</span> <span class="nf">to_device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load the model to device.&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
         <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">set_visible_devices</span><span class="p">(</span><span class="n">devices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div></div>
 
 
@@ -536,14 +541,20 @@
 <span class="sd">            please use the environment variable `CUDA_VISIBLE_DEVICES`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">faiss</span>
+
         <span class="c1"># For now, consider only one GPU, do not distribute the index</span>
         <span class="k">return</span> <span class="n">faiss</span><span class="o">.</span><span class="n">StandardGpuResources</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_gpu</span> <span class="k">else</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="FaissDevice.to_device"><a class="viewcode-back" href="../../../../api/jina.executors.devices/#jina.executors.devices.FaissDevice.to_device">[docs]</a>    <span class="k">def</span> <span class="nf">to_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load the model to device.&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">faiss</span>
+
         <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-        <span class="k">return</span> <span class="n">faiss</span><span class="o">.</span><span class="n">index_cpu_to_gpu</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">index</span></div></div>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">faiss</span><span class="o">.</span><span class="n">index_cpu_to_gpu</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">index</span>
+        <span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="MindsporeDevice"><a class="viewcode-back" href="../../../../api/jina.executors.devices/#jina.executors.devices.MindsporeDevice">[docs]</a><span class="k">class</span> <span class="nc">MindsporeDevice</span><span class="p">(</span><span class="n">BaseDevice</span><span class="p">):</span>
@@ -563,6 +574,7 @@
 <div class="viewcode-block" id="MindsporeDevice.to_device"><a class="viewcode-back" href="../../../../api/jina.executors.devices/#jina.executors.devices.MindsporeDevice.to_device">[docs]</a>    <span class="k">def</span> <span class="nf">to_device</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load the model to device.&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">mindspore.context</span> <span class="k">as</span> <span class="nn">context</span>
+
         <span class="n">context</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">GRAPH_MODE</span><span class="p">,</span> <span class="n">device_target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div></div>
 </pre></div>
 
@@ -696,7 +708,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

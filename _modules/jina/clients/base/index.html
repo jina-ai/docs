@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -391,10 +391,13 @@
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span>
 
         <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isasyncgenfunction</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="ow">or</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isasyncgen</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;checking the validity of an async generator is not implemented yet&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s1">&#39;checking the validity of an async generator is not implemented yet&#39;</span>
+            <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.request</span> <span class="kn">import</span> <span class="n">request_generator</span>
+
             <span class="n">r</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Request</span><span class="p">):</span>
                 <span class="n">default_logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;inputs is valid&#39;</span><span class="p">)</span>
@@ -404,7 +407,9 @@
             <span class="n">default_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;inputs is not valid!&#39;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">BadClientInput</span> <span class="kn">from</span> <span class="nn">ex</span></div>
 
-    <span class="k">def</span> <span class="nf">_get_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">],</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">_get_requests</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterator</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">],</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="s1">&#39;Request&#39;</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get request in generator.</span>
 
@@ -418,9 +423,11 @@
 
         <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isasyncgen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">.request.asyncio</span> <span class="kn">import</span> <span class="n">request_generator</span>
+
             <span class="k">return</span> <span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">_kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.request</span> <span class="kn">import</span> <span class="n">request_generator</span>
+
             <span class="k">return</span> <span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">_kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_task_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -455,30 +462,41 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_inputs</span> <span class="o">=</span> <span class="n">bytes_gen</span>
 
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">_get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                           <span class="n">inputs</span><span class="p">:</span> <span class="n">InputType</span><span class="p">,</span>
-                           <span class="n">on_done</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-                           <span class="n">on_error</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                           <span class="n">on_always</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_get_results</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">inputs</span><span class="p">:</span> <span class="n">InputType</span><span class="p">,</span>
+        <span class="n">on_done</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">on_error</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_always</span><span class="p">:</span> <span class="n">Callable</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span>
             <span class="n">tname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_task_name</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">req_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_requests</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">async</span> <span class="k">with</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">insecure_channel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                                                 <span class="n">options</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;grpc.max_send_message_length&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-                                                          <span class="p">(</span><span class="s1">&#39;grpc.max_receive_message_length&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)])</span> <span class="k">as</span> <span class="n">channel</span><span class="p">:</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="n">grpc</span><span class="o">.</span><span class="n">aio</span><span class="o">.</span><span class="n">insecure_channel</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="p">[</span>
+                    <span class="p">(</span><span class="s1">&#39;grpc.max_send_message_length&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s1">&#39;grpc.max_receive_message_length&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+                <span class="p">],</span>
+            <span class="p">)</span> <span class="k">as</span> <span class="n">channel</span><span class="p">:</span>
                 <span class="n">stub</span> <span class="o">=</span> <span class="n">jina_pb2_grpc</span><span class="o">.</span><span class="n">JinaRPCStub</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;connected to the gateway at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">!&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;connected to the gateway at </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">!&#39;</span>
+                <span class="p">)</span>
                 <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="n">tname</span><span class="p">)</span> <span class="k">as</span> <span class="n">p_bar</span><span class="p">,</span> <span class="n">TimeContext</span><span class="p">(</span><span class="n">tname</span><span class="p">):</span>
                     <span class="k">async</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">stub</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">req_iter</span><span class="p">):</span>
                         <span class="n">resp</span><span class="o">.</span><span class="n">as_typed_request</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">request_type</span><span class="p">)</span>
                         <span class="n">resp</span><span class="o">.</span><span class="n">as_response</span><span class="p">()</span>
-                        <span class="n">callback_exec</span><span class="p">(</span><span class="n">response</span><span class="o">=</span><span class="n">resp</span><span class="p">,</span>
-                                      <span class="n">on_error</span><span class="o">=</span><span class="n">on_error</span><span class="p">,</span>
-                                      <span class="n">on_done</span><span class="o">=</span><span class="n">on_done</span><span class="p">,</span>
-                                      <span class="n">on_always</span><span class="o">=</span><span class="n">on_always</span><span class="p">,</span>
-                                      <span class="n">continue_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">continue_on_error</span><span class="p">,</span>
-                                      <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">)</span>
+                        <span class="n">callback_exec</span><span class="p">(</span>
+                            <span class="n">response</span><span class="o">=</span><span class="n">resp</span><span class="p">,</span>
+                            <span class="n">on_error</span><span class="o">=</span><span class="n">on_error</span><span class="p">,</span>
+                            <span class="n">on_done</span><span class="o">=</span><span class="n">on_done</span><span class="p">,</span>
+                            <span class="n">on_always</span><span class="o">=</span><span class="n">on_always</span><span class="p">,</span>
+                            <span class="n">continue_on_error</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">continue_on_error</span><span class="p">,</span>
+                            <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
+                        <span class="p">)</span>
                         <span class="n">p_bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">request_size</span><span class="p">)</span>
                         <span class="k">yield</span> <span class="n">resp</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
@@ -492,15 +510,21 @@
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;gRPC error: </span><span class="si">{</span><span class="n">my_code</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">my_details</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="k">if</span> <span class="n">my_code</span> <span class="o">==</span> <span class="n">grpc</span><span class="o">.</span><span class="n">StatusCode</span><span class="o">.</span><span class="n">UNAVAILABLE</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">the ongoing request is terminated as the server is not available or closed already&#39;</span><span class="p">)</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">the ongoing request is terminated as the server is not available or closed already&#39;</span>
+                <span class="p">)</span>
                 <span class="k">raise</span> <span class="n">rpc_ex</span>
             <span class="k">elif</span> <span class="n">my_code</span> <span class="o">==</span> <span class="n">grpc</span><span class="o">.</span><span class="n">StatusCode</span><span class="o">.</span><span class="n">INTERNAL</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">internal error on the server side&#39;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">rpc_ex</span>
-            <span class="k">elif</span> <span class="n">my_code</span> <span class="o">==</span> <span class="n">grpc</span><span class="o">.</span><span class="n">StatusCode</span><span class="o">.</span><span class="n">UNKNOWN</span> <span class="ow">and</span> <span class="s1">&#39;asyncio.exceptions.TimeoutError&#39;</span> <span class="ow">in</span> <span class="n">my_details</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">BadClientInput</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
-                                     <span class="s1">&#39;often the case is that you define/send a bad input iterator to jina, &#39;</span>
-                                     <span class="s1">&#39;please double check your input iterator&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">rpc_ex</span>
+            <span class="k">elif</span> <span class="p">(</span>
+                <span class="n">my_code</span> <span class="o">==</span> <span class="n">grpc</span><span class="o">.</span><span class="n">StatusCode</span><span class="o">.</span><span class="n">UNKNOWN</span>
+                <span class="ow">and</span> <span class="s1">&#39;asyncio.exceptions.TimeoutError&#39;</span> <span class="ow">in</span> <span class="n">my_details</span>
+            <span class="p">):</span>
+                <span class="k">raise</span> <span class="n">BadClientInput</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="s1">&#39;often the case is that you define/send a bad input iterator to jina, &#39;</span>
+                    <span class="s1">&#39;please double check your input iterator&#39;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">rpc_ex</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">BadClient</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">rpc_ex</span>
 
@@ -527,9 +551,23 @@
         <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;top_k&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;top_k&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
             <span class="c1"># associate all VectorSearchDriver and SliceQL driver to use top_k</span>
             <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">QueryLang</span>
-            <span class="n">topk_ql</span> <span class="o">=</span> <span class="p">[</span><span class="n">QueryLang</span><span class="p">({</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SliceQL&#39;</span><span class="p">,</span> <span class="s1">&#39;priority&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;top_k&#39;</span><span class="p">]}}),</span>
-                       <span class="n">QueryLang</span><span class="p">(</span>
-                           <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;VectorSearchDriver&#39;</span><span class="p">,</span> <span class="s1">&#39;priority&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;top_k&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;top_k&#39;</span><span class="p">]}})]</span>
+
+            <span class="n">topk_ql</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">QueryLang</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SliceQL&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;priority&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;end&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;top_k&#39;</span><span class="p">]},</span>
+                    <span class="p">}</span>
+                <span class="p">),</span>
+                <span class="n">QueryLang</span><span class="p">(</span>
+                    <span class="p">{</span>
+                        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;VectorSearchDriver&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;priority&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;top_k&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;top_k&#39;</span><span class="p">]},</span>
+                    <span class="p">}</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
             <span class="k">if</span> <span class="s1">&#39;queryset&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;queryset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">topk_ql</span>
             <span class="k">else</span><span class="p">:</span>
@@ -666,7 +704,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

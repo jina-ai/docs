@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -317,6 +317,7 @@
 <span class="kn">from</span> <span class="nn">.....proto</span> <span class="kn">import</span> <span class="n">jina_pb2_grpc</span>
 <span class="kn">from</span> <span class="nn">.....types.message</span> <span class="kn">import</span> <span class="n">Message</span>
 <span class="kn">from</span> <span class="nn">.....types.request</span> <span class="kn">import</span> <span class="n">Request</span>
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;AsyncPrefetchCall&#39;</span><span class="p">]</span>
 
 
@@ -366,23 +367,34 @@
                         <span class="c1"># This code block will be executed for REST based invocations</span>
                         <span class="n">next_request</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">request_iterator</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">request_iterator</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not have `__anext__` or `__next__`&#39;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">request_iterator</span><span class="p">)</span><span class="si">}</span><span class="s1"> does not have `__anext__` or `__next__`&#39;</span>
+                        <span class="p">)</span>
                     <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">Message</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">next_request</span><span class="p">,</span> <span class="s1">&#39;gateway&#39;</span><span class="p">,</span> <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))))</span>
-                    <span class="n">fetch_to</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">recv_message</span><span class="p">(</span><span class="n">callback</span><span class="o">=</span><span class="n">handle</span><span class="p">)))</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+                            <span class="n">Message</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">next_request</span><span class="p">,</span> <span class="s1">&#39;gateway&#39;</span><span class="p">,</span> <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">fetch_to</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">recv_message</span><span class="p">(</span><span class="n">callback</span><span class="o">=</span><span class="n">handle</span><span class="p">))</span>
+                    <span class="p">)</span>
                 <span class="k">except</span> <span class="p">(</span><span class="ne">StopIteration</span><span class="p">,</span> <span class="ne">StopAsyncIteration</span><span class="p">):</span>
                     <span class="k">return</span> <span class="kc">True</span>
             <span class="k">return</span> <span class="kc">False</span>
 
         <span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;prefetching </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">prefetch</span><span class="si">}</span><span class="s1"> requests&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;if this takes too long, you may want to take smaller &quot;--prefetch&quot; or &#39;</span>
-                                <span class="s1">&#39;ask client to reduce &quot;--request-size&quot;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;if this takes too long, you may want to take smaller &quot;--prefetch&quot; or &#39;</span>
+                <span class="s1">&#39;ask client to reduce &quot;--request-size&quot;&#39;</span>
+            <span class="p">)</span>
             <span class="n">prefetch_task</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">is_req_empty</span> <span class="o">=</span> <span class="k">await</span> <span class="n">prefetch_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">prefetch</span><span class="p">,</span> <span class="n">prefetch_task</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">is_req_empty</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">prefetch_task</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;receive an empty stream from the client! &#39;</span>
-                                  <span class="s1">&#39;please check your client</span><span class="se">\&#39;</span><span class="s1">s inputs, &#39;</span>
-                                  <span class="s1">&#39;you can use &quot;Client.check_input(inputs)&quot;&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s1">&#39;receive an empty stream from the client! &#39;</span>
+                    <span class="s1">&#39;please check your client</span><span class="se">\&#39;</span><span class="s1">s inputs, &#39;</span>
+                    <span class="s1">&#39;you can use &quot;Client.check_input(inputs)&quot;&#39;</span>
+                <span class="p">)</span>
                 <span class="k">return</span>
 
         <span class="c1"># the total num requests &lt; self.args.prefetch</span>
@@ -394,14 +406,18 @@
             <span class="n">onrecv_task</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="c1"># the following code &quot;interleaves&quot; prefetch_task and onrecv_task, when one dries, it switches to the other</span>
             <span class="k">while</span> <span class="n">prefetch_task</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;send: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">msg_sent</span><span class="si">}</span><span class="s1"> &#39;</span>
-                                 <span class="sa">f</span><span class="s1">&#39;recv: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">msg_recv</span><span class="si">}</span><span class="s1"> &#39;</span>
-                                 <span class="sa">f</span><span class="s1">&#39;pending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">msg_sent</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">msg_recv</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;send: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">msg_sent</span><span class="si">}</span><span class="s1"> &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;recv: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">msg_recv</span><span class="si">}</span><span class="s1"> &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;pending: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">msg_sent</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmqlet</span><span class="o">.</span><span class="n">msg_recv</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
                 <span class="n">onrecv_task</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">prefetch_task</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="k">await</span> <span class="n">r</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">is_req_empty</span><span class="p">:</span>
-                        <span class="n">is_req_empty</span> <span class="o">=</span> <span class="k">await</span> <span class="n">prefetch_req</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">prefetch_on_recv</span><span class="p">,</span> <span class="n">onrecv_task</span><span class="p">)</span>
+                        <span class="n">is_req_empty</span> <span class="o">=</span> <span class="k">await</span> <span class="n">prefetch_req</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">prefetch_on_recv</span><span class="p">,</span> <span class="n">onrecv_task</span>
+                        <span class="p">)</span>
 
                 <span class="c1"># this list dries, clear it and feed it with on_recv_task</span>
                 <span class="n">prefetch_task</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -538,7 +554,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -312,7 +312,13 @@
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">ExitStack</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Set</span>
 
-<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">_set_peas_args</span><span class="p">,</span> <span class="n">_set_after_to_pass</span><span class="p">,</span> <span class="n">_copy_to_head_args</span><span class="p">,</span> <span class="n">_copy_to_tail_args</span><span class="p">,</span> <span class="n">_fill_in_host</span>
+<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_set_peas_args</span><span class="p">,</span>
+    <span class="n">_set_after_to_pass</span><span class="p">,</span>
+    <span class="n">_copy_to_head_args</span><span class="p">,</span>
+    <span class="n">_copy_to_tail_args</span><span class="p">,</span>
+    <span class="n">_fill_in_host</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..peas</span> <span class="kn">import</span> <span class="n">BasePea</span>
 <span class="kn">from</span> <span class="nn">...enums</span> <span class="kn">import</span> <span class="o">*</span>
 
@@ -330,7 +336,9 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_conditional_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">needs</span> <span class="o">=</span> <span class="n">needs</span> <span class="k">if</span> <span class="n">needs</span> <span class="k">else</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1">#: used in the :class:`jina.flow.Flow` to build the graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">needs</span> <span class="k">if</span> <span class="n">needs</span> <span class="k">else</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="p">)</span>  <span class="c1">#: used in the :class:`jina.flow.Flow` to build the graph</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">peas</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[&#39;BasePea&#39;]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">False</span>
@@ -395,12 +403,10 @@
         <span class="c1"># note this will be never out of boundary</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">],</span> <span class="n">Namespace</span><span class="p">]]]:</span>
-        <span class="n">peas_args</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;head&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;tail&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s1">&#39;peas&#39;</span><span class="p">:</span> <span class="p">[]</span>
-        <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">_parse_args</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">],</span> <span class="n">Namespace</span><span class="p">]]]:</span>
+        <span class="n">peas_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;head&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;tail&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;peas&#39;</span><span class="p">:</span> <span class="p">[]}</span>
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># reasons to separate head and tail from peas is that they</span>
             <span class="c1"># can be deducted based on the previous and next pods</span>
@@ -409,9 +415,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_copy_to_head_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="o">.</span><span class="n">is_push</span><span class="p">)</span>
             <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_copy_to_tail_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-            <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">],</span> <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">])</span>
+            <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span>
+                <span class="n">args</span><span class="p">,</span> <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">],</span> <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span>
+            <span class="p">)</span>
         <span class="k">elif</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_before&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">uses_before</span> <span class="o">!=</span> <span class="s1">&#39;_pass&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_after&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">uses_after</span> <span class="o">!=</span> <span class="s1">&#39;_pass&#39;</span><span class="p">):</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_after&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">uses_after</span> <span class="o">!=</span> <span class="s1">&#39;_pass&#39;</span>
+        <span class="p">):</span>
             <span class="n">args</span><span class="o">.</span><span class="n">scheduling</span> <span class="o">=</span> <span class="n">SchedulerType</span><span class="o">.</span><span class="n">ROUND_ROBIN</span>
             <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_before&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">True</span>
@@ -419,7 +428,9 @@
             <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_after&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_copy_to_tail_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-            <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">peas_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">peas_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tail&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+            <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span>
+                <span class="n">args</span><span class="p">,</span> <span class="n">peas_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">peas_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tail&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">False</span>
@@ -479,9 +490,11 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Get all arguments of all Peas in this BasePod. &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span> <span class="o">+</span> \
-               <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span> <span class="o">+</span> \
-               <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span>
+            <span class="o">+</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_peas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -521,7 +534,8 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">noblock_on_start</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_start_success</span><span class="si">!r}</span><span class="s1"> should only be called when `noblock_on_start` is set to True&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_start_success</span><span class="si">!r}</span><span class="s1"> should only be called when `noblock_on_start` is set to True&#39;</span>
+            <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">:</span>
@@ -698,7 +712,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

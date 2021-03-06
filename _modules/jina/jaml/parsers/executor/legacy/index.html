@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -320,6 +320,7 @@
 
 <div class="viewcode-block" id="LegacyParser"><a class="viewcode-back" href="../../../../../../api/jina.jaml.parsers.executor.legacy/#jina.jaml.parsers.executor.legacy.LegacyParser">[docs]</a><span class="k">class</span> <span class="nc">LegacyParser</span><span class="p">(</span><span class="n">VersionedYAMLParser</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Legacy parser for executor.&quot;&quot;&quot;</span>
+
     <span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;legacy&#39;</span>  <span class="c1"># the version number this parser designed for</span>
 
     <span class="nd">@staticmethod</span>
@@ -329,6 +330,7 @@
 <span class="sd">        :param class_: target class from which we want to retrieve arguments</span>
 <span class="sd">        :return: all the arguments of all the classes from which `class_` inherits</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="k">def</span> <span class="nf">get_class_arguments</span><span class="p">(</span><span class="n">class_</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            :param class_: the class to check</span>
@@ -343,6 +345,7 @@
 <span class="sd">            :param cls: the class to check</span>
 <span class="sd">            :return: all classes from which cls inherits from</span>
 <span class="sd">            &quot;&quot;&quot;</span>
+
             <span class="k">def</span> <span class="nf">_accumulate_classes</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">cs</span><span class="p">):</span>
                 <span class="n">cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">cls</span> <span class="o">==</span> <span class="nb">object</span><span class="p">:</span>
@@ -350,14 +353,14 @@
                 <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">:</span>
                     <span class="n">_accumulate_classes</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">cs</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">cs</span>
-            
+
             <span class="n">classes</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">_accumulate_classes</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">classes</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span>
 
         <span class="n">all_classes</span> <span class="o">=</span> <span class="n">accumulate_classes</span><span class="p">(</span><span class="n">class_</span><span class="p">)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">get_class_arguments</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">all_classes</span><span class="p">))</span>
-        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">,</span><span class="n">args</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_get_dump_path_from_config</span><span class="p">(</span><span class="n">meta_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">):</span>
@@ -377,10 +380,14 @@
             <span class="k">if</span> <span class="n">root_name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
                 <span class="c1"># try to load from the corresponding file as if it was a CompoundExecutor, if the `.bin` does not exist,</span>
                 <span class="c1"># we should try to see if from its workspace can be loaded as it may be a `ref_indexer`</span>
-                <span class="n">compound_work_dir</span> <span class="o">=</span> <span class="n">CompoundExecutor</span><span class="o">.</span><span class="n">get_component_workspace_from_compound_workspace</span><span class="p">(</span><span class="n">root_work_dir</span><span class="p">,</span>
-                                                                                                     <span class="n">root_name</span><span class="p">,</span>
-                                                                                                     <span class="n">pea_id</span><span class="p">)</span>
-                <span class="n">dump_path</span> <span class="o">=</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">get_shard_workspace</span><span class="p">(</span><span class="n">compound_work_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pea_id</span><span class="p">)</span>
+                <span class="n">compound_work_dir</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">CompoundExecutor</span><span class="o">.</span><span class="n">get_component_workspace_from_compound_workspace</span><span class="p">(</span>
+                        <span class="n">root_work_dir</span><span class="p">,</span> <span class="n">root_name</span><span class="p">,</span> <span class="n">pea_id</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">dump_path</span> <span class="o">=</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">get_shard_workspace</span><span class="p">(</span>
+                    <span class="n">compound_work_dir</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pea_id</span>
+                <span class="p">)</span>
                 <span class="n">bin_dump_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="s2">&quot;bin&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">bin_dump_path</span><span class="p">):</span>
                     <span class="k">return</span> <span class="n">bin_dump_path</span>
@@ -420,19 +427,30 @@
                 <span class="c1"># tmp_p = {kk: expand_env_var(vv) for kk, vv in {**k, **p}.items()}</span>
                 <span class="n">tmp_a</span> <span class="o">=</span> <span class="n">a</span>
                 <span class="n">tmp_p</span> <span class="o">=</span> <span class="p">{</span><span class="n">kk</span><span class="p">:</span> <span class="n">vv</span> <span class="k">for</span> <span class="n">kk</span><span class="p">,</span> <span class="n">vv</span> <span class="ow">in</span> <span class="p">{</span><span class="o">**</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">p</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-                <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">tmp_a</span><span class="p">,</span> <span class="o">**</span><span class="n">tmp_p</span><span class="p">,</span> <span class="n">metas</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">requests</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;requests&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+                    <span class="o">*</span><span class="n">tmp_a</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">tmp_p</span><span class="p">,</span>
+                    <span class="n">metas</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                    <span class="n">requests</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;requests&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># tmp_p = {kk: expand_env_var(vv) for kk, vv in data.get(&#39;with&#39;, {}).items()}</span>
-                <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;with&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">metas</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">,</span> <span class="p">{}),</span> <span class="n">requests</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;requests&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+                <span class="n">obj</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+                    <span class="o">**</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;with&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                    <span class="n">metas</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                    <span class="n">requests</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;requests&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="p">)</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_init_from_yaml</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="c1"># check if the yaml file used to instanciate &#39;cls&#39; has arguments that are not in &#39;cls&#39;</span>
             <span class="n">arguments_from_cls</span> <span class="o">=</span> <span class="n">LegacyParser</span><span class="o">.</span><span class="n">_get_all_arguments</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
             <span class="n">arguments_from_yaml</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;with&#39;</span><span class="p">,</span> <span class="p">{}))</span>
-            <span class="n">difference_set</span> <span class="o">=</span> <span class="n">arguments_from_yaml</span>  <span class="o">-</span> <span class="n">arguments_from_cls</span>
+            <span class="n">difference_set</span> <span class="o">=</span> <span class="n">arguments_from_yaml</span> <span class="o">-</span> <span class="n">arguments_from_cls</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">difference_set</span><span class="p">):</span>
-                <span class="n">obj</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The arguments </span><span class="si">{</span><span class="n">difference_set</span><span class="si">}</span><span class="s1"> defined in the YAML are not expected in the &#39;</span>
-                                   <span class="sa">f</span><span class="s1">&#39;class </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;The arguments </span><span class="si">{</span><span class="n">difference_set</span><span class="si">}</span><span class="s1"> defined in the YAML are not expected in the &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;class </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="p">)</span>
 
             <span class="n">obj</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;successfully built </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> from a yaml config&#39;</span><span class="p">)</span>
 
@@ -443,7 +461,8 @@
             <span class="n">obj</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="s1">&#39;&quot;metas&quot; config is not found in this yaml file, &#39;</span>
                 <span class="s1">&#39;this map is important as it provides an unique identifier when &#39;</span>
-                <span class="s1">&#39;persisting the executor on disk.&#39;</span><span class="p">)</span>
+                <span class="s1">&#39;persisting the executor on disk.&#39;</span>
+            <span class="p">)</span>
 
         <span class="c1"># for compound executor</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">load_from_dump</span> <span class="ow">and</span> <span class="s1">&#39;components&#39;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
@@ -605,7 +624,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -355,9 +355,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">dunder_get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">proto</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="n">MessageToJson</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">MessageToJson</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
@@ -396,7 +394,7 @@
 <div class="viewcode-block" id="RouteDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.control/#jina.drivers.control.RouteDriver">[docs]</a><span class="k">class</span> <span class="nc">RouteDriver</span><span class="p">(</span><span class="n">ControlReqDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Ensures that data requests are forwarded to the downstream `:class:`BasePea` ensuring</span>
 <span class="sd">      that the load is balanced between parallel `:class:`BasePea` if the scheduling `:class:`SchedulerType` is LOAD_BALANCE.</span>
-<span class="sd">      </span>
+
 <span class="sd">    .. note::</span>
 <span class="sd">        - The dealer never receives a control request from the router,</span>
 <span class="sd">        every time it finishes a job and sends via out_sock, it returns the envelope with control</span>
@@ -436,10 +434,12 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_zmqlet</span><span class="o">.</span><span class="n">pause_pollin</span><span class="p">()</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">is_polling_paused</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_no_dealer</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;if this router connects more than one dealer, &#39;</span>
-                                   <span class="s1">&#39;then this error should never be raised. often when it &#39;</span>
-                                   <span class="s1">&#39;is raised, some Pods must fail to start, so please go &#39;</span>
-                                   <span class="s1">&#39;up and check the first error message in the log&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s1">&#39;if this router connects more than one dealer, &#39;</span>
+                    <span class="s1">&#39;then this error should never be raised. often when it &#39;</span>
+                    <span class="s1">&#39;is raised, some Pods must fail to start, so please go &#39;</span>
+                    <span class="s1">&#39;up and check the first error message in the log&#39;</span>
+                <span class="p">)</span>
             <span class="c1"># else:</span>
             <span class="c1">#    this FALLBACK to trivial message pass</span>
             <span class="c1">#</span>
@@ -452,7 +452,9 @@
             <span class="c1"># where some dealer is broken/fails to start, so `idle_dealer_ids` is empty</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;IDLE&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span><span class="si">}</span><span class="s1"> is idle, now I know these idle peas </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span><span class="si">}</span><span class="s1"> is idle, now I know these idle peas </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_polling_paused</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_zmqlet</span><span class="o">.</span><span class="n">resume_pollin</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">is_polling_paused</span> <span class="o">=</span> <span class="kc">False</span>
@@ -599,7 +601,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

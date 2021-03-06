@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -324,27 +324,34 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">workdir</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;this demo requires Pytorch and Transformers to be installed, &#39;</span>
-                                                   <span class="s1">&#39;if you haven</span><span class="se">\&#39;</span><span class="s1">t, please do `pip install jina[torch,transformers]`&#39;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;this demo requires Pytorch and Transformers to be installed, &#39;</span>
+        <span class="s1">&#39;if you haven</span><span class="se">\&#39;</span><span class="s1">t, please do `pip install jina[torch,transformers]`&#39;</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="kn">import</span> <span class="nn">transformers</span><span class="o">,</span> <span class="nn">torch</span>
+
         <span class="k">assert</span> <span class="p">[</span><span class="n">torch</span><span class="p">,</span> <span class="n">transformers</span><span class="p">]</span>  <span class="c1">#: prevent pycharm auto remove the above line</span>
 
     <span class="n">targets</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;people-img&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">index_data_url</span><span class="p">,</span>
-            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">workdir</span><span class="p">,</span> <span class="s1">&#39;dataset.zip&#39;</span><span class="p">)</span>
+            <span class="s1">&#39;filename&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">workdir</span><span class="p">,</span> <span class="s1">&#39;dataset.zip&#39;</span><span class="p">),</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
     <span class="c1"># download the data</span>
     <span class="n">download_data</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">download_proxy</span><span class="p">,</span> <span class="n">task_name</span><span class="o">=</span><span class="s1">&#39;download zip data&#39;</span><span class="p">)</span>
     <span class="kn">import</span> <span class="nn">zipfile</span>
+
     <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="s1">&#39;people-img&#39;</span><span class="p">][</span><span class="s1">&#39;filename&#39;</span><span class="p">],</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">fp</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">workdir</span><span class="p">)</span>
 
     <span class="c1"># this envs are referred in index and query flow YAMLs</span>
     <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;HW_WORKDIR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">workdir</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PATH&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">os</span><span class="o">.</span><span class="n">pathsep</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;resources&#39;</span><span class="p">),</span> <span class="s1">&#39;multimodal&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PATH&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">os</span><span class="o">.</span><span class="n">pathsep</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;resources&#39;</span><span class="p">),</span> <span class="s1">&#39;multimodal&#39;</span>
+    <span class="p">)</span>
 
     <span class="c1"># now comes the real work</span>
     <span class="c1"># load index flow from a YAML file</span>
@@ -366,8 +373,10 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>  <span class="c1"># intentional pass, browser support isn&#39;t cross-platform</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="n">default_logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;You should see a demo page opened in your browser, &#39;</span>
-                                   <span class="sa">f</span><span class="s1">&#39;if not, you may open </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">demo_url</span><span class="si">}</span><span class="s1"> manually&#39;</span><span class="p">)</span>
+            <span class="n">default_logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;You should see a demo page opened in your browser, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;if not, you may open </span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">demo_url</span><span class="si">}</span><span class="s1"> manually&#39;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">unblock_query_flow</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">block</span><span class="p">()</span></div>
 </pre></div>
@@ -502,7 +511,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>

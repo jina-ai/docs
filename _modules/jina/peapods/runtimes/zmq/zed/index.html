@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -317,8 +317,14 @@
 <span class="kn">from</span> <span class="nn">....</span> <span class="kn">import</span> <span class="n">Message</span>
 <span class="kn">from</span> <span class="nn">....</span> <span class="kn">import</span> <span class="n">Request</span>
 <span class="kn">from</span> <span class="nn">....enums</span> <span class="kn">import</span> <span class="n">OnErrorStrategy</span>
-<span class="kn">from</span> <span class="nn">....excepts</span> <span class="kn">import</span> <span class="n">NoExplicitMessage</span><span class="p">,</span> <span class="n">ExecutorFailToLoad</span><span class="p">,</span> <span class="n">MemoryOverHighWatermark</span><span class="p">,</span> <span class="n">ChainedPodException</span><span class="p">,</span> \
-    <span class="n">BadConfigSource</span><span class="p">,</span> <span class="n">RuntimeTerminated</span>
+<span class="kn">from</span> <span class="nn">....excepts</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">NoExplicitMessage</span><span class="p">,</span>
+    <span class="n">ExecutorFailToLoad</span><span class="p">,</span>
+    <span class="n">MemoryOverHighWatermark</span><span class="p">,</span>
+    <span class="n">ChainedPodException</span><span class="p">,</span>
+    <span class="n">BadConfigSource</span><span class="p">,</span>
+    <span class="n">RuntimeTerminated</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">....executors</span> <span class="kn">import</span> <span class="n">BaseExecutor</span>
 <span class="kn">from</span> <span class="nn">....helper</span> <span class="kn">import</span> <span class="n">random_identity</span>
 <span class="kn">from</span> <span class="nn">....logging.profile</span> <span class="kn">import</span> <span class="n">used_memory</span><span class="p">,</span> <span class="n">TimeDict</span>
@@ -364,18 +370,22 @@
         <span class="sd">&quot;&quot;&quot;Load ZMQStreamlet to this runtime.&quot;&quot;&quot;</span>
         <span class="c1"># important: fix zmqstreamlet ctrl address to replace the the ctrl address generated in the main</span>
         <span class="c1"># process/thread</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_zmqlet</span> <span class="o">=</span> <span class="n">ZmqStreamlet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">ctrl_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zmqlet</span> <span class="o">=</span> <span class="n">ZmqStreamlet</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="n">ctrl_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl_addr</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_executor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load the executor to this runtime, specified by ``uses`` CLI argument.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span> <span class="o">=</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">uses</span><span class="p">,</span>
-                                                      <span class="n">pea_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pea_id</span><span class="p">,</span>
-                                                      <span class="n">read_only</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">read_only</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span> <span class="o">=</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">uses</span><span class="p">,</span> <span class="n">pea_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pea_id</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">read_only</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">runtime</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">BadConfigSource</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;fail to load config from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">uses</span><span class="si">}</span><span class="s1">, if you are using docker image for --uses, &#39;</span>
-                              <span class="sa">f</span><span class="s1">&#39;please use &quot;docker://YOUR_IMAGE_NAME&quot;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;fail to load config from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">uses</span><span class="si">}</span><span class="s1">, if you are using docker image for --uses, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;please use &quot;docker://YOUR_IMAGE_NAME&quot;&#39;</span>
+            <span class="p">)</span>
             <span class="k">raise</span> <span class="n">ExecutorFailToLoad</span> <span class="kn">from</span> <span class="nn">ex</span>
         <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;fail to load file dependency&#39;</span><span class="p">)</span>
@@ -388,6 +398,7 @@
         <span class="sd">&quot;&quot;&quot;Load the plugins if needed necessary to load executors.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">py_modules</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">....importer</span> <span class="kn">import</span> <span class="n">PathImporter</span>
+
             <span class="n">PathImporter</span><span class="o">.</span><span class="n">add_modules</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">py_modules</span><span class="p">)</span>
 
     <span class="c1">#: Private methods required by :meth:`teardown`</span>
@@ -423,7 +434,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_partial_requests</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">request</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_partial_messages</span><span class="p">]</span>
             <span class="n">part_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_requests</span><span class="p">)</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span><span class="si">}</span><span class="s1"> parts)&#39;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;recv </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">part_str</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">colored_route</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;recv </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">part_str</span><span class="si">}</span><span class="s1"> from </span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">colored_route</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="nf">_post_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ZEDRuntime&#39;</span><span class="p">:</span>
@@ -458,7 +471,10 @@
             <span class="c1"># otherwise a reducer will lose its function when eailier pods raise exception</span>
             <span class="k">raise</span> <span class="n">NoExplicitMessage</span>
 
-        <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">code</span> <span class="o">!=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">StatusProto</span><span class="o">.</span><span class="n">ERROR</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">on_error_strategy</span> <span class="o">&lt;</span> <span class="n">OnErrorStrategy</span><span class="o">.</span><span class="n">SKIP_HANDLE</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">code</span> <span class="o">!=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">StatusProto</span><span class="o">.</span><span class="n">ERROR</span>
+            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">on_error_strategy</span> <span class="o">&lt;</span> <span class="n">OnErrorStrategy</span><span class="o">.</span><span class="n">SKIP_HANDLE</span>
+        <span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request_type</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ChainedPodException</span>
@@ -492,7 +508,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_zmqlet</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">except</span> <span class="n">MemoryOverHighWatermark</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;memory usage </span><span class="si">{</span><span class="n">used_memory</span><span class="p">()</span><span class="si">}</span><span class="s1"> GB is above the high-watermark: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">memory_hwm</span><span class="si">}</span><span class="s1"> GB&#39;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;memory usage </span><span class="si">{</span><span class="n">used_memory</span><span class="p">()</span><span class="si">}</span><span class="s1"> GB is above the high-watermark: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">memory_hwm</span><span class="si">}</span><span class="s1"> GB&#39;</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="n">NoExplicitMessage</span><span class="p">:</span>
             <span class="c1"># silent and do not propagate message anymore</span>
             <span class="c1"># 1. wait partial message to be finished</span>
@@ -507,16 +524,22 @@
                 <span class="k">raise</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">ChainedPodException</span><span class="p">):</span>
                 <span class="n">msg</span><span class="o">.</span><span class="n">add_exception</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">&#39;</span> <span class="o">+</span>
-                                  <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> add &quot;--quiet-error&quot; to suppress the exception details&#39;</span>
-                                  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet_error</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                  <span class="n">exc_info</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet_error</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">&#39;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> add &quot;--quiet-error&quot; to suppress the exception details&#39;</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet_error</span>
+                    <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                    <span class="n">exc_info</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet_error</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">msg</span><span class="o">.</span><span class="n">add_exception</span><span class="p">(</span><span class="n">ex</span><span class="p">,</span> <span class="n">executor</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_executor&#39;</span><span class="p">))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">&#39;</span> <span class="o">+</span>
-                                  <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> add &quot;--quiet-error&quot; to suppress the exception details&#39;</span>
-                                  <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet_error</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                  <span class="n">exc_info</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet_error</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">&#39;</span>
+                    <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1"> add &quot;--quiet-error&quot; to suppress the exception details&#39;</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet_error</span>
+                    <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                    <span class="n">exc_info</span><span class="o">=</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">quiet_error</span><span class="p">,</span>
+                <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_zmqlet</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
@@ -716,7 +739,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 05, 2021.
+        Last updated on Mar 06, 2021.
       </span>
 
         </p>
