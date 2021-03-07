@@ -210,6 +210,7 @@ Property
 *****************************************************
 
 Sphinx ignores docstrings on property setters so all documentation for a property must be on the @property method.
+Consequently, we also ignore the ``:return:`` via ``..  # noqa: DAR201``.
 
 .. highlight:: python
 .. code-block:: python
@@ -219,6 +220,8 @@ Sphinx ignores docstrings on property setters so all documentation for a propert
         """
         The name of the document.
 
+
+        ..  # noqa: DAR201
         :getter: Returns this document's name
         :setter: Sets this document's name
         :type: string

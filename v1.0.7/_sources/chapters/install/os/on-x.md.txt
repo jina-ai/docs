@@ -10,7 +10,9 @@ Yes! Since `0.8.6` Jina runs smoothly on Jupyter Lab/Notebook. For better experi
 
 ## Google Colab
 
-Jina requires Python 3.7/3.8/3.9. At the time of writing Google Colab runs Python 3.6.7 so Jina can't be installed via `pip`.
+Yes you can! Jina requires Python 3.7/3.8/3.9. And Google Colab runs Python supports Python 3.7 so it can be installed via `pip`:
+
+``!pip install --pre jina``
 
 ## Fedora
 
