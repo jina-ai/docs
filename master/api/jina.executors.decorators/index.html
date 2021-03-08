@@ -462,7 +462,7 @@ after the function decorated by <code class="docutils literal notranslate"><span
 
 <dl class="py function">
 <dt id="jina.executors.decorators.batching">
-<code class="sig-prename descclassname"><span class="pre">jina.executors.decorators.</span></code><code class="sig-name descname"><span class="pre">batching</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_over_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_over_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordinal_idx_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/decorators/#batching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.decorators.batching" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">jina.executors.decorators.</span></code><code class="sig-name descname"><span class="pre">batching</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_batch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split_over_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_over_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordinal_idx_arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/decorators/#batching"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.decorators.batching" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split the input of a function into small batches and call <code class="xref py py-func docutils literal notranslate"><span class="pre">func()</span></code> on each batch
 , collect the merged result and return. This is useful when the input is too big to fit into memory</p>
 <dl class="field-list simple">
@@ -479,6 +479,7 @@ after the function decorated by <code class="docutils literal notranslate"><span
 <li><p><strong>ordinal_idx_arg</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – the location of the ordinal indexes argument. Needed for classes
 where function decorated needs to know the ordinal indexes of the data in the batch
 (Not used when label_on is used)</p></li>
+<li><p><strong>flatten_output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If this is set to True, the results from different batches will be chained and the returning value is a list of the results. Otherwise, the returning value is a list of lists, in which each element is a list containing the result from one single batch. Note if there is only one batch returned, the returned result is always flatten.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -556,7 +557,7 @@ where function decorated needs to know the ordinal indexes of the data in the ba
 
 <dl class="py function">
 <dt id="jina.executors.decorators.single">
-<code class="sig-prename descclassname"><span class="pre">jina.executors.decorators.</span></code><code class="sig-name descname"><span class="pre">single</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_over_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/decorators/#single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.decorators.single" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">jina.executors.decorators.</span></code><code class="sig-name descname"><span class="pre">single</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_over_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/decorators/#single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.decorators.single" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guarantee that the input of a function is provided as a single instance and not in batches</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -565,6 +566,7 @@ where function decorated needs to know the ordinal indexes of the data in the ba
 <li><p><strong>merge_over_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – merge over which axis into a single result</p></li>
 <li><p><strong>slice_on</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the location of the data. When using inside a class,
 <code class="docutils literal notranslate"><span class="pre">slice_on</span></code> should take <code class="docutils literal notranslate"><span class="pre">self</span></code> into consideration.</p></li>
+<li><p><strong>flatten_output</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Flag to determine if a result of list of lists needs to be flattened in output</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -578,6 +580,41 @@ where function decorated needs to know the ordinal indexes of the data in the ba
 <dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OneByOneCrafter</span><span class="p">:</span>
     <span class="nd">@single</span>
     <span class="k">def</span> <span class="nf">craft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="jina.executors.decorators.single_multi_input">
+<code class="sig-prename descclassname"><span class="pre">jina.executors.decorators.</span></code><code class="sig-name descname"><span class="pre">single_multi_input</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge_over_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/decorators/#single_multi_input"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.decorators.single_multi_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Guarantee that the inputs of a function with more than one argument is provided as single instances and not in batches</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>[[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]]) – function to decorate</p></li>
+<li><p><strong>merge_over_axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – merge over which axis into a single result</p></li>
+<li><p><strong>slice_on</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the location of the data. When using inside a class,
+<code class="docutils literal notranslate"><span class="pre">slice_on</span></code> should take <code class="docutils literal notranslate"><span class="pre">self</span></code> into consideration.</p></li>
+<li><p><strong>num_data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the number of data inside the arguments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the merged result as if run <code class="xref py py-func docutils literal notranslate"><span class="pre">func()</span></code> once on the input.</p>
+</dd>
+</dl>
+<dl>
+<dt>..warning:</dt><dd><p>data arguments will be taken starting from <code class="docutils literal notranslate"><span class="pre">slice_on`</span> <span class="pre">to</span> <span class="pre">``slice_on</span> <span class="pre">+</span> <span class="pre">num_data</span></code></p>
+</dd>
+<dt>Example:</dt><dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">OneByOneCrafter</span><span class="p">:</span>
+
+    <span class="nd">@single_multi_input</span>
+    <span class="k">def</span> <span class="nf">craft</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="o">...</span>
 </pre></div>
 </div>
 </dd>
