@@ -6,7 +6,7 @@ The FlowOptimizer runs Flows with different parameter sets. It allows out of the
 -----------------------------------------------------------------------------------------------------------------------
 
 .. contents:: Table of Contents
-  :depth: 2
+  :depth: 3
 
 Flow Optimization is hyperparameter tuning
 ------------------------------------------
