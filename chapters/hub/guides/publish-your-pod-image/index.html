@@ -346,13 +346,21 @@
 <td><code>*.yml</code></td>
 <td>a YAML file describes the executor arguments and configs, if you want users to use your config</td>
 </tr>
+<tr>
+<td><code>requirements.txt</code></td>
+<td>describes installation packages necessary for the executor pod</td>
+</tr>
+<tr>
+<td><code>tests/</code></td>
+<td>directory with unit tests for the executor</td>
+</tr>
 </tbody>
 </table><p>Note, large binary files (such as pretrained models, auxiliary data) are <strong>not</strong> recommended to upload to this repository. You can use <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">wget</span> <span class="pre">...</span></code> or <code class="docutils literal notranslate"><span class="pre">RUN</span> <span class="pre">curl</span></code> inside the <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code> to download it from the web during the build.</p>
 </div>
 <div class="section" id="file-structure-and-schema-for-pods">
 <h2>File structure and schema for Pods:<a class="headerlink" href="#file-structure-and-schema-for-pods" title="Permalink to this headline">¶</a></h2>
 <p>Your custom <code class="docutils literal notranslate"><span class="pre">Pod</span></code> file bundle needs to follow a structure and certain schema rules for annotating the image successfully.
-For instance, your pod is a kind of <code class="docutils literal notranslate"><span class="pre">encoder</span></code> named <code class="docutils literal notranslate"><span class="pre">awesomeness</span></code>. The file bundle should be uploaded to the Hub <code class="docutils literal notranslate"><span class="pre">executors</span></code> under kind <code class="docutils literal notranslate"><span class="pre">encoders</span></code>
+For instance, your pod is a kind of <code class="docutils literal notranslate"><span class="pre">encoder</span></code> named <code class="docutils literal notranslate"><span class="pre">AwesomeEncoder</span></code>. The file bundle should be uploaded to the Hub <code class="docutils literal notranslate"><span class="pre">executors</span></code> under kind <code class="docutils literal notranslate"><span class="pre">encoders</span></code>
 with the following structure:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>hub/
   |
@@ -360,15 +368,21 @@ with the following structure:</p>
        |
         - encoders/
             |
-            - awesomeness/
+            - AwesomeEncoder/
                 |
+                |- tests/
+                     |
+                     |- __init__.py
+                     |- test_awesome_encoder.py
+                |- __init__.py
                 |- Dockerfile
+                |- config.yml
                 |- manifest.yml
                 |- README.md
-                |- awesome_ai.py
+                |- requirements.txt
 </pre></div>
 </div>
-<p>Your image will be published as <code class="docutils literal notranslate"><span class="pre">jinaai/hub.executors.encoders.awesomeness</span></code>.</p>
+<p>Your image will be published as <code class="docutils literal notranslate"><span class="pre">jinahub/pod.encoder.awesomeencoder</span></code>.</p>
 </div>
 <div class="section" id="schema-of-manifest-yml">
 <h2>Schema of <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code><a class="headerlink" href="#schema-of-manifest-yml" title="Permalink to this headline">¶</a></h2>
@@ -385,6 +399,16 @@ with the following structure:</p>
 <tr>
 <td><code>name</code></td>
 <td>Human-readable title of the image (must match with <code>^[a-zA-Z_$][a-zA-Z_\s\-$0-9]{3,20}$</code>)</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td>the kind of executor, i.e. <code>indexer</code>, <code>encoder</code>, <code>crafter</code>, etc.</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td>type, i.e. <code>pod</code>, <code>app</code></td>
 <td>Required</td>
 </tr>
 <tr>
@@ -423,14 +447,9 @@ with the following structure:</p>
 <td><code>apache-2.0</code></td>
 </tr>
 <tr>
-<td><code>avatar</code></td>
-<td>a picture that personalizes and distinguishes your image</td>
+<td><code>keywords</code></td>
+<td>a list of keywords describing the pod image</td>
 <td>None</td>
-</tr>
-<tr>
-<td><code>platform</code></td>
-<td>a list of CPU architectures that your image is built on, each item should be <a href="https://github.com/jina-ai/jina/blob/master/jina/resources/hub-builder/platforms.yml">in this list</a></td>
-<td><code>[linux/amd64]</code></td>
 </tr>
 </tbody>
 </table><p>Please refer to <a class="reference external" href="https://github.com/jina-ai/jina-hub/blob/master/encoders/nlp/VSETextEncoder/manifest.yml">VSETextEncoder/manifest.yml</a> for the example.</p>
@@ -444,13 +463,13 @@ the version will increment following <code class="docutils literal notranslate">
 <h2>Publish your image<a class="headerlink" href="#publish-your-image" title="Permalink to this headline">¶</a></h2>
 <p>All you need to do is to publish your file bundle into the Jina Hub repo. Subsequently, the Docker image building, uploading and tagging are all handled automatically by our CICD pipeline.</p>
 <ol class="simple">
-<li><p>Let’s say you organize <a class="reference external" href="#what-files-need-to-be-uploaded">all files mentioned in here</a> in a folder called <code class="docutils literal notranslate"><span class="pre">awesomeness</span></code>. Depending on what you are contributing, you can put it into <code class="docutils literal notranslate"><span class="pre">hub/executors/indexers/awesomeness</span></code>.</p></li>
+<li><p>Let’s say you organize <a class="reference external" href="#what-files-need-to-be-uploaded">all files mentioned in here</a> in a folder called <code class="docutils literal notranslate"><span class="pre">AwesomeEncoder</span></code>. Depending on what you are contributing, you can put it into <code class="docutils literal notranslate"><span class="pre">hub/executors/encoder/AwesomeEncoder</span></code>.</p></li>
 <li><p>Make a Pull Request and commit your changes into this repository, remember to follow the commit lint style.</p></li>
 <li><p>Wait until the CICD finish and you get at least one reviewer’s approval.</p></li>
 <li><p>Merge it!</p></li>
 </ol>
 <p>The CICD pipeline will work on building, uploading and tagging the image on the Jina Hub.</p>
-<p>The image will be available at <code class="docutils literal notranslate"><span class="pre">jinaai/hub.executors.indexers.awesomeness:0.0.0</span></code> assuming your version number is defined as <code class="docutils literal notranslate"><span class="pre">0.0.0</span></code> in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code>.</p>
+<p>The image will be available at <code class="docutils literal notranslate"><span class="pre">jinahub/pod.encoder.awesomeencoder:0.0.0</span></code> assuming your version number is defined as <code class="docutils literal notranslate"><span class="pre">0.0.0</span></code> in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code>.</p>
 <p>You can use the image with <a class="reference internal" href="../use-your-pod/"><span class="doc">the ways described here</span></a>.</p>
 </div>
 <div class="section" id="why-does-my-upload-fail-on-ci-cd">
