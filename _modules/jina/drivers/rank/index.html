@@ -306,12 +306,10 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.drivers.rank</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span>
-<span class="kn">from</span> <span class="nn">...types.document</span> <span class="kn">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">...types.sets</span> <span class="kn">import</span> <span class="n">MatchSet</span>
 <span class="kn">from</span> <span class="nn">...types.score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
@@ -331,10 +329,8 @@
         <span class="sd">&quot;&quot;&quot;Property to provide backward compatibility to executors relying in `required_keys`</span>
 <span class="sd">        :return: keys for attribute lookup in matches</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">match_required_keys</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;match_required_keys&#39;</span><span class="p">)</span>
-            <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;required_keys&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;match_required_keys&#39;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;required_keys&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -343,10 +339,8 @@
 
 <span class="sd">        :return: keys for attribute lookup in matches</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">query_required_keys</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;query_required_keys&#39;</span><span class="p">)</span>
-            <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;required_keys&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;query_required_keys&#39;</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="s1">&#39;required_keys&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="p">)</span></div>
 
 
@@ -365,10 +359,10 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">reverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">traversal_paths</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,),</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">traversal_paths</span><span class="o">=</span><span class="n">traversal_paths</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span> <span class="o">=</span> <span class="n">reverse</span>
@@ -390,32 +384,39 @@
             <span class="p">)</span>
 
             <span class="n">matches</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span>
-            <span class="n">old_match_scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">}</span>
-            <span class="n">match_meta</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="p">{</span><span class="n">match</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">match</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_exec_match_keys</span><span class="p">)</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">}</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_match_keys</span>
-                <span class="k">else</span> <span class="kc">None</span>
-            <span class="p">)</span>
+            <span class="n">num_matches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+            <span class="n">old_match_scores</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">needs_match_meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_match_keys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="n">match_meta</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">needs_match_meta</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
+                <span class="n">old_match_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">needs_match_meta</span><span class="p">:</span>
+                    <span class="n">match_meta</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">get_attrs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_exec_match_keys</span><span class="p">))</span>
 
             <span class="c1"># if there are no matches, no need to sort them</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">old_match_scores</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="n">new_match_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">query_meta</span><span class="p">,</span> <span class="n">old_match_scores</span><span class="p">,</span> <span class="n">match_meta</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sort_matches_in_place</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">new_match_scores</span><span class="p">)</span>
+            <span class="n">new_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">old_match_scores</span><span class="p">,</span> <span class="n">query_meta</span><span class="p">,</span> <span class="n">match_meta</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">num_matches</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_scores</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;The number of matches to be scored </span><span class="si">{</span><span class="n">num_matches</span><span class="si">}</span><span class="s1"> do not match the number of scores returned &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;by the ranker </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> &#39;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sort_matches_in_place</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="n">new_scores</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_sort_matches_in_place</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">context_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">match_scores</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">matches</span><span class="p">:</span> <span class="s1">&#39;MatchSet&#39;</span><span class="p">,</span> <span class="n">match_scores</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">op_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="n">cm</span> <span class="o">=</span> <span class="n">context_doc</span><span class="o">.</span><span class="n">matches</span>
-        <span class="n">cm</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">match_id</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">match_scores</span><span class="p">:</span>
-            <span class="n">cm</span><span class="p">[</span><span class="n">match_id</span><span class="p">]</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span>
-                <span class="n">value</span><span class="o">=</span><span class="n">score</span><span class="p">,</span> <span class="n">op_name</span><span class="o">=</span><span class="n">op_name</span><span class="p">,</span> <span class="n">ref_id</span><span class="o">=</span><span class="n">context_doc</span><span class="o">.</span><span class="n">id</span>
-            <span class="p">)</span>
+        <span class="n">ref_doc_id</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">_ref_doc</span><span class="o">.</span><span class="n">id</span>
 
-        <span class="n">cm</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">match</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="n">match_scores</span><span class="p">):</span>
+            <span class="n">match</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">score</span><span class="p">,</span> <span class="n">op_name</span><span class="o">=</span><span class="n">op_name</span><span class="p">,</span> <span class="n">ref_id</span><span class="o">=</span><span class="n">ref_doc_id</span><span class="p">)</span>
+
+        <span class="n">matches</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
