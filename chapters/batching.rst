@@ -5,17 +5,17 @@
 Some :term:`Executors` in Jina may profit from the capacity to process multiple instances of their input at the same time.
 This can lead to a speed up and higher throughput.
 
-In order to provide this capability, the :term:`Driver` extracts all the needed information from all the :term:`Document` in a :term:`Request`. [see `guide on request size`_].
+In order to provide this capability, the :term:`Driver` extracts all the needed information from all the :term:`Document` in a :term:`Request`. [see `guide on request size <https://docs.jina.ai/chapters/request_size/>`_ ].
 
 Then all these instances (one per :term:`Document`) is passed to the :term:`Executor`. Then the :term:`Executor` decides how it wants to
 consume these instances (in batches or one by one).
 
 Batching decorators
-------------
+--------------------
 To control how an :term:`Executor` consumes its incoming inputs, Jina provides a set of decorator functions.
 
 single and single_multi_input
-------------
+------------------------------
 The single decorator ensures that even when the function is called with a set of instances, they will be processed one by one by the executor.
 This decorator is useful when the executor won't have benefits of processing inputs in batches, and allows the executor to keep a clean interface.
 
@@ -44,7 +44,7 @@ The single_multi_input is the equivalent decorator required when multiple input 
 
 
 batching and batching_multi_input
-------------
+----------------------------------
 The batching decorator ensures that data is processed in batches of a given size. This is useful when an :term:`Executor` can benefit
 from processing multiple inputs at a time.
 
@@ -74,7 +74,7 @@ The batching_multi_input is the equivalent decorator required when multiple inpu
 
 
 Batching vs Single
-------------
+------------------
 The usage of `batching` or `single` does not affect the correct functionality, from the :term:`Driver` point of view it is the same, it can provide
 call them with a set of inputs, and gets a set of output in return. The only changes are encapsulated in the :term:`Executor` itself.
 
@@ -93,7 +93,6 @@ When using `batching` decorator, one may wonder how an :term:`Executor` can cont
                 pass
 
 - Make it an attribute of the :term:`Executor` explicitly:
-
     .. highlight:: python
     .. code-block:: python
 
@@ -118,12 +117,13 @@ When using `batching` decorator, one may wonder how an :term:`Executor` can cont
 
 
 When do I need to set these decorators?
-------------
+----------------------------------------
 
-Currently, there are 4 classes of our :term:`Executor` that receive input from :term:`Driver` in batches, and therefore, all the
+Currently, there are 5 classes of our :term:`Executor` that receive input from :term:`Driver` in batches, and therefore, all the
 classes of these families need to make sure that their core methods are decorated with either `single` or `batching`.
 
 These :term:`Executor` are:
+
 - Encoder
 - Classifier
 - Crafter
