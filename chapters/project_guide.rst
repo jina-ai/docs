@@ -158,4 +158,4 @@ README
 
 ``/README.md``
 
-Finally, we have our README. It is good practice to have this for you to show all the necessary steps you'll need to do to run your app. And we have this living under the main folder too.
+Finally, you have your README file. It is good practice to have this for you (and others) to show all the necessary steps that are needed to be done to run your application. Store this file directyl in main folder, too.
