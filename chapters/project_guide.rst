@@ -140,8 +140,7 @@ This is another optional element. It is recommended to store this file in the ma
 
 ``/.dockerignore``
 
-Don't forget to add here all the files that you don't want to include in your initial build context. The Docker daemon will skip those files for the :code:`docker build`
-
+Your Jina project may also contain files that you do not want to be included in your initial build context. Use the file **/.dockerignore** to keep track of these files. The Docker daemon will skip those files for the :code:`docker build`.
 
 .gitignore
 -----------
