@@ -89,7 +89,7 @@ source /env/bin/activate
 Now install Jina in this clean environment:
 
 ```sh
-pip install jina[hub]==1.0
+pip install "jina[hub]==1.0"
 ```
 
 Above we only specify to install [Jina Hub](https://github.com/jina-ai/jina-hub). This is because Hub contains the wizard to create a new Jina app.
