@@ -126,7 +126,7 @@ Workspace
 
 ``/workspace``
 
-This :term:`workspace` is a special folder. You will **not** create this folder yourself. You should design your **app.py** in a way that when you run it for the first time, this folder is created during the :term:`indexing`.
+This :term:`workspace` is a special folder. You will **not** create this folder yourself. Design your **app.py** in such a way that when you run it for the first time, this folder is created by the app during the :term:`indexing` phase.
 
 Dockerfile
 -----------
