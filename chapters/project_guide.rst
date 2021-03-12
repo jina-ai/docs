@@ -1,10 +1,10 @@
 #####################
-Project set up guide
+Project setup guide
 #####################
 
 .. meta::
    :description: You will see the best practices on how to create a project on Jina.
-   :keywords: Jina, set-up
+   :keywords: Jina, setup
 
 .. note:: This guide expects you have a basic understanding of Jina. If you do not have that yet, please read `Jina 101 <http://101.jina.ai>`_ first.
 
@@ -14,10 +14,10 @@ Here you will see the suggested structure for a project structure in Jina.
     :depth: 2
 
 
-Install Jina
-====================
+Installing Jina
+===============
 
-The first thing you need is to have Jina installed and ready to run. There are different ways you can do this, but here you will learn about the easiest one. With Linux/Mac, you just need to install Jina with pip using the following command:
+The first thing you need is to have Jina installed and ready to run. There are different ways you can do this, but here you will just see the easiest one. With Linux/Mac, you just need to install Jina with pip using the following command:
 
 .. highlight:: bash
 .. code-block:: bash
@@ -26,31 +26,33 @@ The first thing you need is to have Jina installed and ready to run. There are d
 
 To learn about other ways to install Jina, we have an `installation guide <https://docs.jina.ai/chapters/install/os/index.html>`_. available for You.
 
-Set-up with Jina Hub
-====================
+Setup with Jina Hub
+===================
+
+Use our **jina hub new** command to spin up a basic Jina app:
 
 .. highlight:: bash
 .. code-block:: bash
 
     jina hub new --type app
 
-Use our **jina hub new** command to spin up a basic Jina app and save you having to do a lot of typing and setup. So, you just need to run the previous command and follow the guide that you will see. But don't worry, you will still see how the basic folder structure becomes, and which result you will get in the end.
+This saves you having to do a lot of typing and setup. So, you just need to run the previous command and follow the guide that you will see. But don't worry, you will still see how the basic folder structure becomes, and which result you will get in the end.
 
 
-Manual Set-up
-====================
+Manual Setup
+============
 
 You can also set up the project structure manually. The actual structure of your folder will vary depending on the needs of your project. But at the end you should have something similar to this:
 
 
 | your-new-project
 | ├── data
-| │   ├── data.txt
+| │   └── data.txt
 | ├── flows
 | │   ├── index.yml
-| │   ├── query.yml
+| │   └── query.yml
 | ├── pods
-| │   ├── index.yml
+| │   └── index.yml
 | ├── .dockerignore
 | ├── .gitignore
 | ├── requirements.txt
@@ -58,7 +60,7 @@ You can also set up the project structure manually. The actual structure of your
 | ├── Dockerfile
 | ├── get_data.sh
 | ├── README.md
-| ├── requirements.txt
+| └── requirements.txt
 
 
 Folder structure elements
