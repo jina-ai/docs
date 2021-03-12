@@ -99,11 +99,13 @@ Now you need to define a place where to store the data you just downloaded. Crea
 In this example the file is simply named **data.txt**, and it is a text file. You are free to do it and it can be whatever you need for your project.
 
 Flows
----------
+-----
 
 ``/flows``
 
-You will most likely need at least one :term:`Flow`, and it's good practice to have all your Flows in one dedicated folder. To try to be the most explicit as possible, we call this folder also **flows**. In this example, we have two flows, one for index **index.yml** and one for search **query.yml**, but you can have more or less.
+You will most likely need at least one :term:`Flow`, and it is good practice to have all your Flows in one dedicated folder. To be as explicit as possible, we call the folder this **flows**. 
+
+In this example we have two flows -- the first one is for the index that is stored in **index.yml**, and a second one for search that is stored in **query.yml**. In your project you can define as many flows as you actually need.
 
 Pods
 ---------
