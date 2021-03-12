@@ -108,21 +108,21 @@ You will most likely need at least one :term:`Flow`, and it is good practice to 
 In this example we have two flows -- the first one is for the index that is stored in **index.yml**, and a second one for search that is stored in **query.yml**. In your project you can define as many flows as you actually need.
 
 Pods
----------
+----
 
 ``/pods``
 
 Our Flows will need some :term:`Pods<Pod>`, so we also create a dedicated `pods` folder for them.
 
 App.py
----------
+------
 
 ``/app.py``
 
-And of course, we need our main app, we have this file living directly under the main directory.
+Finally, the main app needs a dedicated place.,This file will be living directly under the main directory.
 
 Workspace
-----------
+---------
 
 ``/workspace``
 
