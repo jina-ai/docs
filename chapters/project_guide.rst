@@ -6,7 +6,7 @@ Project set up guide
    :description: You will see the best practices on how to create a project on Jina.
    :keywords: Jina, set-up
 
-.. note:: This guide expects you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <http://101.jina.ai>`_ first.
+.. note:: This guide expects you have a basic understanding of Jina. If you do not have that yet, please read `Jina 101 <http://101.jina.ai>`_ first.
 
 Here you will see the suggested structure for a project structure in Jina.
 
@@ -17,16 +17,16 @@ Here you will see the suggested structure for a project structure in Jina.
 Install Jina
 ====================
 
-The first thing you need is to have Jina installed and ready to run. There are different ways you can do this, but here we'll see the easiest one. With Linux/Mac, you just need to install with pip using the following command:
+The first thing you need is to have Jina installed and ready to run. There are different ways you can do this, but here you will learn about the easiest one. With Linux/Mac, you just need to install Jina with pip using the following command:
 
 .. highlight:: bash
 .. code-block:: bash
 
     pip install jina
 
-To see other ways to install Jina, we have an `installation guide <https://docs.jina.ai/chapters/install/os/index.html>`_. here.
+To learn about other ways to install Jina, we have an `installation guide <https://docs.jina.ai/chapters/install/os/index.html>`_. available for You.
 
-Set-up with Jina Jub
+Set-up with Jina Hub
 ====================
 
 .. highlight:: bash
@@ -34,7 +34,7 @@ Set-up with Jina Jub
 
     jina hub new --type app
 
-Use our **jina hub new** command to spin up a basic Jina app and save you having to do a lot of typing and setup. So you just need to run the previous command and follow the guide that you'll see. But don't worry, we will still see how's the basic folder structure and what you should have at the end.
+Use our **jina hub new** command to spin up a basic Jina app and save you having to do a lot of typing and setup. So, you just need to run the previous command and follow the guide that you will see. But don't worry, you will still see how the basic folder structure becomes, and which result you will get in the end.
 
 
 Manual Set-up
