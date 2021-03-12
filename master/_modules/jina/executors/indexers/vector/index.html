@@ -403,8 +403,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span> <span class="o">=</span> <span class="n">valid_key_bytes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">=</span> <span class="n">valid</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;CACHED__int2ext_id&#39;</span><span class="p">]</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;CACHED__ext2int_id&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int2ext_id</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext2int_id</span>
 
     <span class="k">def</span> <span class="nf">_clean_memmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># clean up the underlying matrix of entries marked for deletion</span>
@@ -415,7 +415,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># force the raw_ndarray (underlying matrix) to re-read from disk</span>
         <span class="c1"># (needed when there were writing ops to be flushed)</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;CACHED__raw_ndarray&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span>
         <span class="n">filtered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">]</span>
         <span class="c1"># we need an intermediary file</span>
         <span class="n">tmp_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span> <span class="o">+</span> <span class="s1">&#39;tmp&#39;</span>
@@ -433,7 +433,7 @@
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
         <span class="c1"># force it to re-read again from the new file</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;CACHED__raw_ndarray&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># called on pickle save</span>
