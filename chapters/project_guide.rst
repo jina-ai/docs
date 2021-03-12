@@ -143,14 +143,18 @@ This is another optional element. It is recommended to store this file in the ma
 Your Jina project may also contain files that you do not want to be included in your initial build context. Use the file **/.dockerignore** to keep track of these files. The Docker daemon will skip those files for the :code:`docker build`.
 
 .gitignore
------------
+----------
 
 ``/.gitignore``
 
-Add here whatever files you don't want to commit.
+It is quite common to keep your project in a revision control system,
+for example Git, or Subversion. Similar to the file **/.dockerignore**,
+the file **/.gitignore** allows you to list the files that you do not
+want be tracked by Git. Add whatever files you do not want to be
+committed.
 
 README
----------
+------
 
 ``/README.md``
 
