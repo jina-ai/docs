@@ -129,15 +129,14 @@ Workspace
 This :term:`workspace` is a special folder. You will **not** create this folder yourself. Design your **app.py** in such a way that when you run it for the first time, this folder is created by the app during the :term:`indexing` phase.
 
 Dockerfile
------------
+----------
 
 ``/Dockerfile``
 
-
-This is another optional element. It should be stored in the main directory.
+This is another optional element. It is recommended to store this file in the main directory of your Jina project.
 
 .dockerignore
---------------
+-------------
 
 ``/.dockerignore``
 
