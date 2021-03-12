@@ -276,7 +276,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -556,19 +556,26 @@ they are passed as match features or metainfo.</p></li>
 
 <dl class="py method">
 <dt id="jina.executors.rankers.Match2DocRanker.score">
-<code class="sig-name descname"><span class="pre">score</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_match_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_meta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_meta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/rankers/#Match2DocRanker.score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.rankers.Match2DocRanker.score" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the new scores for matches and returns them. Returns an iterable of the scores to be assined to the matches.
+<code class="sig-name descname"><span class="pre">score</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_matches_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queries_metas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matches_metas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/rankers/#Match2DocRanker.score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.rankers.Match2DocRanker.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the new scores for matches and returns them. Returns an iterable of the scores to be assigned to the matches.
 The returned scores need to be returned in the same order as the input <cite>:param old_match_scores</cite>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The length of <cite>old_match_scores</cite>, <cite>queries_metas</cite> and <cite>matches_metas</cite> correspond to the amount of queries in the batch for which
+one wants to score its matches.</p>
+<p>Every Sequence in match metas correspond to the amount of retrieved matches per query.</p>
+<p>The resulting list of scores will provide a list of score for every query. And every list will be ordered in the same way as the <cite>matches_metas</cite> lists</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>old_match_scores</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Contains old scores in a list</p></li>
-<li><p><strong>query_meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – Dictionary containing all the query meta information requested by the <cite>query_required_keys</cite> class_variable.</p></li>
-<li><p><strong>match_meta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – List containing all the matches meta information requested by the <cite>match_required_keys</cite> class_variable. Sorted in the same way as <cite>old_match_scores</cite></p></li>
+<li><p><strong>old_matches_scores</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]) – Contains old scores in a list for every query</p></li>
+<li><p><strong>queries_metas</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]) – List of dictionaries containing all the query meta information requested by the <cite>query_required_keys</cite> class_variable for each query in a batch.</p></li>
+<li><p><strong>matches_metas</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]]) – List of lists containing all the matches meta information requested by the <cite>match_required_keys</cite> class_variable for every query. Sorted in the same way as <cite>old_match_scores</cite></p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</p>
 </dd>
 </dl>
 </dd></dl>

@@ -230,7 +230,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -833,6 +833,7 @@
     <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">num_data</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">flatten_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Guarantee that the inputs of a function with more than one argument is provided as single instances and not in batches</span>
 
@@ -841,6 +842,7 @@
 <span class="sd">    :param slice_on: the location of the data. When using inside a class,</span>
 <span class="sd">            ``slice_on`` should take ``self`` into consideration.</span>
 <span class="sd">    :param num_data: the number of data inside the arguments</span>
+<span class="sd">    :param flatten_output: If this is set to True, the results from different batches will be chained and the returning value is a list of the results. Otherwise, the returning value is a list of lists, in which each element is a list containing the result from one single batch. Note if there is only one batch returned, the returned result is always flatten.</span>
 <span class="sd">    :return: the merged result as if run :func:`func` once on the input.</span>
 
 <span class="sd">    ..warning:</span>
@@ -919,7 +921,9 @@
                 <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-            <span class="k">return</span> <span class="n">_merge_results_after_batching</span><span class="p">(</span><span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_merge_results_after_batching</span><span class="p">(</span>
+                <span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="n">flatten_output</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">arg_wrapper</span>
 
