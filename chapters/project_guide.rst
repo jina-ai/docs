@@ -63,22 +63,22 @@ You can also set up the project structure manually. The actual structure of your
 | └── requirements.txt
 
 
-Folder structure elements
-==========================
+Folder Structure
+================
 
-Now let's take a closer look at each element to see what is optional
+Now let us have a closer look at each element of the project structure to understand which parts of it are essential, and which ones are optional.
 
 Project name
--------------
+------------
 
 ``/your-new-project``
 
-The first thing you need to do is create the folder of your project. Here is where everything will live.
+The first thing you need to do is to create the folder of your project. It contains all the components you need.
 
 Requirements
--------------
+------------
 
-The first thing you should take care of is the requirements. Create a **requirements.txt**. In this file you will specify the required dependencies you'll need. Write a module per line. You can then install all the packages with pip:
+The next thing you should take care of is the list of requirements. Create a file **requirements.txt**. In this file you will specify the required dependencies your Jina project needs. State one module per line. You can then install all the packages using `pip -r`:
 
 .. highlight:: bash
 .. code-block:: bash
@@ -86,15 +86,17 @@ The first thing you should take care of is the requirements. Create a **requirem
     pip install -r requirements.txt
 
 Prepare and save data
-----------------------
-
-This can be optional depending on if you need extra data on your project or not. If you need to download data the best practice is to use a script. This script should live directly under the main folder.
+---------------------
 
 ``/get_data.sh``
 
-Now you need someplace where to store the data you just downloaded. For this, you'll create a folder named **data** and inside this folder will live whatever data you downloaded with the previous script. In this example, we have a **data.txt** text file. But this can be whatever you need.
+This step may be necessary and depends on whether you need additional data in your project or not. If you need to download data, the best practice is to use a suitable script. Store this script directly under the main folder.
+
+Now you need to define a place where to store the data you just downloaded. Create a folder named **data** first. Inside this folder will live whatever data you downloaded with the previously created script. 
 
 ``/your-new-project/data/data.txt``
+
+In this example the file is simply named **data.txt**, and it is a text file. You are free to do it and it can be whatever you need for your project.
 
 Flows
 ---------
