@@ -2,7 +2,7 @@
 
 set -ex
 
-DOC_DIR=.
+DOC_DIR=/home/runner/work/docs/docs
 HTML_DIR=${DOC_DIR}/_build/dirhtml
 
 # backup the old version's doc as later we do make clean, they all gone.
@@ -31,7 +31,7 @@ cd -
 # create markdown for List [X] drivers in Jina & List [X] executors in Jina to chapters/
 cd ${DOC_DIR} && jina check --summary-driver chapters/all_driver.md && cd -
 cd ${DOC_DIR} && jina check --summary-exec chapters/all_exec.md && cd -
-cd ${DOC_DIR} && make dirhtml && cd -
+cd ${DOC_DIR} && pwd && make dirhtml && cd -
 
 if [[ $1 == "commit" ]]; then
   cd ${DOC_DIR}
