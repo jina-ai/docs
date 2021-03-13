@@ -51,7 +51,7 @@ from processing multiple inputs at a time.
 
 In the case where this decorator is used, the method needs to be implemented considering input comes in batches.
 
-The batching_multi_input is the equivalent decorator required when multiple input arguments are required by the :term:`Executor` method.
+The :meth:`batching_multi_input` is the equivalent decorator required when multiple input arguments are required by the :term:`Executor` method.
 
 .. highlight:: python
 .. code-block:: python
