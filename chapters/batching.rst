@@ -28,6 +28,7 @@ The single_multi_input is the equivalent decorator required when multiple input 
 
     from jina.executors.crafters import BaseCrafter
     from jina.executors.decorators import single
+
     class CapitalizerCrafter(BaseCrafter):
 
         @single
