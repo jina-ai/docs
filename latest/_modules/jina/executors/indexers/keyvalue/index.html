@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers.keyvalue &mdash; Jina 1.0.9-master documentation</title>
+  <title>jina.executors.indexers.keyvalue &mdash; Jina 1.0.10-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.9-master</button>
+            <button class="dropbtn version">1.0.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -340,13 +340,17 @@
 
 <div class="viewcode-block" id="BinaryPbIndexer.WriteHandler.close"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.WriteHandler.close">[docs]</a>        <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Close the file.&quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="BinaryPbIndexer.WriteHandler.flush"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.WriteHandler.flush">[docs]</a>        <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Clear the body and header.&quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div></div>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div></div>
 
 <div class="viewcode-block" id="BinaryPbIndexer.ReadHandler"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.ReadHandler">[docs]</a>    <span class="k">class</span> <span class="nc">ReadHandler</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -378,7 +382,8 @@
 
 <div class="viewcode-block" id="BinaryPbIndexer.ReadHandler.close"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.ReadHandler.close">[docs]</a>        <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;Close the file.&quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># called on pickle save</span>
@@ -495,10 +500,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="BinaryPbIndexer.query"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+<div class="viewcode-block" id="BinaryPbIndexer.query"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Find the serialized document to the index via document id.</span>
 
 <span class="sd">        :param key: document id</span>
+<span class="sd">        :param args: extra arguments</span>
+<span class="sd">        :param kwargs: keyword arguments</span>
 <span class="sd">        :return: serialized documents</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pos_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -520,13 +527,13 @@
         <span class="n">keys</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys_values</span><span class="p">(</span>
             <span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -539,9 +546,6 @@
                     <span class="p">],</span>
                 <span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
             <span class="p">)</span>
-
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="p">:</span>
-                <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">-=</span> <span class="mi">1</span>
 
 <div class="viewcode-block" id="BinaryPbIndexer.delete"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -552,6 +556,8 @@
 <span class="sd">        :param kwargs: keyword arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div>
 
@@ -720,7 +726,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 07, 2021.
+        Last updated on Mar 14, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.logging.logger &mdash; Jina 1.0.9-master documentation</title>
+  <title>jina.logging.logger &mdash; Jina 1.0.10-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.9-master</button>
+            <button class="dropbtn version">1.0.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -311,7 +311,6 @@
 <span class="kn">import</span> <span class="nn">logging.handlers</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">platform</span>
-<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
@@ -320,92 +319,6 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">formatter</span>
 <span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">LogVerbosity</span>
 <span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAML</span>
-
-
-<div class="viewcode-block" id="NTLogger"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger">[docs]</a><span class="k">class</span> <span class="nc">NTLogger</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A compatible logger for Windows system, colors are all removed to keep compatible.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">log_level</span><span class="p">:</span> <span class="s1">&#39;LogVerbosity&#39;</span> <span class="o">=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a compatible logger for Windows system, colors are all removed to keep compatible.</span>
-
-<span class="sd">        :param context: The name prefix of each log.</span>
-<span class="sd">        :param log_level: Level of log.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="n">log_level</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\u001b\[.*?[@-~]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-
-<div class="viewcode-block" id="NTLogger.info"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Log info-level message.</span>
-
-<span class="sd">        :param kwargs: Keyword arguments.</span>
-<span class="sd">        :param msg: Context of log.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[I]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="NTLogger.critical"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.critical">[docs]</a>    <span class="k">def</span> <span class="nf">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Log critical-level message.</span>
-
-<span class="sd">        :param kwargs: Keyword arguments.</span>
-<span class="sd">        :param msg: Context of log.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[C]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="NTLogger.debug"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Log debug-level message.</span>
-
-<span class="sd">        :param kwargs: Keyword arguments.</span>
-<span class="sd">        :param msg: Content of log.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[D]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="NTLogger.error"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.error">[docs]</a>    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Log error-level message.</span>
-
-<span class="sd">        :param kwargs: Keyword arguments.</span>
-<span class="sd">        :param msg: Context of log.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[E]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="NTLogger.warning"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.warning">[docs]</a>    <span class="k">def</span> <span class="nf">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Log warning-level message.</span>
-
-<span class="sd">        :param kwargs: Keyword arguments.</span>
-<span class="sd">        :param msg: Context of log.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">WARNING</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[W]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="NTLogger.success"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.success">[docs]</a>    <span class="k">def</span> <span class="nf">success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Log success-level message.</span>
-
-<span class="sd">        :param msg: Context of log.</span>
-<span class="sd">        :param kwargs: Keyword arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[S]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
-
-
-<div class="viewcode-block" id="PrintLogger"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.PrintLogger">[docs]</a><span class="k">class</span> <span class="nc">PrintLogger</span><span class="p">(</span><span class="n">NTLogger</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Print the message.&quot;&quot;&quot;</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">msg</span></div>
 
 
 <div class="viewcode-block" id="SysLogHandlerWrapper"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.SysLogHandlerWrapper">[docs]</a><span class="k">class</span> <span class="nc">SysLogHandlerWrapper</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span><span class="p">):</span>
@@ -437,7 +350,7 @@
 <span class="sd">    :param identity: The id of the group the messages from this logger will belong, used by fluentd default</span>
 <span class="sd">    configuration to group logs by pod.</span>
 <span class="sd">    :param workspace_path: The workspace path where the log will be stored at (only apply to fluentd)</span>
-<span class="sd">    :returns: an executor object.</span>
+<span class="sd">    :return:: an executor object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">supported</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;FileHandler&#39;</span><span class="p">,</span> <span class="s1">&#39;StreamHandler&#39;</span><span class="p">,</span> <span class="s1">&#39;SysLogHandler&#39;</span><span class="p">,</span> <span class="s1">&#39;FluentHandler&#39;</span><span class="p">}</span>
@@ -515,7 +428,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the handlers of the logger.</span>
 
-<span class="sd">        :returns: Handlers of logger.</span>
+<span class="sd">        :return:: Handlers of logger.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
 
@@ -530,7 +443,7 @@
         <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
             <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="JinaLogger.add_handlers"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.JinaLogger.add_handlers">[docs]</a>    <span class="k">def</span> <span class="nf">add_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="JinaLogger.add_handlers"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.JinaLogger.add_handlers">[docs]</a>    <span class="k">def</span> <span class="nf">add_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add handlers from config file.</span>
 
@@ -735,7 +648,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 07, 2021.
+        Last updated on Mar 14, 2021.
       </span>
 
         </p>

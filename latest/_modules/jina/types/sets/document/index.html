@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.sets.document &mdash; Jina 1.0.9-master documentation</title>
+  <title>jina.types.sets.document &mdash; Jina 1.0.10-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.9-master</button>
+            <button class="dropbtn version">1.0.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -305,8 +305,7 @@
             
   <h1>Source code for jina.types.sets.document</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">MutableSequence</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
-
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -344,7 +343,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs_proto</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;RepeatedContainer&#39;</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">]]):</span>
-        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span> <span class="o">=</span> <span class="n">docs_proto</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_docs_map</span> <span class="o">=</span> <span class="p">{}</span>
@@ -413,11 +411,19 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="o">.</span><span class="n">proto</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DocumentSet.add"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Shortcut to :meth:`append`, do not override this method.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Shortcut to :meth:`append`, do not override this method.</span>
+
+<span class="sd">        :param doc: the document to add to the set</span>
+<span class="sd">        :return: Appended list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DocumentSet.extend"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Extend an iterable to :class:`DocumentSet`.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extend the :class:`DocumentSet` by appending all the items from the iterable.</span>
+
+<span class="sd">        :param iterable: the iterable of Documents to extend this set with</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 
@@ -444,7 +450,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_docs_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">d</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="DocumentSet.sort"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sort the list of :class:`DocumentSet`.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sort the items of the :class:`DocumentSet` in place.</span>
+
+<span class="sd">        :param args: variable set of arguments to pass to the sorting underlying function</span>
+<span class="sd">        :param kwargs: keyword arguments to pass to the sorting underlying function</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_docs_proto</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -455,7 +466,7 @@
 <span class="sd">                and the documents have no embedding in a :class:`DocumentSet`.</span>
 <span class="sd">        :rtype: A tuple of embedding in :class:`np.ndarray`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_docs</span><span class="p">(</span><span class="s1">&#39;embedding&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span><span class="s1">&#39;embedding&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
@@ -465,37 +476,63 @@
 <span class="sd">                and the documents have no contents in a :class:`DocumentSet`.</span>
 <span class="sd">        :rtype: A tuple of embedding in :class:`np.ndarray`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_docs</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_extract_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
-        <span class="n">contents</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="viewcode-block" id="DocumentSet.extract_docs"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.extract_docs">[docs]</a>    <span class="k">def</span> <span class="nf">extract_docs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]],</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return in batches all the values of the fields</span>
+
+<span class="sd">        :param fields: Variable length argument with the name of the fields to extract</span>
+<span class="sd">        :return: Returns an :class:`np.ndarray` or a list of :class:`np.ndarray` with the batches for these fields</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">list_of_contents_output</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">docs_pts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">bad_docs</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">list_of_contents_output</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">get_attrs_values</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">bad_docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
+                    <span class="n">contents</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="n">docs_pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">contents</span><span class="p">)):</span>
+                <span class="n">contents</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">contents</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">content</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">get_attrs_values</span><span class="p">(</span><span class="o">*</span><span class="n">fields</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">bad_docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+                    <span class="k">continue</span>
                 <span class="n">contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
                 <span class="n">docs_pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">bad_docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span> <span class="k">if</span> <span class="n">contents</span> <span class="k">else</span> <span class="kc">None</span>
 
-        <span class="n">contents</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span> <span class="k">if</span> <span class="n">contents</span> <span class="k">else</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="n">bad_docs</span> <span class="ow">and</span> <span class="n">docs_pts</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bad_docs</span><span class="p">:</span>
             <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bad_docs</span><span class="p">)</span><span class="si">}</span><span class="s1"> no-</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1"> docs at granularity </span><span class="si">{</span><span class="n">docs_pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bad_docs</span><span class="p">)</span><span class="si">}</span><span class="s1"> docs at granularity </span><span class="si">{</span><span class="n">bad_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="si">}</span><span class="s1"> are missing one of the &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;following fields: </span><span class="si">{</span><span class="n">fields</span><span class="si">}</span><span class="s1"> &#39;</span>
             <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">contents</span><span class="p">,</span> <span class="n">DocumentSet</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">contents</span><span class="p">,</span> <span class="n">DocumentSet</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;To simulate ```l = []; if l: ...``` &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;To simulate ```l = []; if l: ...```</span>
+
+<span class="sd">        :return: returns true if the length of the set is larger than 0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="DocumentSet.new"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.new">[docs]</a>    <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Create a new empty document appended to the end of the set.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Create a new empty document appended to the end of the set.</span>
+
+<span class="sd">        :return: a new Document appended to the set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..document</span> <span class="kn">import</span> <span class="n">Document</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Document</span><span class="p">())</span></div>
@@ -647,7 +684,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 07, 2021.
+        Last updated on Mar 14, 2021.
       </span>
 
         </p>

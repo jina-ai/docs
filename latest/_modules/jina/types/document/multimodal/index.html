@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document.multimodal &mdash; Jina 1.0.9-master documentation</title>
+  <title>jina.types.document.multimodal &mdash; Jina 1.0.10-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.9-master</button>
+            <button class="dropbtn version">1.0.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -323,6 +323,22 @@
 <span class="sd">    .. warning::</span>
 <span class="sd">        - It assumes that every ``chunk`` of a ``document`` belongs to a different modality.</span>
 <span class="sd">        - It assumes that every :class:`MultimodalDocument` have at least two chunks.</span>
+<span class="sd">        - Build :class:`MultimodalDocument` from :attr:`modality_content_mapping` expects you assign</span>
+<span class="sd">          :attr:`Document.content` as the value of the dictionary.</span>
+
+<span class="sd">    :param document: the document to construct from. If ``bytes`` is given</span>
+<span class="sd">            then deserialize a :class:`DocumentProto`; ``dict`` is given then</span>
+<span class="sd">            parse a :class:`DocumentProto` from it; ``str`` is given, then consider</span>
+<span class="sd">            it as a JSON string and parse a :class:`DocumentProto` from it; finally,</span>
+<span class="sd">            one can also give `DocumentProto` directly, then depending on the ``copy``,</span>
+<span class="sd">            it builds a view or a copy from it.</span>
+<span class="sd">    :param chunks: the chunks of the multimodal document to initialize with. Expected to</span>
+<span class="sd">            received a list of :class:`Document`, with different modalities.</span>
+<span class="sd">    :param: `modality_content_mapping`: A Python dict, the keys are the modalities and the values</span>
+<span class="sd">            are the :attr:`content` of the :class:`Document`</span>
+<span class="sd">    :param copy: when ``document`` is given as a :class:`DocumentProto` object, build a</span>
+<span class="sd">            view (i.e. weak reference) from it or a deep copy from it.</span>
+<span class="sd">    :param kwargs: further key value arguments</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -333,26 +349,7 @@
         <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param document: the document to construct from. If ``bytes`` is given</span>
-<span class="sd">                then deserialize a :class:`DocumentProto`; ``dict`` is given then</span>
-<span class="sd">                parse a :class:`DocumentProto` from it; ``str`` is given, then consider</span>
-<span class="sd">                it as a JSON string and parse a :class:`DocumentProto` from it; finally,</span>
-<span class="sd">                one can also give `DocumentProto` directly, then depending on the ``copy``,</span>
-<span class="sd">                it builds a view or a copy from it.</span>
-<span class="sd">        :param chunks: the chunks of the multimodal document to initialize with. Expected to</span>
-<span class="sd">                received a list of :class:`Document`, with different modalities.</span>
-<span class="sd">        :param: `modality_content_mapping`: A Python dict, the keys are the modalities and the values</span>
-<span class="sd">                are the :attr:`content` of the :class:`Document`</span>
-<span class="sd">        :param copy: when ``document`` is given as a :class:`DocumentProto` object, build a</span>
-<span class="sd">                view (i.e. weak reference) from it or a deep copy from it.</span>
-<span class="sd">        :param kwargs: other parameters to be set</span>
-
-<span class="sd">        .. warning::</span>
-<span class="sd">            - Build :class:`MultimodalDocument` from :attr:`modality_content_mapping` expects you assign</span>
-<span class="sd">              :attr:`Document.content` as the value of the dictionary.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">document</span><span class="o">=</span><span class="n">document</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">chunks</span> <span class="ow">or</span> <span class="n">modality_content_map</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">chunks</span><span class="p">:</span>
@@ -377,6 +374,7 @@
 
 <span class="sd">        - Document should consist at least 2 chunks.</span>
 <span class="sd">        - Length of modality is not identical to length of chunks.</span>
+<span class="sd">        :return: true if the document is valid</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">modalities</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">chunk</span><span class="o">.</span><span class="n">modality</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="p">])</span>
         <span class="k">return</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chunks</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">modalities</span><span class="p">)</span>
@@ -420,7 +418,11 @@
 
     <span class="nd">@modality_content_map</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">modality_content_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Set the mapping of modality and content.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the mapping of modality and content.</span>
+
+<span class="sd">        :param value: map from modality to content</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">modality</span><span class="p">,</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">chunk</span><span class="p">:</span>
                 <span class="n">chunk</span><span class="o">.</span><span class="n">modality</span> <span class="o">=</span> <span class="n">modality</span>
@@ -447,10 +449,17 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modality_content_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
 <div class="viewcode-block" id="MultimodalDocument.update_content_hash"><a class="viewcode-back" href="../../../../../api/jina.types.document.multimodal/#jina.MultimodalDocument.update_content_hash">[docs]</a>    <span class="k">def</span> <span class="nf">update_content_hash</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">,</span> <span class="s1">&#39;content_hash&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">exclude_fields</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;matches&#39;</span><span class="p">,</span> <span class="s1">&#39;content_hash&#39;</span><span class="p">),</span>
+        <span class="n">include_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Update content hash of the document by including ``chunks`` when computing the hash&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update_content_hash</span><span class="p">(</span><span class="n">exclude_fields</span><span class="p">)</span></div></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update content hash of the document by including ``chunks`` when computing the hash</span>
+
+<span class="sd">         :param exclude_fields: a tuple of field names that excluded when computing content hash</span>
+<span class="sd">        :param include_fields: a tuple of field names that included when computing content hash</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update_content_hash</span><span class="p">(</span><span class="n">exclude_fields</span><span class="p">,</span> <span class="n">include_fields</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -583,7 +592,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 07, 2021.
+        Last updated on Mar 14, 2021.
       </span>
 
         </p>

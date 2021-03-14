@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.message &mdash; Jina 1.0.9-master documentation</title>
+  <title>jina.types.message &mdash; Jina 1.0.10-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.9-master</button>
+            <button class="dropbtn version">1.0.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -350,12 +350,11 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">envelope</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.EnvelopeProto&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+        <span class="n">envelope</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.EnvelopeProto&#39;</span><span class="p">]],</span>
         <span class="n">request</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.RequestProto&#39;</span><span class="p">],</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">envelope</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">EnvelopeProto</span><span class="p">()</span>
@@ -379,7 +378,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Request&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the request.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the request.</span>
+
+<span class="sd">        :return: request</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">,</span> <span class="n">Request</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">as_typed_request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -388,7 +391,11 @@
 
     <span class="nd">@request</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.RequestProto&#39;</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Set the request to :param: `val`.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the request to :param: `val`.</span>
+
+<span class="sd">        :param val: serialized Request</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
@@ -401,7 +408,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">proto</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;jina_pb2.MessageProto&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the RequestProto.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the RequestProto.</span>
+
+<span class="sd">        :return: protobuf object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">MessageProto</span><span class="p">()</span>
         <span class="n">r</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="p">):</span>
@@ -418,6 +429,8 @@
 <span class="sd">        .. warning::</span>
 <span class="sd">            If ``request`` change the type, e.g. by leveraging the feature of ``oneof``, this</span>
 <span class="sd">            property wont be updated. This is not considered as a good practice.</span>
+
+<span class="sd">        :return: boolean which states if data is requested</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span> <span class="o">!=</span> <span class="s1">&#39;ControlRequest&#39;</span>
 
@@ -426,8 +439,8 @@
         <span class="n">pod_name</span><span class="p">,</span>
         <span class="n">identity</span><span class="p">,</span>
         <span class="n">check_version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">request_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">request_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">request_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">request_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">compress</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;NONE&#39;</span><span class="p">,</span>
         <span class="n">compress_min_bytes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">compress_min_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
@@ -443,6 +456,13 @@
 <span class="sd">        :param pod_name: the name of the current pod</span>
 <span class="sd">        :param identity: the identity of the current pod</span>
 <span class="sd">        :param check_version: turn on check_version</span>
+<span class="sd">        :param args:  Additional positional arguments</span>
+<span class="sd">        :param kwargs: Additional keyword arguments</span>
+<span class="sd">        :param request_id: request id of the envelope</span>
+<span class="sd">        :param request_type: request type of the envelope</span>
+<span class="sd">        :param compress: used compression algorithm</span>
+<span class="sd">        :param compress_min_bytes: used for configuring compression</span>
+<span class="sd">        :param compress_min_ratio: used for configuring compression</span>
 <span class="sd">        :return: the resulted protobuf message</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">envelope</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">EnvelopeProto</span><span class="p">()</span>
@@ -490,7 +510,11 @@
         <span class="k">return</span> <span class="n">envelope</span>
 
 <div class="viewcode-block" id="Message.dump"><a class="viewcode-back" href="../../../../api/jina.types.message/#jina.Message.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get the message in a list of bytes.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the message in a list of bytes.</span>
+
+<span class="sd">        :return: array, containing encoded receiver id, serialized envelope and the compressed serialized envelope</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compress</span><span class="p">(</span><span class="n">r2</span><span class="p">)</span>
 
@@ -575,7 +599,7 @@
     <span class="k">def</span> <span class="nf">colored_route</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the string representation of the routes in a message.</span>
 
-<span class="sd">        :return:</span>
+<span class="sd">        :return: colored route</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">_pod_str</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
@@ -607,6 +631,7 @@
 
 <span class="sd">        :param name: the name of the pod service</span>
 <span class="sd">        :param identity: the identity of the pod service</span>
+<span class="sd">        :param envelope: protobuf definition of the envelope</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
         <span class="n">r</span><span class="o">.</span><span class="n">pod</span> <span class="o">=</span> <span class="n">name</span>
@@ -618,6 +643,7 @@
         <span class="sd">&quot;&quot;&quot;Get the size in bytes.</span>
 
 <span class="sd">        To get the latest size, use it after :meth:`dump`</span>
+<span class="sd">        :return: size of the message</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
 
@@ -688,6 +714,7 @@
 
 <span class="sd">        .. note::</span>
 <span class="sd">            This should be only called at Gateway</span>
+<span class="sd">        :return: request object which contains the response</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">end_time</span><span class="o">.</span><span class="n">GetCurrentTime</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
@@ -715,7 +742,7 @@
         <span class="sd">&quot;&quot;&quot;Add exception to the last route in the envelope</span>
 
 <span class="sd">        :param ex: Exception to be added</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param executor: Executor related to the exception</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">status</span>
         <span class="k">if</span> <span class="n">ex</span><span class="p">:</span>
@@ -737,12 +764,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return if the envelope status is ERROR.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return if the envelope status is ERROR.</span>
+
+<span class="sd">         :return: boolean stating if the status code of the envelope is error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">code</span> <span class="o">&gt;=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">StatusProto</span><span class="o">.</span><span class="n">ERROR</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return if the envelope status is READY.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return if the envelope status is READY.</span>
+
+<span class="sd">        :return: boolean stating if the status code of the envelope is ready</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">StatusProto</span><span class="o">.</span><span class="n">READY</span></div>
 </pre></div>
 
@@ -876,7 +911,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 07, 2021.
+        Last updated on Mar 14, 2021.
       </span>
 
         </p>

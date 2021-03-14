@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.compound &mdash; Jina 1.0.9-master documentation</title>
+  <title>jina.executors.compound &mdash; Jina 1.0.10-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.9-master</button>
+            <button class="dropbtn version">1.0.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -365,6 +365,21 @@
 The most common usage is chaining a pipeline of executors, where the
 input of the current is the output of the former.</p>
 <p>A common use case of <a class="reference internal" href="#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code></a> is to glue multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExecutor</span></code> together, instead of breaking them into different Pods.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>routes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]]) – <p>a map of function routes. The key is the function name, the value is a tuple of two pieces,
+where the first element is the name of the referred component (<code class="docutils literal notranslate"><span class="pre">metas.name</span></code>) and the second element
+is the name of the referred function.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#jina.executors.compound.CompoundExecutor.add_route" title="jina.executors.compound.CompoundExecutor.add_route"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_route()</span></code></a></p>
+</div>
+</p></li>
+<li><p><strong>resolve_all</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – universally add <code class="docutils literal notranslate"><span class="pre">*_all()</span></code> to all functions that have the identical name</p></li>
+</ul>
+</dd>
+</dl>
 <p><strong>Example 1: a compound Chunk Indexer that does vector indexing and key-value index</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!CompoundExecutor</span>
 <span class="nt">components</span><span class="p">:</span>
@@ -427,38 +442,11 @@ input of the current is the output of the former.</p>
       <span class="p p-Indicator">-</span> <span class="kt">!ControlReqDriver</span> <span class="p p-Indicator">{}</span>
 </pre></div>
 </div>
-<p>One can access the component of a <a class="reference internal" href="#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code></a> via index, e.g.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;compound-example.yaml&#39;</span><span class="p">)</span>
-<span class="n">assertTrue</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;dummyA-1ef90ea8&#39;</span><span class="p">])</span>
-<span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Component <code class="docutils literal notranslate"><span class="pre">workspace</span></code> and <code class="docutils literal notranslate"><span class="pre">pea_id</span></code> are overriden by their <a class="reference internal" href="#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code></a> counterparts.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>When sub-component is external, <code class="docutils literal notranslate"><span class="pre">py_modules</span></code> must be given at root level <code class="docutils literal notranslate"><span class="pre">metas</span></code> not at the sub-level.</p>
-</div>
 <p>Create a new <a class="reference internal" href="#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code></a> object</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>routes</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]]) – <p>a map of function routes. The key is the function name, the value is a tuple of two pieces,
-where the first element is the name of the referred component (<code class="docutils literal notranslate"><span class="pre">metas.name</span></code>) and the second element
-is the name of the referred function.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#jina.executors.compound.CompoundExecutor.add_route" title="jina.executors.compound.CompoundExecutor.add_route"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_route()</span></code></a></p>
-</div>
-</p></li>
-<li><p><strong>resolve_all</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – universally add <code class="docutils literal notranslate"><span class="pre">*_all()</span></code> to all functions that have the identical name</p></li>
-</ul>
-</dd>
-</dl>
-<p>Example:</p>
-<p>We have two dummy executors as follows:</p>
+<blockquote>
+<div><p><a href="#id3"><span class="problematic" id="id4">**</span></a>Example 3: **</p>
+<blockquote>
+<div><p>We have two dummy executors as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">dummyA</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;a&#39;</span>
@@ -509,13 +497,32 @@ arguments <code class="docutils literal notranslate"><span class="pre">routes</s
 <p>When setting inner <cite>executors</cite> in <cite>components</cite> the <cite>workspace</cite> configuration will not be used and will be overriden
 by a workspace extracted considering the name of the <cite>CompoundExecutor</cite>, the name of each internal <cite>Component</cite> and the <cite>pea_id</cite></p>
 </div>
+</div></blockquote>
+</div></blockquote>
+<p>One can access the component of a <a class="reference internal" href="#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code></a> via index, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;compound-example.yaml&#39;</span><span class="p">)</span>
+<span class="n">assertTrue</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">c</span><span class="p">[</span><span class="s1">&#39;dummyA-1ef90ea8&#39;</span><span class="p">])</span>
+<span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Component <code class="docutils literal notranslate"><span class="pre">workspace</span></code> and <code class="docutils literal notranslate"><span class="pre">pea_id</span></code> are overriden by their <a class="reference internal" href="#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">CompoundExecutor</span></code></a> counterparts.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When sub-component is external, <code class="docutils literal notranslate"><span class="pre">py_modules</span></code> must be given at root level <code class="docutils literal notranslate"><span class="pre">metas</span></code> not at the sub-level.</p>
+</div>
 <dl class="py method">
 <dt id="jina.executors.compound.CompoundExecutor.is_updated">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_updated</span></code><a class="headerlink" href="#jina.executors.compound.CompoundExecutor.is_updated" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code>  if any components is updated</p>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code>  if any components is updated.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>only true if all components are updated or if the compound is updated</p>
 </dd>
 </dl>
 </dd></dl>
@@ -528,22 +535,22 @@ by a workspace extracted considering the name of the <cite>CompoundExecutor</cit
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>only true if all components are trained or if the compound is trained</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="jina.executors.compound.CompoundExecutor.save">
 <code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/compound/#CompoundExecutor.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.compound.CompoundExecutor.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Serialize this compound executor along with all components in it to binary files</p>
+<dd><p>Serialize this compound executor along with all components in it to binary files.
+It uses <code class="docutils literal notranslate"><span class="pre">pickle</span></code> for dumping.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – file path of the serialized file, if not given then <code class="xref py py-attr docutils literal notranslate"><span class="pre">save_abspath</span></code> is used</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>successfully dumped or not</p>
-</dd>
 </dl>
-<p>It uses <code class="docutils literal notranslate"><span class="pre">pickle</span></code> for dumping.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -554,6 +561,9 @@ pre-given order when calling the setter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[~AnyExecutor]</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>components</p>
 </dd>
 </dl>
 </dd></dl>
@@ -758,7 +768,7 @@ It is useful when two components have a function with duplicated name and one wa
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 07, 2021.
+        Last updated on Mar 14, 2021.
       </span>
 
         </p>

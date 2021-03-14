@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document.multimodal &mdash; Jina 1.0.9-master documentation</title>
+  <title>jina.types.document.multimodal &mdash; Jina 1.0.10-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.9-master</button>
+            <button class="dropbtn version">1.0.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -366,6 +366,8 @@
 <ul class="simple">
 <li><p>It assumes that every <code class="docutils literal notranslate"><span class="pre">chunk</span></code> of a <code class="docutils literal notranslate"><span class="pre">document</span></code> belongs to a different modality.</p></li>
 <li><p>It assumes that every <a class="reference internal" href="#jina.types.document.multimodal.MultimodalDocument" title="jina.types.document.multimodal.MultimodalDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultimodalDocument</span></code></a> have at least two chunks.</p></li>
+<li><p>Build <a class="reference internal" href="#jina.types.document.multimodal.MultimodalDocument" title="jina.types.document.multimodal.MultimodalDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultimodalDocument</span></code></a> from <code class="xref py py-attr docutils literal notranslate"><span class="pre">modality_content_mapping</span></code> expects you assign
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">Document.content</span></code> as the value of the dictionary.</p></li>
 </ul>
 </div>
 <dl class="field-list simple">
@@ -381,7 +383,19 @@ it builds a view or a copy from it.</p></li>
 received a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code>, with different modalities.</p></li>
 <li><p><strong>copy</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – when <code class="docutils literal notranslate"><span class="pre">document</span></code> is given as a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentProto</span></code> object, build a
 view (i.e. weak reference) from it or a deep copy from it.</p></li>
-<li><p><strong>kwargs</strong> – other parameters to be set</p></li>
+<li><p><strong>kwargs</strong> – further key value arguments</p></li>
+<li><p><strong>document</strong> – the document to construct from. If <code class="docutils literal notranslate"><span class="pre">bytes</span></code> is given
+then deserialize a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentProto</span></code>; <code class="docutils literal notranslate"><span class="pre">dict</span></code> is given then
+parse a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentProto</span></code> from it; <code class="docutils literal notranslate"><span class="pre">str</span></code> is given, then consider
+it as a JSON string and parse a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentProto</span></code> from it; finally,
+one can also give <cite>DocumentProto</cite> directly, then depending on the <code class="docutils literal notranslate"><span class="pre">copy</span></code>,
+it builds a view or a copy from it.</p></li>
+<li><p><strong>copy</strong> – when <code class="docutils literal notranslate"><span class="pre">document</span></code> is given as a <code class="xref py py-class docutils literal notranslate"><span class="pre">DocumentProto</span></code> object, build a
+view (i.e. weak reference) from it or a deep copy from it.</p></li>
+<li><p><strong>field_resolver</strong> – a map from field names defined in <code class="docutils literal notranslate"><span class="pre">document</span></code> (JSON, dict) to the field
+names defined in Protobuf. This is only used when the given <code class="docutils literal notranslate"><span class="pre">document</span></code> is
+a JSON string or a Python dict.</p></li>
+<li><p><strong>kwargs</strong> – other parameters to be set _after_ the document is constructed</p></li>
 </ul>
 </dd>
 <dt class="field-even">Param</dt>
@@ -389,12 +403,17 @@ view (i.e. weak reference) from it or a deep copy from it.</p></li>
 are the <code class="xref py py-attr docutils literal notranslate"><span class="pre">content</span></code> of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code></p>
 </dd>
 </dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<ul class="simple">
-<li><p>Build <a class="reference internal" href="#jina.types.document.multimodal.MultimodalDocument" title="jina.types.document.multimodal.MultimodalDocument"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultimodalDocument</span></code></a> from <code class="xref py py-attr docutils literal notranslate"><span class="pre">modality_content_mapping</span></code> expects you assign
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">Document.content</span></code> as the value of the dictionary.</p></li>
-</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">document</span></code> is a JSON string or Python dictionary object, the constructor will only map the values
+from known fields defined in Protobuf, all unknown fields are mapped to <code class="docutils literal notranslate"><span class="pre">document.tags</span></code>. For example,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Document</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;123&#39;</span><span class="p">,</span> <span class="s1">&#39;hello&#39;</span><span class="p">:</span> <span class="s1">&#39;world&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;good&#39;</span><span class="p">:</span> <span class="s1">&#39;bye&#39;</span><span class="p">}})</span>
+
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="s1">&#39;123&#39;</span>  <span class="c1"># true</span>
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;hello&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;world&#39;</span>  <span class="c1"># true</span>
+<span class="k">assert</span> <span class="n">d</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;good&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;bye&#39;</span>  <span class="c1"># true</span>
+</pre></div>
+</div>
 </div>
 <dl class="py method">
 <dt id="jina.types.document.multimodal.MultimodalDocument.is_valid">
@@ -407,6 +426,9 @@ are the <code class="xref py py-attr docutils literal notranslate"><span class="
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>true if the document is valid</p>
 </dd>
 </dl>
 </dd></dl>
@@ -442,11 +464,21 @@ are the modalities of the chunks, the values are the corresponded content of the
 
 <dl class="py method">
 <dt id="jina.types.document.multimodal.MultimodalDocument.update_content_hash">
-<code class="sig-name descname"><span class="pre">update_content_hash</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclude_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('id',</span> <span class="pre">'matches',</span> <span class="pre">'content_hash')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/types/document/multimodal/#MultimodalDocument.update_content_hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.types.document.multimodal.MultimodalDocument.update_content_hash" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_content_hash</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclude_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('id',</span> <span class="pre">'matches',</span> <span class="pre">'content_hash')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_fields</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/types/document/multimodal/#MultimodalDocument.update_content_hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.types.document.multimodal.MultimodalDocument.update_content_hash" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update content hash of the document by including <code class="docutils literal notranslate"><span class="pre">chunks</span></code> when computing the hash</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">param exclude_fields</dt>
+<dd class="field-odd"><p>a tuple of field names that excluded when computing content hash</p>
+</dd>
+</dl>
+</div></blockquote>
 <dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_fields</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – a tuple of field names that included when computing content hash</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -597,7 +629,7 @@ are the modalities of the chunks, the values are the corresponded content of the
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 07, 2021.
+        Last updated on Mar 14, 2021.
       </span>
 
         </p>

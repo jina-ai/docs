@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.decorators &mdash; Jina 1.0.9-master documentation</title>
+  <title>jina.executors.decorators &mdash; Jina 1.0.10-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.9-master</button>
+            <button class="dropbtn version">1.0.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -313,14 +313,14 @@
 
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.metas</span> <span class="kn">import</span> <span class="n">get_default_metas</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">batch_iterator</span><span class="p">,</span> <span class="n">typename</span><span class="p">,</span> <span class="n">convert_tuple_to_list</span>
 <span class="kn">from</span> <span class="nn">..logging</span> <span class="kn">import</span> <span class="n">default_logger</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span><span class="p">,</span> <span class="n">chain</span>
 
 
 <div class="viewcode-block" id="as_aggregate_method"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.as_aggregate_method">[docs]</a><span class="k">def</span> <span class="nf">as_aggregate_method</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
@@ -507,36 +507,31 @@
     <span class="k">return</span> <span class="n">total_size</span>
 
 
-<span class="k">def</span> <span class="nf">_merge_results_after_batching</span><span class="p">(</span><span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="c1"># the only result of one batch</span>
-        <span class="k">return</span> <span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">_merge_results_after_batching</span><span class="p">(</span>
+    <span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">flatten</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">final_result</span><span class="p">:</span>
+        <span class="k">return</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">)</span> <span class="ow">and</span> <span class="n">merge_over_axis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">final_result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">reduced_result</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">num_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_cols</span><span class="p">):</span>
-                <span class="n">reduced_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">row</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">final_result</span><span class="p">],</span> <span class="n">merge_over_axis</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="n">final_result</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">reduced_result</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">final_result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">flatten</span><span class="p">:</span>
+        <span class="n">final_result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">final_result</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">final_result</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">final_result</span>
+    <span class="k">return</span> <span class="n">final_result</span>
 
 
 <div class="viewcode-block" id="batching"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.batching">[docs]</a><span class="k">def</span> <span class="nf">batching</span><span class="p">(</span>
-    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">num_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">split_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="n">label_on</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ordinal_idx_arg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">flatten_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Split the input of a function into small batches and call :func:`func` on each batch</span>
 <span class="sd">    , collect the merged result and return. This is useful when the input is too big to fit into memory</span>
@@ -552,6 +547,7 @@
 <span class="sd">    :param ordinal_idx_arg: the location of the ordinal indexes argument. Needed for classes</span>
 <span class="sd">            where function decorated needs to know the ordinal indexes of the data in the batch</span>
 <span class="sd">            (Not used when label_on is used)</span>
+<span class="sd">    :param flatten_output: If this is set to True, the results from different batches will be chained and the returning value is a list of the results. Otherwise, the returning value is a list of lists, in which each element is a list containing the result from one single batch. Note if there is only one batch returned, the returned result is always flatten.</span>
 <span class="sd">    :return: the merged result as if run :func:`func` once on the input.</span>
 
 <span class="sd">    Example:</span>
@@ -629,7 +625,9 @@
                 <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-            <span class="k">return</span> <span class="n">_merge_results_after_batching</span><span class="p">(</span><span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_merge_results_after_batching</span><span class="p">(</span>
+                <span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">,</span> <span class="n">flatten_output</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">arg_wrapper</span>
 
@@ -640,8 +638,8 @@
 
 
 <div class="viewcode-block" id="batching_multi_input"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.batching_multi_input">[docs]</a><span class="k">def</span> <span class="nf">batching_multi_input</span><span class="p">(</span>
-    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">num_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">split_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -741,9 +739,10 @@
 
 
 <div class="viewcode-block" id="single"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.single">[docs]</a><span class="k">def</span> <span class="nf">single</span><span class="p">(</span>
-    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">flatten_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Guarantee that the input of a function is provided as a single instance and not in batches</span>
@@ -752,6 +751,7 @@
 <span class="sd">    :param merge_over_axis: merge over which axis into a single result</span>
 <span class="sd">    :param slice_on: the location of the data. When using inside a class,</span>
 <span class="sd">            ``slice_on`` should take ``self`` into consideration.</span>
+<span class="sd">    :param flatten_output: Flag to determine if a result of list of lists needs to be flattened in output</span>
 <span class="sd">    :return: the merged result as if run :func:`func` once on the input.</span>
 
 <span class="sd">    Example:</span>
@@ -761,15 +761,51 @@
 <span class="sd">            class OneByOneCrafter:</span>
 <span class="sd">                @single</span>
 <span class="sd">                def craft(self, text: str) -&gt; Dict:</span>
+
+<span class="sd">    .. note:</span>
+<span class="sd">        Single decorator will let the user interact with the executor in 3 different ways:</span>
+<span class="sd">            - Providing batches: (This decorator will make sure that the actual method receives just a single instance)</span>
+<span class="sd">            - Providing a single instance</span>
+<span class="sd">            - Providing a single instance through kwargs.</span>
+
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            class OneByOneCrafter:</span>
+<span class="sd">                @single</span>
+<span class="sd">                def craft(self, text: str) -&gt; Dict:</span>
+<span class="sd">                    return {&#39;text&#39; : f&#39;{text}-crafted&#39;}</span>
+
+<span class="sd">            crafter = OneByOneCrafter()</span>
+
+<span class="sd">            results = crafted.craft([&#39;text1&#39;, &#39;text2&#39;])</span>
+<span class="sd">            assert len(results) == 2</span>
+<span class="sd">            assert results[0] == {&#39;text&#39;: &#39;text1-crafted&#39;}</span>
+<span class="sd">            assert results[1] == {&#39;text&#39;: &#39;text2-crafted&#39;}</span>
+
+<span class="sd">            result = crafter.craft(&#39;text&#39;)</span>
+<span class="sd">            assert result[&#39;text&#39;] == &#39;text-crafted&#39;</span>
+
+<span class="sd">            results = crafted.craft(text=&#39;text&#39;)</span>
+<span class="sd">            assert result[&#39;text&#39;] == &#39;text-crafted&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_single</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="c1"># priority: decorator &gt; class_attribute</span>
-            <span class="c1"># by default data is in args[1] (self needs to be taken into account)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">]</span>
+
+            <span class="c1"># like this one can use the function with single kwargs</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">slice_on</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="c1"># like this one can use the function with single kwargs</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
             <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">]</span>
 
             <span class="n">default_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;batching disabled for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -780,11 +816,121 @@
                 <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-            <span class="k">return</span> <span class="n">_merge_results_after_batching</span><span class="p">(</span><span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_merge_results_after_batching</span><span class="p">(</span>
+                <span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">,</span> <span class="n">flatten_output</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">arg_wrapper</span>
 
-    <span class="k">return</span> <span class="n">_single</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_single</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_single</span></div>
+
+
+<div class="viewcode-block" id="single_multi_input"><a class="viewcode-back" href="../../../../api/jina.executors.decorators/#jina.executors.decorators.single_multi_input">[docs]</a><span class="k">def</span> <span class="nf">single_multi_input</span><span class="p">(</span>
+    <span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">merge_over_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">slice_on</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">num_data</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">flatten_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Guarantee that the inputs of a function with more than one argument is provided as single instances and not in batches</span>
+
+<span class="sd">    :param func: function to decorate</span>
+<span class="sd">    :param merge_over_axis: merge over which axis into a single result</span>
+<span class="sd">    :param slice_on: the location of the data. When using inside a class,</span>
+<span class="sd">            ``slice_on`` should take ``self`` into consideration.</span>
+<span class="sd">    :param num_data: the number of data inside the arguments</span>
+<span class="sd">    :param flatten_output: If this is set to True, the results from different batches will be chained and the returning value is a list of the results. Otherwise, the returning value is a list of lists, in which each element is a list containing the result from one single batch. Note if there is only one batch returned, the returned result is always flatten.</span>
+<span class="sd">    :return: the merged result as if run :func:`func` once on the input.</span>
+
+<span class="sd">    ..warning:</span>
+<span class="sd">        data arguments will be taken starting from ``slice_on` to ``slice_on + num_data``</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            class OneByOneCrafter:</span>
+
+<span class="sd">                @single_multi_input</span>
+<span class="sd">                def craft(self, text: str, id: str) -&gt; Dict:</span>
+<span class="sd">            ...</span>
+
+<span class="sd">    .. note:</span>
+<span class="sd">        Single multi input decorator will let the user interact with the executor in 3 different ways:</span>
+<span class="sd">            - Providing batches: (This decorator will make sure that the actual method receives just a single instance)</span>
+<span class="sd">            - Providing a single instance</span>
+<span class="sd">            - Providing a single instance through kwargs.</span>
+
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            class OneByOneCrafter:</span>
+<span class="sd">                @single_multi_input</span>
+<span class="sd">                def craft(self, text: str, id: str) -&gt; Dict:</span>
+<span class="sd">                    return {&#39;text&#39;: f&#39;{text}-crafted&#39;, &#39;id&#39;: f&#39;{id}-crafted&#39;}</span>
+
+<span class="sd">            crafter = OneByOneCrafter()</span>
+
+<span class="sd">            results = crafted.craft([&#39;text1&#39;, &#39;text2&#39;], [&#39;id1&#39;, &#39;id2&#39;])</span>
+<span class="sd">            assert len(results) == 2</span>
+<span class="sd">            assert results[0] == {&#39;text&#39;: &#39;text1-crafted&#39;, &#39;id&#39;: &#39;id1-crafted&#39;}</span>
+<span class="sd">            assert results[1] == {&#39;text&#39;: &#39;text2-crafted&#39;, &#39;id&#39;: &#39;id2-crafted&#39;}</span>
+
+<span class="sd">            result = crafter.craft(&#39;text&#39;, &#39;id&#39;)</span>
+<span class="sd">            assert result[&#39;text&#39;] == &#39;text-crafted&#39;</span>
+<span class="sd">            assert result[&#39;id&#39;] == &#39;id-crafted&#39;</span>
+
+<span class="sd">            results = crafted.craft(text=&#39;text&#39;, id=&#39;id&#39;)</span>
+<span class="sd">            assert result[&#39;text&#39;] == &#39;text-crafted&#39;</span>
+<span class="sd">            assert result[&#39;id&#39;] == &#39;id-crafted&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_single_multi_input</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="c1"># by default data is in args[1:] (self needs to be taken into account)</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">default_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;batching disabled for </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">slice_on</span><span class="p">:</span>
+                <span class="c1"># like this one can use the function with single kwargs</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">data_iterators</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span><span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_data</span><span class="p">)])</span>
+
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">slice_on</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_iterators</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_iterators</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data_iterators</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">)</span>
+            <span class="p">):</span>
+                <span class="c1"># like this one can use the function with single kwargs</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">final_result</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">instance</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_iterators</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span>
+                <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_data</span><span class="p">):</span>
+                    <span class="n">args</span><span class="p">[</span><span class="n">slice_on</span> <span class="o">+</span> <span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_iterators</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+
+                <span class="n">r</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">final_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">_merge_results_after_batching</span><span class="p">(</span>
+                <span class="n">final_result</span><span class="p">,</span> <span class="n">merge_over_axis</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="n">flatten_output</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">arg_wrapper</span>
+
+    <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_single_multi_input</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_single_multi_input</span></div>
 </pre></div>
 
            </div>
@@ -917,7 +1063,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 07, 2021.
+        Last updated on Mar 14, 2021.
       </span>
 
         </p>
