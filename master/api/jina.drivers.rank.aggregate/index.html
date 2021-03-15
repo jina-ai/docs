@@ -381,10 +381,8 @@
 <li><p><strong>keep_source_matches_as_chunks</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – A flag to indicate if the driver must return the old matches of the query or its chunks
 (at a greater granularity level (k + 1)) as the chunks of the new computed <cite>matches</cite> (at granularity level k)
 Set it to <cite>True</cite> when keeping track of the chunks that lead to a retrieved result.</p></li>
-<li><p><strong>*args</strong> – <p><a href="#id3"><span class="problematic" id="id4">*</span></a>args for super</p>
-</p></li>
-<li><p><strong>**kwargs</strong> – <p><a href="#id7"><span class="problematic" id="id8">**</span></a>kwargs for super</p>
-</p></li>
+<li><p><strong>args</strong> – additional positional arguments wich are just used for the parent initialization</p></li>
+<li><p><strong>kwargs</strong> – additional key value arguments wich are just used for the parent initialization</p></li>
 </ul>
 </dd>
 </dl>
@@ -441,45 +439,27 @@ level above.</p>
 <dt>Input-Output ::</dt><dd><p>Input:
 document: {granularity: k-1}</p>
 <blockquote>
-<div><p><a href="#id9"><span class="problematic" id="id10">|</span></a>- chunks: {granularity: k}
-|    <a href="#id11"><span class="problematic" id="id12">|</span></a>- matches: {granularity: k}
+<div><p><a href="#id1"><span class="problematic" id="id2">|</span></a>- chunks: {granularity: k}
+|    <a href="#id3"><span class="problematic" id="id4">|</span></a>- matches: {granularity: k}
 |
-<a href="#id13"><span class="problematic" id="id14">|</span></a>- chunks: {granularity: k}</p>
+<a href="#id5"><span class="problematic" id="id6">|</span></a>- chunks: {granularity: k}</p>
 <blockquote>
-<div><p><a href="#id15"><span class="problematic" id="id16">|</span></a>- matches: {granularity: k}</p>
+<div><p><a href="#id7"><span class="problematic" id="id8">|</span></a>- matches: {granularity: k}</p>
 </div></blockquote>
 </div></blockquote>
 <p>Output:
 document: {granularity: k-1}</p>
 <blockquote>
-<div><p><a href="#id17"><span class="problematic" id="id18">|</span></a>- chunks: {granularity: k}
-|    <a href="#id19"><span class="problematic" id="id20">|</span></a>- matches: {granularity: k}
+<div><p><a href="#id9"><span class="problematic" id="id10">|</span></a>- chunks: {granularity: k}
+|    <a href="#id11"><span class="problematic" id="id12">|</span></a>- matches: {granularity: k}
 |
-<a href="#id21"><span class="problematic" id="id22">|</span></a>- chunks: {granularity: k}
-|    <a href="#id23"><span class="problematic" id="id24">|</span></a>- matches: {granularity: k}
+<a href="#id13"><span class="problematic" id="id14">|</span></a>- chunks: {granularity: k}
+|    <a href="#id15"><span class="problematic" id="id16">|</span></a>- matches: {granularity: k}
 |
-<a href="#id25"><span class="problematic" id="id26">|</span></a>-matches: {granularity: k-1} (Ranked according to Ranker Executor)</p>
+<a href="#id17"><span class="problematic" id="id18">|</span></a>-matches: {granularity: k-1} (Ranked according to Ranker Executor)</p>
 </div></blockquote>
 </dd>
 </dl>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>keep_source_matches_as_chunks</strong> – A flag to indicate if the driver must return the old matches of the query or its chunks
-(at a greater granularity level (k + 1)) as the chunks of the new computed <cite>matches</cite> (at granularity level k)
-Set it to <cite>True</cite> when keeping track of the chunks that lead to a retrieved result.</p></li>
-<li><p><strong>*args</strong> – <p><a href="#id29"><span class="problematic" id="id30">*</span></a>args for super</p>
-</p></li>
-<li><p><strong>**kwargs</strong> – <p><a href="#id33"><span class="problematic" id="id34">**</span></a>kwargs for super</p>
-</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When set <cite>keep_source_matches_as_chunks=True</cite>, the chunks of the match contains <strong>ONLY</strong> the chunks leading
-to the match rather than <strong>ALL</strong> the chunks of the match.</p>
-</div>
 <dl class="py attribute">
 <dt id="jina.drivers.rank.aggregate.Chunk2DocRankDriver.runtime">
 <code class="sig-name descname"><span class="pre">runtime</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ZEDRuntime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jina.drivers.rank.aggregate.Chunk2DocRankDriver.runtime" title="Permalink to this definition">¶</a></dt>
@@ -505,36 +485,18 @@ Input-Output</p>
 </div>
 <p>Imagine a case where we are querying a system with text documents chunked by sentences. When we query the system,
 we use sentences (chunks) to query it. So at some point we will have:
-<a href="#id35"><span class="problematic" id="id36">`</span></a>query sentence (documents of granularity 1):</p>
+<a href="#id19"><span class="problematic" id="id20">`</span></a>query sentence (documents of granularity 1):</p>
 <blockquote>
 <div><p>matches: indexed sentences (documents of level depth 1)`</p>
 </div></blockquote>
 <p>`
 But in the output we want to have the full document that better matches the <cite>sentence</cite>.
-<a href="#id37"><span class="problematic" id="id38">`</span></a>query sentence (documents of granularity 1):</p>
+<a href="#id21"><span class="problematic" id="id22">`</span></a>query sentence (documents of granularity 1):</p>
 <blockquote>
 <div><p>matches: indexed full documents (documents of granularity 0).</p>
 </div></blockquote>
 <p>`
 Using this Driver before querying a Binary Index with full binary document data can be very useful to implement a search system.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>keep_source_matches_as_chunks</strong> – A flag to indicate if the driver must return the old matches of the query or its chunks
-(at a greater granularity level (k + 1)) as the chunks of the new computed <cite>matches</cite> (at granularity level k)
-Set it to <cite>True</cite> when keeping track of the chunks that lead to a retrieved result.</p></li>
-<li><p><strong>*args</strong> – <p><a href="#id41"><span class="problematic" id="id42">*</span></a>args for super</p>
-</p></li>
-<li><p><strong>**kwargs</strong> – <p><a href="#id45"><span class="problematic" id="id46">**</span></a>kwargs for super</p>
-</p></li>
-</ul>
-</dd>
-</dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When set <cite>keep_source_matches_as_chunks=True</cite>, the chunks of the match contains <strong>ONLY</strong> the chunks leading
-to the match rather than <strong>ALL</strong> the chunks of the match.</p>
-</div>
 <dl class="py attribute">
 <dt id="jina.drivers.rank.aggregate.AggregateMatches2DocRankDriver.runtime">
 <code class="sig-name descname"><span class="pre">runtime</span></code><em class="property"><span class="pre">:</span> <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ZEDRuntime</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jina.drivers.rank.aggregate.AggregateMatches2DocRankDriver.runtime" title="Permalink to this definition">¶</a></dt>
