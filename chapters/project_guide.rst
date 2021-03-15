@@ -8,7 +8,7 @@ Project setup guide
 
 .. note:: This guide expects you have a basic understanding of Jina. If you do not have that yet, please read `Jina 101 <http://101.jina.ai>`_ first.
 
-If you plan on developing applications with Jina, this guide explains best practices for managing your application working space.  It explains recommended folder structure and best practices making your work reproducible. 
+If you plan on developing applications with Jina, this guide explains best practices for managing your application working space.  It explains recommended folder structure and best practices to make your work reproducible for the community. 
 
 
 .. contents:: Table of Contents
@@ -32,14 +32,14 @@ To learn about other ways to install Jina, we have an `installation guide <https
 Setup with Jina Hub
 ===================
 
-Use our **jina hub new** command to spin up a basic Jina app:
+The **jina hub new** command will automatically create the recommended project structure in your working directory.  
 
 .. highlight:: bash
 .. code-block:: bash
 
     jina hub new --type app
 
-This saves you having to do a lot of typing and setup. So, you just need to run the previous command and follow the guide that you will see. But don't worry, you will still see how the basic folder structure becomes, and which result you will get in the end.
+This saves you having to do a lot of typing and setup. So, you just need to run the previous command and follow the guide that you will see. But don't worry, you will still see how the basic folder structure is formed, and which result you will get in the end.
 
 
 Manual Setup
