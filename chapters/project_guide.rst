@@ -119,7 +119,7 @@ App.py
 
 ``/app.py``
 
-Finally, the main app needs a dedicated place.,This file will be living directly under the main directory.
+Finally, the main app needs a dedicated place. This file will be living directly under the main directory.
 
 Workspace
 ---------
