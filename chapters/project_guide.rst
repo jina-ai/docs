@@ -18,7 +18,9 @@ If you plan on developing applications with Jina, this guide explains best pract
 Installing Jina
 ===============
 
-The first thing you need is to have Jina installed and ready to run. There are different ways you can do this, but here you will just see the easiest one. With Linux/Mac, you just need to install Jina with pip using the following command:
+To begin with, you must have Jina installed. We recommend you create a new python environment to allow for clean management of dependencies.   
+
+There are several ways to manage python virtual environments. Once you have chosen one, set up and entered the new environment. You should begin by installing the latest version of Jina. 
 
 .. highlight:: bash
 .. code-block:: bash
