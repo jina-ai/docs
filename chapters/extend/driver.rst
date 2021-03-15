@@ -18,8 +18,10 @@ a :term:`Driver` interprets incoming messages into :term:`Document` and extracts
 
 Jina already created `72 drivers <https://docs.jina.ai/chapters/all_driver/>`_ drivers inside Core,
 and these `Drivers` should already fulfill most of the scenarios.
-While if you're creating a customised `Executor`,
-and you find the current `Drivers` is not fit for your `Executor`,
+However, when the existing Executors does not fit your specific use case,
+you might be curious on how to **extend** Jina.
+For instance, if you have created a customised `Executor`,
+and you find the current `Drivers` can not fit for your customised `Executor`,
 you might want to create a customised `Driver`.
 
 Overview
