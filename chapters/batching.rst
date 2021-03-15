@@ -11,8 +11,12 @@ In order to provide this capability, the :term:`Driver` extracts all the needed 
 Then all these instances (one per :term:`Document`) is passed to the :term:`Executor`. Then the :term:`Executor` decides how it wants to
 consume these instances (in batches or one by one).
 
+.. meta::
+   :description: Development Guide: Batching in Jina
+   :keywords: Jina, batching
+
 .. contents:: Table of Contents
-    :depth: 3
+    :depth: 2
 
 Batching decorators
 --------------------

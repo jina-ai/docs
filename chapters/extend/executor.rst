@@ -106,7 +106,7 @@ Rule of thumb, you always pick the executor that shares the similar logic to inh
      - Re-scores the matches for a document.
    * - `BaseClassifier`
      - `BaseExecutor`
-     - Enrich the documents and chunks with a classifier.
+     - Enrich the documents with a classifier.
    * - `BaseEvaluator`
      - `BaseExecutor`
      - Evaluate score based on output and GroundTruth.

@@ -64,5 +64,5 @@ You can see this in the code listing in the beginning of this chapter.
 
 5. **Expanding size**
    
-The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size on disk (and in memory) of the indexer will grow over time if you perform update or delete operations. We recommend you rebuild the indexers regularly. 
+The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size on disk (and in memory) of the indexer will grow over time if you perform update or delete operations. We recommend setting the `delete_on_dump` parameter of the `NumpyIndexer` to `True`. When the Flow is shut down, the data that has been marked as deleted will be permanently deleted before being saved to disk. By default the parameter is set to `False`, as setting it to `True` will make the shut down process slower.  
 
