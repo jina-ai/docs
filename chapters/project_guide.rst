@@ -8,7 +8,7 @@ Project setup guide
 
 .. note:: This guide expects you have a basic understanding of Jina. If you do not have that yet, please read `Jina 101 <http://101.jina.ai>`_ first.
 
-If you plan on developing applications with Jina, this guide explains best practices for managing your application working space.  It explains recommend folder structure and best practices making your work reproducible. 
+If you plan on developing applications with Jina, this guide explains best practices for managing your application working space.  It explains recommended folder structure and best practices making your work reproducible. 
 
 
 .. contents:: Table of Contents
