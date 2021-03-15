@@ -66,9 +66,6 @@ To help users quickly use these patterns, we reserved the following keywords for
 | `_merge_eval` | Merge all evaluations into one, grouped by ``doc.id`` |
 | `_merge_root` | Merge results at root level |
 
-| `_merge_topk_docs` | Merge the top-k search results (doc level only) of all collected messages, often used in the tail of a Pod |
-
-
 ## How to use built-in Simple Executors?
 
 You can directly use this executor by specifying `--uses=_clear`, or use it in `--uses-after` after collecting results from replicas.
