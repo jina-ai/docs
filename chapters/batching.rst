@@ -2,6 +2,7 @@
  Understanding Batching in Jina
 =============================================
 
+
 Some :term:`Executors` in Jina may profit from the capacity to process multiple instances of their input at the same time.
 This can lead to a speed up and higher throughput.
 
@@ -9,6 +10,9 @@ In order to provide this capability, the :term:`Driver` extracts all the needed 
 
 Then all these instances (one per :term:`Document`) is passed to the :term:`Executor`. Then the :term:`Executor` decides how it wants to
 consume these instances (in batches or one by one).
+
+.. contents:: Table of Contents
+    :depth: 3
 
 Batching decorators
 --------------------
