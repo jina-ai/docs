@@ -13,7 +13,7 @@ Development Guide: Add new Drivers
 Motivation
 ^^^^^^^^^^^
 
-As you might already learned from `Jina 101 <https://101.jina.ai>`_,
+As you might have already learned from `Jina 101 <https://101.jina.ai>`_,
 a :term:`Driver` interprets incoming messages into :term:`Document` and extracts required fields for an :term:`Executor`.
 
 Jina already created `72 drivers <https://docs.jina.ai/chapters/all_driver/>`_ drivers inside Core,
@@ -35,7 +35,6 @@ Customize Driver in Action: X Driver
 
 What's next
 ^^^^^^^^^^^
-
 
 
 
