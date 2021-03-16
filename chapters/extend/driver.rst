@@ -77,7 +77,7 @@ After creating your customised `Driver` class, you need to implement your own Co
 Customize Driver in Action: `MultimodalDriver`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-we created `MultimodalDriver <https://github.com/jina-ai/jina/blob/master/jina/drivers/multimodal.py>`_ to better support Cross/Multi-modal search.
+We created `MultimodalDriver <https://github.com/jina-ai/jina/blob/master/jina/drivers/multimodal.py>`_ to better support Cross/Multi-modal search.
 Assume a `Document` has 2 child `Documents` with different modalities, e.g. text and image.
 The objective of `MultimodalDriver` is to extract embeddings from both modalities.
 Our expected input and output can be represented as:
@@ -87,14 +87,65 @@ Our expected input and output can be represented as:
 
     Input:
     document:
-            |- chunk: {modality: mode1}
+            |- child document: {modality: mode1}
             |
-            |- chunk: {modality: mode2}
+            |- child document: {modality: mode2}
     Output:
     document: (embedding: multimodal encoding)
-            |- chunk: {modality: mode1}
+            |- child document: {modality: mode1}
             |
-            |- chunk: {modality: mode2}
+            |- child document: {modality: mode2}
+
+
+
+
+.. highlight:: python
+.. code-block:: python
+
+    class MultiModalDriver(FlatRecursiveMixin, BaseEncodeDriver):
+    """Extract multimodal embeddings from different modalities.
+
+    ...
+
+    def _apply_all(self, docs: 'DocumentSet', *args, **kwargs) -> None:
+        """Apply the driver to each of the Documents in docs.
+
+        :param docs: the docs for which a ``multimodal embedding`` will be computed, whose chunks are of different
+        :param args: unused
+        :param kwargs: unused
+        """
+        content_by_modality = defaultdict(
+            list
+        )  # array of num_rows equal to num_docs and num_columns equal to
+
+        valid_docs = []
+        for doc in docs:
+            # convert to MultimodalDocument
+            doc = MultimodalDocument(doc)
+            if doc.modality_content_map:
+                valid_docs.append(doc)
+                for modality in self.positional_modality:
+                    content_by_modality[modality].append(doc[modality])
+            else:
+                self.logger.warning(
+                    f'Invalid doc {doc.id}. Only one chunk per modality is accepted'
+                )
+
+        if len(valid_docs) > 0:
+            # Pass a variable length argument (one argument per array)
+            for modality in self.positional_modality:
+                content_by_modality[modality] = np.stack(content_by_modality[modality])
+
+            # Guarantee that the arguments are provided to the executor in its desired order
+            input_args = self._get_executor_input_arguments(content_by_modality)
+            embeds = self.exec_fn(*input_args)
+            if len(valid_docs) != embeds.shape[0]:
+                self.logger.error(
+                    f'mismatched {len(valid_docs)} docs from level {valid_docs[0].granularity} '
+                    f'and a {embeds.shape} shape embedding, the first dimension must be the same'
+                )
+            for doc, embedding in zip(valid_docs, embeds):
+                doc.embedding = embedding
 
 
 What's next
