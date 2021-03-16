@@ -218,6 +218,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../cli/exit/">Gracefully Exit Jina</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../envs/">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optimization/">Flow Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../batching/">Understanding Batching in Jina</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../request_size/">Understanding the Request Size parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../evaluation/">A Guide to Jina Flow Evaluation Mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ranker/">A Guide to Jina Ranker</a></li>
@@ -414,12 +415,14 @@ The following example shows a simple Segmenter, which sets the <code class="docu
 <dl class="std confval">
 <dt id="confval-dummy_segmenter.py">
 <code class="sig-name descname"><span class="pre">dummy_segmenter.py</span></code><a class="headerlink" href="#confval-dummy_segmenter.py" title="Permalink to this definition">¶</a></dt>
-<dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.executors.segmenters</span> <span class="kn">import</span> <span class="n">BaseSegmenter</span>
+<dd><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.executors.decorator</span> <span class="kn">import</span> <span class="n">single</span>
+<span class="kn">from</span> <span class="nn">jina.executors.segmenters</span> <span class="kn">import</span> <span class="n">BaseSegmenter</span>
 
 <span class="k">class</span> <span class="nc">DummySegmenter</span><span class="p">(</span><span class="n">BaseSegmenter</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
+    <span class="nd">@single</span>
     <span class="k">def</span> <span class="nf">segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[{</span>
             <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="n">word</span><span class="p">,</span>
