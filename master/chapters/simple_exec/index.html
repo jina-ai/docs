@@ -341,9 +341,18 @@
             
   <div class="section" id="built-in-simple-executors-and-reserved-uses-in-jina">
 <h1>Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina<a class="headerlink" href="#built-in-simple-executors-and-reserved-uses-in-jina" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference external" href="#built-in-simple-executors-and-reserved--uses--in-jina">Built-in Simple Executors and Reserved keyword <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></p>
+<ul>
+<li><p><a class="reference external" href="#what-is-simple-executor">What is Simple Executor?</a></p></li>
+<li><p><a class="reference external" href="#what-are-the-reserved-uses">What are the reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code>?</a></p></li>
+<li><p><a class="reference external" href="#how-to-use-built-in-simple-executors">How to use built-in Simple Executors?</a></p></li>
+</ul>
+</li>
+</ul>
 <div class="section" id="what-is-simple-executor">
 <h2>What is Simple Executor?<a class="headerlink" href="#what-is-simple-executor" title="Permalink to this headline">¶</a></h2>
-<p>In Jina we have several built-in some <em>simple</em> executors. They are called simple for two reasons:</p>
+<p>In Jina we have several built-in some <em>simple</em> executors, which are located in <code class="docutils literal notranslate"><span class="pre">jina/resources/</span></code>. They are called simple for two reasons:</p>
 <ul class="simple">
 <li><p>It only requires a YAML config, no Python code is required;</p></li>
 <li><p>It inherits from <code class="docutils literal notranslate"><span class="pre">BaseExecutor</span></code> directly, its logic thus fully relies on the drivers.</p></li>
@@ -355,39 +364,36 @@
   <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">clear</span>
 <span class="nt">requests</span><span class="p">:</span>
   <span class="nt">on</span><span class="p">:</span>
-    <span class="p p-Indicator">[</span><span class="nv">SearchRequest</span><span class="p p-Indicator">,</span> <span class="nv">TrainRequest</span><span class="p p-Indicator">,</span> <span class="nv">IndexRequest</span><span class="p p-Indicator">]:</span>
-      <span class="p p-Indicator">-</span> <span class="kt">!ReqPruneDriver</span> <span class="p p-Indicator">{}</span>
+    <span class="nt">SearchRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!ExcludeReqQL</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">fields</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">search</span>
+    <span class="nt">TrainRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!ExcludeReqQL</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">fields</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">train</span>
+    <span class="nt">IndexRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!ExcludeReqQL</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">fields</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">index</span>
+    <span class="nt">DeleteRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!ExcludeReqQL</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">fields</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">delete</span>
+    <span class="nt">UpdateRequest</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="kt">!ExcludeReqQL</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">fields</span><span class="p">:</span>
+            <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">update</span>
     <span class="nt">ControlRequest</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="kt">!ControlReqDriver</span> <span class="p p-Indicator">{}</span>
 </pre></div>
 </div>
-<p>It uses <code class="docutils literal notranslate"><span class="pre">ReqPruneDriver</span></code> to prune the request. That’s it.</p>
-<p>Another example, in Flow API the <code class="docutils literal notranslate"><span class="pre">join</span></code> method (waiting multiple Pods to finish) is implemented with <code class="docutils literal notranslate"><span class="pre">_pass</span></code> Simple Executor, which is specified by</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!BaseExecutor</span>
-<span class="nt">with</span><span class="p">:</span> <span class="p p-Indicator">{}</span>
-<span class="nt">metas</span><span class="p">:</span>
-  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">merge</span>
-<span class="nt">requests</span><span class="p">:</span>
-  <span class="nt">on</span><span class="p">:</span>
-    <span class="p p-Indicator">[</span><span class="nv">SearchRequest</span><span class="p p-Indicator">,</span> <span class="nv">TrainRequest</span><span class="p p-Indicator">,</span> <span class="nv">IndexRequest</span><span class="p p-Indicator">]:</span>
-      <span class="p p-Indicator">-</span> <span class="kt">!MergeDriver</span> <span class="p p-Indicator">{}</span>
-    <span class="nt">ControlRequest</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="kt">!ControlReqDriver</span> <span class="p p-Indicator">{}</span>
-</pre></div>
-</div>
-<p>And in Flow API implementation:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">needs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Flow&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Add a blocker to the flow, wait until all peas defined in `needs` completed.</span>
-
-<span class="sd">    :param needs: list of service names to wait</span>
-<span class="sd">    :return: the modified flow</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">needs</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">FlowTopologyError</span><span class="p">(</span><span class="s1">&#39;no need to wait for a single service, need len(needs) &gt; 1&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;joiner&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;_pass&#39;</span><span class="p">,</span> <span class="n">needs</span><span class="o">=</span><span class="n">needs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>It cleans up request from the request-level protobuf message to reduce the total size of the message. This is often useful when the proceeding Pods require only a signal, not the full message.</p>
 </div>
 <div class="section" id="what-are-the-reserved-uses">
 <h2>What are the reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code>?<a class="headerlink" href="#what-are-the-reserved-uses" title="Permalink to this headline">¶</a></h2>
@@ -405,6 +411,18 @@
 <td>Clear request body from a message</td>
 </tr>
 <tr>
+<td><code>concat</code></td>
+<td>Concat all embeddings into one, grouped by <code>doc.id</code></td>
+</tr>
+<tr>
+<td><code>eval_pr</code></td>
+<td>Evaluate <code>precision</code> and <code>recall</code></td>
+</tr>
+<tr>
+<td><code>_index</code></td>
+<td>A simple compound indexer of <code>NumpyIndexer</code> and <code>BinaryPbIndexer</code></td>
+</tr>
+<tr>
 <td><code>_logforward</code></td>
 <td>Like <code>_pass</code>, but print the message</td>
 </tr>
@@ -413,16 +431,24 @@
 <td>Pass the message to the downstream</td>
 </tr>
 <tr>
-<td><code>_merge_topk</code></td>
-<td>Merge the top-k search results (both doc and chunk level) of all collected messages, often used in the tail of a Pod</td>
+<td><code>_merge_chunks</code></td>
+<td>Merges chunks from requests</td>
 </tr>
 <tr>
-<td><code>_merge_topk_chunks</code></td>
-<td>Merge the top-k search results (chunk level only) of all collected messages, often used in the tail of a Pod</td>
+<td><code>_merge_matches</code></td>
+<td>Merges matches from requests</td>
 </tr>
 <tr>
-<td><code>_merge_topk_docs</code></td>
-<td>Merge the top-k search results (doc level only) of all collected messages, often used in the tail of a Pod</td>
+<td><code>_merge_matches_topk</code></td>
+<td>Merge the top-k search results at match level</td>
+</tr>
+<tr>
+<td><code>_merge_eval</code></td>
+<td>Merge all evaluations into one, grouped by <code>doc.id</code></td>
+</tr>
+<tr>
+<td><code>_merge_root</code></td>
+<td>Merge results at root level</td>
 </tr>
 </tbody>
 </table></div>
