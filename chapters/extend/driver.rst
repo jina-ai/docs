@@ -77,6 +77,26 @@ After creating your customised `Driver` class, you need to implement your own Co
 Customize Driver in Action: `MultimodalDriver`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+we created `MultimodalDriver <https://github.com/jina-ai/jina/blob/master/jina/drivers/multimodal.py>`_ to better support Cross/Multi-modal search.
+Assume a `Document` has 2 child `Documents` with different modalities, e.g. text and image.
+The objective of `MultimodalDriver` is to extract embeddings from both modalities.
+Our expected input and output can be represented as:
+
+.. highlight:: shell
+.. code-block:: shell
+
+    Input:
+    document:
+            |- chunk: {modality: mode1}
+            |
+            |- chunk: {modality: mode2}
+    Output:
+    document: (embedding: multimodal encoding)
+            |- chunk: {modality: mode1}
+            |
+            |- chunk: {modality: mode2}
+
+
 What's next
 ^^^^^^^^^^^
 
