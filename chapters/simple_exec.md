@@ -1,6 +1,6 @@
 # Built-in Simple Executors and Reserved `uses` in Jina
 
-- [Built-in Simple Executors and Reserved `uses` in Jina](#built-in-simple-executors-and-reserved--uses--in-jina)
+- [Built-in Simple Executors and Reserved keyword `uses` in Jina](#built-in-simple-executors-and-reserved--uses--in-jina)
   * [What is Simple Executor?](#what-is-simple-executor)
   * [What are the reserved `uses`?](#what-are-the-reserved-uses)
   * [How to use built-in Simple Executors?](#how-to-use-built-in-simple-executors)
