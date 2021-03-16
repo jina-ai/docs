@@ -7,7 +7,7 @@
 
 ## What is Simple Executor?
 
-In Jina we have several built-in some *simple* executors, which are located in `jina/resources/`. They are called simple for two reasons:
+In Jina we have several built-in *simple* executors, which are located in `jina/resources/`. They are called simple for two reasons:
 
 - They only require a YAML configuration file, no Python code is required;
 - They inherit from `BaseExecutor` directly, therefore the logic thus fully relies on the drivers.
