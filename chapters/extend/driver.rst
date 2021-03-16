@@ -30,14 +30,10 @@ Overview
 To make an extension of a Jina `Driver`, please follow the steps listed below:
 
 1. Decide which `Driver` class to inherit from.
-2. Override :meth:`__init__`.
-3. Overwrite the **Core** method of the `Driver`.
+2. Overwrite the **Core** method of the `Driver`.
 
 Implementation
 ^^^^^^^^^^^^^^^
-
-Decide which :class:`Driver` class to inherit from
------------------------------------------------------
 
 .. list-table:: Built-in Driver to Inherit
    :widths: 25 25 50
@@ -46,18 +42,36 @@ Decide which :class:`Driver` class to inherit from
    * - Name
      - Corresponded Executor
      - Description
+     - Core method
    * - `BaseEncodeDriver`
      - `BaseEncoder`
      - Driver bind with :meth:`encode` in the Executor.
+     - `_apply_all`
    * - `BaseIndexDriver`
      - `BaseIndexer`
      - Driver bind with :meth:`add` in the Executor.
+     - `_apply_all`
+   * - `BaseSearchDriver`
+     - `BaseIndexer`
+     - Driver bind with :meth:`query` in the Executor.
+     - `_apply_all`
    * - `BasePredictDriver`
      - `BaseClassifier`
      - Driver bind with :meth:`predict` in the Executor.
+     - `_apply_all`
+   * - `BaseLabelPredictDriver`
+     - `BaseClassifier`
+     - Driver bind with :meth:`predict` for label prediction.
+     - `prediction2label`
    * - `BaseEvaluateDriver`
      - `BaseEvaluator`
      - Driver bind with :meth:`evaluate` in the Executor.
+     - `extract`
+
+This is to say, if you want to create a customized `Executor` and it's associated `Driver`,
+Follow the table above to decide which `BaseDriver` class to inherit from.
+
+
 
 
 Customize Driver in Action: X Driver
