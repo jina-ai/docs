@@ -7,10 +7,10 @@
 
 ## What is Simple Executor?
 
-In Jina we have several built-in some *simple* executors, which are located in `jina/resources/`. They are called simple for two reasons:
+In Jina we have several built-in *simple* executors, which are located in `jina/resources/`. They are called simple for two reasons:
 
-- It only requires a YAML config, no Python code is required;
-- It inherits from `BaseExecutor` directly, its logic thus fully relies on the drivers.
+- They only require a YAML configuration file, no Python code is required;
+- They inherit from `BaseExecutor` directly, therefore the logic thus fully relies on the drivers.
 
 For example, the built-in `_clear` executor is defined as:
 
@@ -50,7 +50,7 @@ requests:
       - !ControlReqDriver {}
 ```
 
-It cleans up request from the request-level protobuf message to reduce the total size of the message. This is often useful when the proceeding Pods require only a signal, not the full message.
+It cleans up requests from the request-level protobuf message to reduce the total size of the message. This is often useful when the proceeding Pods require only a signal, not the full message.
 
 ## What are the reserved `uses`?
 
@@ -72,6 +72,6 @@ To help users quickly use these patterns, we reserved the following keywords for
 
 ## How to use built-in Simple Executors?
 
-You can directly use this executor by specifying `--uses=_clear`, or use it in `--uses-after` after collecting results from replicas.
+You can directly use this executor by specifying `--uses=_clear`, or use it via `--uses-after` after collecting results from replicas.
 
 Where ever you need to use `uses` in Jina, you can take any one from the table to fill in.
