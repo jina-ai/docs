@@ -97,7 +97,7 @@ Our expected input and output can be represented as:
             |- child document: {modality: mode2}
 
 
-In the code snippt blow, you should be able to see the logic of how we implemented the Driver.
+In the code snippt below, you should be able to see the logic of how we implemented the Driver.
 In :meth:`_apply_all`,
 We firstly convert each Document in the `DocumentSet` into a `MultimediaDocument`.
 For each instance of the `MultimediaDocument`,
@@ -109,6 +109,7 @@ The result will be feed into :meth:`exec_fn` as the input.
 Since class `MultiModalDriver` is based on `BaseEncodeDriver`, the :meth:`exec_fn` will be bind to the :meth:`encode` method,
 to encode data from different modalities into embeddings.
 Last but not least, we assign the `embeddings` property of each Document as the encoded vector representation.
+And the task of the Driver finished.
 
 .. highlight:: python
 .. code-block:: python
