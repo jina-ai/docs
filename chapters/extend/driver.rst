@@ -6,7 +6,7 @@ Development Guide: Add new Drivers
    :keywords: Jina, driver
 
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
-.. note:: Before reading this guide, you might want to read `Development Guide: Add new Executors <executor.rst>`_ first.
+.. note:: Before reading this guide, you might want to read `Development Guide: Add new Executors <../executor.rst>`_ first.
 
 .. contents:: Table of Contents
     :depth: 2
@@ -37,7 +37,7 @@ Implementation
 ^^^^^^^^^^^^^^^
 
 .. list-table:: Built-in Driver to Inherit
-   :widths: 25 25 50
+   :widths: 25 25 50 25
    :header-rows: 1
 
    * - Name
@@ -71,8 +71,7 @@ Implementation
 
 This is to say, if you want to create a customized `Executor` and it's associated `Driver`,
 Follow the table above to decide which `BaseDriver` class to inherit from.
-
-
+After creating your customised `Driver` class, you need to implement your own Core method based on your specific need.
 
 
 Customize Driver in Action: X Driver
