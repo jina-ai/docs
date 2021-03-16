@@ -6,7 +6,7 @@ Developer Guide: Add new Drivers
    :keywords: Jina, driver
 
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
-.. note:: Before reading this guide, you might want to read `Development Guide: Add new Executors <../executor.rst>`_ first.
+.. warning:: This is an advanced developer guide. The existing Drivers should cover most use cases. If you add custom Drivers, the Jina community may not be able to provide you with development support.
 
 .. contents:: Table of Contents
     :depth: 2
