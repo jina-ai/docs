@@ -97,7 +97,18 @@ Our expected input and output can be represented as:
             |- child document: {modality: mode2}
 
 
-some text
+In the code snippt blow, you should be able to see the logic of how we implemented the Driver.
+In :meth:`_apply_all`,
+We firstly convert each Document in the `DocumentSet` into a `MultimediaDocument`.
+For each instance of the `MultimediaDocument`,
+we check if the instance has :meth:`modality_content_map` (a python `dict`, where key is the name of the modality, while value is the content of the modality).
+If so, we consider it has a valid `MultimediaDocument`.
+And we save the value of the specific Modality into `content_by_modality`.
+The result will be feed into :meth:`exec_fn` as the input.
+
+Since class `MultiModalDriver` is based on `BaseEncodeDriver`, the :meth:`exec_fn` will be bind to the :meth:`encode` method,
+to encode data from different modalities into embeddings.
+Last but not least, we assign the `embeddings` property of each Document as the encoded vector representation.
 
 .. highlight:: python
 .. code-block:: python
@@ -106,8 +117,19 @@ some text
     class MultiModalDriver(FlatRecursiveMixin, BaseEncodeDriver):
     """Extract multimodal embeddings from different modalities."""
 
-        ...
+        @property
+        def positional_modality(self) -> List[str]:
+            return self._exec.positional_modality
 
+        def _get_executor_input_arguments(
+            self, content_by_modality: Dict[str, 'np.ndarray']
+        ) -> List['np.ndarray']:
+            """From a dictionary ``content_by_modality`` it returns the arguments in the proper order so that they can be
+            passed to the executor.
+             :param content_by_modality: a dictionary of `Document content` by modality name
+             :return: list of input arguments as np arrays
+            """
+            return [content_by_modality[modality] for modality in self.positional_modality]
 
         def _apply_all(self, docs: 'DocumentSet', *args, **kwargs) -> None:
             """Apply the driver to each of the Documents in docs.
@@ -118,7 +140,7 @@ some text
             """
             content_by_modality = defaultdict(
                 list
-            )  # array of num_rows equal to num_docs and num_columns equal to
+            )
 
             valid_docs = []
             for doc in docs:
