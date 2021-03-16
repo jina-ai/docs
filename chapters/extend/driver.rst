@@ -1,8 +1,8 @@
-Development Guide: Add new Drivers
+Developer Guide: Add new Drivers
 ====================================
 
 .. meta::
-   :description: Development Guide: Add new Drivers
+   :description: Developer Guide: Add new Drivers
    :keywords: Jina, driver
 
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
@@ -20,21 +20,25 @@ a :term:`Driver` interprets incoming messages into :term:`Document` and extracts
 Jina already created `several Drivers <https://docs.jina.ai/chapters/all_driver/>`_ Drivers inside Core,
 and these `Drivers` should already fulfill most of the scenarios.
 However, when the existing solutions do not fit your specific use case,
-you might be curious on how to **extend** Jina.
-For instance, if you have created a customised `Executor`,
-and figure out the existent `Drivers` can not fit for your customised `Executor`,
-you might want to create a customised `Driver`.
+you might be curious how to **extend** Jina.
+For instance, if you have created a customized `Executor`,
+and figure out the existent `Drivers` can not fit for your customized `Executor`,
+you might want to create a customized `Driver`.
 
 Overview
 ^^^^^^^^^
 
-To make an extension of a Jina `Driver`, please follow the steps listed below:
+There are two steps to adding an extension of a Jina `Driver`:
 
 1. Decide which `Driver` class to inherit from.
 2. Overwrite the **Core** method of the `Driver`.
 
 Implementation
 ^^^^^^^^^^^^^^^
+
+If you want to create a customized `Executor` and it's associated `Driver`,
+follow the table below to decide which `BaseDriver` class to inherit from.
+After creating your customized `Driver` class, you need to implement your own Core method based on your specific need.
 
 .. list-table:: Built-in Driver to Inherit
    :widths: 25 25 50 25
@@ -69,10 +73,6 @@ Implementation
      - Driver bind with :meth:`evaluate` in the Executor.
      - `extract`
 
-This is to say, if you want to create a customized `Executor` and it's associated `Driver`,
-Follow the table above to decide which `BaseDriver` class to inherit from.
-After creating your customised `Driver` class, you need to implement your own Core method based on your specific need.
-
 
 Customize Driver in Action: `MultimodalDriver`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -97,7 +97,7 @@ Our expected input and output can be represented as:
             |- child document: {modality: mode2}
 
 
-In the code snippt below, you should be able to see the logic of how we implemented the Driver.
+In the code snippet below, you should be able to see the logic of how we implemented the Driver.
 In :meth:`_apply_all`,
 We firstly convert each Document in the `DocumentSet` into a `MultimediaDocument`.
 For each instance of the `MultimediaDocument`,
