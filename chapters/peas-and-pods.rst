@@ -9,7 +9,7 @@ Development Guide: Peas and Pods in Jina
 .. note:: This guide assumes you have a basic understanding of Parallelization inside Jina, if you haven't, please check out `Parallelization in Jina <../parallel>`_ first.
 
 You might already learned from `Jina 101 <../101.rst>`_.
-Jina :term:`Pea` wraps an :term:`Executor` and lets it exchange data with other Peas.
+Jina :term:`Pea` wraps a :term:`Driver`, :term:`Executor` and lets it exchange data with other Peas.
 Jina :term:`Pod` is a container and interface for one or multiple Peas that have the same properties.
 It coordinates Peas to improve efficiency and scaling.
 Beyond that, a Pod adds further control, scheduling, and context management to its Peas.
@@ -47,7 +47,7 @@ Jina offers parallelization at different levels, such as
 2. Inside container with `BasePea` inside `ContainerRuntime`.
 3. Remotely with `RemotePeas` and `RemotePods` inside `JinadRuntime`.
 
-Jina Daemon (JinaD) enable Jina to spin up and distribute Peas, Pods, Flows in any system.
+Jina Daemon (JinaD) enables Jina to spin up and distribute Peas, Pods, Flows in any system.
 
 Stateless vs Stateful Pea
 ---------------------------
@@ -72,12 +72,12 @@ How Local Pea and Remote Pea interact with Pod
 Let's first think about the case of a Singleton Pod runs locally.
 This Pod will only have 1 Pea inside, i.e. `parallel=1` or `shard=1`,
 depends on the type of Executor it wraps.
-The Pea inside the Pod will receive traffic from the last Pea,
+The Pea inside the previous Pod will receive traffic from the last Pea,
 process the data and send data to the next Pea.
 
 When it comes to a Singleton Pod runs remotely (i.e. runs with JinaD),
 the main process will setup `JinadRuntime`,
-the runtime is going to create a new Pod (Remote) inside the remote machine.
+the runtime is going to create remote Peas inside the remote machine.
 The JinadRuntime take ownership of 2 tasks:
 
 1. Parse args to JinaD to fire up a remote Pod with a single Pea using `put/pod` api endpoint.
@@ -109,7 +109,7 @@ by calling `put/pea` api endpoint.
   :align: center
 
 Then the HeadPea is going to distribute traffic to both Peas.
-In the end, the TailPeae collects data from Pea1 and Pea2,
+In the end, the TailPea collects data from Pea1 and Pea2,
 and send data to the next Pea.
 
 What's Next
