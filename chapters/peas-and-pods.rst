@@ -15,7 +15,7 @@ It coordinates Peas to improve efficiency and scaling.
 Beyond that, a Pod adds further control, scheduling, and context management to its Peas.
 
 In this tutorial, we dive deeper into Peas and Pods,
-to help you gain in depth knowledge on the architecture and design principle of Peas and Pods in Jina.
+to help you gain in-depth knowledge on the architecture and design principle of Peas and Pods in Jina.
 
 .. contents:: Table of Contents
     :depth: 3
