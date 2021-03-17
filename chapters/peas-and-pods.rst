@@ -8,7 +8,7 @@ Development Guide: Peas and Pods in Jina
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
 .. note:: This guide assumes you have a basic understanding of Parallelization inside Jina, if you haven't, please check out `Parallelization in Jina <../parallel>`_ first.
 
-You might already learned from `Jina 101 <../101.rst>`_.
+You might have already learned from `Jina 101 <../101.rst>`_.
 Jina :term:`Pea` wraps a :term:`Driver`, :term:`Executor` and lets it exchange data with other Peas.
 Jina :term:`Pod` is a context manager for one or multiple Peas that have the same properties.
 It coordinates Peas to improve efficiency and scaling.
@@ -120,4 +120,3 @@ If you want to know how we implement Peas and Pods,
 please checkout the source code `here <https://github.com/jina-ai/jina/tree/master/jina/peapods>`_.
 
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
-
