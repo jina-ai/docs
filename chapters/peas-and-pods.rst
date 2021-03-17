@@ -8,9 +8,6 @@ Development Guide: Peas and Pods in Jina
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
 .. note:: This guide assumes you have a basic understanding of Parallelization inside Jina, if you haven't, please check out `Parallelization in Jina <../parallel>`_ first.
 
-.. contents:: Table of Contents
-    :depth: 2
-
 You might already learned from `Jina 101 <../101.rst>`_.
 Jina :term:`Pea` wraps an Executor and lets it exchange data with other Peas.
 Jina :term:`Pod` is a container and interface for one or multiple Peas that have the same properties.
@@ -21,7 +18,7 @@ In this tutorial, we dive deeper into Peas and Pods,
 in order to help you gain more knowledge on the architecture and design principle of Jina.
 
 .. contents:: Table of Contents
-    :depth: 2
+    :depth: 3
 
 Parallelization for Peas and Pods
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -37,11 +34,17 @@ Jina Daemon (JinaD) enable Jina to spin up and distribute Peas, Pods, Flows in a
 Pea and Pod in Action
 ^^^^^^^^^^^^^^^^^^^^^^^
 
+Example Setup
+--------------
+
 The Jobs of a Pea
 ------------------
 
 Stateless and Stateful Pea
 ---------------------------
+
+How Local Pea and Remote Pea interact with Pod
+-----------------------------------------------
 
 Conclusion
 ^^^^^^^^^^^
