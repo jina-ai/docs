@@ -78,13 +78,15 @@ The following example shows a simple Segmenter, which sets the ``mime_type`` for
 
     .. highlight:: python
     .. code-block:: python
-
+        
+        from jina.executors.decorator import single
         from jina.executors.segmenters import BaseSegmenter
 
         class DummySegmenter(BaseSegmenter):
             def __init__(self, *args, **kwargs):
                 super().__init__(*args, **kwargs)
 
+            @single
             def segment(self, text: str, *args, **kwargs):
                 results = [{
                     'text': word,
