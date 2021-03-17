@@ -34,6 +34,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../envs
    ../../project-guide/project-guide
    ../../optimization
+   ../../batching
    ../../request_size
    ../../evaluation
    ../../ranker

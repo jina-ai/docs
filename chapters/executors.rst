@@ -66,12 +66,12 @@ We can see an example to make it more clear:
           workspace: ${{TEST_WORKDIR}}
       - !BinaryPbIndexer
         with:
-          index_filename: chunk.gz
+          index_filename: doc.gz
         metas:
-          name: chunkidx_exec
+          name: docidx_exec
           workspace: ${{TEST_WORKDIR}}
     metas:
-      name: chunk_compound_indexer
+      name: doc_compound_indexer
       workspace: ${{TEST_WORKDIR}}
     requests:
       on:

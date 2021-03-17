@@ -48,6 +48,8 @@ Then we define a ``SimpleCrafter`` which will just forward the data.
 .. code-block:: python
 
     class SimpleCrafter(BaseCrafter):
+
+        @single
         def craft(self, id, *args, **kwargs):
             return {'id': id}
 
