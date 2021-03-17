@@ -31,7 +31,7 @@ If a user defines `parallel` as 1, then it will be considered Singleton.
 Otherwise, one Pod manages at least two Peas. e.g. `parallel` is at least 2.
 
 In the first case, a Pod only manages a single Pea.
-While in the second case, when user specifically defined a `parallel` value greater equal than 2,
+While in the second case, when user specifically defined a `parallel` value greater than 1,
 Jina will add a :term:`HeadPea` and :term:`TailPea` to the same Pod.
 HeadPea distribute traffic to different Peas inside the Pod,
 TailPea collects the calculated result from the Peas inside the Pod.
