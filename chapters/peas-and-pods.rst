@@ -70,14 +70,23 @@ How Local Pea and Remote Pea interact with Pod
 -----------------------------------------------
 
 Let's first think about the case of a Singleton Pod runs locally.
-This Pod will only have 1 Pea inside, i.e. `parallel=1` or `shard=1`, depends on the type of Executor it wraps.
-The Pea inside the Pod will receive traffic from the last Pea, process the data and send data to the next Pea.
+This Pod will only have 1 Pea inside, i.e. `parallel=1` or `shard=1`,
+depends on the type of Executor it wraps.
+The Pea inside the Pod will receive traffic from the last Pea,
+process the data and send data to the next Pea.
 
+When it comes to a Singleton Pod runs remotely (i.e. runs with JinaD),
+the Pod (Local) will setup `JinadRuntime`,
+the runtime is going to create a new Pod (Remote) inside the remote machine.
+The local Pod take charge of 2 things:
 
+1. Parse args to JinaD to fire up a remote Pod with a single Pea.
+2. Streaming logs from the remote Pod to the local Pod.
 
+In the next section we will talk about the most complex scenario: "distributed Peas in remote Pod".
 
-Distributed Peas in Pod
--------------------------
+Distributed Remote Peas in Pod
+-------------------------------
 
 
 A Concrete Example
