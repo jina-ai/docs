@@ -100,13 +100,18 @@ A [virtualenv](https://realpython.com/python-virtual-environments-a-primer/) pre
 
 ```sh
 virtualenv env
-source /env/bin/activate
+source ./env/bin/activate
 ```
 
 Now install the requirements:
 
 ```sh
 pip install -r requirements.txt
+```
+⚠️ If you get an error, try switching the pythong version with
+
+```sh
+virtualenv env --python=python3.8
 ```
 
 ### Set up your dataset
