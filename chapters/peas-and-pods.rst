@@ -96,19 +96,20 @@ First of all, the main process will setup `JinadRuntime`.
 a TailPea and `1` Pea inside the same machine,
 the host of the Pea will stay the same as the Pod.
 
+Take a look at the image below.
 Imaging we defined `parallel=2` in our Flow/YAML configuration.
-Since the current remote machine only has 1 address (host),
+Since the current remote machine only has 1 ip address (`host=0.0.0.3`),
 the Jina main process will setup another `JinadRuntime`,
-and fire up another Pea inside the 2nd host,
+and fire up another Pea inside the 2nd host (`0.0.0.4`),
 by calling `put/pea` api endpoint.
 
-.. image:: ../images/remote-peas-in-pod.png
+.. image:: ./images/remote-peas-in-pod.png
   :width: 400
   :alt: remote peas in pod
 
-
-
-
+Then the HeadPea is going to distribute traffic to both Peas.
+In the end, the TailPeae collects data from Pea1 and Pea2,
+and send data to the next Pea.
 
 What's Next
 ^^^^^^^^^^^^
