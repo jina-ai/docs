@@ -10,7 +10,7 @@ Development Guide: Peas and Pods in Jina
 
 You might already learned from `Jina 101 <../101.rst>`_.
 Jina :term:`Pea` wraps a :term:`Driver`, :term:`Executor` and lets it exchange data with other Peas.
-Jina :term:`Pod` is a container and interface for one or multiple Peas that have the same properties.
+Jina :term:`Pod` is a context manager for one or multiple Peas that have the same properties.
 It coordinates Peas to improve efficiency and scaling.
 Beyond that, a Pod adds further control, scheduling, and context management to its Peas.
 
