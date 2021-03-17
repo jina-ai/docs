@@ -98,6 +98,12 @@ where `n` is the parameter defined in `parallel` or `shards`.
 
 
 
-Conclusion
-^^^^^^^^^^^
+What's Next
+^^^^^^^^^^^^
+
+Thanks for your time & effort while reading this documentation.
+If you want to know how we implement Peas and Pods,
+please checkout the source code `here <https://github.com/jina-ai/jina/tree/master/jina/peapods>`_.
+
+If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
 
