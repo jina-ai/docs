@@ -49,8 +49,22 @@ Jina offers parallelization at different levels, such as
 
 Jina Daemon (JinaD) enable Jina to spin up and distribute Peas, Pods, Flows in any system.
 
-Stateless and Stateful Pea
+Stateless vs Stateful Pea
 ---------------------------
+
+In the previous section we mentioned `parallel`.
+This parameter manages different Peas inside a Pod,
+in a Stateless fashion.
+Since a Pea is a wrap over Jina Executor.
+Dependent on the type of the Executor, we consider a Pea is Stateless or Statefull.
+
+If a Pea wraps Encoder, Crafter, Segmenter, Ranker, Evaluator, Classifier, we consider it as Stateless.
+Since this Pea do not persist data.
+On the other hand, if a Pea wraps Indexer, we consider it as Stateful.
+Because we persist indexed result to our workspace.
+
+We use `parallel` to manage the number of Stateless Peas inside a Pod.
+We use `shards` to manage the number of Stateful Peas inside a Pod.
 
 How Local Pea and Remote Pea interact with Pod
 -----------------------------------------------
