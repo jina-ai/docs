@@ -20,8 +20,11 @@ to help you gain in depth knowledge on the architecture and design principle of 
 .. contents:: Table of Contents
     :depth: 3
 
+Pea and Pod Explained
+^^^^^^^^^^^^^^^^^^^^^^^
+
 Singleton Or Not?
-^^^^^^^^^^^^^^^^^^
+------------------
 
 In jina, if a Pod only contains one Pea, we call it a Singleton Pod.
 If a user, define `parallel` as 1, then it will be considered as Singleton.
@@ -45,12 +48,6 @@ Jina offers parallelization at different levels, such as
 3. Remotely with `RemotePeas` and `RemotePods` inside `JinadRuntime`.
 
 Jina Daemon (JinaD) enable Jina to spin up and distribute Peas, Pods, Flows in any system.
-
-Pea and Pod Explained
-^^^^^^^^^^^^^^^^^^^^^^^
-
-The Jobs of Pea
-------------------
 
 Stateless and Stateful Pea
 ---------------------------
