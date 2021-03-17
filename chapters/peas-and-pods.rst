@@ -76,25 +76,37 @@ The Pea inside the Pod will receive traffic from the last Pea,
 process the data and send data to the next Pea.
 
 When it comes to a Singleton Pod runs remotely (i.e. runs with JinaD),
-the Pod (Local) will setup `JinadRuntime`,
+the main process will setup `JinadRuntime`,
 the runtime is going to create a new Pod (Remote) inside the remote machine.
-The local Pod take charge of 2 things:
+The JinadRuntime take ownership of 2 tasks:
 
-1. Parse args to JinaD to fire up a remote Pod with a single Pea.
+1. Parse args to JinaD to fire up a remote Pod with a single Pea using `put/pod` api endpoint.
 2. Streaming logs from the remote Pod to the local Pod.
 
 The remote Pea inside the remote Pod will process the data,
 the result will be send to the next Pea.
-
-In the next section we will talk about the most complex scenario: "distributed Peas in remote Pod".
+In the next section we will talk about the most complex scenario: "distributed Remote Peas in Pod".
 
 Distributed Remote Peas in Pod
 -------------------------------
 
 In this section, we talk about how multiple Peas (`parallel` or `shards` greater or equal to 2) runs inside a remote Pod.
-First of all, Jina will create a Pod locally and setup `JinadRuntime`.
-It will create a new remote Pod inside the remote machine, with a HeaderPea, a TailPea and `n` Peas,
-where `n` is the parameter defined in `parallel` or `shards`.
+First of all, the main process will setup `JinadRuntime`.
+`JinadRuntime` create a new remote Pod inside the remote machine, with a HeaderPea,
+a TailPea and `1` Pea inside the same machine,
+the host of the Pea will stay the same as the Pod.
+
+Imaging we defined `parallel=2` in our Flow/YAML configuration.
+Since the current remote machine only has 1 address (host),
+the Jina main process will setup another `JinadRuntime`,
+and fire up another Pea inside the 2nd host,
+by calling `put/pea` api endpoint.
+
+.. image:: ../images/remote-peas-in-pod.png
+  :width: 400
+  :alt: remote peas in pod
+
+
 
 
 
