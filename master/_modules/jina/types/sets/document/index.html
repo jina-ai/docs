@@ -468,7 +468,7 @@
 <span class="sd">                and the documents have no embedding in a :class:`DocumentSet`.</span>
 <span class="sd">        :rtype: A tuple of embedding in :class:`np.ndarray`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span><span class="s1">&#39;embedding&#39;</span><span class="p">,</span> <span class="n">stack_contents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span><span class="s1">&#39;embedding&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
@@ -478,16 +478,14 @@
 <span class="sd">                and the documents have no contents in a :class:`DocumentSet`.</span>
 <span class="sd">        :rtype: A tuple of embedding in :class:`np.ndarray`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># stack true for backward compatibility, but will not work if content is blob of different shapes</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">,</span> <span class="n">stack_contents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DocumentSet.extract_docs"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.extract_docs">[docs]</a>    <span class="k">def</span> <span class="nf">extract_docs</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stack_contents</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]],</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return in batches all the values of the fields</span>
 
 <span class="sd">        :param fields: Variable length argument with the name of the fields to extract</span>
-<span class="sd">        :param stack_contents: boolean flag indicating if output lists should be stacked with `np.stack`</span>
 <span class="sd">        :return: Returns an :class:`np.ndarray` or a list of :class:`np.ndarray` with the batches for these fields</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -508,7 +506,7 @@
             <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">contents</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="p">:</span>
                     <span class="k">continue</span>
-                <span class="k">if</span> <span class="n">stack_contents</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">):</span>
                     <span class="n">contents</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -521,7 +519,7 @@
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">contents</span><span class="p">:</span>
                 <span class="n">contents</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">elif</span> <span class="n">stack_contents</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contents</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">bytes</span><span class="p">):</span>
                 <span class="n">contents</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">bad_docs</span><span class="p">:</span>
