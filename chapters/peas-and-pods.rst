@@ -83,14 +83,20 @@ The local Pod take charge of 2 things:
 1. Parse args to JinaD to fire up a remote Pod with a single Pea.
 2. Streaming logs from the remote Pod to the local Pod.
 
+The remote Pea inside the remote Pod will process the data,
+the result will be send to the next Pea.
+
 In the next section we will talk about the most complex scenario: "distributed Peas in remote Pod".
 
 Distributed Remote Peas in Pod
 -------------------------------
 
+In this section, we talk about how multiple Peas (`parallel` or `shards` greater or equal to 2) runs inside a remote Pod.
+First of all, Jina will create a Pod locally and setup `JinadRuntime`.
+It will create a new remote Pod inside the remote machine, with a HeaderPea, a TailPea and `n` Peas,
+where `n` is the parameter defined in `parallel` or `shards`.
 
-A Concrete Example
-^^^^^^^^^^^^^^^^^^
+
 
 Conclusion
 ^^^^^^^^^^^
