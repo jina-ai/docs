@@ -106,7 +106,7 @@ by calling `put/pea` api endpoint.
 .. image:: ./images/remote-peas-in-pod.png
   :width: 600
   :alt: remote peas in pod
-  :align: "center"
+  :align: center
 
 Then the HeadPea is going to distribute traffic to both Peas.
 In the end, the TailPeae collects data from Pea1 and Pea2,
