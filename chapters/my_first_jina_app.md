@@ -108,7 +108,7 @@ Now install the requirements:
 ```sh
 pip install -r requirements.txt
 ```
-⚠️ If you get an error, try switching the pythong version with
+⚠️ If you get an error, try switching the Python version with
 
 ```sh
 virtualenv env --python=python3.8
