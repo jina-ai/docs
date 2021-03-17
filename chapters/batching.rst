@@ -22,14 +22,14 @@ Batching decorators
 --------------------
 To control how an :term:`Executor` consumes its incoming inputs, Jina provides a set of decorator functions.
 
-single and single_multi_input
+single
 ------------------------------
 The single decorator ensures that even when the function is called with a set of instances, they will be processed one by one by the executor.
 This decorator is useful when the executor won't have benefits of processing inputs in batches, and allows the executor to keep a clean interface.
 
 In the case where this decorator is used, the method needs to be implemented considering a single input.
 
-The single_multi_input is the equivalent decorator required when multiple input arguments are required by the :term:`Executor` method.
+When the decorated method requires multiple arguments, `slice_nargs` parameter must be used to select how many arguments need to be batched.
 
 .. highlight:: python
 .. code-block:: python
