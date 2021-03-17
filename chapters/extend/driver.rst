@@ -17,7 +17,7 @@ Motivation
 As you might have already learned from `Jina 101 <https://101.jina.ai>`_,
 a :term:`Driver` interprets incoming messages into :term:`Document` and extracts required fields for an :term:`Executor`.
 
-Jina already created `several Drivers <https://docs.jina.ai/chapters/all_driver/>`_ Drivers inside Core,
+Jina already created `several Drivers <https://docs.jina.ai/chapters/all_driver/>`_ inside Core,
 and these `Drivers` should already fulfill most of the scenarios.
 However, when the existing solutions do not fit your specific use case,
 you might be curious how to **extend** Jina.
