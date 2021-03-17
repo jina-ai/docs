@@ -36,7 +36,7 @@ Jina documentation adheres to the following hierarchical structure. Each Jina pr
 
 ## Missing content
 
-If you find a gap in our documentation, please submit a GitHub issue [here](https://github.com/jina-ai/docs).
+If you find a gap in our documentation, please submit a GitHub issue [here](https://github.com/jina-ai/docs/issues/new).
 
 ## How to add pages
 
