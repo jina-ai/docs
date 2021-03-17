@@ -69,8 +69,19 @@ We use `shards` to manage the number of Stateful Peas inside a Pod.
 How Local Pea and Remote Pea interact with Pod
 -----------------------------------------------
 
+Let's first think about the case of a Singleton Pod runs locally.
+This Pod will only have 1 Pea inside, i.e. `parallel=1` or `shard=1`, depends on the type of Executor it wraps.
+The Pea inside the Pod will receive traffic from the last Pea, process the data and send data to the next Pea.
+
+
+
+
 Distributed Peas in Pod
------------------------------------------------
+-------------------------
+
+
+A Concrete Example
+^^^^^^^^^^^^^^^^^^
 
 Conclusion
 ^^^^^^^^^^^
