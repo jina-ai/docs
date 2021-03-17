@@ -4,7 +4,9 @@
 <html lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta content="Developer Guide: Add new Drivers" name="description" />
+<meta content="Jina, driver" name="keywords" />
+
   <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -21,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Guideline When Adding New Driver &mdash; Jina 1.0.11-master documentation</title>
+  <title>Developer Guide: Add new Drivers &mdash; Jina 1.0.11-master documentation</title>
   
 
   
@@ -207,7 +209,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../flow/pattern/">Common Design Patterns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../input_output/">How to handle Input and Output for Flows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../traversal/">Understand Jina Recursive Document Representation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Guideline When Adding New Driver</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Developer Guide: Add new Drivers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../executor/">Development Guide: Add new Executors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mwu/">A Minimum Working Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../remote/">Using Jina Pod Remotely</a></li>
@@ -313,7 +315,7 @@
         
           <li><a href="../../core/guides/">Developer Guides</a> &raquo;</li>
         
-      <li>Guideline When Adding New Driver</li>
+      <li>Developer Guide: Add new Drivers</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -339,12 +341,170 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="guideline-when-adding-new-driver">
-<h1>Guideline When Adding New Driver<a class="headerlink" href="#guideline-when-adding-new-driver" title="Permalink to this headline">¶</a></h1>
-<p>You come to this page and you realize the existing executor/driver logic may not suit you need, so you want to write a new driver and add to Jina.</p>
-<p>Or <em>do</em> you?</p>
-<p>In most of the case, you don’t.</p>
-<p>If you do … Docs needs</p>
+  <div class="section" id="developer-guide-add-new-drivers">
+<h1><a class="toc-backref" href="#id3">Developer Guide: Add new Drivers</a><a class="headerlink" href="#developer-guide-add-new-drivers" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This guide assumes you have a basic understanding of Jina, if you haven’t, please check out <a class="reference external" href="https://101.jina.ai">Jina 101</a> first.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is an advanced developer guide. The existing Drivers should cover most use cases. If you add custom Drivers, the Jina community may not be able to provide you with development support.</p>
+</div>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#developer-guide-add-new-drivers" id="id3">Developer Guide: Add new Drivers</a></p>
+<ul>
+<li><p><a class="reference internal" href="#motivation" id="id4">Motivation</a></p></li>
+<li><p><a class="reference internal" href="#overview" id="id5">Overview</a></p></li>
+<li><p><a class="reference internal" href="#implementation" id="id6">Implementation</a></p></li>
+<li><p><a class="reference internal" href="#customize-driver-in-action-multimodaldriver" id="id7">Customize Driver in Action: <cite>MultimodalDriver</cite></a></p></li>
+<li><p><a class="reference internal" href="#what-s-next" id="id8">What’s next</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="motivation">
+<h2><a class="toc-backref" href="#id4">Motivation</a><a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<p>As you might have already learned from <a class="reference external" href="https://101.jina.ai">Jina 101</a>,
+a <a class="reference internal" href="../../glossary/#term-Driver"><span class="xref std std-term">Driver</span></a> interprets incoming messages into <a class="reference internal" href="../../glossary/#term-Document"><span class="xref std std-term">Document</span></a> and extracts required fields for an <a class="reference internal" href="../../glossary/#term-Executor"><span class="xref std std-term">Executor</span></a>.</p>
+<p>Jina already created <a class="reference external" href="https://docs.jina.ai/chapters/all_driver/">several Drivers</a> inside Core,
+and these <cite>Drivers</cite> should already fulfill most of the scenarios.
+However, when the existing solutions do not fit your specific use case,
+you might be curious how to <strong>extend</strong> Jina.
+For instance, if you have created a customized <cite>Executor</cite>,
+and figure out the existent <cite>Drivers</cite> can not fit for your customized <cite>Executor</cite>,
+you might want to create a customized <cite>Driver</cite>.</p>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id5">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>There are two steps to adding an extension of a Jina <cite>Driver</cite>:</p>
+<ol class="arabic simple">
+<li><p>Decide which <cite>Driver</cite> class to inherit from.</p></li>
+<li><p>Overwrite the <strong>Core</strong> method of the <cite>Driver</cite>.</p></li>
+</ol>
+</div>
+<div class="section" id="implementation">
+<h2><a class="toc-backref" href="#id6">Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>If you want to create a customized <cite>Executor</cite> and it’s associated <cite>Driver</cite>,
+follow the table below to decide which <cite>BaseDriver</cite> class to inherit from.
+After creating your customized <cite>Driver</cite> class, you need to implement your own Core method based on your specific need.</p>
+<table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">Built-in Driver to Inherit</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 40%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Corresponded Executor</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Core method</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><cite>BaseEncodeDriver</cite></p></td>
+<td><p><cite>BaseEncoder</cite></p></td>
+<td><p>Driver bind with <code class="xref py py-meth docutils literal notranslate"><span class="pre">encode()</span></code> in the Executor.</p></td>
+<td><p><cite>_apply_all</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>BaseIndexDriver</cite></p></td>
+<td><p><cite>BaseIndexer</cite></p></td>
+<td><p>Driver bind with <code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code> in the Executor.</p></td>
+<td><p><cite>_apply_all</cite></p></td>
+</tr>
+<tr class="row-even"><td><p><cite>BaseSearchDriver</cite></p></td>
+<td><p><cite>BaseIndexer</cite></p></td>
+<td><p>Driver bind with <code class="xref py py-meth docutils literal notranslate"><span class="pre">query()</span></code> in the Executor.</p></td>
+<td><p><cite>_apply_all</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>BasePredictDriver</cite></p></td>
+<td><p><cite>BaseClassifier</cite></p></td>
+<td><p>Driver bind with <code class="xref py py-meth docutils literal notranslate"><span class="pre">predict()</span></code> in the Executor.</p></td>
+<td><p><cite>_apply_all</cite></p></td>
+</tr>
+<tr class="row-even"><td><p><cite>BaseLabelPredictDriver</cite></p></td>
+<td><p><cite>BaseClassifier</cite></p></td>
+<td><p>Driver bind with <code class="xref py py-meth docutils literal notranslate"><span class="pre">predict()</span></code> for label prediction.</p></td>
+<td><p><cite>prediction2label</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p><cite>BaseEvaluateDriver</cite></p></td>
+<td><p><cite>BaseEvaluator</cite></p></td>
+<td><p>Driver bind with <code class="xref py py-meth docutils literal notranslate"><span class="pre">evaluate()</span></code> in the Executor.</p></td>
+<td><p><cite>extract</cite></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="customize-driver-in-action-multimodaldriver">
+<h2><a class="toc-backref" href="#id7">Customize Driver in Action: <cite>MultimodalDriver</cite></a><a class="headerlink" href="#customize-driver-in-action-multimodaldriver" title="Permalink to this headline">¶</a></h2>
+<p>We created <a class="reference external" href="https://github.com/jina-ai/jina/blob/master/jina/drivers/multimodal.py">MultimodalDriver</a> to better support Cross/Multi-modal search.
+Assume a <cite>Document</cite> has 2 child <cite>Documents</cite> with different modalities, e.g. text and image.
+The objective of <cite>MultimodalDriver</cite> is to extract embeddings from both modalities.
+Our expected input and output can be represented as:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Input:
+document:
+        <span class="p">|</span>- child document: <span class="o">{</span>modality: mode1<span class="o">}</span>
+        <span class="p">|</span>
+        <span class="p">|</span>- child document: <span class="o">{</span>modality: mode2<span class="o">}</span>
+Output:
+document: <span class="o">(</span>embedding: multimodal encoding<span class="o">)</span>
+        <span class="p">|</span>- child document: <span class="o">{</span>modality: mode1<span class="o">}</span>
+        <span class="p">|</span>
+        <span class="p">|</span>- child document: <span class="o">{</span>modality: mode2<span class="o">}</span>
+</pre></div>
+</div>
+<p>In the code snippet below, you should be able to see the logic of how we implemented the Driver.
+In <code class="xref py py-meth docutils literal notranslate"><span class="pre">_apply_all()</span></code>,
+We firstly convert each Document in the <cite>DocumentSet</cite> into a <cite>MultimediaDocument</cite>.
+For each instance of the <cite>MultimediaDocument</cite>,
+we check if the instance has <code class="xref py py-meth docutils literal notranslate"><span class="pre">modality_content_map()</span></code> (a python <cite>dict</cite>, where key is the name of the modality, while value is the content of the modality).
+If so, we consider it has a valid <cite>MultimediaDocument</cite>.
+And we save the value of the specific Modality into <cite>content_by_modality</cite>.
+The result will be feed into <code class="xref py py-meth docutils literal notranslate"><span class="pre">exec_fn()</span></code> as the input.</p>
+<p>Since class <cite>MultiModalDriver</cite> is based on <cite>BaseEncodeDriver</cite>, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">exec_fn()</span></code> will be bind to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">encode()</span></code> method,
+to encode data from different modalities into embeddings.
+Last but not least, we assign the <cite>embeddings</cite> property of each Document as the encoded vector representation.
+And the task of the Driver finished.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MultiModalDriver</span><span class="p">(</span><span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">BaseEncodeDriver</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;Extract multimodal embeddings from different modalities.&quot;&quot;&quot;</span>
+
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply the driver to each of the Documents in docs.&quot;&quot;&quot;</span>
+        <span class="n">content_by_modality</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
+            <span class="nb">list</span>
+        <span class="p">)</span>
+
+        <span class="n">valid_docs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">MultimodalDocument</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">doc</span><span class="o">.</span><span class="n">modality_content_map</span><span class="p">:</span>
+                <span class="n">valid_docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">modality</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">positional_modality</span><span class="p">:</span>
+                    <span class="n">content_by_modality</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">modality</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">valid_docs</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">modality</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">positional_modality</span><span class="p">:</span>
+                <span class="n">content_by_modality</span><span class="p">[</span><span class="n">modality</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">content_by_modality</span><span class="p">[</span><span class="n">modality</span><span class="p">])</span>
+
+            <span class="n">input_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_executor_input_arguments</span><span class="p">(</span><span class="n">content_by_modality</span><span class="p">)</span>
+            <span class="n">embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="o">*</span><span class="n">input_args</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">embedding</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">valid_docs</span><span class="p">,</span> <span class="n">embeds</span><span class="p">):</span>
+                <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="what-s-next">
+<h2><a class="toc-backref" href="#id8">What’s next</a><a class="headerlink" href="#what-s-next" title="Permalink to this headline">¶</a></h2>
+<p>Thanks for your time and effort while reading this guide!</p>
+<p>Please checkout <a class="reference external" href="https://github.com/jina-ai/jina/drivers">Jina Core</a> to explore the source code of built-in <cite>Drivers</cite>.
+If you still have questions, feel free to <a class="reference external" href="https://github.com/jina-ai/jina/issues">submit an issue</a> or post a message in our <a class="reference external" href="https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack">community slack channel</a> .</p>
+</div>
 </div>
 
 
