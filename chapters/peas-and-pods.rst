@@ -39,7 +39,7 @@ TailPea collects the calculated result from the Peas inside the Pod.
 Let's say we defined `parallel=3` inside a Pod,
 then we have 5 Peas inside the Pod.
 Traffic firstly arrive HeadPea, and the HeadPea distribute traffic two 3 peas in Parallel,
-finally the result will be send to TailPea.
+and finally the result will be sent to the TailPea.
 
 Jina offers parallelization at different levels, such as
 
