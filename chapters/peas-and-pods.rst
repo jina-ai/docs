@@ -12,6 +12,7 @@ You might have already learned from `Jina 101 <../101.rst>`_.
 Jina :term:`Pea` wraps an :term:`Executor` and lets it exchange data with other Peas.
 Jina :term:`Pod` is a context manager for one or multiple Peas that have the same properties.
 It coordinates Peas to improve efficiency and scaling.
+It is an abstraction layer on top of Peas equipped with the same Executors allowing the user to reason about the application and design its functionality while hiding the parallelization and the non-functional details.
 Beyond that, a Pod adds further control, scheduling, and context management to its Peas.
 
 In this tutorial, we dive deeper into Peas and Pods,
