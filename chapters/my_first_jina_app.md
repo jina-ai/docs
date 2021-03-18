@@ -99,7 +99,7 @@ cd templates/nlp-simple
 A [virtualenv](https://realpython.com/python-virtual-environments-a-primer/) (virtual environment) prevents your system libraries and project libraries conflicting with each other. Create one by running:
 
 ```sh
-virtualenv env --python=python3.8
+virtualenv env --python=python3.7
 source ./env/bin/activate
 ```
 
