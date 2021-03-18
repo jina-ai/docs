@@ -121,7 +121,7 @@ and send data to the next Pea.
 An Example
 ^^^^^^^^^^^^
 
-In the code snippet below, we demonstrate a flow with three Pods.
+In the code snippet below, we demonstrate a Flow with three Pods.
 The Pod `loader` has one Pea and runs locally.
 It send the data to `encoder`, which runs remotely on `0.0.0.2`.
 In the end, since `indexer` Pod has two Peas,
