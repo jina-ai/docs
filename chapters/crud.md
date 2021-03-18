@@ -66,3 +66,15 @@ You can see this in the code listing in the beginning of this chapter.
    
 The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size on disk (and in memory) of the indexer will grow over time if you perform update or delete operations. We recommend you rebuild the indexers regularly. 
 
+6. **Compound Indexer**
+
+When using a `!CompoundIndexer` it is not possible to return embeddings by design. If you see the definition of the [!CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) you will see that it has an `!ExcludeQL` for all the embeddings:
+
+``` python
+ !ExcludeQL
+      with:
+        fields:
+          - embedding
+```
+
+This happens because since it is a `!CompoundIndexer`, it would affect both the `BaseVectorIndexer` and the `BaseKVIndexer` and the embeddings would be stored twice if we wouldn't exlude them. 
