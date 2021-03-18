@@ -4,7 +4,7 @@
 
 ### Feature description
 
-CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is *not* a database engine, it does provide these methods of interacting with the data stored in its indexes.
+CRUD abbreviates the four actions **C**reate, **R**ead, **U**pdate, and **D**elete. All together they form the basis of a database management system (DBMS). While Jina itself is *not* a database engine, it does provide these methods of interacting with the data stored in its indexes.
 
 Before `1.0`, Jina only supported indexing (creating) and querying (reading) Documents. To update or delete a Document, you had to edit your dataset, and then rebuild the Flow and indexes. Needless to say, this could create problems if you had large datasets.
 
