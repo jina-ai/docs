@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Build your first Jina app &mdash; Jina 1.0.11-master documentation</title>
+  <title>Build your first Jina app &mdash; Jina 1.0.12-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.11-master</button>
+            <button class="dropbtn version">1.0.12-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -207,7 +207,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../flow/pattern/">Common Design Patterns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../input_output/">How to handle Input and Output for Flows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../traversal/">Understand Jina Recursive Document Representation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../extend/driver/">Guideline When Adding New Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extend/driver/">Developer Guide: Add new Drivers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../extend/executor/">Development Guide: Add new Executors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../extend/mwu/">A Minimum Working Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../remote/">Using Jina Pod Remotely</a></li>
@@ -264,7 +264,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -343,10 +343,10 @@
 <h1>Build your first Jina app<a class="headerlink" href="#build-your-first-jina-app" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="introduction">
 <h2>👋 Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>This tutorial guides you through building your own neural search app using the <a class="reference external" href="https://github.com/jina-ai/jina/">Jina framework</a>.</p>
+<p>The aim of this tutorial is to guide you through building your first simple neural text search app using the <a class="reference external" href="https://github.com/jina-ai/jina/">Jina framework</a>.</p>
 <p><img alt="../../_images/jinabox-wikipedia.gif" src="../../_images/jinabox-wikipedia.gif" /></p>
-<p>Our example program will be a simple neural search engine for text. It will take a user’s input and return a list of sentences from Wikipedia that match most closely.</p>
-<p>The end result will be close to <a class="reference external" href="https://github.com/jina-ai/examples/tree/master/wikipedia-sentences">Wikipedia sentence search</a>.</p>
+<p>This app will take a user’s input and return a matching list of results from <a class="reference external" href="#set-up-your-dataset">your dataset</a>.</p>
+<p>The end result will be a search app that is similar to <a class="reference external" href="https://github.com/jina-ai/examples/tree/master/wikipedia-sentences">Wikipedia sentence search</a>.</p>
 </div>
 <div class="section" id="key-concepts">
 <h2>🗝️ Key concepts<a class="headerlink" href="#key-concepts" title="Permalink to this headline">¶</a></h2>
@@ -355,6 +355,7 @@
 <li><p><strong><a class="reference external" href="https://jina.ai/2020/07/06/What-is-Neural-Search-and-Why-Should-I-Care.html">What is Neural Search?</a></strong> See how Jina is different from traditional search</p></li>
 <li><p><strong><a class="reference external" href="https://docs.jina.ai/chapters/101/">Jina 101</a></strong>: Learn about Jina’s core components</p></li>
 <li><p><strong><a class="reference external" href="https://docs.jina.ai/chapters/102/">Jina 102</a></strong>: See how Jina’s components are connected together</p></li>
+<li><p><strong><a class="reference external" href="https://github.com/jina-ai/examples/tree/master/wikipedia-sentences">Wikipedia sentence search</a></strong>: Test it out, see what you’ll build in this tutorial</p></li>
 </ul>
 </div>
 <div class="section" id="try-it-in-docker">
@@ -402,131 +403,111 @@
 <div class="section" id="prerequisites">
 <h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li><p>You are comfortable using bash or another <a class="reference external" href="https://en.wikipedia.org/wiki/Unix_shell">terminal shell</a></p></li>
 <li><p>Linux or macOS (or see <a class="reference external" href="https://docs.jina.ai/chapters/install/os/via-pip.html#on-windows">instructions to install Jina on Windows</a>)</p></li>
-<li><p>Python 3.7 or higher, and <code class="docutils literal notranslate"><span class="pre">pip</span></code></p></li>
 <li><p>8 gigabytes or more of RAM</p></li>
+<li><p>Python 3.7 or higher, and <code class="docutils literal notranslate"><span class="pre">pip</span></code></p></li>
+<li><p>Docker (optional, for running the Docker examples)</p></li>
 </ul>
 </div>
-<div class="section" id="create-a-virtualenv-and-install-jina">
-<h3>Create a virtualenv and install Jina<a class="headerlink" href="#create-a-virtualenv-and-install-jina" title="Permalink to this headline">¶</a></h3>
-<p>A virtualenv ensures your system libraries and project libraries don’t conflict or interfere with each other.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>mkdir my_jina_app
-<span class="nb">cd</span> my_jina_app
-virtualenv env
+<div class="section" id="clone-the-repo">
+<h3>Clone the repo<a class="headerlink" href="#clone-the-repo" title="Permalink to this headline">¶</a></h3>
+<p>Setting up a Jina app from scratch requires many files. A simple template makes this easier. To download this template:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/jina-ai/examples.git
+</pre></div>
+</div>
+<p>And then enter the template directory:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> templates/nlp-simple
+</pre></div>
+</div>
+<p>⚠️   This template is useful only for simple text search apps. For other examples, please see our <a class="reference external" href="https://github.com/jina-ai/examples">examples repo</a>.</p>
+</div>
+<div class="section" id="create-a-virtualenv-and-install-requirements">
+<h3>Create a virtualenv and install requirements<a class="headerlink" href="#create-a-virtualenv-and-install-requirements" title="Permalink to this headline">¶</a></h3>
+<p>A <a class="reference external" href="https://realpython.com/python-virtual-environments-a-primer/">virtualenv</a> prevents your system libraries and project libraries conflicting with each other. Create one by running:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>virtualenv env
 <span class="nb">source</span> /env/bin/activate
 </pre></div>
 </div>
-<p>Now install Jina in this clean environment:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install jina<span class="o">[</span>hub<span class="o">]==</span><span class="m">1</span>.0
-</pre></div>
-</div>
-<p>Above we only specify to install <a class="reference external" href="https://github.com/jina-ai/jina-hub">Jina Hub</a>. This is because Hub contains the wizard to create a new Jina app.</p>
-</div>
-<div class="section" id="create-a-new-app">
-<h3>Create a new app<a class="headerlink" href="#create-a-new-app" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>jina hub new --type<span class="o">=</span>app
-</pre></div>
-</div>
-<p>We recommend the following settings:</p>
-<table border="1" class="docutils">
-<thead>
-<tr>
-<th>Parameter</th>
-<th>What to type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>project_name</code></td>
-<td><code>Wikipedia sentence search</code></td>
-</tr>
-<tr>
-<td><code>jina_version</code></td>
-<td>Use default setting</td>
-</tr>
-<tr>
-<td><code>project_slug</code></td>
-<td>Use default setting</td>
-</tr>
-<tr>
-<td><code>author_name</code></td>
-<td>Your name</td>
-</tr>
-<tr>
-<td><code>project_short_description</code></td>
-<td><code>Search Wikipedia sentences using Jina neural search</code></td>
-</tr>
-<tr>
-<td><code>task_type</code></td>
-<td><code>2</code> (NLP)</td>
-</tr>
-<tr>
-<td><code>index_type</code></td>
-<td><code>2</code> (strings)</td>
-</tr>
-<tr>
-<td><code>public_port</code></td>
-<td>Use default setting</td>
-</tr>
-<tr>
-<td><code>parallel</code></td>
-<td>Use default setting</td>
-</tr>
-<tr>
-<td><code>shards</code></td>
-<td>Use default setting</td>
-</tr>
-<tr>
-<td><code>version</code></td>
-<td>Use default setting</td>
-</tr>
-</tbody>
-</table><p>After you have answered all the questions, the wizard will create <a class="reference external" href="https://docs.google.com/document/d/1A2t-K2DEZvJ7sOmWLuCmUQINyESaxucM7wOJCSCPmdI/edit#">a folder and files</a> for your new Jina app.</p>
-</div>
-<div class="section" id="install-app-requirements">
-<h3>Install app requirements<a class="headerlink" href="#install-app-requirements" title="Permalink to this headline">¶</a></h3>
-<p>In the terminal:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> wikipedia_sentence_search
-pip install -r requirements.txt
+<p>Now install the requirements:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>pip install -r requirements.txt
 </pre></div>
 </div>
 </div>
-<div class="section" id="download-data-optional">
-<h3>Download data (optional)<a class="headerlink" href="#download-data-optional" title="Permalink to this headline">¶</a></h3>
-<p>Our goal is to search a set of sentences from Wikipedia and return the closest sentences to our search term. We use <a class="reference external" href="https://www.kaggle.com/mikeortman/wikipedia-sentences">this dataset</a> from Kaggle.</p>
-<p>By default we just include a <a class="reference external" href="/data/toy-input.txt">subset of this data</a>, so you don’t need to download anything. However, if you’d like to work with more sentences:</p>
+<div class="section" id="set-up-your-dataset">
+<h3>Set up your dataset<a class="headerlink" href="#set-up-your-dataset" title="Permalink to this headline">¶</a></h3>
+<p>For this example, we recommend a relatively simple dataset. This is because we won’t implement <a class="reference external" href="https://101.jina.ai/#segmenter">segmenting</a> for this simple example. <a class="reference external" href="https://www.kaggle.com/datasets?tags=13204-NLP">Kaggle NLP Datasets</a> are a good place to start.</p>
+<p>Processing your data somehow is often a key part of any machine learning project. For this example, process your data into a single text file, with one item per line. This is similar to our <a class="reference external" href="https://github.com/jina-ai/examples/blob/master/wikipedia-sentences/data/toy-input.txt">wikipedia-sentence data file</a>. Since every dataset is different, we leave this as an exercise for the reader!</p>
+<p>After processing:</p>
 <ol class="simple">
-<li><p>Set up <a class="reference external" href="https://www.kaggle.com/docs/api#getting-started-installation-&amp;-authentication">Kaggle</a></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">wget</span> <span class="pre">https://raw.githubusercontent.com/jina-ai/examples/master/wikipedia-sentences/get_data.sh</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sh</span> <span class="pre">./get_data.sh</span></code></p></li>
+<li><p>Create a new folder: <code class="docutils literal notranslate"><span class="pre">mkdir</span> <span class="pre">data</span></code></p></li>
+<li><p>Move your file into the folder and rename to <code class="docutils literal notranslate"><span class="pre">input.txt</span></code>: <code class="docutils literal notranslate"><span class="pre">mv</span> <span class="pre">&lt;filename&gt;</span> <span class="pre">data/input.txt</span></code></p></li>
+<li><p>Define an environment variable for your data file: <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">JINA_DATA_FILE=data/input.txt</span></code></p></li>
 </ol>
-<p>The <code class="docutils literal notranslate"><span class="pre">get_data.sh</span></code> script:</p>
+<p>If you’ve got a large dataset and want to index just part of it, you can specify an environment variable:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">JINA_MAX_DOCS</span><span class="o">=</span><span class="m">3000</span>
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">3000</span></code> with whatever number you like.</p>
+<p>⚠️   You should set these environment variables in the same terminal that you will later use to run Jina itself. You can check if you have the environment variable set by running:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="nv">$JINA_DATA_FILE</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="nv">$JINA_MAX_DOCS</span>
+</pre></div>
+</div>
+<p>It should return exactly what you set earlier when you used the <code class="docutils literal notranslate"><span class="pre">export</span></code> command.</p>
+</div>
+<div class="section" id="set-up-your-model-and-model-settings">
+<h3>Set up your model and model settings<a class="headerlink" href="#set-up-your-model-and-model-settings" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="set-your-model">
+<h4>Set your model<a class="headerlink" href="#set-your-model" title="Permalink to this headline">¶</a></h4>
+<p>Jina’s default language model for text searches is [<code class="docutils literal notranslate"><span class="pre">distilbert-bert-cased</span></code>]. This is a good model for general purpose text, but your use case may require something more specific. You can find plenty of models at <a class="reference external" href="https://huggingface.co/models?pipeline_tag=fill-mask">huggingface</a>. Be sure to filter by “Fill-Mask” task.</p>
+<p>You set your model in <code class="docutils literal notranslate"><span class="pre">pods/encode.yml</span></code> under <code class="docutils literal notranslate"><span class="pre">pretrained_model_name_or_path</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!TransformerTorchEncoder</span>
+<span class="nt">with</span><span class="p">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+  <span class="l l-Scalar l-Scalar-Plain">pretrained_model_name_or_path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">distilbert-base-cased</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<p>Depending on your use case, you may find the following models useful:</p>
 <ul class="simple">
-<li><p>Creates a data directory</p></li>
-<li><p>Downloads the dataset from Kaggle</p></li>
-<li><p>Extracts and shuffles the dataset to ensure variety in what we ask Jina to search</p></li>
+<li><p><a class="reference external" href="https://huggingface.co/bert-base-chinese">bert-base-chinese</a> - Chinese</p></li>
+<li><p><a class="reference external" href="https://huggingface.co/distilbert-base-german-cased">distilbert-base-german-cased</a> - German</p></li>
+<li><p><a class="reference external" href="https://huggingface.co/camembert-base">camembert-base</a> - French</p></li>
+<li><p><a class="reference external" href="https://huggingface.co/nlpaueb/legal-bert-base-uncased">legal-bert-base-uncased</a> - Legal text</p></li>
+<li><p><a class="reference external" href="https://huggingface.co/abhilash1910/financial_roberta">financial_roberta</a> - Financial text</p></li>
 </ul>
-<p>Since <code class="docutils literal notranslate"><span class="pre">app.py</span></code> indexes <code class="docutils literal notranslate"><span class="pre">data/toy-input.txt</span></code> by default, we override it with an environment variable</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">JINA_DATA_FILE</span><span class="o">=</span><span class="s1">&#39;data/input.txt&#39;</span>
+<p>Simply replace <code class="docutils literal notranslate"><span class="pre">distilbert-base-cased</span></code> with the simple model name to use that model</p>
+<p>⚠️   All the models that work with Jina are third-party and not something we develop in-house. We haven’t tested all the models listed above, so your experience may vary.</p>
+</div>
+<div class="section" id="set-your-model-settings">
+<h4>Set your model settings<a class="headerlink" href="#set-your-model-settings" title="Permalink to this headline">¶</a></h4>
+<p>Now you’ve chosen your model, you can fine-tune its performance using <code class="docutils literal notranslate"><span class="pre">max_length</span></code>. Again, in <code class="docutils literal notranslate"><span class="pre">pods/encode.yml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!TransformerTorchEncoder</span>
+<span class="nt">with</span><span class="p">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+  <span class="l l-Scalar l-Scalar-Plain">max_length</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">96</span>
 </pre></div>
 </div>
-<p>Double check it was set successfully by running:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="nv">$JINA_DATA_FILE</span>
-</pre></div>
+<p><code class="docutils literal notranslate"><span class="pre">max_length</span></code> refers to the length of text that will go into one vector embedding. A higher number (usually) means more accurate results but more time needed for indexing and querying.</p>
+<p>With our <a class="reference external" href="#">wikipedia sentences example</a> we found a length of <code class="docutils literal notranslate"><span class="pre">192</span></code> was a lot better than the default of <code class="docutils literal notranslate"><span class="pre">96</span></code>. Generally, if you’re indexing longer strings of text, you’ll want a higher <code class="docutils literal notranslate"><span class="pre">max_length</span></code>.</p>
 </div>
 </div>
 </div>
-<div class="section" id="run-the-app">
-<h2>🏃 Run the app<a class="headerlink" href="#run-the-app" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="run-jina">
+<h2>🏃 Run Jina<a class="headerlink" href="#run-jina" title="Permalink to this headline">¶</a></h2>
 <p>In section you will index and search through your data.</p>
 <div class="section" id="index-flow">
 <h3>Index Flow<a class="headerlink" href="#index-flow" title="Permalink to this headline">¶</a></h3>
-<p>First up we need to build up an index of our dataset, which we’ll later search with our <a class="reference external" href="#query-flow">query Flow</a>.</p>
+<p>First we need to build an index of our dataset. Later we’ll search this index with our <a class="reference external" href="#query-flow">query Flow</a>.</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python app.py -t index
 </pre></div>
 </div>
 <p>ℹ️  <code class="docutils literal notranslate"><span class="pre">-t</span></code> is short for <code class="docutils literal notranslate"><span class="pre">--task</span></code></p>
-<p>You’ll see a lot of output scrolling by. Indexing is complete when you see:</p>
+<p>You’ll see a lot of output scrolling on your terminal. Indexing is complete when you see:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>Flow@58199<span class="o">[</span>S<span class="o">]</span>:flow is closed and all resources should be released already, current build level is EMPTY
 </pre></div>
 </div>
@@ -548,9 +529,9 @@ pip install -r requirements.txt
 <p>⚠️  Note down the port number. You’ll need it for <code class="docutils literal notranslate"><span class="pre">curl</span></code> and the Jina Box front-end. In our case we can see it’s <code class="docutils literal notranslate"><span class="pre">45678</span></code>.</p>
 <p>ℹ️  <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">app.py</span> <span class="pre">-t</span> <span class="pre">query_restful</span></code> doesn’t pop up a search interface - for that you’ll need to connect via <code class="docutils literal notranslate"><span class="pre">curl</span></code>, Jina Box, or another client. Alternatively run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">app.py</span> <span class="pre">-t</span> <span class="pre">query</span></code> to search from your terminal.</p>
 </div>
-<div class="section" id="searching-wikipedia-sentences">
-<h3>Searching Wikipedia sentences<a class="headerlink" href="#searching-wikipedia-sentences" title="Permalink to this headline">¶</a></h3>
-<p>See our section on <a class="reference external" href="#search-the-data">searching the data</a>.</p>
+<div class="section" id="searching-your-data">
+<h3>Searching your data<a class="headerlink" href="#searching-your-data" title="Permalink to this headline">¶</a></h3>
+<p>See our section on <a class="reference external" href="#search-the-data">searching the data</a> above.</p>
 <p>When you’re finished, stop the Flow with Ctrl-C (or Command-C on a Mac), and run <code class="docutils literal notranslate"><span class="pre">deactivate</span></code> to exit your virtualenv. (If you wish to re-activate it in the future, you can return to the app directory and run <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">env/bin/activate</span></code>).</p>
 </div>
 </div>
@@ -706,7 +687,7 @@ pip install -r requirements.txt
 <p>Your results may not be very suitable when you query your dataset. This can be fixed in several ways:</p>
 <div class="section" id="index-more-documents">
 <h4>Index more Documents<a class="headerlink" href="#index-more-documents" title="Permalink to this headline">¶</a></h4>
-<p><a class="reference external" href="#download-data-optional">Download the larger dataset</a>, and increase <code class="docutils literal notranslate"><span class="pre">JINA_MAX_DOCS</span></code> to index more sentences. This gives the language model more data to work with:</p>
+<p>Use a larger dataset or increase your <code class="docutils literal notranslate"><span class="pre">JINA_MAX_DOCS</span></code> environment variable to index more sentences. This gives the language model more data to work with:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">JINA_MAX_DOCS</span><span class="o">=</span><span class="m">30000</span>
 </pre></div>
 </div>
@@ -716,7 +697,7 @@ pip install -r requirements.txt
 <p>In <code class="docutils literal notranslate"><span class="pre">pods/encode.yml</span></code> increase the length of your embeddings:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">with</span><span class="p">:</span>
   <span class="l l-Scalar l-Scalar-Plain">...</span>
-  <span class="l l-Scalar l-Scalar-Plain">max_length</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">192</span> <span class="c1"># This works better for our Wikipedia dataset</span>
+  <span class="l l-Scalar l-Scalar-Plain">max_length</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">192</span> <span class="c1"># Higher number means more accurate results but slower performance</span>
 </pre></div>
 </div>
 </div>
@@ -730,14 +711,6 @@ pip install -r requirements.txt
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="simplify-the-code">
-<h3>Simplify the code<a class="headerlink" href="#simplify-the-code" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">crafter</span></code> Pod splits each Document in our input file into seperate sentences. Our Documents are already in sentences anyway, so this Pod is redundant. Let’s remove it:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>rm -f pods/craft.yml
-</pre></div>
-</div>
-<p>Also remove those Pod entries from <code class="docutils literal notranslate"><span class="pre">flows/index.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">flows/query.yml</span></code>.</p>
 </div>
 <div class="section" id="enable-incremental-indexing">
 <h3>Enable <a class="reference external" href="https://docs.jina.ai/chapters/incremental_indexing/index.html">incremental indexing</a><a class="headerlink" href="#enable-incremental-indexing" title="Permalink to this headline">¶</a></h3>
@@ -913,7 +886,7 @@ pip install -r requirements.txt
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 16, 2021.
+        Last updated on Mar 18, 2021.
       </span>
 
         </p>

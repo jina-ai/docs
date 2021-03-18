@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.docker.hubio &mdash; Jina 1.0.11-master documentation</title>
+  <title>jina.docker.hubio &mdash; Jina 1.0.12-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.11-master</button>
+            <button class="dropbtn version">1.0.12-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -232,7 +232,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -528,13 +528,11 @@
 <div class="viewcode-block" id="HubIO.push"><a class="viewcode-back" href="../../../../api/jina.docker.hubio/#jina.docker.hubio.HubIO.push">[docs]</a>    <span class="k">def</span> <span class="nf">push</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">readme_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">build_result</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Push image to Jina Hub.</span>
 
 <span class="sd">        :param name: name of image</span>
-<span class="sd">        :param readme_path: path to readme</span>
 <span class="sd">        :param build_result: dictionary containing the build summary</span>
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -559,7 +557,7 @@
                     <span class="sa">f</span><span class="s1">&#39;Image with name </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1"> does not exist. Pushing now...&#39;</span>
                 <span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_push_docker_hub</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">readme_path</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_push_docker_hub</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">build_result</span><span class="p">:</span>
                 <span class="n">file_path</span> <span class="o">=</span> <span class="n">get_summary_path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -592,13 +590,10 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ImageAlreadyExists</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">e</span></div>
 
-    <span class="k">def</span> <span class="nf">_push_docker_hub</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">readme_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_push_docker_hub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Push to Docker Hub.</span>
 
 <span class="sd">        :param name: name of image</span>
-<span class="sd">        :param readme_path: path to README</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check_registry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">registry</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_docker_image</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -860,7 +855,7 @@
             <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;is_build_success&#39;</span><span class="p">]:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_write_summary_to_file</span><span class="p">(</span><span class="n">summary</span><span class="o">=</span><span class="n">result</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">push</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">readme_path</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;is_build_success&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">raise_error</span><span class="p">:</span>
             <span class="c1"># remove the very verbose build log when throw error</span>
@@ -1014,7 +1009,7 @@
         <span class="n">dockerfile_path</span> <span class="o">=</span> <span class="n">get_exist_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
         <span class="n">manifest_path</span> <span class="o">=</span> <span class="n">get_exist_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;manifest.yml&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">config_yaml_path</span> <span class="o">=</span> <span class="n">get_exist_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;config.yml&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readme_path</span> <span class="o">=</span> <span class="n">get_exist_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;README.md&#39;</span><span class="p">)</span>
+        <span class="n">readme_path</span> <span class="o">=</span> <span class="n">get_exist_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;README.md&#39;</span><span class="p">)</span>
         <span class="n">requirements_path</span> <span class="o">=</span> <span class="n">get_exist_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;requirements.txt&#39;</span><span class="p">)</span>
 
         <span class="n">yaml_glob</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;*.yml&#39;</span><span class="p">)))</span>
@@ -1031,7 +1026,7 @@
             <span class="s1">&#39;Dockerfile&#39;</span><span class="p">:</span> <span class="n">dockerfile_path</span><span class="p">,</span>
             <span class="s1">&#39;manifest.yml&#39;</span><span class="p">:</span> <span class="n">manifest_path</span><span class="p">,</span>
             <span class="s1">&#39;config.yml&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_yaml_path</span><span class="p">,</span>
-            <span class="s1">&#39;README.md&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">readme_path</span><span class="p">,</span>
+            <span class="s1">&#39;README.md&#39;</span><span class="p">:</span> <span class="n">readme_path</span><span class="p">,</span>
             <span class="s1">&#39;requirements.txt&#39;</span><span class="p">:</span> <span class="n">requirements_path</span><span class="p">,</span>
             <span class="s1">&#39;*.yml&#39;</span><span class="p">:</span> <span class="n">yaml_glob</span><span class="p">,</span>
             <span class="s1">&#39;*.py&#39;</span><span class="p">:</span> <span class="n">py_glob</span><span class="p">,</span>
@@ -1290,7 +1285,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 16, 2021.
+        Last updated on Mar 18, 2021.
       </span>
 
         </p>
