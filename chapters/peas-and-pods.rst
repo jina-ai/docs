@@ -26,13 +26,8 @@ Pea and Pod Explained
 Singleton Or Not?
 ------------------
 
-<<<<<<< HEAD
 In Jina, if a Pod only contains only one Pea, we call it a Singleton Pod.
 If a user, define `parallel` as 1, then it will be considered as Singleton.
-=======
-In jina, if a Pod only contains one Pea, we call it a Singleton Pod.
-If a user defines `parallel` as 1, then it will be considered Singleton.
->>>>>>> c9b3a9eae8ecdfc8436fe745c247f2af31ae383c
 Otherwise, one Pod manages at least two Peas. e.g. `parallel` is at least 2.
 
 In the first case, a Pod only manages a single Pea.
