@@ -59,7 +59,8 @@ cd jina && pip install -e ".[daemon]"
 ### Prerequisites
 Run `jinad` on the remote machine. We assume the remote is in the intranet and its IP address is `12.34.56.78`. By default, `jinad` will use the port `8000` for receiving requests. Make sure `8000` port is publicly accessible.
 
-After having `jinad` running on the remote, you can open the browser the visit `http://3.16.166.3:8000/alive` to check whether `jinad` is properly set up. If everythong works well, you will see the following response.
+After having `jinad` running on the remote, you can open the browser and visit `http://3.16.166.3:8000/alive` to check whether `jinad` is properly set up. 
+If everything works well, you will see the following response.
 
 ```json
 {"status_code":200,"jina_version":"0.9.12"}
