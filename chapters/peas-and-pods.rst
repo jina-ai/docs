@@ -9,7 +9,7 @@ Development Guide: Peas and Pods in Jina
 .. note:: This guide assumes you have a basic understanding of Parallelization inside Jina, if you haven't, please check out `Parallelization in Jina <../parallel>`_ first.
 
 You might have already learned from `Jina 101 <../101.rst>`_.
-Jina :term:`Pea` wraps a :term:`Driver`, :term:`Executor` and lets it exchange data with other Peas.
+Jina :term:`Pea` wraps an :term:`Executor` and lets it exchange data with other Peas.
 Jina :term:`Pod` is a context manager for one or multiple Peas that have the same properties.
 It coordinates Peas to improve efficiency and scaling.
 Beyond that, a Pod adds further control, scheduling, and context management to its Peas.
