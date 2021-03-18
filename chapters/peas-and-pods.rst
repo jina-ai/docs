@@ -46,7 +46,7 @@ Jina offers parallelization at different levels, such as
 
 .. note::
    The parallelization here refers to intra-parallelism.
-   Checkout `this page <../parallel/#inter-parallelism>`_ to discover the difference between inter-parallelism and intra-parallelism in Jina.
+   Check out `this page <../parallel/#inter-parallelism>`_ to discover the difference between inter-parallelism and intra-parallelism in Jina.
 
 1. Local Threads/Process with `BasePea`.
 2. Inside container with `BasePea` inside `ContainerRuntime`.
