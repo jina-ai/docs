@@ -24,7 +24,7 @@ You should be familiar with these before you start:
 Before building your app, let's see what the finished product is like:
 
 ```sh
-docker run --name wikipedia-search -p 45678:45678 jinahub/app.example.wikipedia-sentences-30k:0.2.9-1.0.1
+docker run -p 45678:45678 jinahub/app.example.wikipedia-sentences-30k:0.2.10-1.0.10
 ```
 
 This runs a **pre-indexed** version of the example, and allows you to search using Jina's REST API.
