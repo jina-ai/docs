@@ -17,7 +17,7 @@ We hope that the table above will help to avoid any possible confusion regarding
 
 Before version `1.0`, Jina only supported indexing (creating) and querying (reading) Documents. In order to update or delete a Document, you had to edit your dataset first, and then rebuild both the Flow and the corresponding indexes. Needless to say, this could create problems if you had large datasets.
 
-With the release of version `1.0` we are introducing **update** and **delete** operations. These are implemented across our Executors and Drivers, and allow you to update and delete Documents by their ids. 
+With the release of version `1.0` we are introducing **update** and **delete** operations. These are implemented across our Executors and Drivers, and allow you to update and delete Documents by their ids. With this, the full CRUD functionality is established and available for you in Jina.
 
 ## Before you start 
 
