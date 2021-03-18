@@ -26,7 +26,7 @@ Pea and Pod Explained
 Singleton Or Not?
 ------------------
 
-In jina, if a Pod only contains one Pea, we call it a Singleton Pod.
+In Jina, if a Pod only contains only one Pea, we call it a Singleton Pod.
 If a user, define `parallel` as 1, then it will be considered as Singleton.
 Otherwise, one Pod manages at least two Peas. e.g. `parallel` is at least 2.
 
@@ -58,9 +58,9 @@ in a Stateless fashion.
 Since a Pea is a wrap over Jina Executor.
 Dependent on the type of the Executor, we consider a Pea is Stateless or Statefull.
 
-If a Pea wraps Encoder, Crafter, Segmenter, Ranker, Evaluator, Classifier, we consider it as Stateless.
-Since this Pea do not persist data.
-On the other hand, if a Pea wraps Indexer, we consider it as Stateful.
+If a Pea wraps an Encoder, Crafter, Segmenter, Ranker, Evaluator, Classifier, we consider it as Stateless.
+Since this Pea will not persist data.
+On the other hand, if a Pea wraps an Indexer, we consider it as Stateful.
 Because we persist indexed result to our workspace.
 
 We use `parallel` to manage the number of Stateless Peas inside a Pod.
@@ -69,18 +69,18 @@ We use `shards` to manage the number of Stateful Peas inside a Pod.
 How Local Pea and Remote Pea interact with Pod
 -----------------------------------------------
 
-Let's first think about the case of a Singleton Pod runs locally.
+Let's first think about the case of a Singleton Pod running locally.
 This Pod will only have 1 Pea inside, i.e. `parallel=1` or `shard=1`,
 depends on the type of Executor it wraps.
 The Pea inside the previous Pod will receive traffic from the last Pea,
 process the data and send data to the next Pea.
 
-When it comes to a Singleton Pod runs remotely (i.e. runs with JinaD),
+When it comes to a Singleton Pod running remotely (i.e. runs with JinaD),
 the main process will setup `JinadRuntime`,
 the runtime is going to create remote Peas inside the remote machine.
 The JinadRuntime take ownership of 2 tasks:
 
-1. Parse args to JinaD to fire up a remote Pod with a single Pea using `put/pod` api endpoint.
+1. Parse args to JinaD to fire up a remote Pod with a single Pea using `put/pod` API endpoint.
 2. Streaming logs from the remote Pod to the local Pod.
 
 The remote Pea inside the remote Pod will process the data,
@@ -98,10 +98,10 @@ the host of the Pea will stay the same as the Pod.
 
 Take a look at the image below.
 Imaging we defined `parallel=2` in our Flow/YAML configuration.
-Since the current remote machine only has 1 ip address (`host=0.0.0.3`),
+Since the current remote machine only has one IP address (`host=0.0.0.3`),
 the Jina main process will setup another `JinadRuntime`,
-and fire up another Pea inside the 2nd host (`0.0.0.4`),
-by calling `put/pea` api endpoint.
+and fire up another Pea inside the second host (`0.0.0.4`),
+by calling `put/pea` API endpoint.
 
 .. image:: ./images/remote-peas-in-pod.png
   :width: 600
