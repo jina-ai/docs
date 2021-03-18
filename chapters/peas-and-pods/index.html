@@ -4,8 +4,8 @@
 <html lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta content="A list of environment variables that ``jina`` uses during runtime." name="description" />
-<meta content="Jina, environment variables" name="keywords" />
+  <meta content="Development Guide: Peas and Pods in Jina" name="description" />
+<meta content="Jina, pea, pod" name="keywords" />
 
   <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>OS Environment Variables Used in Jina &mdash; Jina 1.0.12-master documentation</title>
+  <title>Development Guide: Peas and Pods in Jina &mdash; Jina 1.0.12-master documentation</title>
   
 
   
@@ -56,8 +56,8 @@
     
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
-    <link rel="next" title="Flow Optimization" href="../optimization/" />
-    <link rel="prev" title="Gracefully Exit Jina" href="../cli/exit/" /> 
+    <link rel="next" title="API References" href="../core/api_references/" />
+    <link rel="prev" title="A Guide on What Are Jina Executors and How to Use Them" href="../executors/" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -218,7 +218,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../project_guide/">Project setup guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../simple_exec/">Built-in Simple Executors and Reserved <code class="docutils literal notranslate"><span class="pre">uses</span></code> in Jina</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli/exit/">Gracefully Exit Jina</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">OS Environment Variables Used in Jina</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../envs/">OS Environment Variables Used in Jina</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../optimization/">Flow Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../batching/">Understanding Batching in Jina</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../request_size/">Understanding the Request Size parameter</a></li>
@@ -228,7 +228,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../stress/">Jina Cloud Benchmark &amp; Deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mime-type/">A Guide on MIME Types in Jina</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../executors/">A Guide on What Are Jina Executors and How to Use Them</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../peas-and-pods/">Development Guide: Peas and Pods in Jina</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Development Guide: Peas and Pods in Jina</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../core/api_references/">API References</a></li>
@@ -317,7 +317,7 @@
         
           <li><a href="../core/guides/">Developer Guides</a> &raquo;</li>
         
-      <li>OS Environment Variables Used in Jina</li>
+      <li>Development Guide: Peas and Pods in Jina</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -343,298 +343,155 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="os-environment-variables-used-in-jina">
-<h1>OS Environment Variables Used in Jina<a class="headerlink" href="#os-environment-variables-used-in-jina" title="Permalink to this headline">¶</a></h1>
-<p>Here is the list of environment variables that <code class="docutils literal notranslate"><span class="pre">jina</span></code> uses during runtime.</p>
+  <div class="section" id="development-guide-peas-and-pods-in-jina">
+<h1><a class="toc-backref" href="#id2">Development Guide: Peas and Pods in Jina</a><a class="headerlink" href="#development-guide-peas-and-pods-in-jina" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>These enviroment variables must be set <strong>before</strong> starting <code class="docutils literal notranslate"><span class="pre">jina</span></code> or before any <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">jina</span></code> in Python. Changing the variables while <code class="docutils literal notranslate"><span class="pre">jina</span></code> is running may result in unexpected result and exceptions.</p>
-<p>For example:</p>
-<blockquote>
-<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;JINA_ARRAY_QUANT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;fp16&#39;</span>
-
-<span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
+<p>This guide assumes you have a basic understanding of Jina, if you haven’t, please check out <a class="reference external" href="https://101.jina.ai">Jina 101</a> first.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This guide assumes you have a basic understanding of Parallelization inside Jina, if you haven’t, please check out <a class="reference external" href="../parallel">Parallelization in Jina</a> first.</p>
+</div>
+<p>You might have already learned from <a class="reference external" href="../101.rst">Jina 101</a>.
+Jina <a class="reference internal" href="../glossary/#term-Pea"><span class="xref std std-term">Pea</span></a> wraps an <a class="reference internal" href="../glossary/#term-Executor"><span class="xref std std-term">Executor</span></a> and lets it exchange data with other Peas.
+Jina <a class="reference internal" href="../glossary/#term-Pod"><span class="xref std std-term">Pod</span></a> is a context manager for one or multiple Peas that have the same properties.
+It coordinates Peas to improve efficiency and scaling.
+It is an abstraction layer on top of Peas equipped with the same Executors allowing the user to reason about the application and design its functionality while hiding the parallelization and the non-functional details.
+Beyond that, a Pod adds further control, scheduling, and context management to its Peas.</p>
+<p>In this tutorial, we dive deeper into Peas and Pods,
+to help you gain in-depth knowledge on the architecture and design principle of Peas and Pods in Jina.</p>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#development-guide-peas-and-pods-in-jina" id="id2">Development Guide: Peas and Pods in Jina</a></p>
+<ul>
+<li><p><a class="reference internal" href="#pea-and-pod-explained" id="id3">Pea and Pod Explained</a></p>
+<ul>
+<li><p><a class="reference internal" href="#singleton-or-not" id="id4">Singleton Or Not?</a></p></li>
+<li><p><a class="reference internal" href="#stateless-vs-stateful-pea" id="id5">Stateless vs Stateful Pea</a></p></li>
+<li><p><a class="reference internal" href="#how-local-pea-and-remote-pea-interact-with-pod" id="id6">How Local Pea and Remote Pea interact with Pod</a></p></li>
+<li><p><a class="reference internal" href="#distributed-remote-peas-in-pod" id="id7">Distributed Remote Peas in Pod</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#an-example" id="id8">An Example</a></p></li>
+<li><p><a class="reference internal" href="#what-s-next" id="id9">What’s Next</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="pea-and-pod-explained">
+<h2><a class="toc-backref" href="#id3">Pea and Pod Explained</a><a class="headerlink" href="#pea-and-pod-explained" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="singleton-or-not">
+<h3><a class="toc-backref" href="#id4">Singleton Or Not?</a><a class="headerlink" href="#singleton-or-not" title="Permalink to this headline">¶</a></h3>
+<p>In Jina, if a Pod only contains only one Pea, we call it a Singleton Pod.
+If a user, define <cite>parallel</cite> as 1, then it will be considered as Singleton.
+Otherwise, one Pod manages at least two Peas. e.g. <cite>parallel</cite> is at least 2.</p>
+<p>In the first case, a Pod only manages a single Pea.
+While in the second case, when user specifically defined a <cite>parallel</cite> value greater than 1,
+Jina will add a <a class="reference internal" href="../glossary/#term-HeadPea"><span class="xref std std-term">HeadPea</span></a> and <a class="reference internal" href="../glossary/#term-TailPea"><span class="xref std std-term">TailPea</span></a> to the same Pod.
+HeadPea distribute traffic to different Peas inside the Pod,
+TailPea collects the calculated result from the Peas inside the Pod.</p>
+<p>Let’s say we defined <cite>parallel=3</cite> inside a Pod,
+then we have 5 Peas inside the Pod.
+Traffic first arrives HeadPea, and the HeadPea distributes traffic to the 3 Peas in parallel,
+and finally the result will be sent to the TailPea.</p>
+<p>Jina offers parallelization at different levels, such as</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The parallelization here refers to intra-parallelism.
+Check out <a class="reference external" href="../parallel/#inter-parallelism">this page</a> to discover the difference between inter-parallelism and intra-parallelism in Jina.</p>
+</div>
+<ol class="arabic simple">
+<li><p>Local Threads/Process with <cite>BasePea</cite>.</p></li>
+<li><p>Inside container with <cite>BasePea</cite> inside <cite>ContainerRuntime</cite>.</p></li>
+<li><p>Remotely with <cite>RemotePeas</cite> and <cite>RemotePods</cite> inside <cite>JinadRuntime</cite>.</p></li>
+</ol>
+<p>Jina Daemon (JinaD) enables Jina to spin up and distribute Peas, Pods, Flows in any system.</p>
+</div>
+<div class="section" id="stateless-vs-stateful-pea">
+<h3><a class="toc-backref" href="#id5">Stateless vs Stateful Pea</a><a class="headerlink" href="#stateless-vs-stateful-pea" title="Permalink to this headline">¶</a></h3>
+<p>In the previous section we mentioned <cite>parallel</cite>.
+This parameter manages different Peas inside a Pod,
+in a stateless fashion.
+Since a Pea is a wrap over Jina Executor.
+Dependent on the type of the Executor, we consider a Pea is stateless or statefull.</p>
+<p>If a Pea wraps an Encoder, Crafter, Segmenter, Ranker, Evaluator, Classifier, we consider it as stateless.
+Since this Pea will not persist data.
+On the other hand, if a Pea wraps an Indexer, we consider it as stateful.
+Because we persist indexed result to our workspace.</p>
+<p>We use <cite>parallel</cite> to manage the number of stateless Peas inside a Pod.
+We use <cite>shards</cite> to manage the number of stateful Peas inside a Pod.</p>
+</div>
+<div class="section" id="how-local-pea-and-remote-pea-interact-with-pod">
+<h3><a class="toc-backref" href="#id6">How Local Pea and Remote Pea interact with Pod</a><a class="headerlink" href="#how-local-pea-and-remote-pea-interact-with-pod" title="Permalink to this headline">¶</a></h3>
+<p>Let’s first think about the case of a Singleton Pod running locally.
+This Pod will only have 1 Pea inside, i.e. <cite>parallel=1</cite> or <cite>shard=1</cite>,
+depends on the type of Executor it wraps.
+The Pea inside the previous Pod will receive traffic from the last Pea,
+process the data and send data to the next Pea.</p>
+<p>When it comes to a Singleton Pod running remotely (i.e. runs with JinaD),
+the main process will setup <cite>JinadRuntime</cite>,
+the runtime is going to create remote Peas inside the remote machine.
+The JinadRuntime take ownership of 2 tasks:</p>
+<ol class="arabic simple">
+<li><p>Parse args to JinaD to fire up a remote Pod with a single Pea using <cite>put/pod</cite> API endpoint.</p></li>
+<li><p>Streaming logs from the remote Pod to the local Pod.</p></li>
+</ol>
+<p>The remote Pea inside the remote Pod will process the data,
+the result will be send to the next Pea.
+In the next section we will talk about the most complex scenario: “distributed Remote Peas in Pod”.</p>
+</div>
+<div class="section" id="distributed-remote-peas-in-pod">
+<h3><a class="toc-backref" href="#id7">Distributed Remote Peas in Pod</a><a class="headerlink" href="#distributed-remote-peas-in-pod" title="Permalink to this headline">¶</a></h3>
+<p>In this section, we talk about how multiple Peas (<cite>parallel</cite> or <cite>shards</cite> greater or equal to 2) runs inside a remote Pod.
+First of all, the main process will setup <cite>JinadRuntime</cite>.
+<cite>JinadRuntime</cite> create a new remote Pod inside the remote machine, with a HeaderPea,
+a TailPea and <cite>1</cite> Pea inside the same machine,
+the host of the Pea will stay the same as the Pod.</p>
+<p>Take a look at the image below.
+Imaging we defined <cite>parallel=2</cite> in our Flow/YAML configuration.
+Since the current remote machine only has one IP address (<cite>host=0.0.0.3</cite>),
+the Jina main process will setup another <cite>JinadRuntime</cite>,
+and fire up another Pea inside the second host (<cite>0.0.0.4</cite>),
+by calling <cite>put/pea</cite> API endpoint.</p>
+<a class="reference internal image-reference" href="../../_images/remote-peas-in-pod.png"><img alt="remote peas in pod" class="align-center" src="../../_images/remote-peas-in-pod.png" style="width: 600px;" /></a>
+<p>Then the HeadPea is going to distribute traffic to both Peas.
+In the end, the TailPea collects data from Pea1 and Pea2,
+and send data to the next Pea.</p>
+</div>
+</div>
+<div class="section" id="an-example">
+<h2><a class="toc-backref" href="#id8">An Example</a><a class="headerlink" href="#an-example" title="Permalink to this headline">¶</a></h2>
+<p>In the code snippet below, we demonstrate a Flow with three Pods.
+The Pod <cite>loader</cite> has one Pea and runs locally.
+It send the data to <cite>encoder</cite>, which runs remotely on <cite>0.0.0.2</cite>.
+In the end, since <cite>indexer</cite> Pod has two Peas,
+Jina will add a <cite>HeadPea</cite> and <cite>TailPea</cite> to this Pod.
+Meanwhile, <cite>JinadRuntime</cite> will fire up two Peas based on Pea’s host, such as <cite>0.0.0.4</cite> and <cite>0.0.0.5</cite>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!Flow</span>
+<span class="nt">version</span><span class="p">:</span> <span class="s">&#39;1.0&#39;</span>
+<span class="nt">pods</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">loader</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="kt">!ImageReader</span>
+    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.1</span> <span class="c1"># Singleton pod runs locally</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">encoder</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="kt">!ImageTorchEncoder</span>
+    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.2</span> <span class="c1"># Singleton pod runs remotely</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">indexer</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="kt">!NumpyIndexer</span>
+    <span class="nt">shards</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+    <span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0.0.3</span> <span class="c1"># Pod has multiple peas runs remotely</span>
 </pre></div>
 </div>
-</div></blockquote>
 </div>
-<dl class="std confval">
-<dt id="confval-JINA_ARRAY_QUANT">
-<code class="sig-name descname"><span class="pre">JINA_ARRAY_QUANT</span></code><a class="headerlink" href="#confval-JINA_ARRAY_QUANT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Quantization scheme when storing ndarray into protobuf message, useful for reducing the network latency and saving bandwidth. Possible values: <code class="docutils literal notranslate"><span class="pre">fp16</span></code> (almost lossless), <code class="docutils literal notranslate"><span class="pre">uint8</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_BINARY_DELIMITER">
-<code class="sig-name descname"><span class="pre">JINA_BINARY_DELIMITER</span></code><a class="headerlink" href="#confval-JINA_BINARY_DELIMITER" title="Permalink to this definition">¶</a></dt>
-<dd><p>The delimiter used in <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePbIndexer</span></code>. Often use a delimiter phrase that you can determine does not occur. (Think of the mime message boundaries)</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_CONTRIB_MODULE">
-<code class="sig-name descname"><span class="pre">JINA_CONTRIB_MODULE</span></code><a class="headerlink" href="#confval-JINA_CONTRIB_MODULE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Paths of the third party components.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_CONTRIB_MODULE_IS_LOADING">
-<code class="sig-name descname"><span class="pre">JINA_CONTRIB_MODULE_IS_LOADING</span></code><a class="headerlink" href="#confval-JINA_CONTRIB_MODULE_IS_LOADING" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to True when loading the third party components.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_CONTROL_PORT">
-<code class="sig-name descname"><span class="pre">JINA_CONTROL_PORT</span></code><a class="headerlink" href="#confval-JINA_CONTROL_PORT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Control port of all pods.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset. A random port will be used for each <code class="xref py py-func docutils literal notranslate"><span class="pre">BasePod()</span></code>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_DEFAULT_HOST">
-<code class="sig-name descname"><span class="pre">JINA_DEFAULT_HOST</span></code><a class="headerlink" href="#confval-JINA_DEFAULT_HOST" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default host address of Jina.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p><cite>0.0.0.0</cite></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_DISABLE_UVLOOP">
-<code class="sig-name descname"><span class="pre">JINA_DISABLE_UVLOOP</span></code><a class="headerlink" href="#confval-JINA_DISABLE_UVLOOP" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">uvloop</span></code> is ultra fast implementation of the asyncio event loop on top of libuv. Since Jina 0.3.6, Jina relies on <code class="docutils literal notranslate"><span class="pre">uvloop</span></code> to manage the sockets and streams.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_EXECUTOR_WORKDIR">
-<code class="sig-name descname"><span class="pre">JINA_EXECUTOR_WORKDIR</span></code><a class="headerlink" href="#confval-JINA_EXECUTOR_WORKDIR" title="Permalink to this definition">¶</a></dt>
-<dd><p>The default executor working directory, where dumping and IO output happens.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_FULL_CLI">
-<code class="sig-name descname"><span class="pre">JINA_FULL_CLI</span></code><a class="headerlink" href="#confval-JINA_FULL_CLI" title="Permalink to this definition">¶</a></dt>
-<dd><p>When set, show all Jina subcommands.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_IPC_SOCK_TMP">
-<code class="sig-name descname"><span class="pre">JINA_IPC_SOCK_TMP</span></code><a class="headerlink" href="#confval-JINA_IPC_SOCK_TMP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temp directory when using IPC sockets for the control port, not used on Windows system or when the control port is over TCP sockets.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_CONFIG">
-<code class="sig-name descname"><span class="pre">JINA_LOG_CONFIG</span></code><a class="headerlink" href="#confval-JINA_LOG_CONFIG" title="Permalink to this definition">¶</a></dt>
-<dd><p>The configuration file for the logger. If unset then will load from logging.default.yml under resources.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_ID">
-<code class="sig-name descname"><span class="pre">JINA_LOG_ID</span></code><a class="headerlink" href="#confval-JINA_LOG_ID" title="Permalink to this definition">¶</a></dt>
-<dd><p>The identifier of a logger so that it can be used as group identifier by <code class="docutils literal notranslate"><span class="pre">fluentd</span></code>. It is set when Pea starts a new process
-to allow grouping by pod identifier for pea and executor logger.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_LEVEL">
-<code class="sig-name descname"><span class="pre">JINA_LOG_LEVEL</span></code><a class="headerlink" href="#confval-JINA_LOG_LEVEL" title="Permalink to this definition">¶</a></dt>
-<dd><p>The log verbosity of the Jina logger. Possible values are <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>, <code class="docutils literal notranslate"><span class="pre">INFO</span></code>, <code class="docutils literal notranslate"><span class="pre">SUCCESS</span></code>, <code class="docutils literal notranslate"><span class="pre">WARNING</span></code>, <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, <code class="docutils literal notranslate"><span class="pre">CRITICAL</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">INFO</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_NO_COLOR">
-<code class="sig-name descname"><span class="pre">JINA_LOG_NO_COLOR</span></code><a class="headerlink" href="#confval-JINA_LOG_NO_COLOR" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show colored logs in stdout, set to any non-empty value to disable the color log, e.g. if you want to pipe the log into other apps.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_LOG_WORKSPACE">
-<code class="sig-name descname"><span class="pre">JINA_LOG_WORKSPACE</span></code><a class="headerlink" href="#confval-JINA_LOG_WORKSPACE" title="Permalink to this definition">¶</a></dt>
-<dd><p>A temporary work space during context.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_POD_NAME">
-<code class="sig-name descname"><span class="pre">JINA_POD_NAME</span></code><a class="headerlink" href="#confval-JINA_POD_NAME" title="Permalink to this definition">¶</a></dt>
-<dd><p>The Pod name set when a Pod started when <code class="docutils literal notranslate"><span class="pre">--log-with-pod-name</span></code> is on, this should not given manually by users.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_RAISE_ERROR_EARLY">
-<code class="sig-name descname"><span class="pre">JINA_RAISE_ERROR_EARLY</span></code><a class="headerlink" href="#confval-JINA_RAISE_ERROR_EARLY" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raise exception immedidately instead of passing it forward in the flow. Useful in debugging.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_RANDOM_PORTS">
-<code class="sig-name descname"><span class="pre">JINA_RANDOM_PORTS</span></code><a class="headerlink" href="#confval-JINA_RANDOM_PORTS" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to any non-empty will trigger the random search for available port.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_RANDOM_PORT_MAX">
-<code class="sig-name descname"><span class="pre">JINA_RANDOM_PORT_MAX</span></code><a class="headerlink" href="#confval-JINA_RANDOM_PORT_MAX" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to ‘65535’ as the max value when searching random port.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_RANDOM_PORT_MIN">
-<code class="sig-name descname"><span class="pre">JINA_RANDOM_PORT_MIN</span></code><a class="headerlink" href="#confval-JINA_RANDOM_PORT_MIN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to ‘49153’ as the min value when searching random port.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_SOCKET_HWM">
-<code class="sig-name descname"><span class="pre">JINA_SOCKET_HWM</span></code><a class="headerlink" href="#confval-JINA_SOCKET_HWM" title="Permalink to this definition">¶</a></dt>
-<dd><p>High-watermarks of ZMQ send &amp; receive sockets. Reference: <a class="reference external" href="http://api.zeromq.org/master:zmq-setsockopt">http://api.zeromq.org/master:zmq-setsockopt</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>4</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_TEST_PRETRAINED">
-<code class="sig-name descname"><span class="pre">JINA_TEST_PRETRAINED</span></code><a class="headerlink" href="#confval-JINA_TEST_PRETRAINED" title="Permalink to this definition">¶</a></dt>
-<dd><p>If set, then all pretrained model-related tests will be conducted in the unit test.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_TEST_GPU">
-<code class="sig-name descname"><span class="pre">JINA_TEST_GPU</span></code><a class="headerlink" href="#confval-JINA_TEST_GPU" title="Permalink to this definition">¶</a></dt>
-<dd><p>If set, then all gpu-related tests will be conducted in the unit test.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_VCS_VERSION">
-<code class="sig-name descname"><span class="pre">JINA_VCS_VERSION</span></code><a class="headerlink" href="#confval-JINA_VCS_VERSION" title="Permalink to this definition">¶</a></dt>
-<dd><p>Git version of <code class="docutils literal notranslate"><span class="pre">jina</span></code>. This is used when <code class="docutils literal notranslate"><span class="pre">--check-version</span></code> is turned on. For official docker image of <code class="docutils literal notranslate"><span class="pre">jina</span></code>, <code class="docutils literal notranslate"><span class="pre">JINA_VCS_VERSION</span></code> is automatically set to the git version during the building procedure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>the git head version for <code class="docutils literal notranslate"><span class="pre">jina</span></code> image. If you are using <code class="docutils literal notranslate"><span class="pre">jina</span></code> locally outside docker container then this is unset.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_WARN_UNNAMED">
-<code class="sig-name descname"><span class="pre">JINA_WARN_UNNAMED</span></code><a class="headerlink" href="#confval-JINA_WARN_UNNAMED" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set to any non-empty value to turn on the warning for unnamed executors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="std confval">
-<dt id="confval-JINA_WORKSPACE">
-<code class="sig-name descname"><span class="pre">JINA_WORKSPACE</span></code><a class="headerlink" href="#confval-JINA_WORKSPACE" title="Permalink to this definition">¶</a></dt>
-<dd><p>The work space used in optimizers/discovery.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default</dt>
-<dd class="field-odd"><p>unset</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="what-s-next">
+<h2><a class="toc-backref" href="#id9">What’s Next</a><a class="headerlink" href="#what-s-next" title="Permalink to this headline">¶</a></h2>
+<p>Thanks for your time &amp; effort while reading this documentation.
+If you want to know how we implement Peas and Pods,
+please checkout the source code <a class="reference external" href="https://github.com/jina-ai/jina/tree/master/jina/peapods">here</a>.</p>
+<p>If you still have questions, feel free to <a class="reference external" href="https://github.com/jina-ai/jina/issues">submit an issue</a> or post a message in our <a class="reference external" href="https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack">community slack channel</a> .</p>
+</div>
 </div>
 
 
@@ -645,11 +502,11 @@ to allow grouping by pod identifier for pea and executor logger.</p>
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="../optimization/" class="btn btn-neutral float-right" title="Flow Optimization"
+        <a href="../core/api_references/" class="btn btn-neutral float-right" title="API References"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
-        <a href="../cli/exit/" class="btn btn-neutral float-left" title="Gracefully Exit Jina"
+        <a href="../executors/" class="btn btn-neutral float-left" title="A Guide on What Are Jina Executors and How to Use Them"
            accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
         
     </div>
