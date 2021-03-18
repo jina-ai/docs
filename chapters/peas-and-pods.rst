@@ -59,17 +59,17 @@ Stateless vs Stateful Pea
 
 In the previous section we mentioned `parallel`.
 This parameter manages different Peas inside a Pod,
-in a Stateless fashion.
+in a stateless fashion.
 Since a Pea is a wrap over Jina Executor.
-Dependent on the type of the Executor, we consider a Pea is Stateless or Statefull.
+Dependent on the type of the Executor, we consider a Pea is stateless or statefull.
 
-If a Pea wraps an Encoder, Crafter, Segmenter, Ranker, Evaluator, Classifier, we consider it as Stateless.
+If a Pea wraps an Encoder, Crafter, Segmenter, Ranker, Evaluator, Classifier, we consider it as stateless.
 Since this Pea will not persist data.
-On the other hand, if a Pea wraps an Indexer, we consider it as Stateful.
+On the other hand, if a Pea wraps an Indexer, we consider it as stateful.
 Because we persist indexed result to our workspace.
 
-We use `parallel` to manage the number of Stateless Peas inside a Pod.
-We use `shards` to manage the number of Stateful Peas inside a Pod.
+We use `parallel` to manage the number of stateless Peas inside a Pod.
+We use `shards` to manage the number of stateful Peas inside a Pod.
 
 How Local Pea and Remote Pea interact with Pod
 -----------------------------------------------
