@@ -116,6 +116,35 @@ Then the HeadPea is going to distribute traffic to both Peas.
 In the end, the TailPea collects data from Pea1 and Pea2,
 and send data to the next Pea.
 
+
+An Example
+^^^^^^^^^^^^
+
+In the code snippet below, we demonstrate a flow with three Pods.
+The Pod `loader` has one Pea and runs locally.
+It send the data to `encoder`, which runs remotely on `0.0.0.2`.
+In the end, since `indexer` Pod has two Peas,
+Jina will add a `HeadPea` and `TailPea` to this Pod.
+Meanwhile, `JinadRuntime` will fire up two Peas based on Pea's host, such as `0.0.0.4` and `0.0.0.5`.
+
+.. highlight:: yaml
+.. code-block:: yaml
+
+    !Flow
+    version: '1.0'
+    pods:
+      - name: loader
+        uses: !ImageReader
+        host: 0.0.0.1 # Singleton pod runs locally
+      - name: encoder
+        uses: !ImageTorchEncoder
+        host: 0.0.0.2 # Singleton pod runs remotely
+      - name: indexer
+        uses: !NumpyIndexer
+        shards: 2
+        host: 0.0.0.3 # Pod has multiple peas runs remotely
+
+
 What's Next
 ^^^^^^^^^^^^
 
