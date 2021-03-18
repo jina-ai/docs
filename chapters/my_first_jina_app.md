@@ -1,4 +1,4 @@
-# Build your first Jina app
+# Build Your First Jina App
 
 ## 👋 Introduction
 
@@ -96,10 +96,10 @@ cd templates/nlp-simple
 
 ### Create a virtualenv and install requirements
 
-A [virtualenv](https://realpython.com/python-virtual-environments-a-primer/) prevents your system libraries and project libraries conflicting with each other. Create one by running:
+A [virtualenv](https://realpython.com/python-virtual-environments-a-primer/) (virtual environment) prevents your system libraries and project libraries conflicting with each other. Create one by running:
 
 ```sh
-virtualenv env
+virtualenv env --python=python3.8
 source ./env/bin/activate
 ```
 
@@ -152,7 +152,7 @@ It should return exactly what you set earlier when you used the `export` command
 
 #### Set your model
 
-Jina's default language model for text searches is [`distilbert-bert-cased`]. This is a good model for general purpose text, but your use case may require something more specific. You can find plenty of models at [huggingface](https://huggingface.co/models?pipeline_tag=fill-mask). Be sure to filter by "Fill-Mask" task.
+Jina's default language model for text searches is [`distilbert-bert-cased`](https://huggingface.co/distilbert-base-cased). This is a good model for general purpose text, but your use case may require something more specific. You can find plenty of models at [huggingface](https://huggingface.co/models?pipeline_tag=fill-mask). Be sure to filter by "Fill-Mask" task.
 
 You set your model in `pods/encode.yml` under `pretrained_model_name_or_path`:
 
@@ -172,7 +172,7 @@ Depending on your use case, you may find the following models useful:
 - [legal-bert-base-uncased](https://huggingface.co/nlpaueb/legal-bert-base-uncased) - Legal text
 - [financial_roberta](https://huggingface.co/abhilash1910/financial_roberta) - Financial text
 
-Simply replace `distilbert-base-cased` with the simple model name to use that model
+Simply replace `distilbert-base-cased` with the other model name to use that model
 
 ⚠️   All the models that work with Jina are third-party and not something we develop in-house. We haven't tested all the models listed above, so your experience may vary.
 
@@ -237,7 +237,7 @@ Your search engine is now ready to run!
 
 ### Searching your data
 
-See our section on [searching the data](#search-the-data) above.
+See the instructions on [Searching the Docker example](#-try-it-in-docker) above. It's exactly the same commands to search your local app.
 
 When you're finished, stop the Flow with Ctrl-C (or Command-C on a Mac), and run `deactivate` to exit your virtualenv. (If you wish to re-activate it in the future, you can return to the app directory and run `source env/bin/activate`).
 
