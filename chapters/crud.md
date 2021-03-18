@@ -37,7 +37,7 @@ What do the four CRUD actions mean, and do in Jina in particular:
 
 ## Before you start 
 
-Study the basics [here](https://docs.jina.ai/chapters/core/introduction/index.html)
+Before you start indexing documents with Jina and searching through the database, we recommend you study the basics as explained [here](https://docs.jina.ai/chapters/core/introduction/index.html).
 
 ### Implementation
 
