@@ -27,13 +27,15 @@ With the release of version `1.0` we are introducing **update** and **delete** o
 
 What do the four CRUD actions mean, and do in Jina in particular:
 
-- Index: read a new Document, and add it to the search index
+- Index: read a new Document, and add it to the search index.
 
-- Query: retrieve indexed Documents based on given search criteria
+- Query: retrieve indexed Documents based on given search criteria.
 
-- Update: update an existing Document by re-indexing it
+- Update: update an existing Document by re-indexing it. Requires the
+  index id of the Document to be updated.
 
-- Delete: remove an existing Document from the search index
+- Delete: remove an existing Document from the search index. Requires
+  the index id of the Document to be deleted from the search index.
 
 ## Before you start 
 
