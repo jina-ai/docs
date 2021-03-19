@@ -69,7 +69,7 @@ The update and delete operations use a masking underneath. This is done to maint
 
 6. **Compound Indexer**
 
-When using a `!CompoundIndexer` it is not possible to return embeddings by design. If you see the definition of the [!CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) you will see that it has an `!ExcludeQL` for all the embeddings:
+While using a `!CompoundIndexer`, it is not possible to return embeddings by virtue of its design. By definition, the [!CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) has an `!ExcludeQL` for all the embeddings:
 
 ``` python
  !ExcludeQL
@@ -78,4 +78,4 @@ When using a `!CompoundIndexer` it is not possible to return embeddings by desig
           - embedding
 ```
 
-This happens because since it is a `!CompoundIndexer`, it would affect both the `BaseVectorIndexer` and the `BaseKVIndexer` and the embeddings would be stored twice if we wouldn't exlude them. 
+Since this is a `!CompoundIndexer`, it would affect both the `BaseVectorIndexer` and the `BaseKVIndexer`, causing the embeddings to be stored twice if we don't exlude them. 
