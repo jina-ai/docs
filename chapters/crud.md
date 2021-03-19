@@ -43,29 +43,32 @@ Before you start indexing documents with Jina and searching through the database
 
 ### Implementation
 
-A basic example of this can be found in the [`test_crud.py`](https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py):
-
-The `Flow` class now supports `delete` and `update` methods, with a signature similar to `index`:
+A basic example of this can be found in the [`test_crud.py`](https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py). Furthermore, the `Flow` class now supports `delete` and `update` methods, with a signature similar to `index`. The source code below demonstrates how to use these methods.
 
 ```python
+    # create 10 random documents, and index them
     docs = random_docs(10)
 
     with f:
         f.index(input_fn=docs)
 
+    # create 10 more random documents, and update the search index
+    # new documents are added, and documents with the same id are updated
     new_docs = random_docs(10)
-            
+    
     with f:
         f.update(input_fn=new_docs)
 
+    # extract the document ids from the docs list, and remove them from
+    # the search index
     doc_ids = [d.id for d in docs]
-        
+    
     with f:
         delete_ids = [d.id for d in doc_ids]
         f.delete(delete_ids)
 ```
 
-Note: deletion and update will happen by `id` of the document.
+Note: As explained above, deletion and update of the search index will happen by `id` of the document.
 
 ## Limitations
 
