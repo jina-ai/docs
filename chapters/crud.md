@@ -86,34 +86,63 @@ with f:
 
 #### Searching
 
-#### Deleting and updating
-
-The `Flow` class supports `delete` and `update` methods, with a signature similar to `index`. The source code below demonstrates how to use these methods based on a set of 10 radomly generated documents.
+The next step is retrieving the indexed Documents. This can be done with just two lines of code, and will output the top-3 neighbours of of 🐲, which are 🐲🐦🐢  with a score of 0, 1, 1 respectively.
 
 ```python
-    # create 10 random documents, and index them
-    docs = random_docs(10)
+with f:
+    f.search(docs[0], top_k=3, on_done=lambda x: print(x.docs[0].matches))
+```
+The output is as follows in JSON style:
 
-    with f:
-        f.index(input_fn=docs)
-
-    # create 10 more random documents, and update the search index
-    # new documents are added, and documents with the same id are updated
-    new_docs = random_docs(10)
-    
-    with f:
-        f.update(input_fn=new_docs)
-
-    # extract the document ids from the docs list, and remove them from
-    # the search index
-    doc_ids = [d.id for d in docs]
-    
-    with f:
-        delete_ids = [d.id for d in doc_ids]
-        f.delete(delete_ids)
+```json
+{"id": "🐲", "tags": {"guardian": "Azure Dragon", "position": "East"}, "embedding": {"dense": {"buffer": "AAAAAAAAAAAAAAAAAAAAAA==", "shape": [2], "dtype": "<i8"}}, "score": {"opName": "NumpyIndexer", "refId": "🐲"}, "adjacency": 1}
+{"id": "🐦", "tags": {"position": "South", "guardian": "Vermilion Bird"}, "embedding": {"dense": {"buffer": "AQAAAAAAAAAAAAAAAAAAAA==", "shape": [2], "dtype": "<i8"}}, "score": {"value": 1.0, "opName": "NumpyIndexer", "refId": "🐲"}, "adjacency": 1}
+{"id": "🐢", "tags": {"guardian": "Black Tortoise", "position": "North"}, "embedding": {"dense": {"buffer": "AAAAAAAAAAABAAAAAAAAAA==", "shape": [2], "dtype": "<i8"}}, "score": {"value": 1.0, "opName": "NumpyIndexer", "refId": "🐲"}, "adjacency": 1}
 ```
 
-Note: As explained above, deletion and update of the search index will happen by `id` of the document.
+#### Deleting and updating
+
+The previous two examples already demonstrated the capabilities of the `Flow` class. It supports `delete` and `update` methods too, with a signature similar to `index`. 
+
+The source code below extends the previous example, and demonstrates how to update an existing document. The position of the Azure Dragon changes from East to North East.
+
+```python
+# define document to be updated
+update_docs = [
+         Document(
+           id='🐲', 
+           embedding=np.array([0, 0]), 
+           tags={'guardian': 'Azure Dragon', 'position': 'North East'}
+         )
+       ]
+
+with f:
+    f.update(input_fn=update_docs)
+
+```
+
+Deleting a document from a search index can be done similarly. From the search index, The document referring to the Vermilion Bird will be deleted.
+
+```python
+# define document to be deleted
+delete_docs = [
+         Document(
+           id='🐦', 
+           embedding=np.array([1, 0]), 
+           tags={'guardian': 'Vermilion Bird', 'position': 'South'}
+         ),
+       ]
+
+# extract the document ids from the delete_docs list, and remove them 
+# from the search index
+doc_ids = [d.id for d in delete_docs]
+    
+with f:
+    delete_ids = [d.id for d in doc_ids]
+    f.delete(delete_ids)
+```
+
+The code above is written in such a way that the corresponding list of documents to be either updated or deleted can be easily extended without the need to change the existing Python code.
 
 #### Full example
 
