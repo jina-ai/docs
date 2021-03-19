@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers.vector &mdash; Jina 1.0.12-master documentation</title>
+  <title>jina.executors.indexers.vector &mdash; Jina 1.0.13-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.12-master</button>
+            <button class="dropbtn version">1.0.13-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -325,6 +325,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseVectorIndexer</span>
 <span class="kn">from</span> <span class="nn">..decorators</span> <span class="kn">import</span> <span class="n">batching</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span> <span class="nn">...importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
 
 
 <div class="viewcode-block" id="BaseNumpyIndexer"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.BaseNumpyIndexer">[docs]</a><span class="k">class</span> <span class="nc">BaseNumpyIndexer</span><span class="p">(</span><span class="n">BaseVectorIndexer</span><span class="p">):</span>
@@ -832,14 +833,9 @@
 
     <span class="nd">@batching</span><span class="p">(</span><span class="n">merge_over_axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">slice_on</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_cdist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
             <span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cdist</span>
-
-            <span class="k">return</span> <span class="n">cdist</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;your metric </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="si">}</span><span class="s1"> requires scipy, but scipy is not found&#39;</span>
-            <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">cdist</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -972,7 +968,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 18, 2021.
+        Last updated on Mar 19, 2021.
       </span>
 
         </p>
