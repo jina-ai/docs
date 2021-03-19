@@ -43,7 +43,52 @@ Before you start indexing documents with Jina and searching through the database
 
 ### Implementation
 
-A basic example of this can be found in the [`test_crud.py`](https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py). Furthermore, the `Flow` class now supports `delete` and `update` methods, with a signature similar to `index`. The source code below demonstrates how to use these methods.
+#### Indexing
+
+As explained above, indexing means reading a document, and adding it to the search index. The example code below defines four documents, and indexes them.
+
+```python
+# import required python modules
+import numpy as np
+from jina import Document, Flow
+
+# define the four documents
+docs = [
+         Document(
+           id='🐲', 
+           embedding=np.array([0, 0]), 
+           tags={'guardian': 'Azure Dragon', 'position': 'East'}
+         ),
+         Document(
+           id='🐦', 
+           embedding=np.array([1, 0]), 
+           tags={'guardian': 'Vermilion Bird', 'position': 'South'}
+         ),
+         Document(
+           id='🐢', 
+           embedding=np.array([0, 1]), 
+           tags={'guardian': 'Black Tortoise', 'position': 'North'}
+         ),
+         Document(
+           id='🐯', 
+           embedding=np.array([1, 1]), 
+           tags={'guardian': 'White Tiger', 'position': 'West'}
+         )
+       ]
+
+# build a Flow with a simple indexer
+f = Flow().add(uses='_index')
+
+# save four docs (both embedding and structured info) into storage
+with f:
+    f.index(docs, on_done=print)
+```
+
+#### Searching
+
+#### Deleting and updating
+
+The `Flow` class supports `delete` and `update` methods, with a signature similar to `index`. The source code below demonstrates how to use these methods based on a set of 10 radomly generated documents.
 
 ```python
     # create 10 random documents, and index them
@@ -69,6 +114,10 @@ A basic example of this can be found in the [`test_crud.py`](https://github.com/
 ```
 
 Note: As explained above, deletion and update of the search index will happen by `id` of the document.
+
+#### Full example
+
+You can find an example in the [`test_crud.py`](https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py). 
 
 ## Limitations
 
