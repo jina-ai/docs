@@ -75,24 +75,19 @@ Note: As explained above, deletion and update of the search index will happen by
 Unfortunately there are some limitations to what Jina can do for the moment. These were trade-offs we needed to implement to keep Jina performant, robust, and easy to use. Some of these will be addressed in future versions, while some are intrinsic to Jina's architecture.
 
 1. **Partial update**
-
-For the moment we do not support partial updates. So if you want to update a document, you need to send the entire document. This is due to Jina's architecture: the document is sent as one piece through the Flow.
+   For the moment we do not support partial updates. So if you want to update a document, you need to send the entire document. This is due to Jina's architecture: the document is sent as one piece through the Flow.
 
 2. **Update flows**
-
-In the context of Flows with segmenters and chunks, a Document may end up being split into chunks. Currently, the Update request will not work for these. You will need to manually remove the chunks by their `ids`. Then you can remove the parent document as well, by its `id`. Finally, you can index the new document, with its new contents (and thus new, different child chunks).
+   In the context of Flows with segmenters and chunks, a Document may end up being split into chunks. Currently, the Update request will not work for these. You will need to manually remove the chunks by their `ids`. Then you can remove the parent document as well, by its `id`. Finally, you can index the new document, with its new contents (and thus new, different child chunks).
 
 3. **Sharding**
-
-When sharding data in indexers, the data will be split across these. This is achieved due to the `polling: any` configuration. During a query, you will need to set `polling: all`. However, this will lead to some shards getting a query request with a key that doesn't exist. In this case, warnings will be emitted by the indexer. You can ignore these within this context. The warnings are there for the situations when missing keys are *not* expected.
+  When sharding data in indexers, the data will be split across these. This is achieved due to the `polling: any` configuration. During a query, you will need to set `polling: all`. However, this will lead to some shards getting a query request with a key that does not exist. In this case, warnings will be emitted by the indexer. You can ignore these within this context. The warnings are there for the situations when missing keys are *not* expected.
 
 4. **Indexing while querying**
+   The index, update, and delete operations cannot be executed within the same context as the query operation. This is due to the way flushing to disk works within the Flow and Executor context lifecycle. This is applicable across all VectorIndexers. Thus, you need to exit the Flow context when you want to switch from one set of operations to the other.
 
-The index, update, and delete operations cannot be executed within the same context as the query operation. This is due to the way flushing to disk works within the Flow and Executor context lifecycle. This is applicable across all VectorIndexers. Thus, you need to exit the Flow context when you want to switch from one set of operations to the other.
-
-You can see this in the code listing in the beginning of this chapter.
+   You can see this in the code listing at the beginning of this chapter.
 
 5. **Expanding size**
-   
-The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size on disk (and in memory) of the indexer will grow over time if you perform update or delete operations. We recommend setting the `delete_on_dump` parameter of the `NumpyIndexer` to `True`. When the Flow is shut down, the data that has been marked as deleted will be permanently deleted before being saved to disk. By default the parameter is set to `False`, as setting it to `True` will make the shut down process slower.  
+   The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size of the indexer on disk (and in memory) will grow over time the more update or delete operations you perform. We recommend setting the `delete_on_dump` parameter of the `NumpyIndexer` to `True`. When the Flow is shut down, the data that has been marked as deleted will be permanently deleted before being saved to disk. By default the parameter is set to `False`, as setting it to `True` will make the shut down process slower.  
 
