@@ -311,7 +311,7 @@
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">yaml.constructor</span> <span class="kn">import</span> <span class="n">FullConstructor</span>
@@ -416,16 +416,23 @@
         <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;jtype: \1&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="JAML.unescape"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAML.unescape">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">unescape</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">include_unknown_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">unescape</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">include_unknown_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">jtype_whitelist</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unescape the YAML content by replacing all ``jtype: `` to tags.</span>
 
 <span class="sd">        :param value: the escaped YAML content</span>
 <span class="sd">        :param include_unknown_tags: if to include unknown tags during unescaping</span>
+<span class="sd">        :param jtype_whitelist: the list of jtype to be unescaped</span>
 <span class="sd">        :return: unescaped YAML</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">include_unknown_tags</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;jtype: (\w+)\b&#39;</span>
+        <span class="k">elif</span> <span class="n">jtype_whitelist</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jtype_whitelist</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;jtype: (</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1">)\b&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">JAML</span><span class="o">.</span><span class="n">registered_tags</span><span class="p">())</span>
             <span class="n">r</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;jtype: (</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1">)\b&#39;</span>
@@ -815,8 +822,14 @@
                     <span class="n">no_tag_yml</span><span class="p">,</span>
                     <span class="n">extra_search_paths</span><span class="o">=</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">s_path</span><span class="p">),)</span> <span class="k">if</span> <span class="n">s_path</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="p">)</span>
-            <span class="c1"># revert yaml&#39;s tag and load again, this time with substitution</span>
-            <span class="n">tag_yml</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">no_tag_yml</span><span class="p">))</span>
+            <span class="kn">from</span> <span class="nn">..flow</span> <span class="kn">import</span> <span class="n">BaseFlow</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">BaseFlow</span><span class="p">):</span>
+                <span class="n">tag_yml</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">no_tag_yml</span><span class="p">),</span>
+                                        <span class="n">include_unknown_tags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                        <span class="n">jtype_whitelist</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Flow&#39;</span><span class="p">,</span> <span class="s1">&#39;AsyncFlow&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># revert yaml&#39;s tag and load again, this time with substitution</span>
+                <span class="n">tag_yml</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">no_tag_yml</span><span class="p">))</span>
 
             <span class="c1"># load into object, no more substitute</span>
             <span class="k">return</span> <span class="n">JAML</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">tag_yml</span><span class="p">,</span> <span class="n">substitute</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
