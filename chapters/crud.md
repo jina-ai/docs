@@ -86,7 +86,7 @@ with f:
 
 #### Searching
 
-The next step is retrieving the indexed Documents. This can be done with just two lines of code, and will output the top-3 neighbours of of 🐲, which are 🐲🐦🐢  with a score of 0, 1, 1 respectively.
+The next step is retrieving the indexed Documents. This can be done with just two lines of code, and will output the top-3 neighbours of 🐲, which are 🐲🐦🐢  with a score of 0, 1, 1 respectively.
 
 ```python
 with f:
