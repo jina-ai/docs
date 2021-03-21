@@ -403,6 +403,17 @@
 <li><p><strong>Expanding size</strong></p></li>
 </ol>
 <p>The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size on disk (and in memory) of the indexer will grow over time if you perform update or delete operations. We recommend setting the <code class="docutils literal notranslate"><span class="pre">delete_on_dump</span></code> parameter of the <code class="docutils literal notranslate"><span class="pre">NumpyIndexer</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>. When the Flow is shut down, the data that has been marked as deleted will be permanently deleted before being saved to disk. By default the parameter is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, as setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code> will make the shut down process slower.</p>
+<ol class="simple">
+<li><p><strong>Compound Indexer</strong></p></li>
+</ol>
+<p>While using a <code class="docutils literal notranslate"><span class="pre">!CompoundIndexer</span></code>, it is not possible to return embeddings to the next Driver in the Flow, by virtue of its design. By definition, the <a class="reference external" href="https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml">!CompoundIndexer</a> has an <code class="docutils literal notranslate"><span class="pre">!ExcludeQL</span></code> for all the embeddings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> !ExcludeQL
+      with:
+        fields:
+          - embedding
+</pre></div>
+</div>
+<p>Since this is a <code class="docutils literal notranslate"><span class="pre">!CompoundIndexer</span></code>, it would affect both the <code class="docutils literal notranslate"><span class="pre">BaseVectorIndexer</span></code> and the <code class="docutils literal notranslate"><span class="pre">BaseKVIndexer</span></code>, causing the embeddings to the next Driver in the Flowto be stored twice if we don’t exclude them.</p>
 </div>
 </div>
 
