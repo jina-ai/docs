@@ -178,4 +178,4 @@ While using a `!CompoundIndexer`, it is not possible to return embeddings to the
           - embedding
 ```
 
-Since this is a `!CompoundIndexer`, it would affect both the `BaseVectorIndexer` and the `BaseKVIndexer`, causing the embeddings to the next Driver in the Flowto be stored twice if we don't exclude them.
+`!CompoundIndexer` affects both the `BaseVectorIndexer` and the `BaseKVIndexer`. This causes the embeddings to the next Driver in the Flow to be stored twice if we don't exclude them.
