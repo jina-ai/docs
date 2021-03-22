@@ -2,13 +2,11 @@
 
 ##### In this section, you will get an overview of how Jina implements CRUD: Create, Read, Update, Delete  
 
-### Feature description
-
 #### Overview
 
 CRUD abbreviates the four actions **C**reate, **R**ead, **U**pdate, and **D**elete. All together they form the basis of a database management system (DBMS). While Jina itself is *not* a DBMS, it does provide these methods of interacting with the data stored in its indexes. Jina uses the following terms for this:
 
-CRUD Term | Jina Term 
+CRUD Term | Jina Term
 --------- | ----------
 Create    | Index
 Read      | Query
@@ -37,7 +35,7 @@ What do the four CRUD actions mean, and do in Jina in particular:
 - Delete: remove an existing Document from the search index. Requires
   the index id of the Document to be deleted from the search index.
 
-## Before you start 
+## Before you start
 
 Before you start indexing documents with Jina and searching through the database, we recommend you to study the basics as explained [here](https://docs.jina.ai/chapters/core/introduction/index.html).
 
@@ -55,23 +53,23 @@ from jina import Document, Flow
 # define the four documents
 docs = [
          Document(
-           id='🐲', 
-           embedding=np.array([0, 0]), 
+           id='🐲',
+           embedding=np.array([0, 0]),
            tags={'guardian': 'Azure Dragon', 'position': 'East'}
          ),
          Document(
-           id='🐦', 
-           embedding=np.array([1, 0]), 
+           id='🐦',
+           embedding=np.array([1, 0]),
            tags={'guardian': 'Vermilion Bird', 'position': 'South'}
          ),
          Document(
-           id='🐢', 
-           embedding=np.array([0, 1]), 
+           id='🐢',
+           embedding=np.array([0, 1]),
            tags={'guardian': 'Black Tortoise', 'position': 'North'}
          ),
          Document(
-           id='🐯', 
-           embedding=np.array([1, 1]), 
+           id='🐯',
+           embedding=np.array([1, 1]),
            tags={'guardian': 'White Tiger', 'position': 'West'}
          )
        ]
@@ -102,7 +100,7 @@ The output is as follows in JSON style:
 
 #### Deleting and updating
 
-The previous two examples already demonstrated the capabilities of the `Flow` class. It supports `delete` and `update` methods too, with a signature similar to `index`. 
+The previous two examples already demonstrated the capabilities of the `Flow` class. It supports `delete` and `update` methods too, with a signature similar to `index`.
 
 The source code below extends the previous example, and demonstrates how to update an existing document. The position of the Azure Dragon changes from East to North East.
 
@@ -110,8 +108,8 @@ The source code below extends the previous example, and demonstrates how to upda
 # define document to be updated
 update_docs = [
          Document(
-           id='🐲', 
-           embedding=np.array([0, 0]), 
+           id='🐲',
+           embedding=np.array([0, 0]),
            tags={'guardian': 'Azure Dragon', 'position': 'North East'}
          )
        ]
@@ -127,16 +125,16 @@ Deleting a document from a search index can be done similarly. From the search i
 # define document to be deleted
 delete_docs = [
          Document(
-           id='🐦', 
-           embedding=np.array([1, 0]), 
+           id='🐦',
+           embedding=np.array([1, 0]),
            tags={'guardian': 'Vermilion Bird', 'position': 'South'}
          ),
        ]
 
-# extract the document ids from the delete_docs list, and remove them 
+# extract the document ids from the delete_docs list, and remove them
 # from the search index
 doc_ids = [d.id for d in delete_docs]
-    
+
 with f:
     delete_ids = [d.id for d in doc_ids]
     f.delete(delete_ids)
@@ -144,9 +142,12 @@ with f:
 
 The code above is written in such a way that the corresponding list of documents to be either updated or deleted can be easily extended without the need to change the existing Python code.
 
-#### Full example
+##### Expanding size
+The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size of the indexer on disk (and in memory) will grow over time the more update or delete operations you perform. We recommend setting the `delete_on_dump` parameter of the `NumpyIndexer` to `True`. When the Flow is shut down, the data that has been marked as deleted will be permanently deleted before being saved to disk. By default the parameter is set to `False`, as setting it to `True` will make the shut down process slower.  
 
-You can find an example in the [`test_crud.py`](https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py). 
+#### Runable example
+
+You can run all the above code snippets on a hosted Jupyter Notebook by clicking [here](https://mybinder.org/v2/gh/jina-ai/jupyter-notebooks/089947661673084eb26ef22b7870dc31199acdac)
 
 ## Limitations
 
@@ -166,11 +167,7 @@ Unfortunately there are some limitations to what Jina can do for the moment. The
 
    You can see this in the code listing at the beginning of this chapter.
 
-5. **Expanding size**
-   The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size of the indexer on disk (and in memory) will grow over time the more update or delete operations you perform. We recommend setting the `delete_on_dump` parameter of the `NumpyIndexer` to `True`. When the Flow is shut down, the data that has been marked as deleted will be permanently deleted before being saved to disk. By default the parameter is set to `False`, as setting it to `True` will make the shut down process slower.  
-
-
-6. **Compound Indexer**
+5. **Compound Indexer**
 
 While using a `!CompoundIndexer`, it is not possible to return embeddings to the next Driver in the Flow, by virtue of its design. By definition, the [!CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) has an `!ExcludeQL` for all the embeddings:
 
@@ -181,4 +178,4 @@ While using a `!CompoundIndexer`, it is not possible to return embeddings to the
           - embedding
 ```
 
-Since this is a `!CompoundIndexer`, it would affect both the `BaseVectorIndexer` and the `BaseKVIndexer`, causing the embeddings to the next Driver in the Flowto be stored twice if we don't exclude them.
+`!CompoundIndexer` affects both the `BaseVectorIndexer` and the `BaseKVIndexer`. This causes the embeddings to the next Driver in the Flow to be stored twice if we don't exclude them.
