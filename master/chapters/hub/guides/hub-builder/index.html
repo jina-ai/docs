@@ -240,7 +240,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../all_driver/">List of 70 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../all_driver/">List of 71 Drivers in Jina</a></li>
 </ul>
 
             
@@ -320,32 +320,84 @@
 <p>Jina’s hub-builder is a simple interface for building &amp; validating Jina Hub Executors. It is built on top of Jina Hub interface. It can be used as a GitHub action in the CI/CD workflow, or via CLI.</p>
 <div class="section" id="github-action-usage">
 <h2>Github action usage:<a class="headerlink" href="#github-action-usage" title="Permalink to this headline">¶</a></h2>
-<p>You can use the <code class="docutils literal notranslate"><span class="pre">hub</span> <span class="pre">builder</span></code> as a part of the CI pipeline, to build and test images in the Pull Request. The following YAML can be directly used in the workflow <code class="docutils literal notranslate"><span class="pre">.github/workflows/hub-builder.yml</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span><span class="p">:</span> <span class="n">Hub</span> <span class="n">Builder</span>
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">hub</span> <span class="pre">builder</span></code> as a part of the CICD pipeline, to build and test images in the Pull Request. The following YAML can be directly used in the workflow <code class="docutils literal notranslate"><span class="pre">.github/workflows/hub-builder.yml</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>name: Hub Builder
 
-<span class="n">on</span><span class="p">:</span> <span class="p">[</span><span class="n">pull_request</span><span class="p">]</span>
+on: [pull_request]
 
-<span class="n">jobs</span><span class="p">:</span>
-  <span class="n">hub</span><span class="o">-</span><span class="n">builder</span><span class="p">:</span>
-    <span class="n">runs</span><span class="o">-</span><span class="n">on</span><span class="p">:</span> <span class="n">ubuntu</span><span class="o">-</span><span class="n">latest</span>
-    <span class="n">steps</span><span class="p">:</span>
-      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Checkout</span>
-        <span class="n">uses</span><span class="p">:</span> <span class="n">actions</span><span class="o">/</span><span class="n">checkout</span><span class="nd">@v2</span>
-      <span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Jina</span> <span class="n">Hub</span> <span class="n">Image</span> <span class="n">Builder</span>
-        <span class="n">uses</span><span class="p">:</span> <span class="n">jina</span><span class="o">-</span><span class="n">ai</span><span class="o">/</span><span class="n">hub</span><span class="o">-</span><span class="n">builder</span><span class="nd">@master</span>
+jobs:
+  hub-builder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Jina Hub Image Builder
+        uses: jina-ai/hub-builder@master
+        jina_hub_token: ${{ secrets.JINA_HUB_TOKEN }}
 </pre></div>
 </div>
-<p>On every new PR, the builder finds modifications in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> recursively and tries to build a Hub image using the latest files. That means, when you update an image, you must change <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> to trigger the build, i.e. you can simply bump the version field in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code>. This is done one by one for each modified Executor.</p>
+<p>On every new PR, the builder finds modifications in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> recursively and tries to build a Hub image using the latest files. That means, when you update an image, <strong>you must change <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code> to trigger the build</strong>, i.e. you can simply bump the version field in <code class="docutils literal notranslate"><span class="pre">manifest.yml</span></code>. This is done one by one for each modified Executor.</p>
 <div class="section" id="hub-builder-action-accepts-the-following-parameters">
 <h3>Hub builder action accepts the following parameters:<a class="headerlink" href="#hub-builder-action-accepts-the-following-parameters" title="Permalink to this headline">¶</a></h3>
-<ol class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">push</span></code> (boolean): if push to Docker Hub and MongoDB</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dockerhub_username</span></code> and <code class="docutils literal notranslate"><span class="pre">dockerhub_password</span></code>: username and password of Docker registry</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dockerhub_registry</span></code>: URL to the registry</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">slack_webhook</span></code>: webhook for Slack notification</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">jina_version</span></code>: version of Jina for building Hub image</p></li>
-</ol>
-<p>Note: the input argument <code class="docutils literal notranslate"><span class="pre">jina_version</span></code> can be different from the version of Jina for running the Pod in the container. The latter should be set in your <code class="docutils literal notranslate"><span class="pre">_jina_pod/requirements.txt</span></code>. The <code class="docutils literal notranslate"><span class="pre">jina_version</span></code> is the version of Jina when building the Pod image.</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>push</td>
+<td>boolean</td>
+<td>yes</td>
+<td>true if you want to upload to Docker Hub &amp; make it available for everyone's use (usually in CD) <br /> false during tests run (usually in CI)</td>
+</tr>
+<tr>
+<td>jina_hub_token</td>
+<td>string</td>
+<td>yes</td>
+<td><a href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token">Personal Access Token</a> for your GitHub user</td>
+</tr>
+<tr>
+<td>dockerhub_username</td>
+<td>string</td>
+<td>no</td>
+<td>Username for Docker Hub <br /> (Ignore if you want us to host your pod in Jina's repository)</td>
+</tr>
+<tr>
+<td>dockerhub_password</td>
+<td>string</td>
+<td>no</td>
+<td>Password for Docker Hub <br /> (Ignore if you want us to host your pod in Jina's repository)</td>
+</tr>
+<tr>
+<td>dockerhub_registry</td>
+<td>string</td>
+<td>no</td>
+<td>Docker Hub Registry <br /> (Ignore if you want us to host your pod in Jina's repository)</td>
+</tr>
+<tr>
+<td>slack_webhook</td>
+<td>string</td>
+<td>no</td>
+<td>Slack webhook if you want custom notifications</td>
+</tr>
+<tr>
+<td>jina_version</td>
+<td>string</td>
+<td>no</td>
+<td>version of Jina for building Hub image</td>
+</tr>
+</tbody>
+</table><blockquote>
+<div><p>For authorization, you’d need to create a <a class="reference external" href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token">Personal Access Token</a> in your github settings &amp; pass the same. e.g., <code class="docutils literal notranslate"><span class="pre">jina_hub_token:</span> <span class="pre">${{</span> <span class="pre">secrets.JINA_HUB_TOKEN</span> <span class="pre">}}</span></code></p>
+</div></blockquote>
+<blockquote>
+<div><p>The input argument <code class="docutils literal notranslate"><span class="pre">jina_version</span></code> can be different from the version of Jina for running the Pod in the container. The latter should be set in your <code class="docutils literal notranslate"><span class="pre">_jina_pod/requirements.txt</span></code>. The <code class="docutils literal notranslate"><span class="pre">jina_version</span></code> is the version of Jina when building the Pod image.</p>
+</div></blockquote>
 </div>
 <div class="section" id="output-of-the-action">
 <h3>Output of the Action<a class="headerlink" href="#output-of-the-action" title="Permalink to this headline">¶</a></h3>
