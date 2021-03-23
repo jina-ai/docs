@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.runtimes.container &mdash; Jina 1.0.14-master documentation</title>
+  <title>jina.peapods.runtimes.container &mdash; Jina 1.0.15-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.14-master</button>
+            <button class="dropbtn version">1.0.15-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -232,7 +232,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 70 Drivers in Jina</a></li>
 </ul>
 
             
@@ -317,8 +317,10 @@
 
 <span class="kn">from</span> <span class="nn">..zmq.base</span> <span class="kn">import</span> <span class="n">ZMQRuntime</span>
 <span class="kn">from</span> <span class="nn">...zmq</span> <span class="kn">import</span> <span class="n">Zmqlet</span>
+<span class="kn">from</span> <span class="nn">....excepts</span> <span class="kn">import</span> <span class="n">BadImageNameError</span>
 <span class="kn">from</span> <span class="nn">....helper</span> <span class="kn">import</span> <span class="n">ArgNamespace</span><span class="p">,</span> <span class="n">is_valid_local_config_source</span><span class="p">,</span> <span class="n">slugify</span>
 <span class="kn">from</span> <span class="nn">....jaml.helper</span> <span class="kn">import</span> <span class="n">complete_path</span>
+<span class="kn">from</span> <span class="nn">....docker.hubio</span> <span class="kn">import</span> <span class="n">HubIO</span>
 
 
 <div class="viewcode-block" id="ContainerRuntime"><a class="viewcode-back" href="../../../../../api/jina.peapods.runtimes.container/#jina.peapods.runtimes.container.ContainerRuntime">[docs]</a><span class="k">class</span> <span class="nc">ContainerRuntime</span><span class="p">(</span><span class="n">ZMQRuntime</span><span class="p">):</span>
@@ -390,7 +392,8 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">uses</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;docker://&#39;</span><span class="p">):</span>
             <span class="n">uses_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">uses</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;docker://&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;using image: </span><span class="si">{</span><span class="n">uses_img</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">uses_img</span> <span class="o">=</span> <span class="n">HubIO</span><span class="o">.</span><span class="n">_alias_to_docker_image_name</span><span class="p">(</span><span class="n">uses_img</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;will use Docker image: </span><span class="si">{</span><span class="n">uses_img</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;you are using legacy image format </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">uses</span><span class="si">}</span><span class="s1">, this may create some ambiguity. &#39;</span>
@@ -416,13 +419,29 @@
             <span class="p">},</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pull_latest</span><span class="p">:</span>
+        <span class="n">img_not_found</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uses_img</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">docker</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">ImageNotFound</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;can not find local image: </span><span class="si">{</span><span class="n">uses_img</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">img_not_found</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pull_latest</span> <span class="ow">or</span> <span class="n">img_not_found</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;pulling </span><span class="si">{</span><span class="n">uses_img</span><span class="si">}</span><span class="s1">, this could take a while. if you encounter &#39;</span>
                 <span class="sa">f</span><span class="s1">&#39;timeout error due to pulling takes to long, then please set &#39;</span>
                 <span class="sa">f</span><span class="s1">&#39;&quot;timeout-ready&quot; to a larger value.&#39;</span>
             <span class="p">)</span>
-            <span class="n">client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">uses_img</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">uses_img</span><span class="p">)</span>
+                <span class="n">img_not_found</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="n">docker</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">NotFound</span><span class="p">:</span>
+                <span class="n">img_not_found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;can not find remote image: </span><span class="si">{</span><span class="n">uses_img</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">img_not_found</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadImageNameError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;image: </span><span class="si">{</span><span class="n">uses_img</span><span class="si">}</span><span class="s1"> can not be found local &amp; remote.&#39;</span><span class="p">)</span>
 
         <span class="n">_volumes</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">uses_internal</span><span class="p">:</span>
@@ -625,7 +644,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 21, 2021.
+        Last updated on Mar 23, 2021.
       </span>
 
         </p>

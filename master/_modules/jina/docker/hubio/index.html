@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.docker.hubio &mdash; Jina 1.0.14-master documentation</title>
+  <title>jina.docker.hubio &mdash; Jina 1.0.15-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.14-master</button>
+            <button class="dropbtn version">1.0.15-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -232,7 +232,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 70 Drivers in Jina</a></li>
 </ul>
 
             
@@ -326,10 +326,10 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__version__</span> <span class="k">as</span> <span class="n">jina_version</span>
 <span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">BuildTestLevel</span>
 <span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">DockerLoginFailed</span><span class="p">,</span>
     <span class="n">HubBuilderError</span><span class="p">,</span>
     <span class="n">HubBuilderBuildError</span><span class="p">,</span>
     <span class="n">HubBuilderTestError</span><span class="p">,</span>
+    <span class="n">HubLoginRequired</span><span class="p">,</span>
     <span class="n">ImageAlreadyExists</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..executors</span> <span class="kn">import</span> <span class="n">BaseExecutor</span>
@@ -474,7 +474,7 @@
                     <span class="s1">&#39;3. Come back to this terminal</span><span class="se">\n</span><span class="s1">&#39;</span>
                 <span class="p">)</span>
                 <span class="c1"># allowing sometime for the user to view the message</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                 <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">verification_uri</span><span class="p">,</span> <span class="n">new</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="k">pass</span>  <span class="c1"># intentional pass, browser support isn&#39;t cross-platform</span>
@@ -501,13 +501,13 @@
                     <span class="n">token</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;access_token&#39;</span><span class="p">:</span> <span class="n">access_token_response</span><span class="p">[</span><span class="s1">&#39;access_token&#39;</span><span class="p">]}</span>
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">credentials_file</span><span class="p">(),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cf</span><span class="p">:</span>
                         <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">cf</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;successfully logged in!&#39;</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;✅ Successfully logged in!&#39;</span><span class="p">)</span>
                     <span class="k">break</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;max retries </span><span class="si">{</span><span class="n">login_max_retry</span><span class="si">}</span><span class="s1"> reached&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;❌ Max retries </span><span class="si">{</span><span class="n">login_max_retry</span><span class="si">}</span><span class="s1"> reached&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">exp</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;can not read the key in response: </span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;❌ Can not read the key in response: </span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="HubIO.list"><a class="viewcode-back" href="../../../../api/jina.docker.hubio/#jina.docker.hubio.HubIO.list">[docs]</a>    <span class="k">def</span> <span class="nf">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]:</span>
         <span class="sd">&quot;&quot;&quot;List all hub images given a filter specified by CLI.</span>
@@ -587,7 +587,7 @@
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error when trying to push image </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">e</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ImageAlreadyExists</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="p">(</span><span class="n">ImageAlreadyExists</span><span class="p">,</span> <span class="n">HubLoginRequired</span><span class="p">)):</span>
                 <span class="k">raise</span> <span class="n">e</span></div>
 
     <span class="k">def</span> <span class="nf">_push_docker_hub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -675,9 +675,11 @@
                 <span class="n">password</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
                 <span class="n">registry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">registry</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;successfully logged in to docker hub&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;✅ Successfully logged in to docker hub&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">APIError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">DockerLoginFailed</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;invalid credentials passed. docker login failed&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">HubLoginRequired</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;❌ Invalid docker credentials passed. docker login failed&#39;</span>
+            <span class="p">)</span>
 
 <div class="viewcode-block" id="HubIO.build"><a class="viewcode-back" href="../../../../api/jina.docker.hubio/#jina.docker.hubio.HubIO.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
