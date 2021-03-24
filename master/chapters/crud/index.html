@@ -266,7 +266,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 71 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 72 Drivers in Jina</a></li>
 </ul>
 
             
@@ -346,63 +346,185 @@
 <div class="section" id="in-this-section-you-will-get-an-overview-of-how-jina-implements-crud-create-read-update-delete">
 <h2>In this section, you will get an overview of how Jina implements CRUD: Create, Read, Update, Delete<a class="headerlink" href="#in-this-section-you-will-get-an-overview-of-how-jina-implements-crud-create-read-update-delete" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="feature-description">
-<h2>Feature description<a class="headerlink" href="#feature-description" title="Permalink to this headline">¶</a></h2>
-<p>CRUD stands for Create, Read, Update, Delete. Together, they form the basis of any database engine. While Jina itself is <em>not</em> a database engine, it does provide these methods of interacting with the data stored in its indexes.</p>
-<p>Before <code class="docutils literal notranslate"><span class="pre">1.0</span></code>, Jina only supported indexing (creating) and querying (reading) Documents. To update or delete a Document, you had to edit your dataset, and then rebuild the Flow and indexes. Needless to say, this could create problems if you had large datasets.</p>
-<p>With the release of version <code class="docutils literal notranslate"><span class="pre">1.0</span></code> we are introducing <strong>update</strong> and <strong>delete</strong> operations. These are implemented across our Executors and Drivers, and allow you to update and delete Documents by their ids.</p>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>CRUD abbreviates the four actions <strong>C</strong>reate, <strong>R</strong>ead, <strong>U</strong>pdate, and <strong>D</strong>elete. All together they form the basis of a database management system (DBMS). While Jina itself is <em>not</em> a DBMS, it does provide these methods of interacting with the data stored in its indexes. Jina uses the following terms for this:</p>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>CRUD Term</th>
+<th>Jina Term</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Create</td>
+<td>Index</td>
+</tr>
+<tr>
+<td>Read</td>
+<td>Query</td>
+</tr>
+<tr>
+<td>Update</td>
+<td>Update</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>Delete</td>
+</tr>
+</tbody>
+</table><p>We hope that the table above will help to avoid any possible confusion regarding the terms that are in use. We discuss the four actions in more detail below.</p>
+</div>
+<div class="section" id="availability-in-jina">
+<h2>Availability in Jina<a class="headerlink" href="#availability-in-jina" title="Permalink to this headline">¶</a></h2>
+<p>Before version <code class="docutils literal notranslate"><span class="pre">1.0</span></code>, Jina only supported indexing (creating) and querying (reading) Documents. In order to update or delete a Document, you had to edit your dataset first, and then rebuild both the Flow and the corresponding indexes. Needless to say, this could create problems if you had large datasets.</p>
+<p>With the release of version <code class="docutils literal notranslate"><span class="pre">1.0</span></code> we are introducing <strong>update</strong> and <strong>delete</strong> operations. These are implemented across our Executors and Drivers, and allow you to update and delete Documents by their ids. With this, the full CRUD functionality is established and available for you in Jina.</p>
+</div>
+<div class="section" id="crud-actions-in-jina">
+<h2>CRUD actions in Jina<a class="headerlink" href="#crud-actions-in-jina" title="Permalink to this headline">¶</a></h2>
+<p>What do the four CRUD actions mean, and do in Jina in particular:</p>
+<ul class="simple">
+<li><p>Index: read a new Document, and add it to the search index.</p></li>
+<li><p>Query: retrieve indexed Documents based on given search criteria.</p></li>
+<li><p>Update: update an existing Document by re-indexing it. Requires the
+index id of the Document to be updated.</p></li>
+<li><p>Delete: remove an existing Document from the search index. Requires
+the index id of the Document to be deleted from the search index.</p></li>
+</ul>
 </div>
 <div class="section" id="before-you-start">
 <h2>Before you start<a class="headerlink" href="#before-you-start" title="Permalink to this headline">¶</a></h2>
-<p>Study the basics <a class="reference external" href="https://docs.jina.ai/chapters/core/introduction/index.html">here</a></p>
+<p>Before you start indexing documents with Jina and searching through the database, we recommend you to study the basics as explained <a class="reference external" href="https://docs.jina.ai/chapters/core/introduction/index.html">here</a>.</p>
 <div class="section" id="implementation">
 <h3>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
-<p>A basic example of this can be found in the <a class="reference external" href="https://github.com/jina-ai/jina/blob/master/tests/integration/crud/simple/test_crud.py"><code class="docutils literal notranslate"><span class="pre">test_crud.py</span></code></a>:</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">Flow</span></code> class now supports <code class="docutils literal notranslate"><span class="pre">delete</span></code> and <code class="docutils literal notranslate"><span class="pre">update</span></code> methods, with a signature similar to <code class="docutils literal notranslate"><span class="pre">index</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>    <span class="n">docs</span> <span class="o">=</span> <span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class="section" id="indexing">
+<h4>Indexing<a class="headerlink" href="#indexing" title="Permalink to this headline">¶</a></h4>
+<p>As explained above, indexing means reading a document, and adding it to the search index. The example code below defines four documents, and indexes them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import required python modules</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">Flow</span>
 
-    <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">docs</span><span class="p">)</span>
+<span class="c1"># define the four documents</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[</span>
+         <span class="n">Document</span><span class="p">(</span>
+           <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;🐲&#39;</span><span class="p">,</span>
+           <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+           <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;guardian&#39;</span><span class="p">:</span> <span class="s1">&#39;Azure Dragon&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="s1">&#39;East&#39;</span><span class="p">}</span>
+         <span class="p">),</span>
+         <span class="n">Document</span><span class="p">(</span>
+           <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;🐦&#39;</span><span class="p">,</span>
+           <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+           <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;guardian&#39;</span><span class="p">:</span> <span class="s1">&#39;Vermilion Bird&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="s1">&#39;South&#39;</span><span class="p">}</span>
+         <span class="p">),</span>
+         <span class="n">Document</span><span class="p">(</span>
+           <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;🐢&#39;</span><span class="p">,</span>
+           <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+           <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;guardian&#39;</span><span class="p">:</span> <span class="s1">&#39;Black Tortoise&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="s1">&#39;North&#39;</span><span class="p">}</span>
+         <span class="p">),</span>
+         <span class="n">Document</span><span class="p">(</span>
+           <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;🐯&#39;</span><span class="p">,</span>
+           <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span>
+           <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;guardian&#39;</span><span class="p">:</span> <span class="s1">&#39;White Tiger&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="s1">&#39;West&#39;</span><span class="p">}</span>
+         <span class="p">)</span>
+       <span class="p">]</span>
 
-    <span class="n">new_docs</span> <span class="o">=</span> <span class="n">random_docs</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-            
-    <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">new_docs</span><span class="p">)</span>
+<span class="c1"># build a Flow with a simple indexer</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">&#39;_index&#39;</span><span class="p">)</span>
 
-    <span class="n">doc_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">]</span>
-        
-    <span class="k">with</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">delete_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">doc_ids</span><span class="p">]</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">delete_ids</span><span class="p">)</span>
+<span class="c1"># save four docs (both embedding and structured info) into storage</span>
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">on_done</span><span class="o">=</span><span class="nb">print</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Note: deletion and update will happen by <code class="docutils literal notranslate"><span class="pre">id</span></code> of the document.</p>
+</div>
+<div class="section" id="searching">
+<h4>Searching<a class="headerlink" href="#searching" title="Permalink to this headline">¶</a></h4>
+<p>The next step is retrieving the indexed Documents. This can be done with just two lines of code, and will output the top-3 neighbours of 🐲, which are 🐲🐦🐢  with a score of 0, 1, 1 respectively.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">on_done</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">matches</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The output is as follows in JSON style:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;🐲&quot;</span><span class="p">,</span> <span class="nt">&quot;tags&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;guardian&quot;</span><span class="p">:</span> <span class="s2">&quot;Azure Dragon&quot;</span><span class="p">,</span> <span class="nt">&quot;position&quot;</span><span class="p">:</span> <span class="s2">&quot;East&quot;</span><span class="p">},</span> <span class="nt">&quot;embedding&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;dense&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;buffer&quot;</span><span class="p">:</span> <span class="s2">&quot;AAAAAAAAAAAAAAAAAAAAAA==&quot;</span><span class="p">,</span> <span class="nt">&quot;shape&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nt">&quot;dtype&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;i8&quot;</span><span class="p">}},</span> <span class="nt">&quot;score&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;opName&quot;</span><span class="p">:</span> <span class="s2">&quot;NumpyIndexer&quot;</span><span class="p">,</span> <span class="nt">&quot;refId&quot;</span><span class="p">:</span> <span class="s2">&quot;🐲&quot;</span><span class="p">},</span> <span class="nt">&quot;adjacency&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;🐦&quot;</span><span class="p">,</span> <span class="nt">&quot;tags&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;position&quot;</span><span class="p">:</span> <span class="s2">&quot;South&quot;</span><span class="p">,</span> <span class="nt">&quot;guardian&quot;</span><span class="p">:</span> <span class="s2">&quot;Vermilion Bird&quot;</span><span class="p">},</span> <span class="nt">&quot;embedding&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;dense&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;buffer&quot;</span><span class="p">:</span> <span class="s2">&quot;AQAAAAAAAAAAAAAAAAAAAA==&quot;</span><span class="p">,</span> <span class="nt">&quot;shape&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nt">&quot;dtype&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;i8&quot;</span><span class="p">}},</span> <span class="nt">&quot;score&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nt">&quot;opName&quot;</span><span class="p">:</span> <span class="s2">&quot;NumpyIndexer&quot;</span><span class="p">,</span> <span class="nt">&quot;refId&quot;</span><span class="p">:</span> <span class="s2">&quot;🐲&quot;</span><span class="p">},</span> <span class="nt">&quot;adjacency&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;🐢&quot;</span><span class="p">,</span> <span class="nt">&quot;tags&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;guardian&quot;</span><span class="p">:</span> <span class="s2">&quot;Black Tortoise&quot;</span><span class="p">,</span> <span class="nt">&quot;position&quot;</span><span class="p">:</span> <span class="s2">&quot;North&quot;</span><span class="p">},</span> <span class="nt">&quot;embedding&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;dense&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;buffer&quot;</span><span class="p">:</span> <span class="s2">&quot;AAAAAAAAAAABAAAAAAAAAA==&quot;</span><span class="p">,</span> <span class="nt">&quot;shape&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nt">&quot;dtype&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;i8&quot;</span><span class="p">}},</span> <span class="nt">&quot;score&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nt">&quot;opName&quot;</span><span class="p">:</span> <span class="s2">&quot;NumpyIndexer&quot;</span><span class="p">,</span> <span class="nt">&quot;refId&quot;</span><span class="p">:</span> <span class="s2">&quot;🐲&quot;</span><span class="p">},</span> <span class="nt">&quot;adjacency&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="deleting-and-updating">
+<h4>Deleting and updating<a class="headerlink" href="#deleting-and-updating" title="Permalink to this headline">¶</a></h4>
+<p>The previous two examples already demonstrated the capabilities of the <code class="docutils literal notranslate"><span class="pre">Flow</span></code> class. It supports <code class="docutils literal notranslate"><span class="pre">delete</span></code> and <code class="docutils literal notranslate"><span class="pre">update</span></code> methods too, with a signature similar to <code class="docutils literal notranslate"><span class="pre">index</span></code>.</p>
+<p>The source code below extends the previous example, and demonstrates how to update an existing document. The position of the Azure Dragon changes from East to North East.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define document to be updated</span>
+<span class="n">update_docs</span> <span class="o">=</span> <span class="p">[</span>
+         <span class="n">Document</span><span class="p">(</span>
+           <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;🐲&#39;</span><span class="p">,</span>
+           <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+           <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;guardian&#39;</span><span class="p">:</span> <span class="s1">&#39;Azure Dragon&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="s1">&#39;North East&#39;</span><span class="p">}</span>
+         <span class="p">)</span>
+       <span class="p">]</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">input_fn</span><span class="o">=</span><span class="n">update_docs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Deleting a document from a search index can be done similarly. From the search index, The document referring to the Vermilion Bird will be deleted.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define document to be deleted</span>
+<span class="n">delete_docs</span> <span class="o">=</span> <span class="p">[</span>
+         <span class="n">Document</span><span class="p">(</span>
+           <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;🐦&#39;</span><span class="p">,</span>
+           <span class="n">embedding</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+           <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;guardian&#39;</span><span class="p">:</span> <span class="s1">&#39;Vermilion Bird&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span> <span class="s1">&#39;South&#39;</span><span class="p">}</span>
+         <span class="p">),</span>
+       <span class="p">]</span>
+
+<span class="c1"># extract the document ids from the delete_docs list, and remove them</span>
+<span class="c1"># from the search index</span>
+<span class="n">doc_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">delete_docs</span><span class="p">]</span>
+
+<span class="k">with</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">delete_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">doc_ids</span><span class="p">]</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">delete_ids</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The code above is written in such a way that the corresponding list of documents to be either updated or deleted can be easily extended without the need to change the existing Python code.</p>
+<div class="section" id="expanding-size">
+<h5>Expanding size<a class="headerlink" href="#expanding-size" title="Permalink to this headline">¶</a></h5>
+<p>The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size of the indexer on disk (and in memory) will grow over time the more update or delete operations you perform. We recommend setting the <code class="docutils literal notranslate"><span class="pre">delete_on_dump</span></code> parameter of the <code class="docutils literal notranslate"><span class="pre">NumpyIndexer</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>. When the Flow is shut down, the data that has been marked as deleted will be permanently deleted before being saved to disk. By default the parameter is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, as setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code> will make the shut down process slower.</p>
+</div>
+</div>
+<div class="section" id="runable-example">
+<h4>Runable example<a class="headerlink" href="#runable-example" title="Permalink to this headline">¶</a></h4>
+<p>You can run all the above code snippets on a hosted Jupyter Notebook by clicking <a class="reference external" href="https://mybinder.org/v2/gh/jina-ai/jupyter-notebooks/089947661673084eb26ef22b7870dc31199acdac">here</a></p>
+</div>
 </div>
 </div>
 <div class="section" id="limitations">
 <h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>Unfortunately there are some limitations to what Jina can do for the moment. These were trade-offs we needed to implement to keep Jina performant, robust, and easy to use. Some of these will be addressed in future versions, while some are intrinsic to Jina’s architecture.</p>
-<ol class="simple">
-<li><p><strong>Partial update</strong></p></li>
+<ol>
+<li><p><strong>Partial update</strong>
+For the moment we do not support partial updates. So if you want to update a document, you need to send the entire document. This is due to Jina’s architecture: the document is sent as one piece through the Flow.</p></li>
+<li><p><strong>Update flows</strong>
+In the context of Flows with segmenters and chunks, a Document may end up being split into chunks. Currently, the Update request will not work for these. You will need to manually remove the chunks by their <code class="docutils literal notranslate"><span class="pre">ids</span></code>. Then you can remove the parent document as well, by its <code class="docutils literal notranslate"><span class="pre">id</span></code>. Finally, you can index the new document, with its new contents (and thus new, different child chunks).</p></li>
+<li><p><strong>Sharding</strong>
+When sharding data in indexers, the data will be split across these. This is achieved due to the <code class="docutils literal notranslate"><span class="pre">polling:</span> <span class="pre">any</span></code> configuration. During a query, you will need to set <code class="docutils literal notranslate"><span class="pre">polling:</span> <span class="pre">all</span></code>. However, this will lead to some shards getting a query request with a key that does not exist. In this case, warnings will be emitted by the indexer. You can ignore these within this context. The warnings are there for the situations when missing keys are <em>not</em> expected.</p></li>
+<li><p><strong>Indexing while querying</strong>
+The index, update, and delete operations cannot be executed within the same context as the query operation. This is due to the way flushing to disk works within the Flow and Executor context lifecycle. This is applicable across all VectorIndexers. Thus, you need to exit the Flow context when you want to switch from one set of operations to the other.</p>
+<p>You can see this in the code listing at the beginning of this chapter.</p>
+</li>
+<li><p><strong>Compound Indexer</strong></p></li>
 </ol>
-<p>For the moment we do not support partial updates. So if you want to update a document, you need to send the entire document. This is due to Jina’s architecture: the document is sent as one piece through the Flow.</p>
-<ol class="simple">
-<li><p><strong>Update flows</strong></p></li>
-</ol>
-<p>In the context of Flows with segmenters and chunks, a Document may end up being split into chunks. Currently, the Update request will not work for these. You will need to manually remove the chunks by their <code class="docutils literal notranslate"><span class="pre">ids</span></code>. Then you can remove the parent document as well, by its <code class="docutils literal notranslate"><span class="pre">id</span></code>. Finally, you can index the new document, with its new contents (and thus new, different child chunks).</p>
-<ol class="simple">
-<li><p><strong>Sharding</strong></p></li>
-</ol>
-<p>When sharding data in indexers, the data will be split across these. This is achieved due to the <code class="docutils literal notranslate"><span class="pre">polling:</span> <span class="pre">any</span></code> configuration. During a query, you will need to set <code class="docutils literal notranslate"><span class="pre">polling:</span> <span class="pre">all</span></code>. However, this will lead to some shards getting a query request with a key that doesn’t exist. In this case, warnings will be emitted by the indexer. You can ignore these within this context. The warnings are there for the situations when missing keys are <em>not</em> expected.</p>
-<ol class="simple">
-<li><p><strong>Indexing while querying</strong></p></li>
-</ol>
-<p>The index, update, and delete operations cannot be executed within the same context as the query operation. This is due to the way flushing to disk works within the Flow and Executor context lifecycle. This is applicable across all VectorIndexers. Thus, you need to exit the Flow context when you want to switch from one set of operations to the other.</p>
-<p>You can see this in the code listing in the beginning of this chapter.</p>
-<ol class="simple">
-<li><p><strong>Expanding size</strong></p></li>
-</ol>
-<p>The update and delete operations use a masking underneath. This is done to maintain high performance overall. However, this means that old data will not be deleted, but will simply be masked as being deleted. Thus the size on disk (and in memory) of the indexer will grow over time if you perform update or delete operations. We recommend setting the <code class="docutils literal notranslate"><span class="pre">delete_on_dump</span></code> parameter of the <code class="docutils literal notranslate"><span class="pre">NumpyIndexer</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>. When the Flow is shut down, the data that has been marked as deleted will be permanently deleted before being saved to disk. By default the parameter is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>, as setting it to <code class="docutils literal notranslate"><span class="pre">True</span></code> will make the shut down process slower.</p>
+<p>While using a <code class="docutils literal notranslate"><span class="pre">!CompoundIndexer</span></code>, it is not possible to return embeddings to the next Driver in the Flow. This is because  the <a class="reference external" href="https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml">!CompoundIndexer</a> has an <code class="docutils literal notranslate"><span class="pre">!ExcludeQL</span></code> for all the embeddings during <code class="docutils literal notranslate"><span class="pre">IndexRequest</span></code> and <code class="docutils literal notranslate"><span class="pre">UpdateRequest</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> !ExcludeQL
+      with:
+        fields:
+          - embedding
+</pre></div>
+</div>
+<p>This is done because otherwise the embeddings would be stored in the <code class="docutils literal notranslate"><span class="pre">BaseVectorIndexer</span></code> but also in the <code class="docutils literal notranslate"><span class="pre">BaseKVIndexer</span></code>.
+If you want to be able to access the embeddings anyway, you can can overwrite it in your own <code class="docutils literal notranslate"><span class="pre">index.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">query.yml</span></code> files removing the <code class="docutils literal notranslate"><span class="pre">!ExcludeQL</span></code> directive.</p>
 </div>
 </div>
 
