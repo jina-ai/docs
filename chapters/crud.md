@@ -169,7 +169,7 @@ Unfortunately there are some limitations to what Jina can do for the moment. The
 
 5. **Compound Indexer**
 
-While using a `!CompoundIndexer`, it is not possible to return embeddings to the next Driver in the Flow, by virtue of its design. By definition, the [!CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) has an `!ExcludeQL` for all the embeddings:
+While using a `!CompoundIndexer`, it is not possible to return embeddings to the next Driver in the Flow. This is because  the [!CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) has an `!ExcludeQL` for all the embeddings during `IndexRequest` and `UpdateRequest`
 
 ``` python
  !ExcludeQL
@@ -178,4 +178,5 @@ While using a `!CompoundIndexer`, it is not possible to return embeddings to the
           - embedding
 ```
 
-`!CompoundIndexer` affects both the `BaseVectorIndexer` and the `BaseKVIndexer`. This causes the embeddings to the next Driver in the Flow to be stored twice if we don't exclude them.
+This is done because otherwise the embeddings would be stored in the `BaseVectorIndexer` but also in the `BaseKVIndexer`.
+If you want to be able to access the embeddings anyway, you can can overwrite it in your own `index.yml` and `query.yml` files removing the `!ExcludeQL` directive.
