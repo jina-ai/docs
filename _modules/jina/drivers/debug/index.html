@@ -313,6 +313,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">jina.drivers</span> <span class="kn">import</span> <span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">BaseRecursiveDriver</span>
+<span class="kn">from</span> <span class="nn">jina.importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="c1"># noinspection PyUnreachableCode</span>
@@ -353,10 +354,17 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">channel_axis_to_move</span><span class="p">,</span> <span class="n">target_channel_axis</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">_load_image</span><span class="p">(</span><span class="n">blob</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+            <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span>
+                <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">pkg_name</span><span class="o">=</span><span class="s1">&#39;Pillow&#39;</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
+                <span class="n">help_text</span><span class="o">=</span><span class="s1">&#39;PIL is missing. Install it with `pip install Pillow`&#39;</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 
-            <span class="n">img</span> <span class="o">=</span> <span class="n">_move_channel_axis</span><span class="p">(</span><span class="n">blob</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">))</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">_move_channel_axis</span><span class="p">(</span><span class="n">blob</span><span class="p">,</span> <span class="n">channel_axis</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">done</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span><span class="p">:</span>
@@ -496,7 +504,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 25, 2021.
+        Last updated on Mar 26, 2021.
       </span>
 
         </p>
