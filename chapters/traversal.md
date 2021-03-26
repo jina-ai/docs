@@ -17,6 +17,8 @@ The two terms chunks and sequence are still a bit unclear. In short, chunks are 
 
 ## Chunks
 
+### Understanding chunks
+
 Each Jina Document (potentially) consists of a list of *chunks*. A single chunk is a small semantic unit of a Document, like a sentence or a 64x64 pixel image patch.
 
 In practice, chunks correspond to a certain level of granularity, for example a paragraph or a sentence. A chunk also allows you to search for a section of the document, for example an image followed by a paragraph of text. These are use cases that are more common than you might think.
@@ -34,7 +36,7 @@ with Document() as root:
     root.text = 'What is love? Oh baby do not hurt me.'
 
 # Initialised a document as root with 0 chunks.
-print(len(root.chunks))     # output: 0
+print(len(root.chunks))                # outputs 0
 
 # Initialise two documents and add them as chunks to root.
 with Document() as chunk1:
@@ -45,33 +47,33 @@ with Document() as chunk2:
     root.chunks.add(chunk2)
 
 # Now the document has 2 chunks
-print(len(root.chunks))     # output: 2
+print(len(root.chunks))                # outputs 2
 ```
 
-What happened by adding `chunk` to `root`?
+### Internals: Adding a chunk to a root node
+
+Now let us have a look at what happens when you added a chunk to a root node. The code example below shows the granularity level of a specific node using the attribute `granularity` -- as a root node (level 0), and as a chunk (level 1).
 
 ```python
-print(root.granularity)
->>> 0
-print(root.chunks[0].granularity)
->>> 1
-root.id == root.chunks[0].parent_id
->>> True
+print(root.granularity)                # outputs 0
+print(root.chunks[0].granularity)      # outputs 1
 ```
-
-This can be seen in the image below:
+This is illustrated in the image below:
 
 ![granularity](./images/granularity.png)
 
-The code sample and graph above demonstrates the basic idea of a `chunk` in a Document.
-In the beginning, we initialized a Document with `granularity=0` (by default).
-We then initialized two chunks and add them to the `root` document.
-Two things happened when adding the `chunk` to `root`:
+Furthermore, with the help of the attribute `parent_id` the relation between the root node and the chunk can be validated.
 
-1. The granularity of the chunk has been increased by 1 (default 0).
-2. The `chunk` has been referenced to its parent: `root`.
+```python
+print(root.id == root.chunks[0].parent_id)  # outputs True
+```
 
-This allows Jina (and you) to query chunks and reference back to its root document at any `granularity` level.
+The code sample and graph above demonstrates the basic idea of a `chunk` in a Document. At the beginning, by default a Document is initialised with `granularity = 0`. Next, two chunks have been initialised with `granularity = 0`, and have been added to the root node. Adding a chunk to a node, two things happen:
+
+1. The granularity of the chunk will be increased by 1.
+2. The chunk will be referenced to its parent which is the root node.
+
+This procedure allows Jina (and you) to query chunks and reference them back to its root document at any `granularity` level.
 
 ## Matches
 
