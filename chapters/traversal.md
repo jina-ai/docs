@@ -132,13 +132,11 @@ Such hierarchical structures can be very well represented with the recursive rep
 
 ![tree-view](./images/tree.png)
 
-## Document Traversal with traversal paths
+## Document traversal with traversal paths
 
-As you already learned from [Jina 101](https://101.jina.ai), you needs to apply transformation (i.e. a `callback`) on a different level of documents.
-Given the tree structure, how could we achieve that?
-The answer is `traversal`.
+As you have already learned from [Jina 101](https://101.jina.ai), you need to apply transformation (i.e. a `callback`) on a different level of documents. Given the tree structure, how could we achieve that? The answer is `traversal`.
 
-Jina has defined a method called `traversal` within the class of Document, which looks like this:
+Jina has defined a method called `traversal()` within the class of a Document. The method looks like this:
 
 ```python
 def traverse(self, traversal_path: str, callback_fn: Callable, *args, **kwargs) -> None
@@ -146,13 +144,11 @@ def traverse(self, traversal_path: str, callback_fn: Callable, *args, **kwargs) 
     ...
 ```
 
-This allows you to apply `callback_fn` based on `traversal_path`.
-The `traversal_path` is defined as below:
+This allows you to apply a callback function named `callback_fn()` based on `traversal_path`. The `traversal_path` is defined as shown below:
 
 ![nodes](./images/nodes.png)
 
-With these pre-defined node names, you're able to apply any callbacks (defined as `_apply_all` in the `driver`) to a specific node.
-In the below YAML configuration, the `VectorSearchDriver` was applied to node `c`, `KVSearchDriver` was applied to node `cm` (matches of chunks).
+With these pre-defined node names, you are able to apply any callbacks (defined as `_apply_all` in the `driver`) to a specific node. In the YAML configuration below, the `VectorSearchDriver` was applied to node `c`, `KVSearchDriver` was applied to node `cm` (matches of chunks).
 
 ```yaml
 !CompoundIndexer
