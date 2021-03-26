@@ -88,8 +88,9 @@ from jina import Document
 
 with Document() as root:
     root.text = 'What is love? Oh baby do not hurt me.'
-print(root.adjacency)
->>> 0
+
+print(root.adjacency)                  # outputs 0
+
 # Initialise two documents and add as chunks to root.
 with Document() as chunk1:
     chunk1.text = 'What is love?'
@@ -97,28 +98,23 @@ with Document() as chunk1:
 with Document() as chunk2:
     chunk1.text = 'Oh baby do not hurt me.'
     root.chunks.add(chunk2)
+
 # Add a match document.
 with Document() as match:
     # a match document semantically related to our root
     match.text = 'What is love? Oh please do not hurt me.'
     root.matches.add(match)
-print(len(root.matches))
->>> 1
-print(root.matches[0].granularity)
->>> 0
-print(root.matches[0].adjacency)
->>> 1
 
+print(len(root.matches))               # outputs 1
+print(root.matches[0].granularity)     # outputs 0
+print(root.matches[0].adjacency)       # outputs 1
 ```
 
 ![adjacency](./images/adjacency.png)
 
-In the code snippet and diagram above, we initialized a Document as `root` with the text: *What is love? Oh, baby do not hurt me.*.
-And a Document with text *What is love? Oh please do not hurt me* was added as a match to the `root`.
-The matched document `match` is a document without any parents, so it stays at the same level as `root` with a granularity value of 0.
-Meanwhile, since `match` is the retrieved result from `root`, so the `adjacency` increased to 1.
+In the code snippet and diagram above, we initialized a Document as `root` with the text: *What is love? Oh, baby do not hurt me.*. Next, a Document with the text *What is love? Oh please do not hurt me* was added as a match to the `root` node. The matched document `match` is a document without any parents, so it stays at the same level as the `root` node with a granularity value of 0. Meanwhile, since `match` is the retrieved result from the `root` node, so the `adjacency` increased to 1.
 
-By default, the `root` node has an `adjacency` of 0, and the value increases by 1 when it hits a `match`.
+By default, the `root` node has an `adjacency` of 0. The value increases by 1 when it hits a `match`.
 
 ## Let's go deeper: Recursive Document Representation
 
