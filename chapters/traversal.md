@@ -118,25 +118,17 @@ By default, the `root` node has an `adjacency` of 0. The value increases by 1 wh
 
 ## Let's go deeper: Recursive Document Representation
 
-Till now, we've introduced chunks and `matches` **with a depth of 1**.
-While in a real-world scenario, things could be much more complicated than this.
-For instance, a `chunk` could be further divided into small chunks, and a chunk at any level might have it's own `matches` at that level.
+So far we have only discussed `chunks` and `matches` **with a depth of 1**. While in a real-world scenario, things could be much more complicated than this. For instance, a `chunk` could be further divided into smaller chunks, and a chunk at any level might have its own `matches` at that level.
 
 ![go-deeper](https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/blog-post-v050-protobuf-documents.jpg)
 
-Jina has defined a recursive structure with **arbitrary width and depth** instead of a trivial bi-level structure.
-Roughly speaking, chunks can have the next level chunks and the same level matches; and so do matches.
-This could go on and on. The following figure illustrates this structure [Ref: New Features in Jina v0.5 You Should Know About](https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/).
+Jina has defined a recursive structure with **arbitrary width and depth** instead of a trivial bi-level structure. Roughly speaking, chunks can have the next level chunks and the same level matches; and so do matches. This could go on and on. The following figure illustrates this structure [Ref: New Features in Jina v0.5 You Should Know About](https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/).
 
 ![recursive](./images/recursive.png)
 
-This recursive structure provides Jina the flexibility to cover any complex use case that may require search at different semantic units.
-Besides, the recursive structure enables Jina rankers to accumulate scores from lower granularities to upper granularities, such as `Chunk2DocRankers`.
-For example, in NLP a long document is composed of semantic chapters; each chapter consists of multiple paragraphs, which can be further segmented into sentences.
-In CV, a video is composed of one or more scenes, including one or more shots (i.e. a sequence of frames taken by a single camera over a continuous period of time).
-Each shot includes one or more frames. Such hierarchical structures can be very well represented with the recursive representation.
+This recursive structure provides Jina the flexibility to cover any complex use case that may require search at different semantic units. Besides that, the recursive structure enables Jina rankers to accumulate scores from lower granularities to upper granularities, such as `Chunk2DocRankers`. For example, in NLP a long document is composed of semantic chapters; each chapter consists of multiple paragraphs, which can be further segmented into sentences. In CV, a video is composed of one or more scenes, including one or more shots (i.e. a sequence of frames taken by a single camera over a continuous period of time). Each shot includes one or more frames. 
 
-If we look from a tree view (with a depth of 3):
+Such hierarchical structures can be very well represented with the recursive representation. The image below shows the tree view (with a depth of 3):
 
 ![tree-view](./images/tree.png)
 
