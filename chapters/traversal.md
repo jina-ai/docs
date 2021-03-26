@@ -1,21 +1,19 @@
 # Understand Jina Recursive Document Representation
 
-In Jina, each Document is represented as a recursive representation (tree).
+## General overview
 
-A rooted recursive representation has a root node and every node has X children.
-In Jina, the root node is the document itself, while the *left* & *right* children are referred to as *chunks* and *matches* respectively.
+If you add a text document or an image to the Jina database, Jina indexes it as a new document. Internally, each Document is represented as a rooted recursive representation (tree).
+
+The rooted recursive representation consists of a *root node* and several *child nodes*. In Jina, the root node is the document itself, while the *left* and *right* children are referred to as *chunks* and *matches* respectively. The image below illustrates a basic document structure that consists of a document (root node) as well as two child nodes (chunks and matches).
 
 ![rooted-binary-tree](./images/overview.png)
 
-The above image illustrates a basic document structure: A document (root node) and the two possible child nodes: *chunks* and *matches*.
-chunks are a sequence of documents which is attached to the root document with a higher `granularity` degree. `matches` is a sequence of documents which are semantically related to the root document.
-We'll dive into these concepts in this chapter:
+The two terms chunks and sequence are still a bit unclear. In short, chunks are a sequence of documents which is attached to the root document with a higher `granularity` degree. `matches` is a sequence of documents which are semantically related to the root document. We will dive into these concepts in more detail below.
 
 - [Chunks](#chunks)
 - [Matches](#matches)
 - [Let's go deeper: Recursive Document Representation](#lets-go-deeper-recursive-document-representation)
 - [Document Traversal with traversal paths](#document-traversal-with-traversal-paths)
-
 
 ## Chunks
 
