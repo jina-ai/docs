@@ -17,32 +17,35 @@ The two terms chunks and sequence are still a bit unclear. In short, chunks are 
 
 ## Chunks
 
-Each Jina Document (potentially) consists of a list of chunks. A `chunk` is a small semantic unit of a Document, like a sentence or a 64x64 pixel image patch.
+Each Jina Document (potentially) consists of a list of *chunks*. A single chunk is a small semantic unit of a Document, like a sentence or a 64x64 pixel image patch.
 
-Think about these use cases: you want to search a document at a specific `granularity` level, e.g. a sentence or a paragraph.
-Or your query consists of multiple modalities, such as a piece of text together with an image.
-`chunk` makes it feasible!
+In practice, chunks correspond to a certain level of granularity, for example a paragraph or a sentence. A chunk also allows you to search for a section of the document, for example an image followed by a paragraph of text. These are use cases that are more common than you might think.
 
-In Jina [primitive data types](https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/), `chunk` is defined as a `property` of a Document:
+[//]: # (The original link below does not make sense any more)
+[//]: # (https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/)
+
+Following the definition of [primitive data types in Jina](primitive_data_type.rst), a chunk is a property of a Document:
+
 
 ```python
 from jina import Document
 
 with Document() as root:
     root.text = 'What is love? Oh baby do not hurt me.'
+
 # Initialised a document as root with 0 chunks.
-print(len(root.chunks))
->>> 0
-# Initialise two documents and add as chunks to root.
+print(len(root.chunks))     # output: 0
+
+# Initialise two documents and add them as chunks to root.
 with Document() as chunk1:
     chunk1.text = 'What is love?'
     root.chunks.add(chunk1)
 with Document() as chunk2:
     chunk1.text = 'Oh baby do not hurt me.'
     root.chunks.add(chunk2)
+
 # Now the document has 2 chunks
-print(len(root.chunks))
->>> 2
+print(len(root.chunks))     # output: 2
 ```
 
 What happened by adding `chunk` to `root`?
