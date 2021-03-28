@@ -7,7 +7,25 @@ This version of Jina includes 72 Drivers.
    - `BaseDriver`
       - `BaseRecursiveDriver`
          - `BaseExecutableDriver`
-            - `DeleteDriver`
+            - `FlatRecursiveMixin`
+               - `BasePredictDriver`
+                  - `BaseLabelPredictDriver`
+                     - `BinaryPredictDriver`
+                     - `OneHotPredictDriver`
+                        - `MultiLabelPredictDriver`
+                  - `Prediction2DocBlobDriver`
+               - `CraftDriver`
+               - `BaseRankDriver`
+                  - `Matches2DocRankDriver`
+                  - `BaseAggregateMatchesRankerDriver`
+                     - `AggregateMatches2DocRankDriver`
+                     - `Chunk2DocRankDriver`
+               - `BaseIndexDriver`
+                  - `KVIndexDriver`
+                  - `VectorIndexDriver`
+                  - `BaseCacheDriver`
+                     - `TaggingCacheDriver`
+               - `SegmentDriver`
             - `BaseEvaluateDriver`
                - `FieldEvaluateDriver`
                   - `NDArrayEvaluateDriver`
@@ -25,27 +43,17 @@ This version of Jina includes 72 Drivers.
                - `FlatRecursiveMixin`
                   - `EncodeDriver`
                   - `MultiModalDriver`
-            - `FlatRecursiveMixin`
-               - `BaseIndexDriver`
-                  - `BaseCacheDriver`
-                     - `TaggingCacheDriver`
-                  - `KVIndexDriver`
-                  - `VectorIndexDriver`
-               - `BaseRankDriver`
-                  - `Matches2DocRankDriver`
-                  - `BaseAggregateMatchesRankerDriver`
-                     - `AggregateMatches2DocRankDriver`
-                     - `Chunk2DocRankDriver`
-               - `BasePredictDriver`
-                  - `BaseLabelPredictDriver`
-                     - `BinaryPredictDriver`
-                     - `OneHotPredictDriver`
-                        - `MultiLabelPredictDriver`
-                  - `Prediction2DocBlobDriver`
-               - `SegmentDriver`
-               - `CraftDriver`
+            - `DeleteDriver`
+         - `ContextAwareRecursiveMixin`
+            - `QuerySetReader`
+               - `SliceQL`
+               - `FilterQL`
+               - `ReverseQL`
+               - `SortQL`
+            - `ReduceAllDriver`
          - `FlatRecursiveMixin`
             - `CollectEvaluationDriver`
+            - `PngToDiskDriver`
             - `ConvertDriver`
                - `Blob2PngURI`
                - `Buffer2URI`
@@ -61,15 +69,7 @@ This version of Jina includes 72 Drivers.
                   - `ExcludeReqQL`
                      - `SelectReqQL`
                   - `SelectQL`
-            - `PngToDiskDriver`
          - `ConcatEmbedDriver`
-         - `ContextAwareRecursiveMixin`
-            - `ReduceAllDriver`
-            - `QuerySetReader`
-               - `ReverseQL`
-               - `SortQL`
-               - `FilterQL`
-               - `SliceQL`
       - `BaseControlDriver`
          - `ControlReqDriver`
             - `RouteDriver`
@@ -83,44 +83,44 @@ This version of Jina includes 72 Drivers.
 | --- | --- |
 | `AggregateMatches2DocRankDriver` | `jina.drivers.rank.aggregate` |
 | `BaseAggregateMatchesRankerDriver` | `jina.drivers.rank.aggregate` |
-| `BaseCacheDriver` | `jina.drivers.index` |
+| `BaseCacheDriver` | `jina.drivers.cache` |
 | `BaseControlDriver` | `jina.drivers.control` |
 | `BaseDriver` |   |
-| `BaseEncodeDriver` | `jina.drivers.craft` |
-| `BaseEvaluateDriver` | `jina.drivers.craft` |
-| `BaseExecutableDriver` | `jina.drivers.debug` |
+| `BaseEncodeDriver` | `jina.drivers.search` |
+| `BaseEvaluateDriver` | `jina.drivers.search` |
+| `BaseExecutableDriver` | `jina.drivers.querylang.sort` |
 | `BaseIndexDriver` |   |
 | `BaseLabelPredictDriver` | `jina.drivers.predict` |
 | `BasePredictDriver` |   |
 | `BaseRankDriver` |   |
 | `BaseRecursiveDriver` | `jina.drivers.control` |
-| `BaseSearchDriver` | `jina.drivers.craft` |
+| `BaseSearchDriver` | `jina.drivers.search` |
 | `BinaryPredictDriver` | `jina.drivers.predict` |
 | `Blob2PngURI` | `jina.drivers.convert` |
 | `Buffer2URI` | `jina.drivers.convert` |
 | `BufferImage2Blob` | `jina.drivers.convert` |
 | `Chunk2DocRankDriver` | `jina.drivers.rank.aggregate` |
 | `CollectEvaluationDriver` |   |
-| `ConcatEmbedDriver` | `jina.drivers.debug` |
-| `ContextAwareRecursiveMixin` | `jina.drivers.debug` |
+| `ConcatEmbedDriver` | `jina.drivers.querylang.sort` |
+| `ContextAwareRecursiveMixin` | `jina.drivers.querylang.sort` |
 | `ContextAwareRecursiveMixin` | `jina.drivers.search` |
 | `ControlReqDriver` | `jina.drivers.control` |
 | `ConvertDriver` |   |
 | `CraftDriver` |   |
 | `DataURI2Blob` | `jina.drivers.convert` |
-| `DeleteDriver` | `jina.drivers.craft` |
+| `DeleteDriver` | `jina.drivers.search` |
 | `EncodeDriver` |   |
 | `ExcludeQL` |   |
 | `ExcludeReqQL` | `jina.drivers.querylang.select` |
 | `FieldEvaluateDriver` | `jina.drivers.evaluate` |
 | `FilterQL` |   |
 | `FlatRecursiveMixin` |   |
-| `FlatRecursiveMixin` | `jina.drivers.craft` |
-| `FlatRecursiveMixin` | `jina.drivers.debug` |
 | `FlatRecursiveMixin` | `jina.drivers.multimodal` |
+| `FlatRecursiveMixin` | `jina.drivers.querylang.sort` |
+| `FlatRecursiveMixin` | `jina.drivers.search` |
 | `ForwardDriver` | `jina.drivers.control` |
 | `JAMLCompatible` |   |
-| `KVIndexDriver` | `jina.drivers.index` |
+| `KVIndexDriver` | `jina.drivers.cache` |
 | `KVSearchDriver` |   |
 | `LoadGroundTruthDriver` | `jina.drivers.search` |
 | `LogInfoDriver` | `jina.drivers.control` |
@@ -150,6 +150,6 @@ This version of Jina includes 72 Drivers.
 | `URI2DataURI` | `jina.drivers.convert` |
 | `URI2Text` | `jina.drivers.convert` |
 | `VectorFillDriver` |   |
-| `VectorIndexDriver` | `jina.drivers.index` |
+| `VectorIndexDriver` | `jina.drivers.cache` |
 | `VectorSearchDriver` |   |
 | `WaitDriver` | `jina.drivers.control` |

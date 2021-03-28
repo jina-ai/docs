@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document &mdash; Jina 1.0.16-master documentation</title>
+  <title>jina.types.document &mdash; Jina 1.0.17-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.0.16-master</button>
+            <button class="dropbtn version">1.0.17-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -232,7 +232,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 71 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 72 Drivers in Jina</a></li>
 </ul>
 
             
@@ -335,6 +335,7 @@
 <span class="kn">from</span> <span class="nn">...logging</span> <span class="kn">import</span> <span class="n">default_logger</span>
 <span class="kn">from</span> <span class="nn">...proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
 
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentContentType&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSourceType&#39;</span><span class="p">]</span>
 <span class="n">DIGEST_SIZE</span> <span class="o">=</span> <span class="mi">8</span>
 
@@ -349,6 +350,37 @@
 <span class="p">)</span>
 
 <span class="n">_all_mime_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">mimetypes</span><span class="o">.</span><span class="n">types_map</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+<span class="n">scipy_installed</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">tensorflow_installed</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">pytorch_installed</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span>
+    <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">pkg_name</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span><span class="p">,</span>
+    <span class="n">help_text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;can not import scipy: pip install scipy &#39;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">scipy</span>
+
+    <span class="n">scipy_installed</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span>
+    <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">pkg_name</span><span class="o">=</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span>
+    <span class="n">help_text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;can not import tensorflow: pip install tensorflow &#39;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span>
+
+    <span class="n">tensorflow_installed</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span>
+    <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">pkg_name</span><span class="o">=</span><span class="s1">&#39;torch&#39;</span><span class="p">,</span>
+    <span class="n">help_text</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;can not import torch: pip install torch &#39;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+
+    <span class="n">pytorch_installed</span> <span class="o">=</span> <span class="kc">True</span>
 
 
 <div class="viewcode-block" id="Document"><a class="viewcode-back" href="../../../../api/jina.types.document/#jina.Document">[docs]</a><span class="k">class</span> <span class="nc">Document</span><span class="p">(</span><span class="n">ProtoTypeMixin</span><span class="p">,</span> <span class="n">Traversable</span><span class="p">):</span>
@@ -740,7 +772,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="o">.</span><span class="n">parent_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">blob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">blob</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[np.ndarray, scipy.coo_matrix]&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return ``blob``, one of the content form of a Document.</span>
 
 <span class="sd">        .. note::</span>
@@ -759,7 +791,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_ndarray</span><span class="p">(</span><span class="s1">&#39;blob&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">embedding</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Union[np.ndarray, scipy.coo_matrix]&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Return ``embedding`` of the content of a Document.</span>
 
 <span class="sd">        :return: the embedding from the proto</span>
@@ -782,6 +814,34 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">NdArray</span><span class="p">):</span>
             <span class="n">NdArray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">is_sparse</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">is_sparse</span>
             <span class="n">NdArray</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">elif</span> <span class="n">scipy_installed</span> <span class="ow">and</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">..ndarray.sparse.scipy</span> <span class="kn">import</span> <span class="n">SparseNdArray</span>
+
+            <span class="n">protbuff_updater</span> <span class="o">=</span> <span class="n">NdArray</span><span class="p">(</span>
+                <span class="n">is_sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">sparse_cls</span><span class="o">=</span><span class="n">SparseNdArray</span><span class="p">,</span>
+                <span class="n">proto</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">protbuff_updater</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">elif</span> <span class="n">tensorflow_installed</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">tensorflow</span><span class="o">.</span><span class="n">SparseTensor</span><span class="p">):</span>
+            <span class="kn">from</span> <span class="nn">..ndarray.sparse.tensorflow</span> <span class="kn">import</span> <span class="n">SparseNdArray</span>
+
+            <span class="n">protbuff_updater</span> <span class="o">=</span> <span class="n">NdArray</span><span class="p">(</span>
+                <span class="n">is_sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">sparse_cls</span><span class="o">=</span><span class="n">SparseNdArray</span><span class="p">,</span>
+                <span class="n">proto</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">protbuff_updater</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">elif</span> <span class="n">pytorch_installed</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="ow">and</span> <span class="n">v</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">..ndarray.sparse.pytorch</span> <span class="kn">import</span> <span class="n">SparseNdArray</span>
+
+            <span class="n">protbuff_updater</span> <span class="o">=</span> <span class="n">NdArray</span><span class="p">(</span>
+                <span class="n">is_sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">sparse_cls</span><span class="o">=</span><span class="n">SparseNdArray</span><span class="p">,</span>
+                <span class="n">proto</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pb_body</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">protbuff_updater</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1"> is in unsupported type </span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
@@ -1526,7 +1586,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Mar 23, 2021.
+        Last updated on Mar 28, 2021.
       </span>
 
         </p>
