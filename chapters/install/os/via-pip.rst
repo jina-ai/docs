@@ -15,7 +15,7 @@ On Linux/Mac, simply run:
 
    pip install jina
 
-.. note:: Currently we do not support native Python on Windows. If you are a Windows user, one workaround is to `run Jina on Windows Subsystem for Linux <../on-wsl>`_ or `run Jina in a Docker container <../via-docker>`_.
+.. note:: Currently we do not support native Python on Windows. If you are a Windows user, one workaround is to `run Jina on Windows Subsystem for Linux <>`_ or :doc:`../os/via-docker`.
 
 Check the installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -33,7 +33,7 @@ The option `-vf` (long version: `--version-full`) shows Jina and all the depende
 Other OSes
 ----------
 
-Please refer to `run Jina in a Docker container <../via-docker>`_. If you manage to run Jina on other OSes after some tweaks, please submit your changes `here <https://github.com/jina-ai/jina/issues/new>`_.
+Please refer to :doc:`../via-docker>`. If you manage to run Jina on other OSes after some tweaks, please submit your changes `here <https://github.com/jina-ai/jina/issues/new>`_.
 
 Upgrade Jina
 ============
