@@ -108,6 +108,7 @@ extensions = [
     'sphinx_copybutton',
     'notfound.extension',
     'sphinx_sitemap',
+    'sphinx.ext.intersphinx',
 ]
 
 # -- Custom 404 page
@@ -142,8 +143,7 @@ nitpick_ignore = [('py:class', 'type')]
 linkcheck_ignore = [
     # Avoid link check on local uri
     "http://0.0.0.0:*",
-    # Avoid errors due to GitHub rate limit
-    # https://github.com/sphinx-doc/sphinx/issues/7388
+    'pods/encode.yml',
     "https://github.com/jina-ai/jina/commit/*",
 ]
 linkcheck_timeout = 20

@@ -149,5 +149,5 @@ What's next
 
 Thanks for your time and effort while reading this guide!
 
-Please checkout `Jina Core <https://github.com/jina-ai/jina/drivers>`_ to explore the source code of built-in `Drivers`.
+Please checkout `Jina Core <https://github.com/jina-ai/jina/tree/master/jina/drivers>`_ to explore the source code of built-in `Drivers`.
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .

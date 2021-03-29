@@ -265,7 +265,7 @@ Good docs make developers happy, and we love happy developers! We've got a few d
 
 #### General Documentation
 
-This covers files like [Jina 101](https://101.jina.ai), [Input and Output Functions, etc](./io.md).
+This covers files like [Jina 101](https://101.jina.ai), [Input and Output Functions, etc](input_output.rst).
 
 These are typically written in Markdown, though some may be in RestructuredText.
 

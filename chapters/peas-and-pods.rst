@@ -6,9 +6,9 @@ Development Guide: Peas and Pods in Jina
    :keywords: Jina, pea, pod
 
 .. note:: This guide assumes you have a basic understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
-.. note:: This guide assumes you have a basic understanding of Parallelization inside Jina, if you haven't, please check out `Parallelization in Jina <../parallel>`_ first.
+.. note:: This guide assumes you have a basic understanding of Parallelization inside Jina, if you haven't, please check out :doc:`../parallel` first.
 
-You might have already learned from `Jina 101 <../101.rst>`_.
+You might have already learned from `Jina 101 <https://101.jina.ai>`_.
 Jina :term:`Pea` wraps an :term:`Executor` and lets it exchange data with other Peas.
 Jina :term:`Pod` is a context manager for one or multiple Peas that have the same properties.
 It coordinates Peas to improve efficiency and scaling.
@@ -46,7 +46,7 @@ Jina offers parallelization at different levels, such as
 
 .. note::
    The parallelization here refers to intra-parallelism.
-   Check out `this page <../parallel/#inter-parallelism>`_ to discover the difference between inter-parallelism and intra-parallelism in Jina.
+   Check out :doc:`../parallel/#inter-parallelism>` to discover the difference between inter-parallelism and intra-parallelism in Jina.
 
 1. Local Threads/Process with `BasePea`.
 2. Inside container with `BasePea` inside `ContainerRuntime`.
