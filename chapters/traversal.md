@@ -163,3 +163,5 @@ requests:
         with:
           traversal_path: ['cm']
 ```
+
+The two drivers will be applied sequentially, so the first one applies `VectorSearchDriver` for the indexer. This step helps to get matches for chunks (cm), and add them. The matches for the chunks will contain the scores and the id of the document. Then, `KVSearchDriver` will be applied at matches of chunks (cm) in order to get the embeddings for `cm` via the id of the analysed document.
