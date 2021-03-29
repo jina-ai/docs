@@ -2,7 +2,7 @@
 
 ## General overview
 
-If you add a text document or an image to the Jina database, Jina indexes it as a new document. Internally, each Document is represented as a rooted recursive representation (tree).
+When you index a Document in Jina, it can be represented as a rooted recursive representation (tree).
 
 The rooted recursive representation consists of a *root node* and several *child nodes*. In Jina, the root node is the document itself, while the *left* and *right* children are referred to as *chunks* and *matches* respectively. The image below illustrates a basic document structure that consists of a document (root node) as well as two child nodes (chunks and matches).
 
