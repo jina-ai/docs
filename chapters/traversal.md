@@ -4,13 +4,15 @@ This guide explains how Documents are represented within the Jina framework. It 
 
 ## General overview
 
-When you index a Document in Jina, it can be represented as a rooted recursive representation (tree).
+In Jina, the term Document refers to more than just a simple dataset. A Document is used for both indexing and querying. A search query is also a Document itself.
 
-The rooted recursive representation consists of a *root node* and several *child nodes*. In Jina, the root node is the Document itself, while the *left* and *right* children are referred to as *chunks* and *matches* respectively. The image below illustrates a basic Document structure that consists of a Document (root node) as well as two child nodes (chunks and matches).
+When you index a Document in Jina, it can be represented as a rooted recursive representation (tree). The representation consists of a *root node* and several *child nodes*. In Jina, the root node is the original Document itself, while the *left* and *right* children are referred to as *chunks* and *matches* respectively. The figure below illustrates a basic Document structure that consists of a Document (root node) as well as two child nodes (chunks and matches).
 
 ![rooted-binary-tree](./images/overview.png)
 
-The two terms chunks and sequence are still a bit unclear. In short, chunks are a sequence of Documents which is attached to the root Document with a higher `granularity` degree. `matches` is a sequence of Documents which are semantically related to the root Document. We will dive into these concepts in more detail below.
+The two terms chunks and sequence are still a bit unclear. In short, chunks are a sequence of Documents which can be attached to any Document with a higher `granularity` degree. In the figure above this is the root node. 
+
+Similarly, this applies to `matches`. `matches` is a sequence of Documents which are semantically related to the higer-level Document (the root node in the figure above). We will dive into these concepts in more detail below.
 
 - [Chunks](#chunks)
 - [Matches](#matches)
