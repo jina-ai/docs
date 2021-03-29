@@ -4,11 +4,11 @@
 
 When you index a Document in Jina, it can be represented as a rooted recursive representation (tree).
 
-The rooted recursive representation consists of a *root node* and several *child nodes*. In Jina, the root node is the document itself, while the *left* and *right* children are referred to as *chunks* and *matches* respectively. The image below illustrates a basic document structure that consists of a document (root node) as well as two child nodes (chunks and matches).
+The rooted recursive representation consists of a *root node* and several *child nodes*. In Jina, the root node is the Document itself, while the *left* and *right* children are referred to as *chunks* and *matches* respectively. The image below illustrates a basic Document structure that consists of a Document (root node) as well as two child nodes (chunks and matches).
 
 ![rooted-binary-tree](./images/overview.png)
 
-The two terms chunks and sequence are still a bit unclear. In short, chunks are a sequence of documents which is attached to the root document with a higher `granularity` degree. `matches` is a sequence of documents which are semantically related to the root document. We will dive into these concepts in more detail below.
+The two terms chunks and sequence are still a bit unclear. In short, chunks are a sequence of Documents which is attached to the root Document with a higher `granularity` degree. `matches` is a sequence of Documents which are semantically related to the root Document. We will dive into these concepts in more detail below.
 
 - [Chunks](#chunks)
 - [Matches](#matches)
@@ -21,7 +21,7 @@ The two terms chunks and sequence are still a bit unclear. In short, chunks are 
 
 Each Jina Document (potentially) consists of a list of *chunks*. A single chunk is a small semantic unit of a Document, like a sentence or a 64x64 pixel image patch.
 
-In practice, chunks correspond to a certain level of granularity, for example a paragraph or a sentence. A chunk also allows you to search for a section of the document, for example an image followed by a paragraph of text. These are use cases that are more common than you might think.
+In practice, chunks correspond to a certain level of granularity, for example a paragraph or a sentence. A chunk also allows you to search for a section of the Document, for example an image followed by a paragraph of text. These are use cases that are more common than you might think.
 
 [//]: # (The original link below does not make sense any more)
 [//]: # (https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/)
@@ -35,10 +35,10 @@ from jina import Document
 with Document() as root:
     root.text = 'What is love? Oh baby do not hurt me.'
 
-# Initialised a document as root with 0 chunks.
+# Initialised a Document as root with 0 chunks.
 print(len(root.chunks))                # outputs 0
 
-# Initialise two documents and add them as chunks to root.
+# Initialise two Documents and add them as chunks to root.
 with Document() as chunk1:
     chunk1.text = 'What is love?'
     root.chunks.add(chunk1)
@@ -46,7 +46,7 @@ with Document() as chunk2:
     chunk1.text = 'Oh baby do not hurt me.'
     root.chunks.add(chunk2)
 
-# Now the document has 2 chunks
+# Now the Document has 2 chunks
 print(len(root.chunks))                # outputs 2
 ```
 
@@ -73,13 +73,13 @@ The code sample and graph above demonstrates the basic idea of a `chunk` in a Do
 1. The granularity of the chunk will be increased by 1.
 2. The chunk will be referenced to its parent which is the root node.
 
-This procedure allows Jina (and you) to query chunks and reference them back to its root document at any `granularity` level.
+This procedure allows Jina (and you) to query chunks and reference them back to its root Document at any `granularity` level.
 
 ## Matches
 
-In a neural search system (and traditional retrieval system), *matches* are the expected documents returned from the search index given the user query. In Jina, matches could happen at any level of the representation tree -- the root level or any chunk level.
+In a neural search system (and traditional retrieval system), *matches* are the expected Documents returned from the search index given the user query. In Jina, matches could happen at any level of the representation tree -- the root level or any chunk level.
 
-To fully understand the concept of matches, we introduce a new term, named *adjacency* (short for *a* in the diagram below). The adjacency reflects the level of the document it is connected to.
+To fully understand the concept of matches, we introduce a new term, named *adjacency* (short for *a* in the diagram below). The adjacency reflects the level of the Document it is connected to.
 
 **NOTE: granularity and adjacency apply to both chunks and matches.**
 
@@ -91,7 +91,7 @@ with Document() as root:
 
 print(root.adjacency)                  # outputs 0
 
-# Initialise two documents and add as chunks to root.
+# Initialise two Documents and add as chunks to root.
 with Document() as chunk1:
     chunk1.text = 'What is love?'
     root.chunks.add(chunk1)
@@ -99,9 +99,9 @@ with Document() as chunk2:
     chunk1.text = 'Oh baby do not hurt me.'
     root.chunks.add(chunk2)
 
-# Add a match document.
+# Add a match Document.
 with Document() as match:
-    # a match document semantically related to our root
+    # a match Document semantically related to our root
     match.text = 'What is love? Oh please do not hurt me.'
     root.matches.add(match)
 
@@ -112,7 +112,7 @@ print(root.matches[0].adjacency)       # outputs 1
 
 ![adjacency](./images/adjacency.png)
 
-In the code snippet and diagram above, we initialized a Document as `root` with the text: *What is love? Oh, baby do not hurt me.*. Next, a Document with the text *What is love? Oh please do not hurt me* was added as a match to the `root` node. The matched document `match` is a document without any parents, so it stays at the same level as the `root` node with a granularity value of 0. Meanwhile, since `match` is the retrieved result from the `root` node, so the `adjacency` increased to 1.
+In the code snippet and diagram above, we initialized a Document as `root` with the text: *What is love? Oh, baby do not hurt me.*. Next, a Document with the text *What is love? Oh please do not hurt me* was added as a match to the `root` node. The matched Document `match` is a Document without any parents, so it stays at the same level as the `root` node with a granularity value of 0. Meanwhile, since `match` is the retrieved result from the `root` node, so the `adjacency` increased to 1.
 
 By default, the `root` node has an `adjacency` of 0. The value increases by 1 when it hits a `match`.
 
@@ -126,7 +126,7 @@ Jina has defined a recursive structure with **arbitrary width and depth** instea
 
 ![recursive](./images/recursive.png)
 
-This recursive structure provides Jina the flexibility to cover any complex use case that may require search at different semantic units. Besides that, the recursive structure enables Jina rankers to accumulate scores from lower granularities to upper granularities, such as `Chunk2DocRankers`. For example, in NLP a long document is composed of semantic chapters; each chapter consists of multiple paragraphs, which can be further segmented into sentences. In CV, a video is composed of one or more scenes, including one or more shots (i.e. a sequence of frames taken by a single camera over a continuous period of time). Each shot includes one or more frames. 
+This recursive structure provides Jina the flexibility to cover any complex use case that may require search at different semantic units. Besides that, the recursive structure enables Jina rankers to accumulate scores from lower granularities to upper granularities, such as `Chunk2DocRankers`. For example, in NLP a long Document is composed of semantic chapters; each chapter consists of multiple paragraphs, which can be further segmented into sentences. In CV, a video is composed of one or more scenes, including one or more shots (i.e. a sequence of frames taken by a single camera over a continuous period of time). Each shot includes one or more frames. 
 
 Such hierarchical structures can be very well represented with the recursive representation. The image below shows the tree view (with a depth of 3):
 
@@ -134,7 +134,7 @@ Such hierarchical structures can be very well represented with the recursive rep
 
 ## Document traversal with traversal paths
 
-As you have already learned from [Jina 101](https://101.jina.ai), you need to apply transformation (i.e. a `callback`) on a different level of documents. Given the tree structure, how could we achieve that? The answer is `traversal`.
+As you have already learned from [Jina 101](https://101.jina.ai), you need to apply transformation (i.e. a `callback`) on a different level of Documents. Given the tree structure, how could we achieve that? The answer is `traversal`.
 
 Jina has defined a method called `traversal()` within the class of a Document. The method looks like this:
 
@@ -164,4 +164,4 @@ requests:
           traversal_path: ['cm']
 ```
 
-The two drivers will be applied sequentially, so the first one applies `VectorSearchDriver` for the indexer. This step helps to get matches for chunks (cm), and add them. The matches for the chunks will contain the scores and the id of the document. Then, `KVSearchDriver` will be applied at matches of chunks (cm) in order to get the embeddings for `cm` via the id of the analysed document.
+The two drivers will be applied sequentially, so the first one applies `VectorSearchDriver` for the indexer. This step helps to get matches for chunks (cm), and add them. The matches for the chunks will contain the scores and the id of the Document. Then, `KVSearchDriver` will be applied at matches of chunks (cm) in order to get the embeddings for `cm` via the id of the analysed Document.
