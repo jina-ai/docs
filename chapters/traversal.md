@@ -1,5 +1,7 @@
 # Understand Jina Recursive Document Representation
 
+This guide explains how Documents are represented within the Jina framework. It is especially relevant for understanding how segmenters, crafters and rankers work.
+
 ## General overview
 
 When you index a Document in Jina, it can be represented as a rooted recursive representation (tree).
