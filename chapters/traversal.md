@@ -72,7 +72,7 @@ Furthermore, with the help of the attribute `parent_id` , the relation between t
 print(root.id == root.chunks[0].parent_id)  # outputs True
 ```
 
-The code sample and graph above demonstrates the basic idea of a `chunk` in a Document. At the beginning, by default a Document is initialised with `granularity = 0`. Next, two chunks have been initialised with `granularity = 0`, and have been added to the root node. Adding a chunk to a node, two things happen:
+The code sample and graph above demonstrates the basic idea of a `chunk` in a Document. At the beginning, by default a Document is initialised with `granularity = 0`. Next, two chunks have been initialised with `granularity = 0`, and have been added to the root node. On addition of a chunk to a node, two things happen:
 
 1. The granularity of the chunk will be increased by 1.
 2. The chunk will be referenced to its parent which is the root node.
