@@ -266,7 +266,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../all_exec/">List of 50 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 71 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 72 Drivers in Jina</a></li>
 </ul>
 
             
@@ -343,139 +343,128 @@
             
   <div class="section" id="understand-jina-recursive-document-representation">
 <h1>Understand Jina Recursive Document Representation<a class="headerlink" href="#understand-jina-recursive-document-representation" title="Permalink to this headline">¶</a></h1>
-<p>In Jina, each Document is represented as a recursive representation (tree).</p>
-<p>A rooted recursive representation has a root node and every node has X children.
-In Jina, the root node is the document itself, while the <em>left</em> &amp; <em>right</em> children are referred to as <em>chunks</em> and <em>matches</em> respectively.</p>
+<p>This guide explains how Documents are represented within the Jina framework. It is especially relevant for understanding how segmenters, crafters and rankers work.</p>
+<div class="section" id="general-overview">
+<h2>General overview<a class="headerlink" href="#general-overview" title="Permalink to this headline">¶</a></h2>
+<p>In Jina, the term Document refers to more than just a simple representation of datasets. A Document is used for both indexing and querying. A search query is also a Document itself.</p>
+<p>When you index a Document in Jina, it can be represented as a rooted recursive representation (tree). The representation consists of a <em>root node</em> and several <em>child nodes</em>. In Jina, the root node is the original Document itself, while the <em>left</em> and <em>right</em> children are referred to as <em>chunks</em> and <em>matches</em> respectively. The figure below illustrates a basic Document structure that consists of a Document (root node) as well as two child nodes (chunks and matches).</p>
 <p><img alt="rooted-binary-tree" src="../../_images/overview.png" /></p>
-<p>The above image illustrates a basic document structure: A document (root node) and the two possible child nodes: <em>chunks</em> and <em>matches</em>.
-chunks are a sequence of documents which is attached to the root document with a higher <code class="docutils literal notranslate"><span class="pre">granularity</span></code> degree. <code class="docutils literal notranslate"><span class="pre">matches</span></code> is a sequence of documents which are semantically related to the root document.
-We’ll dive into these concepts in this chapter:</p>
+<p>The two terms chunks and sequence require further explanation. In short, chunks are a sequence of Documents which can be attached to any parent Document with a higher <code class="docutils literal notranslate"><span class="pre">granularity</span></code> degree. In the figure above this is the root node.</p>
+<p>Similarly, this applies to <code class="docutils literal notranslate"><span class="pre">matches</span></code>. <code class="docutils literal notranslate"><span class="pre">matches</span></code> is a sequence of Documents which are semantically related to the higer-level Document (the root node in the figure above). We will dive into these concepts in more detail below.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="#chunks">Chunks</a></p></li>
 <li><p><a class="reference external" href="#matches">Matches</a></p></li>
 <li><p><a class="reference external" href="#lets-go-deeper-recursive-document-representation">Let’s go deeper: Recursive Document Representation</a></p></li>
 <li><p><a class="reference external" href="#document-traversal-with-traversal-paths">Document Traversal with traversal paths</a></p></li>
 </ul>
+</div>
 <div class="section" id="chunks">
 <h2>Chunks<a class="headerlink" href="#chunks" title="Permalink to this headline">¶</a></h2>
-<p>Each Jina Document (potentially) consists of a list of chunks. A <code class="docutils literal notranslate"><span class="pre">chunk</span></code> is a small semantic unit of a Document, like a sentence or a 64x64 pixel image patch.</p>
-<p>Think about these use cases: you want to search a document at a specific <code class="docutils literal notranslate"><span class="pre">granularity</span></code> level, e.g. a sentence or a paragraph.
-Or your query consists of multiple modalities, such as a piece of text together with an image.
-<code class="docutils literal notranslate"><span class="pre">chunk</span></code> makes it feasible!</p>
-<p>In Jina <a class="reference external" href="https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/">primitive data types</a>, <code class="docutils literal notranslate"><span class="pre">chunk</span></code> is defined as a <code class="docutils literal notranslate"><span class="pre">property</span></code> of a Document:</p>
+<div class="section" id="understanding-chunks">
+<h3>Understanding chunks<a class="headerlink" href="#understanding-chunks" title="Permalink to this headline">¶</a></h3>
+<p>Each Jina Document (potentially) consists of a list of <em>chunks</em>. A single chunk is a small semantic unit of a Document, like a sentence, a 64x64 pixel image patch or a video sequence. You identify each chunk uniquely via an id called <code class="docutils literal notranslate"><span class="pre">chunk_id</span></code>.</p>
+<p>In practice, all chunks for text data will not neccesarily have the same size – some sentences are short, and others rather long. For regularly divided images it can be different – a 256x256 pixel image can be split into a patches of 64x64 pixel that all have the same size.</p>
+<p>A chunk also allows you to search for a section of the Document, for example an image followed by a paragraph of text. These are use cases that are more common than you might think.</p>
+<p>Following the definition of <a class="reference external" href="primitive_data_type.rst">primitive data types in Jina</a>, a chunk is a property of a Document:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
     <span class="n">root</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love? Oh baby do not hurt me.&#39;</span>
-<span class="c1"># Initialised a document as root with 0 chunks.</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
-<span class="c1"># Initialise two documents and add as chunks to root.</span>
+
+<span class="c1"># Initialised a Document as root with zero chunks.</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">))</span>                <span class="c1"># outputs 0</span>
+
+<span class="c1"># Initialise two Documents and add them as chunks to root.</span>
 <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">chunk1</span><span class="p">:</span>
     <span class="n">chunk1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love?&#39;</span>
     <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chunk1</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">chunk2</span><span class="p">:</span>
     <span class="n">chunk1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Oh baby do not hurt me.&#39;</span>
     <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chunk2</span><span class="p">)</span>
-<span class="c1"># Now the document has 2 chunks</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">2</span>
+
+<span class="c1"># Now the Document has two chunks</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">))</span>                <span class="c1"># outputs 2</span>
 </pre></div>
 </div>
-<p>What happened by adding <code class="docutils literal notranslate"><span class="pre">chunk</span></code> to <code class="docutils literal notranslate"><span class="pre">root</span></code>?</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">granularity</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span>
-<span class="n">root</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent_id</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kc">True</span>
+</div>
+<div class="section" id="internals-adding-a-chunk-to-a-root-node">
+<h3>Internals: Adding a chunk to a root node<a class="headerlink" href="#internals-adding-a-chunk-to-a-root-node" title="Permalink to this headline">¶</a></h3>
+<p>Now let us have a look at what happens when you added a chunk to a root node. The code example below shows the granularity level of a specific node using the attribute <code class="docutils literal notranslate"><span class="pre">granularity</span></code> – as a root node (level 0), and as a chunk (level 1).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">granularity</span><span class="p">)</span>                <span class="c1"># outputs 0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="p">)</span>      <span class="c1"># outputs 1</span>
 </pre></div>
 </div>
-<p>This can be seen in the image below:</p>
+<p>This is illustrated in the image below:</p>
 <p><img alt="granularity" src="../../_images/granularity.png" /></p>
-<p>The code sample and graph above demonstrates the basic idea of a <code class="docutils literal notranslate"><span class="pre">chunk</span></code> in a Document.
-In the beginning, we initialized a Document with <code class="docutils literal notranslate"><span class="pre">granularity=0</span></code> (by default).
-We then initialized two chunks and add them to the <code class="docutils literal notranslate"><span class="pre">root</span></code> document.
-Two things happened when adding the <code class="docutils literal notranslate"><span class="pre">chunk</span></code> to <code class="docutils literal notranslate"><span class="pre">root</span></code>:</p>
+<p>Furthermore, with the help of the attribute <code class="docutils literal notranslate"><span class="pre">parent_id</span></code> , the relation between the root node and the chunk can be validated.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent_id</span><span class="p">)</span>  <span class="c1"># outputs True</span>
+</pre></div>
+</div>
+<p>The code sample and graph above demonstrates the basic idea of a <code class="docutils literal notranslate"><span class="pre">chunk</span></code> in a Document. At the beginning, by default a Document is initialised with <code class="docutils literal notranslate"><span class="pre">granularity</span> <span class="pre">=</span> <span class="pre">0</span></code>. Next, two chunks have been initialised with <code class="docutils literal notranslate"><span class="pre">granularity</span> <span class="pre">=</span> <span class="pre">0</span></code>, and have been added to the root node. On addition of a chunk to a node, two things happen:</p>
 <ol class="simple">
-<li><p>The granularity of the chunk has been increased by 1 (default 0).</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">chunk</span></code> has been referenced to its parent: <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p></li>
+<li><p>The granularity of the chunk will be increased by 1.</p></li>
+<li><p>The chunk will be referenced to its parent which is the root node.</p></li>
 </ol>
-<p>This allows Jina (and you) to query chunks and reference back to its root document at any <code class="docutils literal notranslate"><span class="pre">granularity</span></code> level.</p>
+<p>This procedure allows Jina (and you) to query chunks and reference them back to its root Document at any <code class="docutils literal notranslate"><span class="pre">granularity</span></code> level.</p>
+</div>
 </div>
 <div class="section" id="matches">
 <h2>Matches<a class="headerlink" href="#matches" title="Permalink to this headline">¶</a></h2>
-<p>In a neural search system (and traditional retrieval system), matches are the expected documents returned from the system given the user query.
-In Jina, <code class="docutils literal notranslate"><span class="pre">matches</span></code> could happen at the <code class="docutils literal notranslate"><span class="pre">root</span></code> level or any <code class="docutils literal notranslate"><span class="pre">chunk</span></code> level.</p>
-<p>To fully understand the concept of <code class="docutils literal notranslate"><span class="pre">matches</span></code>, we introduce a new term, named <code class="docutils literal notranslate"><span class="pre">adjacency</span></code> (short for <code class="docutils literal notranslate"><span class="pre">a</span></code> in the diagram), which reflects the level of the document it is connected to.</p>
+<p>In a neural search system (and traditional retrieval system), <em>matches</em> are the expected Documents returned from the search index for the user query. In Jina, matches could happen at any level of the representation tree – the root level or any chunk level.</p>
+<p>To fully understand the concept of matches, we introduce a new term, named <em>adjacency</em> (short for <em>a</em> in the diagram below). The adjacency reflects the level of the Document it is connected to.</p>
 <p><strong>NOTE: granularity and adjacency apply to both chunks and matches.</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
 
 <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
     <span class="n">root</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love? Oh baby do not hurt me.&#39;</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
-<span class="c1"># Initialise two documents and add as chunks to root.</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>                  <span class="c1"># outputs 0</span>
+
+<span class="c1"># Initialise two Documents and add as chunks to root.</span>
 <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">chunk1</span><span class="p">:</span>
     <span class="n">chunk1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love?&#39;</span>
     <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chunk1</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">chunk2</span><span class="p">:</span>
     <span class="n">chunk1</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;Oh baby do not hurt me.&#39;</span>
     <span class="n">root</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">chunk2</span><span class="p">)</span>
-<span class="c1"># Add a match document.</span>
+
+<span class="c1"># Add a match Document.</span>
 <span class="k">with</span> <span class="n">Document</span><span class="p">()</span> <span class="k">as</span> <span class="n">match</span><span class="p">:</span>
-    <span class="c1"># a match document semantically related to our root</span>
+    <span class="c1"># a match Document semantically related to our root</span>
     <span class="n">match</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;What is love? Oh please do not hurt me.&#39;</span>
     <span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">match</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="p">))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">0</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="p">))</span>               <span class="c1"># outputs 1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="p">)</span>     <span class="c1"># outputs 0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">matches</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">adjacency</span><span class="p">)</span>       <span class="c1"># outputs 1</span>
 </pre></div>
 </div>
 <p><img alt="adjacency" src="../../_images/adjacency.png" /></p>
-<p>In the code snippet and diagram above, we initialized a Document as <code class="docutils literal notranslate"><span class="pre">root</span></code> with the text: <em>What is love? Oh, baby do not hurt me.</em>.
-And a Document with text <em>What is love? Oh please do not hurt me</em> was added as a match to the <code class="docutils literal notranslate"><span class="pre">root</span></code>.
-The matched document <code class="docutils literal notranslate"><span class="pre">match</span></code> is a document without any parents, so it stays at the same level as <code class="docutils literal notranslate"><span class="pre">root</span></code> with a granularity value of 0.
-Meanwhile, since <code class="docutils literal notranslate"><span class="pre">match</span></code> is the retrieved result from <code class="docutils literal notranslate"><span class="pre">root</span></code>, so the <code class="docutils literal notranslate"><span class="pre">adjacency</span></code> increased to 1.</p>
-<p>By default, the <code class="docutils literal notranslate"><span class="pre">root</span></code> node has an <code class="docutils literal notranslate"><span class="pre">adjacency</span></code> of 0, and the value increases by 1 when it hits a <code class="docutils literal notranslate"><span class="pre">match</span></code>.</p>
+<p>In the code snippet and diagram above, we initialized a Document as <code class="docutils literal notranslate"><span class="pre">root</span></code> with the text: <em>What is love? Oh, baby do not hurt me.</em>. Next, a Document with the text <em>What is love? Oh please do not hurt me</em> was added as a match to the <code class="docutils literal notranslate"><span class="pre">root</span></code> node. The matched Document <code class="docutils literal notranslate"><span class="pre">match</span></code> is a Document without any parents, so it stays at the same level as the <code class="docutils literal notranslate"><span class="pre">root</span></code> node with a granularity value of 0. Meanwhile, since <code class="docutils literal notranslate"><span class="pre">match</span></code> is the retrieved result from the <code class="docutils literal notranslate"><span class="pre">root</span></code> node, so the <code class="docutils literal notranslate"><span class="pre">adjacency</span></code> increased to 1.</p>
+<p>By default, the <code class="docutils literal notranslate"><span class="pre">root</span></code> node has an <code class="docutils literal notranslate"><span class="pre">adjacency</span></code> of 0. The value increases by 1 when it hits a <code class="docutils literal notranslate"><span class="pre">match</span></code>.</p>
 </div>
 <div class="section" id="let-s-go-deeper-recursive-document-representation">
 <h2>Let’s go deeper: Recursive Document Representation<a class="headerlink" href="#let-s-go-deeper-recursive-document-representation" title="Permalink to this headline">¶</a></h2>
-<p>Till now, we’ve introduced chunks and <code class="docutils literal notranslate"><span class="pre">matches</span></code> <strong>with a depth of 1</strong>.
-While in a real-world scenario, things could be much more complicated than this.
-For instance, a <code class="docutils literal notranslate"><span class="pre">chunk</span></code> could be further divided into small chunks, and a chunk at any level might have it’s own <code class="docutils literal notranslate"><span class="pre">matches</span></code> at that level.</p>
+<p>So far we have only discussed <code class="docutils literal notranslate"><span class="pre">chunks</span></code> and <code class="docutils literal notranslate"><span class="pre">matches</span></code> <strong>with a depth of 1</strong>. While in a real-world scenario, things could be much more complicated than this. For instance, a <code class="docutils literal notranslate"><span class="pre">chunk</span></code> could be further divided into smaller chunks, and a chunk at any level might have its own <code class="docutils literal notranslate"><span class="pre">matches</span></code> at that level.</p>
 <p><img alt="go-deeper" src="https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/blog-post-v050-protobuf-documents.jpg" /></p>
-<p>Jina has defined a recursive structure with <strong>arbitrary width and depth</strong> instead of a trivial bi-level structure.
-Roughly speaking, chunks can have the next level chunks and the same level matches; and so do matches.
-This could go on and on. The following figure illustrates this structure <a class="reference external" href="https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/">Ref: New Features in Jina v0.5 You Should Know About</a>.</p>
+<p>Jina has defined a recursive structure with <strong>arbitrary width and depth</strong> instead of a trivial bi-level structure. Roughly speaking, chunks can have the next level chunks and the same level matches; and so do matches. This could go on and on. The following figure illustrates this structure <a class="reference external" href="https://hanxiao.io/2020/08/28/What-s-New-in-Jina-v0-5/">Ref: New Features in Jina v0.5 You Should Know About</a>.</p>
 <p><img alt="recursive" src="../../_images/recursive.png" /></p>
-<p>This recursive structure provides Jina the flexibility to cover any complex use case that may require search at different semantic units.
-Besides, the recursive structure enables Jina rankers to accumulate scores from lower granularities to upper granularities, such as <code class="docutils literal notranslate"><span class="pre">Chunk2DocRankers</span></code>.
-For example, in NLP a long document is composed of semantic chapters; each chapter consists of multiple paragraphs, which can be further segmented into sentences.
-In CV, a video is composed of one or more scenes, including one or more shots (i.e. a sequence of frames taken by a single camera over a continuous period of time).
-Each shot includes one or more frames. Such hierarchical structures can be very well represented with the recursive representation.</p>
-<p>If we look from a tree view (with a depth of 3):</p>
+<p>This recursive structure provides Jina the flexibility to cover any complex use case that may require search at different semantic units. Besides that, the recursive structure enables Jina rankers to accumulate scores from lower granularities to upper granularities, such as <code class="docutils literal notranslate"><span class="pre">Chunk2DocRankers</span></code>. For example, in NLP a long Document is composed of semantic chapters; each chapter consists of multiple paragraphs, which can be further segmented into sentences. In CV, a video is composed of one or more scenes, including one or more shots (i.e. a sequence of frames taken by a single camera over a continuous period of time). Each shot includes one or more frames.</p>
+<p>Such hierarchical structures can be very well represented with the recursive representation. The image below shows the tree view (with a depth of 3):</p>
 <p><img alt="tree-view" src="../../_images/tree.png" /></p>
 </div>
 <div class="section" id="document-traversal-with-traversal-paths">
-<h2>Document Traversal with traversal paths<a class="headerlink" href="#document-traversal-with-traversal-paths" title="Permalink to this headline">¶</a></h2>
-<p>As you already learned from <a class="reference external" href="https://101.jina.ai">Jina 101</a>, you needs to apply transformation (i.e. a <code class="docutils literal notranslate"><span class="pre">callback</span></code>) on a different level of documents.
-Given the tree structure, how could we achieve that?
-The answer is <code class="docutils literal notranslate"><span class="pre">traversal</span></code>.</p>
-<p>Jina has defined a method called <code class="docutils literal notranslate"><span class="pre">traversal</span></code> within the class of Document, which looks like this:</p>
+<h2>Document traversal with traversal paths<a class="headerlink" href="#document-traversal-with-traversal-paths" title="Permalink to this headline">¶</a></h2>
+<p>As you have already learned from <a class="reference external" href="https://101.jina.ai">Jina 101</a>, you need to apply transformation (i.e. a <code class="docutils literal notranslate"><span class="pre">callback</span></code>) on a different level of Documents. Given the tree structure, how could we achieve that? The answer is <code class="docutils literal notranslate"><span class="pre">traversal</span></code>.</p>
+<p>Jina has defined a method called <code class="docutils literal notranslate"><span class="pre">traversal()</span></code> within the class of a Document. The method looks like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">traverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traversal_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
     <span class="sd">&quot;&quot;&quot;Traversal apply `:meth:callback_fn` on the recursive tree representation.&quot;&quot;&quot;</span>
     <span class="o">...</span>
 </pre></div>
 </div>
-<p>This allows you to apply <code class="docutils literal notranslate"><span class="pre">callback_fn</span></code> based on <code class="docutils literal notranslate"><span class="pre">traversal_path</span></code>.
-The <code class="docutils literal notranslate"><span class="pre">traversal_path</span></code> is defined as below:</p>
+<p>This allows you to apply a callback function named <code class="docutils literal notranslate"><span class="pre">callback_fn()</span></code> based on <code class="docutils literal notranslate"><span class="pre">traversal_path</span></code>. The <code class="docutils literal notranslate"><span class="pre">traversal_path</span></code> is defined as shown below:</p>
 <p><img alt="nodes" src="../../_images/nodes.png" /></p>
-<p>With these pre-defined node names, you’re able to apply any callbacks (defined as <code class="docutils literal notranslate"><span class="pre">_apply_all</span></code> in the <code class="docutils literal notranslate"><span class="pre">driver</span></code>) to a specific node.
-In the below YAML configuration, the <code class="docutils literal notranslate"><span class="pre">VectorSearchDriver</span></code> was applied to node <code class="docutils literal notranslate"><span class="pre">c</span></code>, <code class="docutils literal notranslate"><span class="pre">KVSearchDriver</span></code> was applied to node <code class="docutils literal notranslate"><span class="pre">cm</span></code> (matches of chunks).</p>
+<p>With these pre-defined node names, you are able to apply any callbacks (defined as <code class="docutils literal notranslate"><span class="pre">_apply_all</span></code> in the <code class="docutils literal notranslate"><span class="pre">driver</span></code>) to a specific node. In the YAML configuration below, the <code class="docutils literal notranslate"><span class="pre">VectorSearchDriver</span></code> was applied to node <code class="docutils literal notranslate"><span class="pre">c</span></code>, <code class="docutils literal notranslate"><span class="pre">KVSearchDriver</span></code> was applied to node <code class="docutils literal notranslate"><span class="pre">cm</span></code> (matches of chunks).</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!CompoundIndexer</span>
 <span class="nn">...</span>
 <span class="nt">requests</span><span class="p">:</span>
@@ -489,6 +478,7 @@ In the below YAML configuration, the <code class="docutils literal notranslate">
           <span class="nt">traversal_path</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;cm&#39;</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
+<p>The two drivers will be applied sequentially, so the first one applies <code class="docutils literal notranslate"><span class="pre">VectorSearchDriver</span></code> for the indexer. This step helps to get matches for chunks (cm), and add them. The matches for the chunks will contain the scores and the id of the Document. Then, <code class="docutils literal notranslate"><span class="pre">KVSearchDriver</span></code> will be applied at matches of chunks (cm) in order to get the embeddings for <code class="docutils literal notranslate"><span class="pre">cm</span></code> via the id of the analysed Document.</p>
 </div>
 </div>
 
