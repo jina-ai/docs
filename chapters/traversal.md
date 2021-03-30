@@ -81,7 +81,7 @@ This procedure allows Jina (and you) to query chunks and reference them back to 
 
 ## Matches
 
-In a neural search system (and traditional retrieval system), *matches* are the expected Documents returned from the search index given the user query. In Jina, matches could happen at any level of the representation tree -- the root level or any chunk level.
+In a neural search system (and traditional retrieval system), *matches* are the expected Documents returned from the search index for the user query. In Jina, matches could happen at any level of the representation tree -- the root level or any chunk level.
 
 To fully understand the concept of matches, we introduce a new term, named *adjacency* (short for *a* in the diagram below). The adjacency reflects the level of the Document it is connected to.
 
