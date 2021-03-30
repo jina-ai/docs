@@ -66,7 +66,7 @@ This is illustrated in the image below:
 
 ![granularity](./images/granularity.png)
 
-Furthermore, with the help of the attribute `parent_id` the relation between the root node and the chunk can be validated.
+Furthermore, with the help of the attribute `parent_id` , the relation between the root node and the chunk can be validated.
 
 ```python
 print(root.id == root.chunks[0].parent_id)  # outputs True
