@@ -4,7 +4,7 @@ This guide explains how Documents are represented within the Jina framework. It 
 
 ## General overview
 
-In Jina, the term Document refers to more than just a simple dataset. A Document is used for both indexing and querying. A search query is also a Document itself.
+In Jina, the term Document refers to more than just a simple representation of datasets. A Document is used for both indexing and querying. A search query is also a Document itself.
 
 When you index a Document in Jina, it can be represented as a rooted recursive representation (tree). The representation consists of a *root node* and several *child nodes*. In Jina, the root node is the original Document itself, while the *left* and *right* children are referred to as *chunks* and *matches* respectively. The figure below illustrates a basic Document structure that consists of a Document (root node) as well as two child nodes (chunks and matches).
 
