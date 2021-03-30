@@ -50,15 +50,14 @@ Starting a Flow using the :meth:`start` method requires you to also call :meth:`
         f.close()
 
 
-In the Console
+In the console
 ^^^^^^^^^^^^^^
 
-If you are running Jina locally (e.g. :command:`jina flow`), you can :kbd:`Control-c` or :kbd:`Command-c` to terminate it at any time. All :class:`BasePod` will receive this signal and shut down accordingly.
+If you are running Jina locally, e.g. using the command :command:`jina flow`, you can use the key combinations :kbd:`Control-c` or :kbd:`Command-c` to terminate the running Jina process at any time. All Pods created with :class:`BasePod` will receive this signal and react upon it by shutting down the process accordingly.
 
-Container Pods and remote Pods sometimes take longer to shut down. When you open many replicas or many Pods, it may also take some time to release all resources.
+Please note container Pods and remote Pods sometimes take longer to shut down. When you open many replicas or many Pods, it may also take some time to release all resources.
 
-
-Rule of thumb, for an individual Pod/Pea, when you see the following output from the console, then it is already shut down.
+Rule of thumb, for an individual Pod/Pea, when you see the output below on the console, then it is already shut down successfully.
 
 .. highlight:: bash
 .. code-block:: bash
@@ -70,7 +69,7 @@ Rule of thumb, for an individual Pod/Pea, when you see the following output from
     BasePea@7317[S]:terminated
 
 
-For Flow, when you see the following output from the console, then it is shut down already.
+For Flow, when you see the output below from the console, then it is already shut down.
 
 .. highlight:: bash
 .. code-block:: bash
