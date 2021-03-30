@@ -1,15 +1,15 @@
 ====================
 Gracefully Exit Jina
 ====================
-In this section, you will learn best practices to shut down a Flow and exit Jina correctly.
+
+In this section, you will learn best practices shutting down a Flow and exiting Jina correctly.
 
 .. contents:: Table of Contents
     :depth: 4
 
 Feature description and expected outcome
 ----------------------------------------
-Jina provides several methods to exit gracefully.
-Through these ways the Flow will terminate and release all resources.
+Jina provides several methods to exit this service gracefully. Through these ways the Flow will terminate and release all resources.
 
 Before you start
 -----------------
