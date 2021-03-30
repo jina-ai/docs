@@ -10,7 +10,7 @@ When you index a Document in Jina, it can be represented as a rooted recursive r
 
 ![rooted-binary-tree](./images/overview.png)
 
-The two terms chunks and sequence are still a bit unclear. In short, chunks are a sequence of Documents which can be attached to any Document with a higher `granularity` degree. In the figure above this is the root node. 
+The two terms chunks and sequence require further explanation. In short, chunks are a sequence of Documents which can be attached to any parent Document with a higher `granularity` degree. In the figure above this is the root node. 
 
 Similarly, this applies to `matches`. `matches` is a sequence of Documents which are semantically related to the higer-level Document (the root node in the figure above). We will dive into these concepts in more detail below.
 
