@@ -9,11 +9,11 @@ In this section, you will learn best practices shutting down a Flow and exiting 
 
 Feature description and expected outcome
 ----------------------------------------
-Jina provides several methods to exit this service gracefully. Through these ways the Flow will terminate and release all resources.
+Jina provides several methods to exit this service gracefully. In this way, the Flow is terminated and all occupied resources are released.
 
 Before you start
 -----------------
-Make sure you install Jina via `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_.
+Make sure that Jina is installed properly as explained in `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_. Define a Flow as explained in `101: Basic components <https://docs.jina.ai/chapters/101/>` , and `102: How basic components work together <https://docs.jina.ai/chapters/102/>`_.
 
 Implementation
 ---------------
@@ -21,7 +21,9 @@ Implementation
 In Python
 ^^^^^^^^^
 
-If you use ``with`` scope to start a Flow, then all resources (including Pods of all kinds) of the Flow will be released after you move out from the scope.
+A common way to start a Flow is with a ``with`` statement. Moving out from the ``with`` scope, all resources (including Pods of all kinds) of the Flow will be released immediately. 
+
+The source snippet below demonstrates this by defining a Flow ``f`` containing two names ``p1`` and ``p2``, only. Next, the ``with`` statement simply contains a ``pass`` statement. The execution of the ``pass`` statement is followed by leaving the scope of the ``with`` statement, and releasing the resources for ``f``.
 
 .. highlight:: python
 .. code:: python
