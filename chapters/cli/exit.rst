@@ -35,8 +35,7 @@ The source snippet below demonstrates this by defining a Flow named ``f`` contai
     with f:
         pass
 
-The next 
-If you use :meth:`start` method to start the Flow, then you have to call :meth:`close` to shut down the Flow when you don't use it anymore.
+Starting a Flow using the :meth:`start` method requires you to also call :meth:`close` method in order to properly shut down the Flow when you do not use it anymore. The source code below demonstrates this in a ``try``-``finally`` block. 
 
 .. highlight:: python
 .. code:: python
@@ -49,8 +48,6 @@ If you use :meth:`start` method to start the Flow, then you have to call :meth:`
         f.start()
     finally:
         f.close()
-
-
 
 
 In the Console
