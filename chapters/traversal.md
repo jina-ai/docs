@@ -39,7 +39,7 @@ from jina import Document
 with Document() as root:
     root.text = 'What is love? Oh baby do not hurt me.'
 
-# Initialised a Document as root with 0 chunks.
+# Initialised a Document as root with zero chunks.
 print(len(root.chunks))                # outputs 0
 
 # Initialise two Documents and add them as chunks to root.
@@ -50,7 +50,7 @@ with Document() as chunk2:
     chunk1.text = 'Oh baby do not hurt me.'
     root.chunks.add(chunk2)
 
-# Now the Document has 2 chunks
+# Now the Document has two chunks
 print(len(root.chunks))                # outputs 2
 ```
 
