@@ -25,7 +25,9 @@ Similarly, this applies to `matches`. `matches` is a sequence of Documents which
 
 Each Jina Document (potentially) consists of a list of *chunks*. A single chunk is a small semantic unit of a Document, like a sentence, a 64x64 pixel image patch or a video sequence. You identify each chunk uniquely via an id called `chunk_id`.
 
-In practice, chunks correspond to a certain level of granularity, for example a paragraph or a sentence. A chunk also allows you to search for a section of the Document, for example an image followed by a paragraph of text. These are use cases that are more common than you might think.
+In practice, all chunks for text data will not neccesarily have the same size -- some sentences are short, and others rather long. For regularly divided images it can be different -- a 256x256 pixel image can be split into a patches of 64x64 pixel that all have the same size. 
+
+A chunk also allows you to search for a section of the Document, for example an image followed by a paragraph of text. These are use cases that are more common than you might think.
 
 [//]: # (The original link below does not make sense any more)
 [//]: # (https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/)
