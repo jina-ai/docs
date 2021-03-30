@@ -21,9 +21,9 @@ Implementation
 In Python
 ^^^^^^^^^
 
-A common way to start a Flow is with a ``with`` statement. Moving out from the ``with`` scope, all resources (including Pods of all kinds) of the Flow will be released immediately. 
+A common way to start a Flow in your Python code is using a ``with`` statement. Moving out from the ``with`` scope, all resources (including Pods of all kinds) of the Flow will be released immediately. 
 
-The source snippet below demonstrates this by defining a Flow ``f`` containing two names ``p1`` and ``p2``, only. Next, the ``with`` statement simply contains a ``pass`` statement. The execution of the ``pass`` statement is followed by leaving the scope of the ``with`` statement, and releasing the resources for ``f``.
+The source snippet below demonstrates this by defining a Flow named ``f`` containing the two names ``p1`` and ``p2``, only. Next, the ``with`` statement simply contains a ``pass`` statement. The execution of the ``pass`` statement is followed by leaving the scope of the ``with`` statement, and releasing the resources for ``f``.
 
 .. highlight:: python
 .. code:: python
@@ -35,6 +35,7 @@ The source snippet below demonstrates this by defining a Flow ``f`` containing t
     with f:
         pass
 
+The next 
 If you use :meth:`start` method to start the Flow, then you have to call :meth:`close` to shut down the Flow when you don't use it anymore.
 
 .. highlight:: python
