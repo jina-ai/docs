@@ -23,7 +23,7 @@ In Python
 
 A common way to start a Flow in your Python code is using a ``with`` statement. Moving out from the ``with`` scope, all resources (including Pods of all kinds) of the Flow will be released immediately. 
 
-The source snippet below demonstrates this by defining a Flow named ``f`` containing the two names ``p1`` and ``p2``, only. Next, the ``with`` statement simply contains a ``pass`` statement. The execution of the ``pass`` statement is followed by leaving the scope of the ``with`` statement, and releasing the resources for ``f``.
+The source snippet below demonstrates this by defining a Flow named ``f`` containing the two names ``p1`` and ``p2``, only. The execution of the ``pass`` statement is followed by leaving the scope of the ``with`` statement, and releasing the resources for ``f``.
 
 .. highlight:: python
 .. code:: python
