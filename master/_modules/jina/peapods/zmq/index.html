@@ -373,7 +373,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">opened_socks</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_sock</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_sock</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_sock_type</span> <span class="o">==</span> <span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_send_idle</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send_idle_to_router</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_register_pollin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Register :attr:`in_sock`, :attr:`ctrl_sock` and :attr:`out_sock` (if :attr:`out_sock_type` is zmq.ROUTER) in poller.&quot;&quot;&quot;</span>
@@ -563,14 +563,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">msg_sent</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">if</span> <span class="n">o_sock</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_sock</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_sock_type</span> <span class="o">==</span> <span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_send_idle</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send_idle_to_router</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_send_idle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Tell the upstream router this dealer is idle &quot;&quot;&quot;</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="n">ControlMessage</span><span class="p">(</span><span class="s1">&#39;IDLE&#39;</span><span class="p">,</span> <span class="n">pod_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bytes_sent</span> <span class="o">+=</span> <span class="n">send_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">send_recv_kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_send_control_to_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">raise_exception</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="n">ControlMessage</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">pod_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bytes_sent</span> <span class="o">+=</span> <span class="n">send_message</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">raise_exception</span><span class="o">=</span><span class="n">raise_exception</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">send_recv_kwargs</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">msg_sent</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;idle and i </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="si">}</span><span class="s1"> told the router&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;control message </span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1"> with id </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">identity</span><span class="si">}</span><span class="s1"> is sent to the router&#39;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_send_idle_to_router</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tell the upstream router this dealer is idle &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_control_to_router</span><span class="p">(</span><span class="s1">&#39;IDLE&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_send_cancel_to_router</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raise_exception</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tell the upstream router this dealer is canceled</span>
+
+<span class="sd">        :param raise_exception: if true: raise an exception which might occur during send, if false: log error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_control_to_router</span><span class="p">(</span><span class="s1">&#39;CANCEL&#39;</span><span class="p">,</span> <span class="n">raise_exception</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Zmqlet.recv_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.Zmqlet.recv_message">[docs]</a>    <span class="k">def</span> <span class="nf">recv_message</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Message&#39;</span><span class="p">],</span> <span class="s1">&#39;Message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -668,6 +683,14 @@
 <span class="sd">        .. note::</span>
 <span class="sd">            This method is idempotent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_sock_type</span> <span class="o">==</span> <span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_send_cancel_to_router</span><span class="p">(</span><span class="n">raise_exception</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ZMQError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;The dealer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> can not unsubscribe from the router. &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;In case the router is down this is expected.&#39;</span>
+                <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span><span class="p">:</span>
             <span class="c1"># wait until the close signal is received</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
@@ -748,12 +771,17 @@
 
 
 <div class="viewcode-block" id="send_message"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.send_message">[docs]</a><span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span>
-    <span class="n">sock</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="s1">&#39;ZMQStream&#39;</span><span class="p">],</span> <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="n">sock</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;zmq.Socket&#39;</span><span class="p">,</span> <span class="s1">&#39;ZMQStream&#39;</span><span class="p">],</span>
+    <span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">,</span>
+    <span class="n">raise_exception</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Send a protobuf message to a socket</span>
 
 <span class="sd">    :param sock: the target socket to send</span>
 <span class="sd">    :param msg: the protobuf message</span>
+<span class="sd">    :param raise_exception: if true: raise an exception which might occur during send, if false: log error</span>
 <span class="sd">    :param timeout: waiting time (in seconds) for sending</span>
 <span class="sd">    :param kwargs: keyword arguments</span>
 <span class="sd">    :return: the size (in bytes) of the sent message</span>
@@ -769,7 +797,10 @@
             <span class="s1">&#39;is the server still online? is the network broken? are &quot;port&quot; correct?&#39;</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ZMQError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="n">default_logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raise_exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ex</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">default_logger</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sock</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SNDTIMEO</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>

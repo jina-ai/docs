@@ -390,6 +390,10 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;STATUS&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">StatusProto</span><span class="o">.</span><span class="n">READY</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;IDLE&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;CANCEL&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnknownControlCommand</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;don</span><span class="se">\&#39;</span><span class="s1">t know how to handle </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
@@ -453,6 +457,10 @@
             <span class="c1"># all the time</span>
             <span class="c1"># (2) this driver is used in a ROUTER-DEALER fan-out setting,</span>
             <span class="c1"># where some dealer is broken/fails to start, so `idle_dealer_ids` is empty</span>
+            <span class="c1"># IDLE requests add the dealer id to the router. Therefore, it knows which dealer would be available for</span>
+            <span class="c1"># new data requests.</span>
+            <span class="c1"># CANCEL requests remove the dealer id from the router. Therefore, it can not send any more data requests</span>
+            <span class="c1"># to the dealer.</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;IDLE&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -461,7 +469,9 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_polling_paused</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_zmqlet</span><span class="o">.</span><span class="n">resume_pollin</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">is_polling_paused</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">raise</span> <span class="n">NoExplicitMessage</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;CANCEL&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
