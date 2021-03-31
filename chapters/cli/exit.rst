@@ -2,7 +2,7 @@
 Gracefully Exit Jina
 ====================
 
-In this section, you will learn best practices shutting down a Flow and exiting Jina correctly.
+In this section, you will learn best practices for shutting down a Flow and exiting Jina correctly.
 
 .. contents:: Table of Contents
     :depth: 4
