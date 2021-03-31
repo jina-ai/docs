@@ -9,11 +9,11 @@ If you prefer to run Jina natively on your host, please make sure you have Pytho
 Install from PyPi
 -----------------
 
-On Linux/Mac, simply run:
+On Linux or Mac, simply run:
 
 .. code-block:: bash
 
-   pip install jina
+   pip install -U jina
 
 .. note:: Currently we do not support native Python on Windows. If you are a Windows user, one workaround is to `run Jina on Windows Subsystem for Linux <>`_ or :doc:`../os/via-docker`.
 
@@ -28,12 +28,6 @@ After you have installed Jina Core, it is advisable to carry out a short check. 
 
 The option `-vf` (long version: `--version-full`) shows Jina and all the dependencies' versions. The output contains a list of Python packages followed by the names of variables that are in use. If an error message is shown, Jina was not installed correctly.
 
-
-
-Other OSes
-----------
-
-Please refer to :doc:`../via-docker>`. If you manage to run Jina on other OSes after some tweaks, please submit your changes `here <https://github.com/jina-ai/jina/issues/new>`_.
 
 Upgrade Jina
 ============
@@ -51,14 +45,14 @@ For Docker users the following command updates Jina in the Docker container:
    docker pull jinaai/jina
 
 
-Install from the master branch
+Install Jina development or pre-release
 ------------------------------
 
 If you want to keep track of the master branch of our development repository:
 
 .. code-block:: bash
 
-   pip install git+https://github.com/jina-ai/jina.git
+   pip install --pre jina
 
 Be aware that the master branch may not be stable. We only recommend this branch for testing new features.
 
@@ -78,6 +72,10 @@ In the dev mode, if you later switch to a different method of Jina installation,
 
    pip uninstall $(basename $(find . -name '*.egg-info') .egg-info)
 
+
+
+
+
 Cherry-pick extra dependencies
 ------------------------------
 
@@ -87,7 +85,7 @@ However, some Executors may require extra dependencies. The full table of these 
 
 .. code-block:: bash
 
-   pip install "jina[nlp+cv]"
+   pip install -U "jina[nlp+cv]"
 
 This will install all dependencies tagged with ``nlp`` or ``cv``.
 
@@ -95,7 +93,7 @@ Though not recommended, you can install Jina with full dependencies via:
 
 .. code-block:: bash
 
-   pip install "jina[all]"
+   pip install -U "jina[all]"
 
 To install cherry-picked dependencies from the master branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
