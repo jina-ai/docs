@@ -13,7 +13,7 @@ Jina provides several methods to exit this service gracefully. In this way, the 
 
 Before you start
 -----------------
-Make sure that Jina is installed properly as explained in `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_, and you had an active running Flow correctly set up as explained in `101: Basic components <https://docs.jina.ai/chapters/101/>` and `102: How basic components work together <https://docs.jina.ai/chapters/102/>`_.
+Make sure that Jina is installed properly as explained in `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_, and you had an active running Flow correctly set up as explained in `101: Basic components <../101.rst>` and `102: How basic components work together <../102.rst>`_.
 
 Implementation
 ---------------
