@@ -10,6 +10,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
 
 .. toctree::
+   :maxdepth: 1
    :caption: Understanding Jina
    :titlesonly:
 
@@ -33,6 +34,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../peas-and-pods
 
 .. toctree::
+   :maxdepth: 1
    :caption: Expanding Jina
    :titlesonly:
    ../../logging
@@ -49,6 +51,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
 
 .. toctree::
+   :maxdepth: 1
    :caption: Deploying Jina
    :titlesonly:
    ../../remote/index
