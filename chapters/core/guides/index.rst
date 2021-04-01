@@ -14,7 +14,6 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    :caption: Understanding Jina
    :titlesonly:
 
-
    ../setup/index
    ../../my_first_jina_app
    ../../cross_multi_modality
@@ -35,18 +34,19 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
 .. toctree::
    :maxdepth: 1
-   :caption: Improving speed and result in Jina
+   :caption: Improving Speed and Results in Jina
    :titlesonly:
+   
    ../../logging
    ../../prevent_duplicate_indexing
    ../../flow/index
    ../../parallel
-  ../../simple_exec
-  ../../optimization
-  ../../batching
-  ../../request_size
-  ../../evaluation
-  ../../incremental_indexing
+   ../../simple_exec
+   ../../optimization
+   ../../batching
+   ../../request_size
+   ../../evaluation
+   ../../incremental_indexing
 
 
 
@@ -54,5 +54,6 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    :maxdepth: 1
    :caption: Deploying Jina
    :titlesonly:
+   
    ../../remote/index
    ../../stress/index
