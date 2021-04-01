@@ -52,14 +52,12 @@ When the decorated method requires multiple arguments, `slice_nargs` parameter m
     assert crafted_results[2]['text'] == 'Third'
 
 
-batching and batching_multi_input
+batching
 ----------------------------------
 The batching decorator ensures that data is processed in batches of a given size. This is useful when an :term:`Executor` can benefit
 from processing multiple inputs at a time.
 
 In the case where this decorator is used, the method needs to be implemented considering input comes in batches.
-
-The :meth:`batching_multi_input` is the equivalent decorator required when multiple input arguments are required by the :term:`Executor` method.
 
 .. highlight:: python
 .. code-block:: python
