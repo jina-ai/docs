@@ -1,4 +1,4 @@
-Incremental Indexing
+How to Use Incremental Indexing
 ====================
 
 Summary
@@ -94,4 +94,3 @@ Limitations
 -----------
 
 Query-while-indexing is not supported yet and therefore one can **NOT** doing indexing and querying with the same Flow at the same time.
-

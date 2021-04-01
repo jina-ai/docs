@@ -1,4 +1,4 @@
-Developer Guide: Add new Drivers
+How to Add New Drivers
 ====================================
 
 .. meta::

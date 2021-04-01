@@ -1,10 +1,10 @@
-## Parallelization in Jina
+## How to Use Parallelization in Jina
 
 ##### Learn how Jina handles parallelization of data processing
 
 ### Feature description and expected outcome
 
-Jina allows for parallelization of Peas and Pods. This generally leads to an increase in throughput, as the data is split across processes. 
+Jina allows for parallelization of Peas and Pods. This generally leads to an increase in throughput, as the data is split across processes.
 
 ### Before you start
 
@@ -14,7 +14,7 @@ You should also have experience with parallelism in other systems. Jina does fol
 
 ### Implementation
 
-We will approach this from a top-down perspective. 
+We will approach this from a top-down perspective.
 
 #### Inter-parallelism
 
@@ -49,7 +49,7 @@ f = (Flow().add(name='p1', needs='gateway')
 
 #### State-less vs state-ful
 
-Depending on the type of `Peas`, `parallel` means different things. In *state-less* `Peas` (`Crafters`, `Encoders` etc.), you *parallelize*, not *shard*. This means the data is not persisted, but it's only processed in a parallel manner. 
+Depending on the type of `Peas`, `parallel` means different things. In *state-less* `Peas` (`Crafters`, `Encoders` etc.), you *parallelize*, not *shard*. This means the data is not persisted, but it's only processed in a parallel manner.
 
 On the other hand, *state-ful* `Peas` (Indexers) will store the data across *shards*. This terminology is borrowed from other database systems.
 
@@ -59,7 +59,7 @@ For both of these, you need to set `parallel` to some number higher than `1`, an
 
 ##### Index vs Query time Polling
 
-We set `polling` to `any` in order to tell the `HeadPea` to spread the data across its inner `Peas`. This allows us to parallelize. You do this for the Flow you will use to index data. 
+We set `polling` to `any` in order to tell the `HeadPea` to spread the data across its inner `Peas`. This allows us to parallelize. You do this for the Flow you will use to index data.
 
 However, when querying, you need to make sure to use a Flow where the `Pods` are using `polling: all`. This ensures that the requests are seen by all the `Peas`, and that the respective `id` is found. If we use `polling: any` we risk that the key is not seen by the shard that has the data.
 
@@ -73,7 +73,7 @@ Jina offers two types of scheduling:
 
 These are configured via `scheduling`, on the `Pod` level.
 
-An example of configuring the above parameters can be seen here: 
+An example of configuring the above parameters can be seen here:
 
 ```python
 from jina.enums import  SchedulerType
