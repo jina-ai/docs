@@ -35,7 +35,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
 .. toctree::
    :maxdepth: 1
-   :caption: Expanding Jina
+   :caption: Improving speed and result in Jina
    :titlesonly:
    ../../logging
    ../../prevent_duplicate_indexing
