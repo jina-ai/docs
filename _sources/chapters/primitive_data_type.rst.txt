@@ -1,5 +1,5 @@
 =======================================
-A guide on Jina Primitive Data Types
+Understanding Jina Primitive Data Types
 =======================================
 
 .. meta::

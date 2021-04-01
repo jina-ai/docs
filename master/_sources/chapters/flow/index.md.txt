@@ -1,6 +1,6 @@
-## Using Flow API to Compose Your Jina Workflow
+## Using the Flow API to Compose Your Jina Workflow
 
-In this section, you will get to know how to construct the flow using different approaches. 
+In this section, you will get to know how to construct the flow using different approaches.
 
 Table of Contents
 - [Using Flow API to Compose Your Jina Workflow](#using-flow-api-to-compose-your-jina-workflow)
@@ -23,9 +23,9 @@ Table of Contents
     + [Use Flow API in YAML](#use-flow-api-in-yaml)
       - [Load a Flow from YAML](#load-a-flow-from-yaml)
     + [Design a Flow with Dashboard](#design-a-flow-with-dashboard)
-    
+
 ### Feature description and expected outcome
-In search systems, tasks such as indexing often involve multiple steps: preprocessing, encoding, storing, etc. In Jina's architecture, each step is implemented by an Executor and wrapped by a Pod. This microservice design makes the whole pipeline flexible and scalable. Accomplishing a task is then linking all these Pods to work together, either sequentially or in parallel; locally or remotely. 
+In search systems, tasks such as indexing often involve multiple steps: preprocessing, encoding, storing, etc. In Jina's architecture, each step is implemented by an Executor and wrapped by a Pod. This microservice design makes the whole pipeline flexible and scalable. Accomplishing a task is then linking all these Pods to work together, either sequentially or in parallel; locally or remotely.
 
 The Flow API is a context manager for Pods. Each `Flow` object corresponds to a real-world task. It helps the user to manage the states and contexts of all Pods required in that task. The Flow API translates a workflow defined in Python code, YAML file, or interactive graph to a runtime backed by multi-thread/process, Kubernetes, Docker Swarm, etc. Users don't need to worry about where the Pod is running or how the Pods are connected.
 
@@ -38,7 +38,7 @@ Make sure you install latest version of Jina via [Installation](https://docs.jin
 
 #### Use Flow API in Python
 
-##### Create a Flow 
+##### Create a Flow
 
 To create a new Flow:
 
@@ -48,7 +48,7 @@ from jina.flow import Flow
 f = Flow()
 ```
 
-`Flow()` accepts some arguments. See `jina flow --help` or check [here](https://docs.jina.ai/chapters/cli/jina-flow.html) for details. 
+`Flow()` accepts some arguments. See `jina flow --help` or check [here](https://docs.jina.ai/chapters/cli/jina-flow.html) for details.
 
 When the arguments given to `Flow()` cannot be parsed, they are propagated to all the Flow's `Pods` for parsing (if they are accepted, see `jina pod --help` for the list of arguments). For example:
 
@@ -66,7 +66,7 @@ To add a Pod to the Flow, simply call `.add()`, syntax of YAML file can be found
 f = (Flow().add(name='p1', uses='mypod1.yml')
            .add(name='p2', uses='mypod2.yml', timeout_ready=50000)
            .add(name='p3', uses='mypod3.yml', read_only=True))
-``` 
+```
 
 This will create a sequential workflow:
 
@@ -74,7 +74,7 @@ This will create a sequential workflow:
 
 gateway -> p1 -> p2 -> p3 -> gateway
 
-``` 
+```
 
 The input of each Pod is the output of the last Pod in sequential order. The gateway is the entrypoint of the whole Jina network. The `gateway` Pod is automatically added to every `Flow`, of which the output is the first Pod and the input is the last Pod defined in the Flow.
 
@@ -117,7 +117,7 @@ f = (Flow().add(name='p1')
            .add(name='p3'))
 ```
 
-This will start `p2` remotely on `192.168.0.100` running a Docker container equipped with the image `jinaai/hub.executors.encoders.bidaf:latest`. Of course Docker is required on `192.168.0.100`. More information on using remote Pods can be found [here](https://docs.jina.ai/chapters/remote/index.html). 
+This will start `p2` remotely on `192.168.0.100` running a Docker container equipped with the image `jinaai/hub.executors.encoders.bidaf:latest`. Of course Docker is required on `192.168.0.100`. More information on using remote Pods can be found [here](https://docs.jina.ai/chapters/remote/index.html).
 
 
 
@@ -131,11 +131,11 @@ f = (Flow().add(name='p1')
            .add(name='p3', needs='p1'))
 ```
 
-This creates a workflow, where `p2` and `p3` work in parallel with the output of `p1`. 
+This creates a workflow, where `p2` and `p3` work in parallel with the output of `p1`.
 ```
 gateway -> p1 -> p2
             |
-              -> p3 -> gateway 
+              -> p3 -> gateway
 ```
 
 ##### Waiting for Parallel Steps to Finish
@@ -148,13 +148,13 @@ f = (Flow().add(name='p1')
            .add(name='p3', needs='p1')
            .join(['p2', 'p3']))
 ```
-  
+
 which gives
 
 ```
 gateway -> p1 -> p2 ->
             |          | -> wait until both done -> gateway
-              -> p3 -> 
+              -> p3 ->
 ```
 
 
@@ -175,7 +175,7 @@ with f:
 
 ```
 
-Though you can manually call the `start()` method to run the flow, you also need to call the corresponding `close()` method to release the resource. Using `with` saves you the trouble, as the resource is automatically released when running out of the scope. 
+Though you can manually call the `start()` method to run the flow, you also need to call the corresponding `close()` method to release the resource. Using `with` saves you the trouble, as the resource is automatically released when running out of the scope.
 
 ##### Test Connectivity with Dry Run
 
@@ -278,7 +278,7 @@ pods:
     needs: [pod1, pod0]
 ```
 
-You can use enviroment variables with `$` in YAML. More information on the Flow YAML Schema can be found [here](https://docs.jina.ai/chapters/yaml/index.html). 
+You can use enviroment variables with `$` in YAML. More information on the Flow YAML Schema can be found [here](https://docs.jina.ai/chapters/yaml/index.html).
 
 ##### Load a Flow from YAML
 
@@ -293,4 +293,3 @@ f = Flow.load_config('myflow.yml')
 With Jina Dashboard, you can interactively drag and drop Pods, set their attribute and export to a Flow YAML file.
 
 More information on the dashboard can be found [here](https://github.com/jina-ai/dashboard).
-

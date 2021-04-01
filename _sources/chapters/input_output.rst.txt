@@ -1,4 +1,4 @@
-How to handle Input and Output for Flows
+How to handle Inputs and Outputs for Flows
 ========================================
 
 This chapter explains how input and output data is handled by the ``Flow API``.
@@ -207,7 +207,7 @@ It can be used in combination with ``Callbacks`` as well.
         with Flow(return_results=True) as f:
             result = f.search('first', on_done=handle)
 
-    
+
 Insights
 --------
 When using the ``flow.*`` functions, ``Jina`` builds and sends Protobuf messages to the relevant ``Pods``.
@@ -268,5 +268,3 @@ Request size
 The functions ``flow.index(...)``, ``flow.update(...)``, ``flow.delete(...)``, ``flow.search(...)`` and ``flow.train(...)``
 accept the ``request_size`` parameter. It sets the limit for ``Documents`` sent in one request.
 In case more ``Documents`` are provided, they split up into multiple requests.
-
-

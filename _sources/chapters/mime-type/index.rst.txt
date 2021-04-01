@@ -1,4 +1,4 @@
-A Guide on MIME Types in Jina
+A Guide to MIME Types in Jina
 =============================
 
 This guide explains what a mime type is, how to assign them manually or automatically to a Document
@@ -78,7 +78,7 @@ The following example shows a simple Segmenter, which sets the ``mime_type`` for
 
     .. highlight:: python
     .. code-block:: python
-        
+
         from jina.executors.decorator import single
         from jina.executors.segmenters import BaseSegmenter
 
