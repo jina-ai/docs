@@ -2,7 +2,7 @@
 
 **Jina Dashboard** is a low-code monitoring and management environment for Jina. With the Dashboard you can build Jina Flows, manage them from a central location and get insights into the health of the Flow through log stream analysis!
 
-Use Jina Dashboard by visiting the [website](https://dashboard.jina.ai) or cloning it from [GitHub](https://github.com/jina-ai/dashboard)
+Use the Jina Dashboard [online](https://dashboard.jina.ai) or by cloning the Dashboard code from the corresponding [GitHub repository](https://github.com/jina-ai/dashboard). The illustration below gives you a first impression of the Dashboard.
 
 ![flow demo](../img/overview.gif)
 
