@@ -1,19 +1,19 @@
 ====================
 Gracefully Exit Jina
 ====================
-In this section, you will learn best practices to shut down a Flow and exit Jina correctly.
+
+In this section, you will learn best practices for shutting down a Flow and exiting Jina correctly.
 
 .. contents:: Table of Contents
     :depth: 4
 
 Feature description and expected outcome
 ----------------------------------------
-Jina provides several methods to exit gracefully.
-Through these ways the Flow will terminate and release all resources.
+Jina provides several methods to exit this service gracefully. In this way, the Flow is terminated and all occupied resources are released.
 
 Before you start
 -----------------
-Make sure you install Jina via `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_.
+Make sure that Jina is installed properly as explained in `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_, and you had an active running Flow correctly set up as explained in `101: Basic components <../101.rst>` and `102: How basic components work together <../102.rst>`_.
 
 Implementation
 ---------------
@@ -21,7 +21,9 @@ Implementation
 In Python
 ^^^^^^^^^
 
-If you use ``with`` scope to start a Flow, then all resources (including Pods of all kinds) of the Flow will be released after you move out from the scope.
+A common way to start a Flow in your Python code is using a ``with`` statement. Moving out from the ``with`` scope, all resources (including Pods of all kinds) of the Flow will be released immediately. 
+
+The source snippet below demonstrates this by defining a Flow named ``f`` containing the two names ``p1`` and ``p2``, only. The execution of the ``pass`` statement is followed by leaving the scope of the ``with`` statement, and releasing the resources for ``f``.
 
 .. highlight:: python
 .. code:: python
@@ -33,7 +35,7 @@ If you use ``with`` scope to start a Flow, then all resources (including Pods of
     with f:
         pass
 
-If you use :meth:`start` method to start the Flow, then you have to call :meth:`close` to shut down the Flow when you don't use it anymore.
+Starting a Flow using the :meth:`start` method requires you to also call :meth:`close` method in order to properly shut down the Flow when you do not use it anymore. The source code below demonstrates this in a ``try``-``finally`` block. 
 
 .. highlight:: python
 .. code:: python
@@ -48,17 +50,14 @@ If you use :meth:`start` method to start the Flow, then you have to call :meth:`
         f.close()
 
 
-
-
-In the Console
+In the console
 ^^^^^^^^^^^^^^
 
-If you are running Jina locally (e.g. :command:`jina flow`), you can :kbd:`Control-c` or :kbd:`Command-c` to terminate it at any time. All :class:`BasePod` will receive this signal and shut down accordingly.
+If you are running Jina locally, e.g. using the command :command:`jina flow`, you can use the key combinations :kbd:`Control-c` or :kbd:`Command-c` to terminate the running Jina process at any time. All Pods created with :class:`BasePod` will receive this signal and react upon it by shutting down the process accordingly.
 
-Container Pods and remote Pods sometimes take longer to shut down. When you open many replicas or many Pods, it may also take some time to release all resources.
+Please note container Pods and remote Pods sometimes take longer to shut down. When you open many replicas or many Pods, it may also take some time to release all resources.
 
-
-Rule of thumb, for an individual Pod/Pea, when you see the following output from the console, then it is already shut down.
+Rule of thumb, for an individual Pod/Pea, when you see the output below on the console, then it is already shut down successfully.
 
 .. highlight:: bash
 .. code-block:: bash
@@ -70,7 +69,7 @@ Rule of thumb, for an individual Pod/Pea, when you see the following output from
     BasePea@7317[S]:terminated
 
 
-For Flow, when you see the following output from the console, then it is shut down already.
+For Flow, when you see the output below from the console, then it is already shut down.
 
 .. highlight:: bash
 .. code-block:: bash
@@ -85,3 +84,8 @@ For Flow, when you see the following output from the console, then it is shut do
     chunk_idx-6@6381[I]:msg_sent: 653 bytes_sent: 589 KB msg_recv: 326 bytes_recv:953 KB
     chunk_idx-6@6381[S]:terminated
     Flow@6331[S]:flow is closed and all resources should be released already, current build level is EMPTY
+    
+Using Jina remotely 
+^^^^^^^^^^^^^^^^^^^
+If you are using Jina remotely (via JinaD), you can find out how to exit correctly via  `this guide <https://docs.jina.ai/chapters/remote/create-remote-flow/#terminate-flow>`_.
+
