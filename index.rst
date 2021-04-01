@@ -25,7 +25,7 @@ Jina Products
 
 - **Jina Core**: is the open-source neural search framework, it allows you to build search systems for any kind of data.
 - **Jina Dashboard**: is a low-code monitoring and management environment for Jina. With the Dashboard you can build Jina Flows, manage them from a central location and get insights into the health of the Flows.
-- **Jina Hub**: is a centralized registry, where you can share and discover custom and community driven Jina Pods and Apps tailored to specific use cases of neural search.
+- **Jina Hub**: is a centralized registry, where you can share and discover custom and community driven Jina Pods tailored to specific use cases of neural search.
 - **Jina Box**: is a light-weight, highly customizable JavaScript based front-end search interface.
 
 
