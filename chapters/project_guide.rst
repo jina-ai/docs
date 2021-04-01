@@ -1,5 +1,5 @@
 #####################
-Project setup guide
+How to Set up a Jina Correctly
 #####################
 
 .. meta::
@@ -8,7 +8,7 @@ Project setup guide
 
 .. note:: This guide expects you have a basic understanding of Jina. If you do not have that yet, please read `Jina 101 <http://101.jina.ai>`_ first.
 
-If you plan on developing applications with Jina, this guide explains best practices for managing your application working space. It explains the recommended folder structure you should use, and other tips to make your work reproducible for others. 
+If you plan on developing applications with Jina, this guide explains best practices for managing your application working space. It explains the recommended folder structure you should use, and other tips to make your work reproducible for others.
 
 
 .. contents:: Table of Contents
@@ -18,9 +18,9 @@ If you plan on developing applications with Jina, this guide explains best pract
 Installing Jina
 ===============
 
-To begin with, you must have Jina installed. We recommend you create a new python environment to allow for clean management of dependencies.   
+To begin with, you must have Jina installed. We recommend you create a new python environment to allow for clean management of dependencies.
 
-There are several ways to manage python virtual environments. Once you have chosen one, set up and entered the new environment. You should begin by installing the latest version of Jina. 
+There are several ways to manage python virtual environments. Once you have chosen one, set up and entered the new environment. You should begin by installing the latest version of Jina.
 
 .. highlight:: bash
 .. code-block:: bash
@@ -32,7 +32,7 @@ To learn about other ways to install Jina, we have an `installation guide <https
 Setup with Jina Hub
 ===================
 
-The **jina hub new** command will automatically create the recommended project structure in your working directory.  
+The **jina hub new** command will automatically create the recommended project structure in your working directory.
 
 .. highlight:: bash
 .. code-block:: bash
@@ -95,7 +95,7 @@ Prepare and save data
 
 This step may be necessary and depends on whether you need additional data in your project or not. If you need to download data, the best practice is to use a suitable script. Store this script directly under the main folder.
 
-Now you need to define a place where to store the data you just downloaded. Create a folder named **data** first. Inside this folder will live whatever data you downloaded with the previously created script. 
+Now you need to define a place where to store the data you just downloaded. Create a folder named **data** first. Inside this folder will live whatever data you downloaded with the previously created script.
 
 ``/your-new-project/data/data.txt``
 
@@ -106,7 +106,7 @@ Flows
 
 ``/flows``
 
-You will most likely need at least one :term:`Flow`, and it is good practice to have all your Flows in one dedicated folder. To be as explicit as possible, we call the folder this **flows**. 
+You will most likely need at least one :term:`Flow`, and it is good practice to have all your Flows in one dedicated folder. To be as explicit as possible, we call the folder this **flows**.
 
 In this example we have two flows -- the first one is for the index that is stored in **index.yml**, and a second one for search that is stored in **query.yml**. In your project you can define as many flows as you actually need.
 

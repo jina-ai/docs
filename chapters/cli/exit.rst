@@ -1,5 +1,5 @@
 ====================
-Gracefully Exit Jina
+How to Correctly Exit Jina
 ====================
 
 In this section, you will learn best practices for shutting down a Flow and exiting Jina correctly.
@@ -21,7 +21,7 @@ Implementation
 In Python
 ^^^^^^^^^
 
-A common way to start a Flow in your Python code is using a ``with`` statement. Moving out from the ``with`` scope, all resources (including Pods of all kinds) of the Flow will be released immediately. 
+A common way to start a Flow in your Python code is using a ``with`` statement. Moving out from the ``with`` scope, all resources (including Pods of all kinds) of the Flow will be released immediately.
 
 The source snippet below demonstrates this by defining a Flow named ``f`` containing the two names ``p1`` and ``p2``, only. The execution of the ``pass`` statement is followed by leaving the scope of the ``with`` statement, and releasing the resources for ``f``.
 
@@ -35,7 +35,7 @@ The source snippet below demonstrates this by defining a Flow named ``f`` contai
     with f:
         pass
 
-Starting a Flow using the :meth:`start` method requires you to also call :meth:`close` method in order to properly shut down the Flow when you do not use it anymore. The source code below demonstrates this in a ``try``-``finally`` block. 
+Starting a Flow using the :meth:`start` method requires you to also call :meth:`close` method in order to properly shut down the Flow when you do not use it anymore. The source code below demonstrates this in a ``try``-``finally`` block.
 
 .. highlight:: python
 .. code:: python
@@ -84,8 +84,7 @@ For Flow, when you see the output below from the console, then it is already shu
     chunk_idx-6@6381[I]:msg_sent: 653 bytes_sent: 589 KB msg_recv: 326 bytes_recv:953 KB
     chunk_idx-6@6381[S]:terminated
     Flow@6331[S]:flow is closed and all resources should be released already, current build level is EMPTY
-    
-Using Jina remotely 
+
+Using Jina remotely
 ^^^^^^^^^^^^^^^^^^^
 If you are using Jina remotely (via JinaD), you can find out how to exit correctly via  `this guide <https://docs.jina.ai/chapters/remote/create-remote-flow/#terminate-flow>`_.
-

@@ -1,4 +1,4 @@
-Development Guide: Peas and Pods in Jina
+Understanding Peas and Pods in Jina
 =========================================
 
 .. meta::

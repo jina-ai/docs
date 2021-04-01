@@ -1,8 +1,8 @@
-# Build Your First Jina App
+# How to Build Your First Jina App
 
 ## 👋 Introduction
 
-The aim of this tutorial is to guide you through building your first simple neural text search app using the [Jina framework](https://github.com/jina-ai/jina/). 
+The aim of this tutorial is to guide you through building your first simple neural text search app using the [Jina framework](https://github.com/jina-ai/jina/).
 
 ![](/chapters/images/jinabox-wikipedia.gif)
 
@@ -49,7 +49,7 @@ curl --request POST -d '{"top_k":10,"mode":"search","data":["computer"]}' -H 'Co
 
 ℹ️  To make it easier to read the output, add `| jq | less` to the end of the command. This will add pretty JSON formatting and paging.
 
-`curl` will output a *lot* of information in JSON format. This includes not just the lines you're searching for, but also metadata about the search and the Documents it returns. 
+`curl` will output a *lot* of information in JSON format. This includes not just the lines you're searching for, but also metadata about the search and the Documents it returns.
 
 After looking through the JSON you should see lines that contain the text of the Document matches:
 
@@ -247,7 +247,7 @@ When you're finished, stop the Flow with Ctrl-C (or Command-C on a Mac), and run
 
 <img src="https://docs.jina.ai/_images/flow.png" width="30%" align="left">
 
-Just as a plant manages nutrient flow and growth rate for its branches, Jina's Flow manages the states and context of a group of Pods, orchestrating them to accomplish one specific task. 
+Just as a plant manages nutrient flow and growth rate for its branches, Jina's Flow manages the states and context of a group of Pods, orchestrating them to accomplish one specific task.
 
 We define Flows in `app.py` to index and query our dataset:
 
@@ -274,7 +274,7 @@ python app.py -t index
 
 #### Indexing
 
-`input.txt` is just one big text file. Our indexing Flow will create an index of each line in the file, and later Jina will query this index. The indexing is performed by the Pods in the Flow. Each Pod performs a different task, with one Pod's output becoming another Pod's input. 
+`input.txt` is just one big text file. Our indexing Flow will create an index of each line in the file, and later Jina will query this index. The indexing is performed by the Pods in the Flow. Each Pod performs a different task, with one Pod's output becoming another Pod's input.
 
 Every Flow is defined in its own YAML file. Let's look at `flows/index.yml`:
 
@@ -344,7 +344,7 @@ with:
   max_length: 96
 ```
 
-- The built-in `TransformerTorchEncoder` is the Pod's **[Executor](https://docs.jina.ai/chapters/101.html#executor)**. 
+- The built-in `TransformerTorchEncoder` is the Pod's **[Executor](https://docs.jina.ai/chapters/101.html#executor)**.
 - The `with` field specifies the parameters we pass to `TransformerTorchEncoder`:
 
 | Parameter                       | Effect                                                     |
@@ -363,7 +363,7 @@ Your results may not be very suitable when you query your dataset. This can be f
 
 #### Index more Documents
 
-Use a larger dataset or increase your `JINA_MAX_DOCS` environment variable to index more sentences. This gives the language model more data to work with: 
+Use a larger dataset or increase your `JINA_MAX_DOCS` environment variable to index more sentences. This gives the language model more data to work with:
 
 ```sh
 export JINA_MAX_DOCS=30000
