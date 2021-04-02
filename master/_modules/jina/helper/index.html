@@ -1350,7 +1350,7 @@
     <span class="k">return</span> <span class="n">ip</span></div>
 
 
-<div class="viewcode-block" id="get_public_ip"><a class="viewcode-back" href="../../../api/jina.helper/#jina.helper.get_public_ip">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">()</span>
+<div class="viewcode-block" id="get_public_ip"><a class="viewcode-back" href="../../../api/jina.helper/#jina.helper.get_public_ip">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">get_public_ip</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the public IP address of the gateway for connecting from other machine in the public network.</span>
@@ -1360,11 +1360,13 @@
     <span class="kn">import</span> <span class="nn">urllib.request</span>
     <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
 
+    <span class="n">timeout</span> <span class="o">=</span> <span class="mf">0.5</span>
+
     <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">_get_ip</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                 <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf8&#39;</span><span class="p">))</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -1383,7 +1385,7 @@
         <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
-        <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
@@ -1558,9 +1560,13 @@
 
 
 <span class="k">def</span> <span class="nf">ding</span><span class="p">(</span><span class="n">req</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Play a ding sound `on_done`, used in 2021 April fools day&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Play a ding sound `on_done`, used in 2021 April fools day</span>
+
+<span class="sd">    # noqa: DAR101</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">subprocess</span>
     <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
+
     <span class="n">soundfx</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;soundfx&#39;</span><span class="p">,</span> <span class="s1">&#39;bell.mp3&#39;</span><span class="p">)))</span>
 
     <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ffplay  -nodisp -autoexit </span><span class="si">{</span><span class="n">soundfx</span><span class="si">}</span><span class="s1"> &gt;/dev/null 2&gt;&amp;1&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
