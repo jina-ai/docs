@@ -10,37 +10,56 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
 
 .. toctree::
+   :maxdepth: 1
+   :caption: Understanding Jina
    :titlesonly:
    :glob:
 
    ../setup/index
    ../../my_first_jina_app
-   ../../cross_multi_modality
-   ../../crud
-   ../../logging
-   ../../prevent_duplicate_indexing
+   ../../extend/mwu.rst
+   ../../project-guide/project-guide
+   ../../project_guide
+   ../../executors
+   ../../peas-and-pods
+   ../../primitive_data_type
+   ../../traversal
+   ../../traversal/index
    ../../flow/index
    ../../flow/pattern
    ../../input_output
-   ../../traversal
-   ../../extend/*
-   ../../remote/index
-   ../../parallel
-   ../../primitive_data_type
-   ../../project_guide
-   ../../traversal/index
-   ../../simple_exec
+   ../../crud
+   ../../ranker
    ../../cli/exit
+   ../../cross_multi_modality
+   ../../extend/*
    ../../envs
-   ../../project-guide/project-guide
+   ../../mime-type/index
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Improving Speed and Results in Jina
+   :titlesonly:
+   :glob:
+
+   ../../logging
+   ../../prevent_duplicate_indexing
+   ../../parallel
+   ../../simple_exec
    ../../optimization
    ../../batching
    ../../request_size
    ../../evaluation
-   ../../ranker
    ../../incremental_indexing
-   ../../stress/index
-   ../../mime-type/index
-   ../../executors
-   ../../peas-and-pods
 
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Deploying Jina
+   :titlesonly:
+   :glob:
+
+   ../../remote/index
+   ../../stress/index
