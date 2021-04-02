@@ -306,7 +306,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.types.sets.chunk</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">.document</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span>
+
+<span class="kn">from</span> <span class="nn">.document</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..document</span> <span class="kn">import</span> <span class="n">Document</span>
@@ -324,7 +326,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs_proto</span><span class="p">,</span> <span class="n">reference_doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set constructor method.</span>
+
+<span class="sd">        :param docs_proto: protobuf representation of the chunks</span>
+<span class="sd">        :param reference_doc: parent document</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">docs_proto</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ref_doc</span> <span class="o">=</span> <span class="n">reference_doc</span>
 
@@ -333,6 +340,7 @@
 
 <span class="sd">        :param document: Sub-document to be appended</span>
 <span class="sd">        :type document: :class:`Document`</span>
+<span class="sd">        :param kwargs: additional keyword arguments</span>
 <span class="sd">        :return: the newly added sub-document in :class:`Document` view</span>
 <span class="sd">        :rtype: :class:`Document`</span>
 
@@ -356,19 +364,43 @@
         <span class="n">chunk</span><span class="o">.</span><span class="n">update_content_hash</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">chunk</span></div>
 
+<div class="viewcode-block" id="ChunkSet.extend"><a class="viewcode-back" href="../../../../../api/jina.types.sets.chunk/#jina.types.sets.chunk.ChunkSet.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extend the :class:`DocumentSet` by appending all the items from the iterable.</span>
+
+<span class="sd">        :param iterable: the iterable of Documents to extend this set with</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">num_siblings</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">siblings</span> <span class="o">=</span> <span class="n">num_siblings</span></div>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">reference_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Document&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the document that :class:`ChunkSet` belongs to.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the document that :class:`ChunkSet` belongs to.</span>
+
+<span class="sd">        :return: reference doc</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_doc</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">granularity</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get granularity of all document in this set.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get granularity of all document in this set.</span>
+
+<span class="sd">        :return: granularity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_doc</span><span class="o">.</span><span class="n">granularity</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">adjacency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get adjacency of all document in this set.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get adjacency of all document in this set.</span>
+
+<span class="sd">        :return: adjacency</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_doc</span><span class="o">.</span><span class="n">adjacency</span></div>
 </pre></div>
 
