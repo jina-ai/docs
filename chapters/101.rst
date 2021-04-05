@@ -4,6 +4,8 @@ Jina 101: Basic components
 
 
 In Jina 101, you will learn about the basic components of Jina. Before you start, read `the basics of Neural Search`_ to get some context.
+You can install Jina with PyPI and run `jina hello` demos to see examples on fashion image search, chatbot and multi modality search. Upgrade to  the latest version by using `pip install -U jina`
+
 
 
 .. _the basics of Neural Search: https://jina.ai/2020/07/06/What-is-Neural-Search-and-Why-Should-I-Care.html
@@ -22,9 +24,14 @@ Document
 	:width: 25%
 
 
-Documents are pieces of data in any dataset you want to search, and the input queries you use to find what you want. Basically, they are the input and output data for your search workflows.
+Documents are pieces of data in any dataset you want to search, and the input queries you use to find what you want. Basically, they are the input and output data for your search workflows, also used in Jina Flow.
 
-A good example is the text we type into a search engine like Google. Documents can also be video clips, genetic sequences, MP3 files, scientific papers, funny GIFs, or many other things.
+Document is a primitive data type in Jina. You can compare the document of Jina to `ndarray` of `numpy` or `tensor` of `tensorflow`. Document is also a powerful container for multimedia data. 
+A good example is the text we type into a search engine like Google. Documents can also be video clips, genetic sequences, MP3 files, scientific papers, funny GIFs, or many other things. You can hence store text, image, audio and the array inside the document. 
+
+Document can be recursive in two directions - a document has its nearest neighbors and neighbors can have their own nearest neighbors. This is considered as high order matches in Jina.
+In the other direction a document can be divided into sub-documents and the sub-document can be further segmented into finer granularities. This rich structure allows Jina to represent complex documents with hierarchies and multiple modalities.
+
 
 You can think of a Document as a chocolate bar: Different Documents have different formats or ingredients, and you can :ref:`break them into smaller chunks<segmenter>`.
 
@@ -40,13 +47,24 @@ Flow
 Flows manage the two main search workflows: indexing data (indexing Flow) and then querying it (querying Flow).
 
 A Flow is made up of several sub-tasks, and it manages the states and context of these sub-tasks. The input and output data of Flows are Documents.
+It is a high level concept in Jina, representing a sequence of steps for accomplishing a task.
+
+You can add logic to the flow by using `add` and create parallelization using `needs` method. Once the flow is built you can open it like opening a file in python and then fit data into it.
+
+Jina flow is fully decentralized and can be fully distributed on the cloud. You can simply distribute a part of the flow by setting the host to a remote address. You can also containerize a flow either partially or completely. Besides building a flow from python, you can also build a flow from a yaml config - this creates a separation between the code base and the configuration
+which could be extremely useful when conducting a test. 
+
 
 
 Executor
 =============
 
 
-Executors perform each task in an indexing or querying Flow. Jina offers `many Executors`_, which can be divided as follows:
+Executors perform each task in an indexing or querying Flow. Jina's algorithmic logical units are put into different subclasses namely segmenter, ranker, encoder, crafter, classifier, indexer and evaluator. They all originate from the same parent - the Executor.
+To introduce a new algorithm to Jina, you can simply create a new executor class by inheriting from the existing executors, with focus on writing the algorithm itself.
+Given the input, define your own logic to generate the expected output just like when you write standard load numpy or tensorflow code.
+
+Jina offers `many Executors`_, which can be divided as follows:
 
 
 .. _many Executors: https://docs.jina.ai/chapters/all_exec.html
@@ -149,7 +167,11 @@ Pod
 .. image:: /chapters/images/pod.png
 	:width: 25%
 
-A Pod is a container and interface for one or multiple Peas that have the same properties. It coordinates Peas to improve efficiency and scaling. Beyond that, a Pod adds further control, scheduling, and context management to its Peas.
+A Pod is a cloud native container for the algorithm and interface for one or multiple Peas that have the same properties. It coordinates Peas to improve efficiency and scaling. Beyond that, a Pod adds further control, scheduling, and context management to its Peas.
+
+It is also the basic unit in the flow so when you code flow `add` message you are basically adding pods to the flow. Pod allows you to customize its behavior on the cloud - it offers features such as scaling, smart routing, decentralizing, parallelization and containerization. When you visualize a flow in jupyter
+notebook or google collab, each block in the graph is basically a part of the executor (algorithm unit in Jina). This is the main interface that machine learning engineers and researchers would work with in Jina.  Jina has hundreds of classic and state-of-the-art executors covering pre and post-processing indexing, ranking and encoding.
+
 
 
 Driver
@@ -159,6 +181,39 @@ Driver
 	:width: 25%
 
 A Driver “translates” input and output messages for an Executor. Each Executor requires a different data format to perform its task. Therefore, a Driver interprets incoming messages into Documents and extracts required fields for an Executor. 
+It is thus a translation layer between Jina data type and python or numpy data type. It makes the executor agnostic to data type and network. Without the driver, you will need to convert, pass, extract back and forth between the general data type and the numpy data type.
+
+You can define the executor's behavior under the network request using drivers. It translates to -
+while receiving request x, call the executor and do y.
+Your algorithm can hence directly handle the request - that's exactly the purpose of the driver.
+As an algorithm developer, driver is invisible to you and you don't have to worry about it.
+In general, the executor and driver work together and serve as a logic layer in Jina.
+
+
+
+App
+=============
+
+Jina as a framework supports abstractions at different layers and exposes them as an API to the users or developers. Some high-level APIs are public some intermediate or low-level apis
+are highlighted intentionally so developers can stay focused.
+
+The app is by far the highest level concept in Jina. It represents a new research project that delivers end-to-end user experience. For instance, the three `jina hello world` demos can be called as three Jina apps as they deliver the full user journey from indexing to searching.
+ A typical Jina app project contains two types of files - python
+code and yaml config. The python file defines the entrance point as a customized logic and yaml config defines a flow composition as a configuration of each executor.
+
+
+Advantages of Jina
+===================
+
+As a framework Jina is designed to be universal - it can solve all kinds of new research problems whether it is image to image search,
+semantic text search or question answering - Jina can handle them
+all regardless of the media type.
+One of the major benefits of using Jina is the time it saves. Jina provides a natural and
+straightforward design pattern for building your search solutions on the cloud which
+otherwise could take months.
+With Jina you keep an end to end stack ownership of your search solution and avoid the hassles with fragmented, multi-vendor, generic legacy tools.
+Unlike other deep learning frameworks which are designed to be local, Jina is designed to be distributed on the cloud so features like containerising, distributing, sharding, asynchronous architecture, REST, GRPC, websocket work out of the box.
+Finally, Jina builds many state-of-the-art AI models that are easily usable and extendable with a pythonic interface.
 
 
 What comes next?
