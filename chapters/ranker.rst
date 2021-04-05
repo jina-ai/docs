@@ -165,7 +165,7 @@ Run with Jina CLI
 
 
 Conventional local usage with uses argument (YAML configuration)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. highlight:: bash
 .. code-block:: bash

@@ -79,7 +79,7 @@ For this example, we will index 100 ``Documents`` and use 10 parallel :term:`Cra
 
 
 Choosing different request size
-------------------------------
+--------------------------------
 Different settings of ``request_size`` may influence the running performance. A higher value means a large number ``Documents`` will be fed into the :term:`Pea` and will demand more memory. A lower value will decrease the cost of memory but may increase the running time since we need to send more ``requests``.
 
 A simple extension of the above example generates a box plot showing the relationship between ``request_size`` and running time when we have 100 ``Documents`` to be indexed. This may help you to get more insights on choosing the ``request_size``.

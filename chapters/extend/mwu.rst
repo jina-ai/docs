@@ -1,5 +1,5 @@
 A Minimum Working Example of Jina
-=========================
+=================================
 
 This dummy encoder embeds everything to a 3-dimensional vector. You only need two files:
 
