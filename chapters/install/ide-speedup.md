@@ -25,9 +25,7 @@ or argument you really want to use.
 - Finally, add to File path pattern mapping: *.jaml to associate any files that end with JAML or Jina yaml extensions to the schema.
 - Click OK to apply the change.
 
-
-
-
+![ide-speed-up](intelli.png "Enabling Intellisense")
 
 ### For Visual Studio Code developers:
 
@@ -42,17 +40,14 @@ or argument you really want to use.
 ```
 - Finally save your `settings.json` to apply the change.
 
+![ide-speed-up](vse.png "VSCode Autocomplete")
+
 
 Create a new hello.jina.yml file and the IDE successfully marks it as Jina file type
 If it doesn't, you may want to manually select the schema you just created.
 Now type Jtype in the first line and you will see the IDE suggests you with flow or a list of executors that jina contains.
 
-
-
-
-
-
-
+![ide-speed-up](pyc.png "Pycharm Autocomplete")
 
 *jtype* is a synonym for the bond mark. We recommend you to use j-type over the bond mark as
 it gives a cross-platform compatible yaml files.
@@ -72,10 +67,7 @@ It also works on the nested level when you define request and it shows only driv
 and when you define the drivers it shows relevant arguments that are accepted by
 that driver.
 
-
-
-
-
+![ide-speed-up](pychvse.png "PyCharm and VS Code developer environments")
 
 You can check out the log stream for any driver or executor by holding your mouse on it besides
 Pycharm or VS Code. Most mainstream IDEs also support JSON schema. You can configure it manually, the actual user experience may slightly vary depending on your IDE or plugin
