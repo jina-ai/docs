@@ -1,5 +1,5 @@
 How to Prevent Duplicate Indexing
-===========================
+=================================
 
 Summary
 -------

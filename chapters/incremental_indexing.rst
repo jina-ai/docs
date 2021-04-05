@@ -1,5 +1,5 @@
 How to Use Incremental Indexing
-====================
+================================
 
 Summary
 -------
