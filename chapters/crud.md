@@ -180,3 +180,5 @@ While using a `!CompoundIndexer`, it is not possible to return embeddings to the
 
 This is done because otherwise the embeddings would be stored in the `BaseVectorIndexer` but also in the `BaseKVIndexer`.
 If you want to be able to access the embeddings anyway, you can can overwrite it in your own `index.yml` and `query.yml` files removing the `!ExcludeQL` directive.
+
+The example can be seen [here](https://docs.jina.ai/chapters/flow/index.html).
