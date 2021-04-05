@@ -23,7 +23,7 @@ Overview
 -------------------
 
 Jina logging messages at first glance
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Let's start from an logging example. Jina logs messages with different formats in different situations. The example below follows the most commonly used format:
 

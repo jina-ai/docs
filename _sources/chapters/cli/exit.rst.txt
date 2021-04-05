@@ -1,6 +1,6 @@
-====================
+==========================
 How to Correctly Exit Jina
-====================
+==========================
 
 In this section, you will learn best practices for shutting down a Flow and exiting Jina correctly.
 

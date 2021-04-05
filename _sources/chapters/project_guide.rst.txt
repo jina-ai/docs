@@ -1,6 +1,6 @@
-#####################
+############################
 How to Set up Jina Correctly
-#####################
+############################
 
 .. meta::
    :description: You will see the best practices on how to create a project on Jina.
