@@ -172,7 +172,7 @@ Unfortunately there are some limitations to what Jina can do for the moment. The
 While using a `!CompoundIndexer`, it is not possible to return embeddings to the next Driver in the Flow. This is because  the [!CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) has an `!ExcludeQL` for all the embeddings during `IndexRequest` and `UpdateRequest`
 
 ``` python
- !ExcludeQL
+ jtype: ExcludeQL
       with:
         fields:
           - embedding

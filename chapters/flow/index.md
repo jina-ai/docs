@@ -260,7 +260,7 @@ with f:
 You can also write a Flow in YAML:
 
 ```yaml
-!Flow
+jtype: Flow
 version: '1.0'
 with:
     restful: true
@@ -286,15 +286,15 @@ You can use enviroment variables with `$` in YAML. More information on the Flow 
 The following example shows how to add drivers in a compound executor.
 
 ```yaml
-!CompoundIndexer
+jtype: CompoundIndexer
 components:
-  - !NumpyIndexer
+  - jtype: NumpyIndexer
     with:
       index_filename: vec.gz
       metric: cosine
     metas:
       name: vecidx  # a customized name
-  - !BinaryPbIndexer
+  - jtype: BinaryPbIndexer
     with:
       index_filename: doc.gz
     metas:
@@ -305,19 +305,19 @@ metas:
 requests:
   on:
     SearchRequest:
-      - !VectorSearchDriver  # Search Driver for NumpyIndexer
+      - jtype: VectorSearchDriver  # Search Driver for NumpyIndexer
         with:
           executor: vecidx
-      - !KVSearchDriver  # Search Driver for BinaryPbIndexer
+      - jtype: KVSearchDriver  # Search Driver for BinaryPbIndexer
         with:
           executor: docidx
           is_update: True
           traversal_paths: ['m']
     [IndexRequest, UpdateRequest]:
-      - !VectorIndexDriver  # Index Driver for NumpyIndexer
+      - jtype: VectorIndexDriver  # Index Driver for NumpyIndexer
         with:
           executor: vecidx
-      - !KVIndexDriver  # Index Driver for BinaryPbIndexer
+      - jtype: KVIndexDriver  # Index Driver for BinaryPbIndexer
         with:
           executor: docidx
 ```
