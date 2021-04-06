@@ -334,13 +334,11 @@
 <div class="viewcode-block" id="BasePod"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod">[docs]</a><span class="k">class</span> <span class="nc">BasePod</span><span class="p">(</span><span class="n">ExitStack</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A BasePod is a immutable set of peas, which run in parallel. They share the same input and output socket.</span>
 <span class="sd">    Internally, the peas can run with the process/thread backend. They can be also run in their own containers</span>
+<span class="sd">    :param args: arguments parsed from the CLI</span>
+<span class="sd">    :param needs: pod names of preceding pods, the output of these pods are going into the input of this pod</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span> <span class="n">needs</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param args: arguments parsed from the CLI</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_conditional_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
@@ -362,52 +360,92 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">role</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;PodRoleType&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the role of this :class:`BasePod`.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the role of this :class:`BasePod`.</span>
+
+<span class="sd">        :return: role type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pod_role</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_singleton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return if the Pod contains only a single Pea &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return if the Pod contains only a single Pea.</span>
+
+<span class="sd">        :return: true if there is only one pea, else false</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The name of this :class:`BasePod`. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The name of this :class:`BasePod`.</span>
+
+<span class="sd">        :return: name of the pod</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">port_expose</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the grpc port number &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the grpc port number.</span>
+
+<span class="sd">        :return: exposed port</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_pea_args</span><span class="o">.</span><span class="n">port_expose</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the host name of this Pod&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the host name of this Pod.</span>
+
+<span class="sd">        :return: host name</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_pea_args</span><span class="o">.</span><span class="n">host</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">host_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the host_in of this pod&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the host_in of this pod.</span>
+
+<span class="sd">        :return: host name of incoming requests</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">host_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the host_out of this pod&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the host_out of this pod.</span>
+
+<span class="sd">        :return: host name of outgoing requests</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">address_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the full incoming address of this pod&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the full incoming address of this pod.</span>
+
+<span class="sd">        :return: address for incoming requests</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">port_in</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">socket_in</span><span class="si">!s}</span><span class="s1">)&#39;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">address_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the full outgoing address of this pod&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the full outgoing address of this pod.</span>
+
+<span class="sd">        :return: address for outgoing requests.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">port_out</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">socket_out</span><span class="si">!s}</span><span class="s1">)&#39;</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">first_pea_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Namespace</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the first non-head/tail pea&#39;s args &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the first non-head/tail pea&#39;s args.</span>
+
+<span class="sd">        :return: arguments of the first pea which is not a head pea or tail pea</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># note this will be never out of boundary</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
@@ -449,7 +487,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">head_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the arguments for the `head` of this BasePod. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the arguments for the `head` of this BasePod.</span>
+
+<span class="sd">        :return: arguments of the head pea</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -461,7 +503,11 @@
 
     <span class="nd">@head_args</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">head_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the arguments for the `head` of this BasePod. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the arguments for the `head` of this BasePod.</span>
+
+<span class="sd">        :param args: arguments of the head pea</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -473,7 +519,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tail_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the arguments for the `tail` of this BasePod. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the arguments for the `tail` of this BasePod.</span>
+
+<span class="sd">        :return: arguments of the tail pea</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -485,7 +535,11 @@
 
     <span class="nd">@tail_args</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">tail_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the arguments for the `tail` of this BasePod. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the arguments for the `tail` of this BasePod.</span>
+
+<span class="sd">        :param args: arguments of the tail pea</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -497,7 +551,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get all arguments of all Peas in this BasePod. &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all arguments of all Peas in this BasePod.</span>
+
+<span class="sd">        :return: arguments for all peas</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span>
             <span class="o">+</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span>
@@ -506,14 +564,21 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_peas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the number of running :class:`BasePea`&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the number of running :class:`BasePea`.</span>
+
+<span class="sd">        :return: total number of peas including head and tail</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_peas</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">num_peas</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span>
 
 <div class="viewcode-block" id="BasePod.start"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Start to run all :class:`BasePea` in this BasePod.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start to run all :class:`BasePea` in this BasePod.</span>
+
+<span class="sd">        :return: started pod</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            If one of the :class:`BasePea` fails to start, make sure that all of them</span>
@@ -535,9 +600,9 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="BasePod.wait_start_success"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.wait_start_success">[docs]</a>    <span class="k">def</span> <span class="nf">wait_start_success</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Block until all peas starts successfully.</span>
-
-<span class="sd">        If not success, it will raise an error hoping the outer function to catch it</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Block until all peas starts successfully.</span>
+<span class="sd">        If not successful, it will raise an error hoping the outer function to catch it</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">noblock_on_start</span><span class="p">:</span>
@@ -583,7 +648,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Checks if Pod is read.</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if Pod is read.</span>
+
+<span class="sd">        :return: true if the pea is ready to serve requests</span>
+
 <span class="sd">        .. note::</span>
 <span class="sd">            A Pod is ready when all the Peas it contains are ready</span>
 <span class="sd">        &quot;&quot;&quot;</span>
