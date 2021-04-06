@@ -43,7 +43,7 @@ or argument you really want to use.
 ![ide-speed-up](vse.png "VSCode Autocomplete")
 
 
-Create a new hello.jina.yml file and the IDE successfully marks it as Jina file type
+Create a new `hello.jina.yml` file and the IDE successfully marks it as Jina file type
 If it doesn't, you may want to manually select the schema you just created.
 Now type Jtype in the first line and you will see the IDE suggests you with flow or a list of executors that jina contains.
 
@@ -74,6 +74,5 @@ Pycharm or VS Code. Most mainstream IDEs also support JSON schema. You can confi
 in general. 
 
 A schema file enables code completion, syntax validation and argument filtering, filling default values and displaying help text.
-
 
 
