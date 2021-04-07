@@ -45,7 +45,7 @@ For Docker users the following command updates Jina in the Docker container:
    docker pull jinaai/jina
 
 
-Install Jina development or pre-release
+Install Jina development via pip
 ------------------------------
 
 If you want to keep track of the master branch of our development repository:
