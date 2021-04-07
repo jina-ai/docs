@@ -169,7 +169,7 @@ Unfortunately there are some limitations to what Jina can do for the moment. The
 
 5. **Compound Indexer**
 
-While using a `jtype: CompoundIndexer`, it is not possible to return embeddings to the next Driver in the Flow. This is because  the [jtype: CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) has an `jtype: ExcludeQL` for all the embeddings during `IndexRequest` and `UpdateRequest`
+While using a `jtype: CompoundIndexer`, it is not possible to return embeddings to the next Driver in the Flow. This is because the [jtype: CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) has an `jtype: ExcludeQL` for all the embeddings during `IndexRequest` and `UpdateRequest`
 
 ``` python
  jtype: ExcludeQL

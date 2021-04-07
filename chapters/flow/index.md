@@ -282,7 +282,7 @@ You can use enviroment variables with `$` in YAML. More information on the Flow 
 
 #### Add a Driver in YAML
 
-`Executors` are equipped with default `drivers` if no drivers defined. If you want to add other drivers for Executors, you need to define your customized YAML file for the Executor and uses it in the Flow YAML file. You can find more information about the YAML configuration [here](https://docs.jina.ai/chapters/yaml/index.html).
+`Executors` are equipped with default `Drivers` if no `Drivers` defined. If you want to add other `Drivers` for `Executors`, you need to define your customized YAML file for the Executor and uses it in the Flow YAML file. You can find more information about the YAML configuration [here](https://docs.jina.ai/chapters/yaml/index.html).
 The following example shows how to add drivers in a compound executor.
 
 ```yaml
