@@ -222,7 +222,6 @@ For instance calling the ``index_ndarray(...)`` function sends the following mes
             docs {
               id: 1
               weight: 1.0
-              length: 100
               blob {
                 buffer: "\004@\316\362/D\333?\244>\235\305\027\311\336?\267\210\251\311^\260\345?\366\n(\014\022m\356?\374\262\017\030\036\357\351?-c\300\337\217V\345?\241G\241\352\233\024\356?\340\346lUf\353\350?"
                 shape: 8
@@ -232,7 +231,6 @@ For instance calling the ``index_ndarray(...)`` function sends the following mes
             docs {
               id: 2
               weight: 1.0
-              length: 100
               blob {
                 buffer: "\312Wm\337\250\217\354?t\212\326\020\261\r\320?\254\262\300u<O\323?\340\210\222$\321\216\314?\310.q,+\347\311?&\316\361\310\252R\331?\214\016\201a\231\262\330?\342\231\262\221\343%\324?"
                 shape: 8
@@ -242,7 +240,6 @@ For instance calling the ``index_ndarray(...)`` function sends the following mes
             docs {
               id: 3
               weight: 1.0
-              length: 100
               blob {
                 buffer: "kT\250\372K%\345?\237\017+u\300\227\353?\3668\256\340\251\227\350?\327\006$\032$\002\341?\274\300\3573\371\262\343?\346\371\265dV\330\342?\370\210\360\002P3\340?\022i-\016\374\320\331?"
                 shape: 8

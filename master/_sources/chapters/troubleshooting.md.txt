@@ -41,10 +41,8 @@ which prints out the protobuf message directly in the console after each request
         dtype: "float32"
       }
       weight: 1.0
-      length: 1
     }
     weight: 1.0
-    length: 1
   }
 ```
 
