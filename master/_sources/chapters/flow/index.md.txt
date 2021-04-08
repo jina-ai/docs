@@ -90,6 +90,11 @@ Besides the file path, in Flow API `uses` can accept other types:
 | Built-in simple executors [listed here](../simple_exec.html) | `_clear` | Always starts with `_` |
 | Docker image | `docker://jinahub/pod.encoder.dummy_mwu_encoder:0.0.6-1.0.2` | Add `docker://` before the image name and set timeout_ready to -1 to avoid timeout error |
 
+##### Decentralized Flow
+
+
+A Flow does not have to be local-only: You can put any Pod to remote(s). In the example below, with the host keyword gpu-pod, is put to a remote machine for parallelization, whereas other Pods stay local. Extra file dependencies that need to be uploaded are specified via the upload_files keyword.
+
 ##### Add a Remote Pod into the Flow
 
 To run a Pod remotely, simply specify the `host` and `port_expose` arguments. For example:
@@ -119,7 +124,13 @@ f = (Flow().add(name='p1')
 
 This will start `p2` remotely on `192.168.0.100` running a Docker container equipped with the image `jinaai/hub.executors.encoders.bidaf:latest`. Of course Docker is required on `192.168.0.100`. More information on using remote Pods can be found [here](https://docs.jina.ai/chapters/remote/index.html).
 
+We provide a demo server on cloud.jina.ai:8000, give the following snippet a try!
+```
+from jina import Flow
 
+with Flow().add().add(host='cloud.jina.ai:8000') as f:
+    f.index(['hello', 'world'])
+```
 
 ##### Parallelize the Steps
 
@@ -286,6 +297,46 @@ You can use enviroment variables with `$` in YAML. More information on the Flow 
 from jina.flow import Flow
 f = Flow.load_config('myflow.yml')
 ```
+
+##### Asynchronous Flow
+
+
+While synchronous from outside, Jina runs asynchronously under the hood: it manages the eventloop(s) for scheduling the jobs. If the user wants more control over the eventloop, then `AsyncFlow` can be used.
+
+Unlike `Flow`, the CRUD of `AsyncFlow` accepts input and output functions as `async` generators. This is useful when your data sources involve other asynchronous libraries (e.g. motor for MongoDB):
+
+```
+from jina import AsyncFlow
+
+async def input_function():
+    for _ in range(10):
+        yield Document()
+        await asyncio.sleep(0.1)
+
+with AsyncFlow().add() as f:
+    async for resp in f.index(input_function):
+        print(resp)
+```
+AsyncFlow is particularly useful when Jina is using as part of integration, where another heavy-lifting job is running concurrently:
+
+```
+async def run_async_flow_5s():  # WaitDriver pause 5s makes total roundtrip ~5s
+    with AsyncFlow().add(uses='- !WaitDriver {}') as f:
+        async for resp in f.index_ndarray(numpy.random.random([5, 4])):
+            print(resp)
+
+async def heavylifting():  # total roundtrip takes ~5s
+    print('heavylifting other io-bound jobs, e.g. download, upload, file io')
+    await asyncio.sleep(5)
+    print('heavylifting done after 5s')
+
+async def concurrent_main():  # about 5s; but some dispatch cost, can't be just 5s, usually at <7s
+    await asyncio.gather(run_async_flow_5s(), heavylifting())
+
+if __name__ == '__main__':
+    asyncio.run(concurrent_main())
+```
+`AsyncFlow` is very useful when using Jina inside a Jupyter Notebook. As `Jupyter`/ipython already manages an eventloop and thanks to autoawait, `AsyncFlow` can run out-of-the-box in `Jupyter`.
 
 
 #### Design a Flow with Dashboard
