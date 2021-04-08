@@ -12,4 +12,5 @@ Below you will find the setup guides for various, selected environments.
    :glob:
 
    ../../install/index
+   ../../install/ide-speedup
 
