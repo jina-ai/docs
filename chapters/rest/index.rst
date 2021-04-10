@@ -1,10 +1,11 @@
+#################################
 RESTful CRUD Operations with Jina
-*********************************
+#################################
 
 By default, Jina uses gRPC gateway to send protobuf [1]_ messages. To enable browsers to communicate with Jina, we provide an optional REST [2]_ Gateway.
 
 Python API
-^^^^^^^^^^
+""""""""""
 
 .. code:: python
 
@@ -14,7 +15,7 @@ Python API
          .add(...))
 
 YAML
-^^^^
+""""
 
 .. code:: yaml
 
@@ -26,16 +27,18 @@ YAML
         - name: pod1
           uses: _index
 
+********
 API Docs
---------
+********
 
 `Refer detailed API reference using redoc <https://api.jina.ai/rest/>`__
 
+************************
 CRUD Examples  [3]_ [4]_
-------------------------
+************************
 
 1. Index
-^^^^^^^^
+"""""""""
 
 .. code:: bash
 
@@ -57,7 +60,7 @@ CRUD Examples  [3]_ [4]_
          }'
 
 2. Query
-^^^^^^^^
+"""""""""
 
 .. code:: bash
 
@@ -69,7 +72,7 @@ CRUD Examples  [3]_ [4]_
         }'
 
 3. Update
-^^^^^^^^^
+""""""""""
 
 .. code:: bash
 
@@ -86,7 +89,7 @@ CRUD Examples  [3]_ [4]_
         }'
 
 4. Delete
-^^^^^^^^^
+"""""""""
 
 .. code:: bash
 
@@ -96,8 +99,9 @@ CRUD Examples  [3]_ [4]_
             "data": [ "temp-id-1", "temp-id-2" ]
         }'
 
+***************
 WebSockets [5]_
--------------
+***************
 
 REST doesn't support bi-directional streaming, which hampers the performance especially during batch operations. We have enabled an WebSocket endpoint at ``http://localhost:<port-expose>/stream``.
 Following code sends requests to a Websocket gateway using ``(Async)WebSocketClient``.
