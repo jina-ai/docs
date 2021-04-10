@@ -1,10 +1,10 @@
 RESTful CRUD Operations with Jina
-=================================
+*********************************
 
 By default, Jina uses gRPC gateway to send protobuf [1]_ messages. To enable browsers to communicate with Jina, we provide an optional REST [2]_ Gateway.
 
 Python API
-''''''''''
+^^^^^^^^^^
 
 .. code:: python
 
@@ -14,7 +14,7 @@ Python API
          .add(...))
 
 YAML
-''''
+^^^^
 
 .. code:: yaml
 
@@ -35,7 +35,7 @@ CRUD Examples  [3]_ [4]_
 ------------------------
 
 1. Index
-''''''''
+^^^^^^^^
 
 .. code:: bash
 
@@ -57,7 +57,7 @@ CRUD Examples  [3]_ [4]_
          }'
 
 2. Query
-''''''''
+^^^^^^^^
 
 .. code:: bash
 
@@ -69,7 +69,7 @@ CRUD Examples  [3]_ [4]_
         }'
 
 3. Update
-'''''''''
+^^^^^^^^^
 
 .. code:: bash
 
@@ -86,7 +86,7 @@ CRUD Examples  [3]_ [4]_
         }'
 
 4. Delete
-'''''''''
+^^^^^^^^^
 
 .. code:: bash
 
