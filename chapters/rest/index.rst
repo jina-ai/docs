@@ -1,10 +1,7 @@
 RESTful CRUD Operations with Jina
 =================================
 
-Enable REST/Websockets Gateway
-------------------------------
-
-By default, Jina uses gRPC for its gateway to send protobuf [1]_ messages. To enable browsers to communicate with Jina, we provide an optional REST [2]_ Gateway.
+By default, Jina uses gRPC gateway to send protobuf [1]_ messages. To enable browsers to communicate with Jina, we provide an optional REST [2]_ Gateway.
 
 Python API
 ''''''''''
@@ -99,7 +96,7 @@ CRUD Examples  [3]_ [4]_
             "data": [ "temp-id-1", "temp-id-2" ]
         }'
 
-WebSockets[5]
+WebSockets [5]_
 -------------
 
 REST doesn't support bi-directional streaming, which hampers the performance especially during batch operations. We have enabled an WebSocket endpoint at ``http://localhost:<port-expose>/stream``.
@@ -115,17 +112,12 @@ Following code sends requests to a Websocket gateway using ``(Async)WebSocketCli
         f.index(...)
 
 
-.. [1]
-   `Protobuf Specification <https://docs.jina.ai/chapters/proto/>`__
+.. [1] `Protobuf Specification <https://docs.jina.ai/chapters/proto/>`__
 
-.. [2]
-   To use Jina with REST API, you need to install jina via :command:``pip install "jina[http]"``
+.. [2] To use Jina with REST API, you need to install jina via :command:``pip install "jina[http]"``
 
-.. [3]
-   Read more about `CRUD implementation in Jina <https://docs.jina.ai/chapters/crud/>`__.
+.. [3] Read more about `CRUD implementation in Jina <https://docs.jina.ai/chapters/crud/>`__.
 
-.. [4]
-   The endpoint ``/api/{mode}`` is deprecated. Please move to the corresponding CRUD endpoint.
+.. [4] The endpoint ``/api/{mode}`` is deprecated. Please move to the corresponding CRUD endpoint.
 
-.. [5]
-   This is an experimental endpoint & is subject to change.
+.. [5] This is an experimental endpoint & is subject to change.
