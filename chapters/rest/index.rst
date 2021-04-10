@@ -118,7 +118,7 @@ Following code sends requests to a Websocket gateway using ``(Async)WebSocketCli
 
 .. [1] `Protobuf Specification <https://docs.jina.ai/chapters/proto/>`__
 
-.. [2] To use Jina with REST API, you need to install jina via :command:``pip install "jina[http]"``
+.. [2] To use Jina with REST API, you need to install jina via ``pip install "jina[http]"``
 
 .. [3] Read more about `CRUD implementation in Jina <https://docs.jina.ai/chapters/crud/>`__.
 
