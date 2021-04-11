@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.runtimes.asyncio.rest.app &mdash; Jina 1.1.4-master documentation</title>
+  <title>jina.peapods.runtimes.asyncio.rest.app &mdash; Jina 1.1.5-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.4-master</button>
+            <button class="dropbtn version">1.1.5-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -358,6 +358,7 @@
             <span class="n">JinaDeleteRequestModel</span><span class="p">,</span>
             <span class="n">JinaUpdateRequestModel</span><span class="p">,</span>
             <span class="n">JinaSearchRequestModel</span><span class="p">,</span>
+            <span class="n">JinaReloadRequestModel</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span>
@@ -515,6 +516,26 @@
         <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">DELETE</span>
         <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span>
             <span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)),</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span>
+        <span class="p">)</span>
+
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/reload&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Reload the executor of certain Peas/Pods in the Flow&#39;</span>
+    <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">reload_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaReloadRequestModel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reload the executor of certain peas/pods in the Flow</span>
+
+<span class="sd">        :param body: reload request.</span>
+<span class="sd">        :return: Response of the results.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
+
+        <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">CONTROL</span>
+        <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;RELOAD&#39;</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span>
+            <span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">bd</span><span class="p">)),</span>
+            <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">result_in_stream</span><span class="p">(</span><span class="n">req_iter</span><span class="p">):</span>
