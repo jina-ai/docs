@@ -1,10 +1,6 @@
-# Using Jina remotely with JinaD
+# Distributing Jina across multiple machines using JinaD
 
-`JinaD`, aka "Jina [Daemon](https://en.wikipedia.org/wiki/Daemon_(computing))", is a background process for deploying and managing Jina Flows, Pods, and Peas in a distributed system.
-
-## Design
-
-`JinaD` is designed to spawn / bookkeep / destory Flows, Pods & Peas on remote machines via a RESTful interface. It ships with [`fluentd`](https://github.com/fluent/fluentd) to collect & stream logs from a Flow.
+`JinaD` is a [daemon](https://en.wikipedia.org/wiki/Daemon_(computing)) for deploying and managing Jina Flows / Pods / Peas on a distributed system via a RESTful interface. It ships with [`fluentd`](https://github.com/fluent/fluentd) to collect & stream logs from a Flow.
 
 ![JinaD design](jinad_design.png)
 

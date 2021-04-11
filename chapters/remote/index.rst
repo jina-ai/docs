@@ -1,5 +1,5 @@
-Using Jina Pods Remotely
-=======================
+Distributed Jina
+=================
 
 
 
