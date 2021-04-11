@@ -45,11 +45,6 @@ cd jina && pip install -e ".[daemon]"
 
 ## Usage
 
-### Prerequisites
-
-Start `JinaD` on a remote machine. We assume the remote IP address is `1.2.3.4`. By default, JinaD listens on port `8000`. Make sure `1.2.3.4:8000` is publicly accessible. `http://1.2.3.4:8000/` should return `{}` if JinaD is accessible.
-
-
 ##### Docker Image (Recommended)
 
 We start a Docker container under the `host` mode so that it will connect all the ports to the host machine. `-d` option is to keep the container running in the background
@@ -65,6 +60,15 @@ docker run -d --network host jinaai/jina:latest-daemon
 ```bash
 jinad
 ```
+
+#### Prerequisites
+
+- Start `JinaD` on a remote machine (say `1.2.3.4`)
+- JinaD listens on port `8000` by default.
+- To change the port number, run `jinad --port-expose <your-port>`
+- Make sure `1.2.3.4:8000` is publicly accessible.
+- `http://1.2.3.4:8000/` should return `{}` if JinaD is accessible.
+
 
 ### [Remote Pods with JinaD](https://docs.jina.ai/chapters/remote/remote-pods.html)
 
