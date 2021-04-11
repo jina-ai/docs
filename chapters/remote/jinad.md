@@ -1,35 +1,28 @@
-# Using Jina remotely with Jina Daemon
+# Using Jina remotely with JinaD
 
-`jinad`, aka `Jina Daemon`, is a persistent process for deploying and managing Jina Flow, Pods, and Peas in a distributed system. 
-
-## Terminologies
-
-- *Workflow*: a set of connected pods for accomplishing certain task, e.g. indexing, searching, extracting.
-- *Flow API*: a pythonic way for users to construct workflows in Jina with clean, readable idioms. 
-- *Remote*, *remote instance*, *remote machine*: the place where you want to run the pod, the place offers better computational capability or larger storage. For example, one may want to run an encode pod on the remote GPU instance.  
-- *Local*, *local instance*, *local machine*: the place of your entrypoint and the rest parts of your workflow.
+`JinaD`, aka "Jina [Daemon](https://en.wikipedia.org/wiki/Daemon_(computing))", is a background process for deploying and managing Jina Flows, Pods, and Peas in a distributed system.
 
 ## Design
 
-`jinad` is designed to maintain bookkeeping for the running Flows, Pods and Peas on the remote machines. `jinad` can also spawn Pods and Peas to other remote machines that have `jinad` running. [`fluentd`](https://github.com/fluent/fluentd) is used to collect logs from different Processes and ensure the logs belonging to the same Flow are stored consistently. 
+`JinaD` is designed to spawn / bookkeep / destory Flows, Pods & Peas on remote machines via a RESTful interface. It ships with [`fluentd`](https://github.com/fluent/fluentd) to collect & stream logs from a Flow.
 
-![jinad design](jinad_design.png)
+![JinaD design](jinad_design.png)
 
 ## Installation
 
-### Using Docker Images (Recommended)
+##### Docker Image (Recommended)
 
-The simplest way to use `jinad` is via Docker. There is no need to worry about [`fluentd`](https://github.com/fluent/fluentd) installation. You only need to have [Docker installed](https://docs.docker.com/install/) first. 
+The simplest way to use `JinaD` is via Docker. You only need to have [Docker installed](https://docs.docker.com/install/).
 
-In the command below, we use the tag `latest-daemon` which uses the latest release version of `jinad`. Of course, you can switch to other versions, and you can find all the available versions at [hub.docker.com](https://hub.docker.com/repository/docker/jinaai/jina/tags?page=1&ordering=last_updated&name=daemon). You can found more information about the versioning at [github.com/jina-ai/jina](https://github.com/jina-ai/jina/blob/master/RELEASE.md).
+We use the tag `latest-daemon` in the below command, which uses the latest release of `JinaD`. To use other versions, please refer to [versioning in Jina](https://github.com/jina-ai/jina/blob/master/RELEASE.md) and find all the available versions at [Docker Hub](https://hub.docker.com/repository/docker/jinaai/jina/tags?page=1&ordering=last_updated&name=daemon).
 
 ```bash
 docker pull jinaai/jina:latest-daemon
 ```
 
-### Using PyPi package
+##### PyPi package
 
-> Notes: As one part of the jina package, `jinad` follows the same [installation instructions of jina](https://docs.jina.ai/chapters/install/os/via-pip.html) and you only need to cherry pick `[daemon]`
+> Note: As one part of the jina package, `JinaD` follows the same [installation instructions of jina](https://docs.jina.ai/chapters/install/os/via-pip.html) and you only need to cherry pick `[daemon]`
 
 On Linux/Mac, simply run:
 
@@ -37,7 +30,7 @@ On Linux/Mac, simply run:
 pip install "jina[daemon]"
 ```
 
-### Install from the Master Branch
+##### Master branch
 
 If you want to keep track of the master branch of our development repository:
 
@@ -45,28 +38,23 @@ If you want to keep track of the master branch of our development repository:
 pip install "git+https://github.com/jina-ai/jina.git#egg=jina[daemon]"
 ```
 
-### Install from Your Local Fork/Clone
+##### Local fork/clone
 
-If you are a developer and want to test your changes on-the-fly: 
+If you are a developer and want to test your changes on-the-fly:
 
 ```bash
 git clone https://github.com/jina-ai/jina
 cd jina && pip install -e ".[daemon]"
-``` 
-
-## Usage 
-
-### Prerequisites
-Run `jinad` on the remote machine. We assume the remote is in the intranet and its IP address is `12.34.56.78`. By default, `jinad` will use the port `8000` for receiving requests. Make sure `8000` port is publicly accessible.
-
-After having `jinad` running on the remote, you can open the browser and visit `http://3.16.166.3:8000/alive` to check whether `jinad` is properly set up. 
-If everything works well, you will see the following response.
-
-```json
-{"status_code":200,"jina_version":"0.9.12"}
 ```
 
-#### Using Docker Container
+## Usage
+
+### Prerequisites
+
+Start `JinaD` on a remote machine. We assume the remote IP address is `1.2.3.4`. By default, JinaD listens on port `8000`. Make sure `1.2.3.4:8000` is publicly accessible. `http://1.2.3.4:8000/` should return `{}` if JinaD is accessible.
+
+
+##### Docker Image (Recommended)
 
 We start a Docker container under the `host` mode so that it will connect all the ports to the host machine. `-d` option is to keep the container running in the background
 
@@ -74,15 +62,14 @@ We start a Docker container under the `host` mode so that it will connect all th
 docker run -d --network host jinaai/jina:latest-daemon
 ```
 
-#### Using Native Python
+##### Native Python
+
+> Note: This doesn't ship fluentd, hence log streaming wouldn't be possible.
 
 ```bash
 jinad
 ```
 
-### [Creating a Remote Pod from Console](https://docs.jina.ai/chapters/remote/create-remote-pod-console-jinad.html)
+### [Remote Pods with JinaD](https://docs.jina.ai/chapters/remote/remote-pods.html)
 
-### [Creating a Remote Pod via Flow APIs](https://docs.jina.ai/chapters/remote/create-remote-pod-flow.html) 
-
-
-### [Creating a Remote Flow](https://docs.jina.ai/chapters/remote/create-remote-flow.html) 
+### [Remote Flows with JinaD](https://docs.jina.ai/chapters/remote/remote-flows.html)
