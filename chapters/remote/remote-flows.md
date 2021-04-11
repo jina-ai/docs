@@ -64,3 +64,8 @@ curl --request DELETE \
 curl --request DELETE \
     --url 'http://1.2.3.4:8000/flows'
 ```
+
+## What's next?
+
+In case you've missed, you may want to check out the following article.
+[Remote Pods with JinaD](https://docs.jina.ai/chapters/remote/remote-pods.html)

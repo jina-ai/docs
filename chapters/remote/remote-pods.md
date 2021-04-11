@@ -38,5 +38,5 @@ pods:
 
 ## What's next?
 
-You many also want to check out the following articles.
-[Creating a Remote Flow](https://docs.jina.ai/chapters/remote/create-remote-flow.html)
+In case you've missed, you may want to check out the following article.
+[Remote Flows with JinaD](https://docs.jina.ai/chapters/remote/remote-flows.html)
