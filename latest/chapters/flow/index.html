@@ -4,8 +4,7 @@
 <html lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="X-UA-Compatible" content="IE=edge">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@JinaAI_">
@@ -22,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Using the Flow API to Compose Your Jina Workflow &mdash; Jina 1.1.3-master documentation</title>
+  <title>Using the Flow API to Compose Your Jina Workflow &mdash; Jina 1.1.4-master documentation</title>
   
 
   
@@ -85,10 +84,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.3-master</button>
+            <button class="dropbtn version">1.1.4-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.1.2">1.1.2</a>
+              
+              <a class="dropdown-item" href="/v1.1.1">1.1.1</a>
+              
+              <a class="dropdown-item" href="/v1.1.0">1.1.0</a>
               
               <a class="dropdown-item" href="/v1.0.9">1.0.9</a>
               
@@ -193,7 +198,7 @@
               
             
             
-              <p><span class="caption-text">Jina Core</span></p>
+              <p class="caption"><span class="caption-text">Jina Core</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../core/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../core/setup/">Installation</a></li>
@@ -232,27 +237,27 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../core/api_references/">API References</a></li>
 </ul>
-<p><span class="caption-text">Jina Dashboard</span></p>
+<p class="caption"><span class="caption-text">Jina Dashboard</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dashboard/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dashboard/guides/">Developer Guides</a></li>
 </ul>
-<p><span class="caption-text">Jina Hub</span></p>
+<p class="caption"><span class="caption-text">Jina Hub</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../hub/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hub/guides/">Developer Guides</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hub/api_references/">API References</a></li>
 </ul>
-<p><span class="caption-text">Jina Box</span></p>
+<p class="caption"><span class="caption-text">Jina Box</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../box/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../box/guides/">Developer Guides</a></li>
 </ul>
-<p><span class="caption-text">Glossary</span></p>
+<p class="caption"><span class="caption-text">Glossary</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../glossary/">Glossary</a></li>
 </ul>
-<p><span class="caption-text">Community</span></p>
+<p class="caption"><span class="caption-text">Community</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING/">Contributing to Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING/#join-us-on-slack">Join Us on Slack!</a></li>
@@ -264,7 +269,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../faq/user/">FAQ for End-Users</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../docstring/">Docstring Guide</a></li>
 </ul>
-<p><span class="caption-text">Indices and Tables</span></p>
+<p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../all_exec/">List of 52 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 73 Drivers in Jina</a></li>
@@ -342,7 +347,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="using-the-flow-api-to-compose-your-jina-workflow">
+  <div class="section" id="using-the-flow-api-to-compose-your-jina-workflow">
 <h1>Using the Flow API to Compose Your Jina Workflow<a class="headerlink" href="#using-the-flow-api-to-compose-your-jina-workflow" title="Permalink to this headline">¶</a></h1>
 <p>In this section, you will get to know how to construct the flow using different approaches.</p>
 <p>Table of Contents</p>
@@ -380,21 +385,21 @@
 </ul>
 </li>
 </ul>
-<section id="feature-description-and-expected-outcome">
+<div class="section" id="feature-description-and-expected-outcome">
 <h2>Feature description and expected outcome<a class="headerlink" href="#feature-description-and-expected-outcome" title="Permalink to this headline">¶</a></h2>
 <p>In search systems, tasks such as indexing often involve multiple steps: preprocessing, encoding, storing, etc. In Jina’s architecture, each step is implemented by an Executor and wrapped by a Pod. This microservice design makes the whole pipeline flexible and scalable. Accomplishing a task is then linking all these Pods to work together, either sequentially or in parallel; locally or remotely.</p>
 <p>The Flow API is a context manager for Pods. Each <code class="docutils literal notranslate"><span class="pre">Flow</span></code> object corresponds to a real-world task. It helps the user to manage the states and contexts of all Pods required in that task. The Flow API translates a workflow defined in Python code, YAML file, or interactive graph to a runtime backed by multi-thread/process, Kubernetes, Docker Swarm, etc. Users don’t need to worry about where the Pod is running or how the Pods are connected.</p>
 <p><img alt="Flow is a context manager" src="../../_images/flow-api-doc.png" /></p>
-</section>
-<section id="before-you-start">
+</div>
+<div class="section" id="before-you-start">
 <h2>Before you start<a class="headerlink" href="#before-you-start" title="Permalink to this headline">¶</a></h2>
 <p>Make sure you install latest version of Jina via <a class="reference external" href="https://docs.jina.ai/chapters/install/os/index.html">Installation</a>.</p>
-</section>
-<section id="implementation">
+</div>
+<div class="section" id="implementation">
 <h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
-<section id="use-flow-api-in-python">
+<div class="section" id="use-flow-api-in-python">
 <h3>Use Flow API in Python<a class="headerlink" href="#use-flow-api-in-python" title="Permalink to this headline">¶</a></h3>
-<section id="create-a-flow">
+<div class="section" id="create-a-flow">
 <h4>Create a Flow<a class="headerlink" href="#create-a-flow" title="Permalink to this headline">¶</a></h4>
 <p>To create a new Flow:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
@@ -408,8 +413,8 @@
 </pre></div>
 </div>
 <p>will set the <code class="docutils literal notranslate"><span class="pre">read_only</span></code> attribute of all Pods in <code class="docutils literal notranslate"><span class="pre">f</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
-</section>
-<section id="add-pod-into-the-flow">
+</div>
+<div class="section" id="add-pod-into-the-flow">
 <h4>Add Pod into the Flow<a class="headerlink" href="#add-pod-into-the-flow" title="Permalink to this headline">¶</a></h4>
 <p>To add a Pod to the Flow, simply call <code class="docutils literal notranslate"><span class="pre">.add()</span></code>, syntax of YAML file can be found <a class="reference external" href="https://docs.jina.ai/chapters/yaml/index.html">here</a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;mypod1.yml&#39;</span><span class="p">)</span>
@@ -460,8 +465,12 @@
 <td>Add <code>docker://</code> before the image name and set timeout_ready to -1 to avoid timeout error</td>
 </tr>
 </tbody>
-</table></section>
-<section id="add-a-remote-pod-into-the-flow">
+</table></div>
+<div class="section" id="decentralized-flow">
+<h4>Decentralized Flow<a class="headerlink" href="#decentralized-flow" title="Permalink to this headline">¶</a></h4>
+<p>A Flow does not have to be local-only: You can put any Pod to remote(s). In the example below, with the host keyword gpu-pod, is put to a remote machine for parallelization, whereas other Pods stay local. Extra file dependencies that need to be uploaded are specified via the upload_files keyword.</p>
+</div>
+<div class="section" id="add-a-remote-pod-into-the-flow">
 <h4>Add a Remote Pod into the Flow<a class="headerlink" href="#add-a-remote-pod-into-the-flow" title="Permalink to this headline">¶</a></h4>
 <p>To run a Pod remotely, simply specify the <code class="docutils literal notranslate"><span class="pre">host</span></code> and <code class="docutils literal notranslate"><span class="pre">port_expose</span></code> arguments. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
@@ -471,8 +480,8 @@
 </div>
 <p>This will start <code class="docutils literal notranslate"><span class="pre">p2</span></code> remotely on <code class="docutils literal notranslate"><span class="pre">192.168.0.100</span></code>, whereas <code class="docutils literal notranslate"><span class="pre">p1</span></code> and <code class="docutils literal notranslate"><span class="pre">p3</span></code> run locally.</p>
 <p>To use remote Pods, you need to start a <code class="docutils literal notranslate"><span class="pre">gateway</span></code> on <code class="docutils literal notranslate"><span class="pre">192.168.0.100</span></code> in advance. More information on using remote Pods can be found <a class="reference external" href="https://docs.jina.ai/chapters/remote/index.html">here</a>.</p>
-</section>
-<section id="add-a-remote-containerized-pod-into-the-flow">
+</div>
+<div class="section" id="add-a-remote-containerized-pod-into-the-flow">
 <h4>Add a Remote Containerized Pod into the Flow<a class="headerlink" href="#add-a-remote-containerized-pod-into-the-flow" title="Permalink to this headline">¶</a></h4>
 <p>A very useful pattern is to combine the above two features together:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -483,8 +492,15 @@
 </pre></div>
 </div>
 <p>This will start <code class="docutils literal notranslate"><span class="pre">p2</span></code> remotely on <code class="docutils literal notranslate"><span class="pre">192.168.0.100</span></code> running a Docker container equipped with the image <code class="docutils literal notranslate"><span class="pre">jinaai/hub.executors.encoders.bidaf:latest</span></code>. Of course Docker is required on <code class="docutils literal notranslate"><span class="pre">192.168.0.100</span></code>. More information on using remote Pods can be found <a class="reference external" href="https://docs.jina.ai/chapters/remote/index.html">here</a>.</p>
-</section>
-<section id="parallelize-the-steps">
+<p>We provide a demo server on cloud.jina.ai:8000, give the following snippet a try!</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Flow</span>
+
+<span class="k">with</span> <span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;cloud.jina.ai:8000&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">([</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parallelize-the-steps">
 <h4>Parallelize the Steps<a class="headerlink" href="#parallelize-the-steps" title="Permalink to this headline">¶</a></h4>
 <p>By default, if you keep adding <code class="docutils literal notranslate"><span class="pre">.add()</span></code> to a <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, it will create a sequential workflow chain. You can parallelize some of the steps by using <code class="docutils literal notranslate"><span class="pre">needs</span></code> argument. For example,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
@@ -498,8 +514,8 @@
               <span class="o">-&gt;</span> <span class="n">p3</span> <span class="o">-&gt;</span> <span class="n">gateway</span>
 </pre></div>
 </div>
-</section>
-<section id="waiting-for-parallel-steps-to-finish">
+</div>
+<div class="section" id="waiting-for-parallel-steps-to-finish">
 <h4>Waiting for Parallel Steps to Finish<a class="headerlink" href="#waiting-for-parallel-steps-to-finish" title="Permalink to this headline">¶</a></h4>
 <p>In the prior example, the message is returned to the gateway regardless of the status of <code class="docutils literal notranslate"><span class="pre">p2</span></code>. To wait for multiple parallel steps to finish before continuing, you can do:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;p1&#39;</span><span class="p">)</span>
@@ -514,8 +530,8 @@
               <span class="o">-&gt;</span> <span class="n">p3</span> <span class="o">-&gt;</span>
 </pre></div>
 </div>
-</section>
-<section id="run-a-flow">
+</div>
+<div class="section" id="run-a-flow">
 <h4>Run a Flow<a class="headerlink" href="#run-a-flow" title="Permalink to this headline">¶</a></h4>
 <p>To run a Flow, simply use the <code class="docutils literal notranslate"><span class="pre">with</span></code> keyword:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -529,8 +545,8 @@
 </pre></div>
 </div>
 <p>Though you can manually call the <code class="docutils literal notranslate"><span class="pre">start()</span></code> method to run the flow, you also need to call the corresponding <code class="docutils literal notranslate"><span class="pre">close()</span></code> method to release the resource. Using <code class="docutils literal notranslate"><span class="pre">with</span></code> saves you the trouble, as the resource is automatically released when running out of the scope.</p>
-</section>
-<section id="test-connectivity-with-dry-run">
+</div>
+<div class="section" id="test-connectivity-with-dry-run">
 <h4>Test Connectivity with Dry Run<a class="headerlink" href="#test-connectivity-with-dry-run" title="Permalink to this headline">¶</a></h4>
 <p>You can test the whole workflow with <code class="docutils literal notranslate"><span class="pre">pass</span></code>. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -538,8 +554,8 @@
     <span class="k">pass</span>
 </pre></div>
 </div>
-</section>
-<section id="iterate-over-pods-in-the-flow">
+</div>
+<div class="section" id="iterate-over-pods-in-the-flow">
 <h4>Iterate over Pods in the Flow<a class="headerlink" href="#iterate-over-pods-in-the-flow" title="Permalink to this headline">¶</a></h4>
 <p>You can iterate the Pods in a Flow like you would a list. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
@@ -553,8 +569,8 @@
 </pre></div>
 </div>
 <p>Note f.build() will build the underlying network context but not run the Pods. It is very useful for debugging.</p>
-</section>
-<section id="feed-data-to-the-flow">
+</div>
+<div class="section" id="feed-data-to-the-flow">
 <h4>Feed Data to the Flow<a class="headerlink" href="#feed-data-to-the-flow" title="Permalink to this headline">¶</a></h4>
 <p>You can use <code class="docutils literal notranslate"><span class="pre">.index()</span></code>, <code class="docutils literal notranslate"><span class="pre">.search()</span></code> to feed index data and search query to a Flow:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
@@ -582,8 +598,8 @@
 <blockquote>
 <div><p>Please note that the current Flow API does not support using <code class="docutils literal notranslate"><span class="pre">index()</span></code> and <code class="docutils literal notranslate"><span class="pre">search()</span></code> together in the same <code class="docutils literal notranslate"><span class="pre">with</span></code> scope. This is because the workflow of <code class="docutils literal notranslate"><span class="pre">index()</span></code> and <code class="docutils literal notranslate"><span class="pre">search()</span></code> are usually different, and you cannot use one workflow for both tasks.</p>
 </div></blockquote>
-</section>
-<section id="feed-data-to-the-flow-from-other-clients">
+</div>
+<div class="section" id="feed-data-to-the-flow-from-other-clients">
 <h4>Feed Data to the Flow from Other Clients<a class="headerlink" href="#feed-data-to-the-flow-from-other-clients" title="Permalink to this headline">¶</a></h4>
 <p>If you don’t use Python as a client, or your client and Flow are in different instances, you can keep a Flow running and use a client in another language to connect to it:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">threading</span>
@@ -598,9 +614,9 @@
         <span class="k">pass</span> <span class="c1"># &lt;- dont do that</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="use-flow-api-in-yaml">
+</div>
+</div>
+<div class="section" id="use-flow-api-in-yaml">
 <h3>Use Flow API in YAML<a class="headerlink" href="#use-flow-api-in-yaml" title="Permalink to this headline">¶</a></h3>
 <p>You can also write a Flow in YAML:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!Flow</span>
@@ -622,21 +638,57 @@
 </pre></div>
 </div>
 <p>You can use enviroment variables with <code class="docutils literal notranslate"><span class="pre">$</span></code> in YAML. More information on the Flow YAML Schema can be found <a class="reference external" href="https://docs.jina.ai/chapters/yaml/index.html">here</a>.</p>
-<section id="load-a-flow-from-yaml">
+<div class="section" id="load-a-flow-from-yaml">
 <h4>Load a Flow from YAML<a class="headerlink" href="#load-a-flow-from-yaml" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina.flow</span> <span class="kn">import</span> <span class="n">Flow</span>
 <span class="n">f</span> <span class="o">=</span> <span class="n">Flow</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s1">&#39;myflow.yml&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="design-a-flow-with-dashboard">
+</div>
+<div class="section" id="asynchronous-flow">
+<h4>Asynchronous Flow<a class="headerlink" href="#asynchronous-flow" title="Permalink to this headline">¶</a></h4>
+<p>While synchronous from outside, Jina runs asynchronously under the hood: it manages the eventloop(s) for scheduling the jobs. If the user wants more control over the eventloop, then <code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> can be used.</p>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, the CRUD of <code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> accepts input and output functions as <code class="docutils literal notranslate"><span class="pre">async</span></code> generators. This is useful when your data sources involve other asynchronous libraries (e.g. motor for MongoDB):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">AsyncFlow</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">input_function</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">Document</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">AsyncFlow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">async</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">input_function</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>AsyncFlow is particularly useful when Jina is using as part of integration, where another heavy-lifting job is running concurrently:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">run_async_flow_5s</span><span class="p">():</span>  <span class="c1"># WaitDriver pause 5s makes total roundtrip ~5s</span>
+    <span class="k">with</span> <span class="n">AsyncFlow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">&#39;- !WaitDriver </span><span class="si">{}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">index_ndarray</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">])):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">heavylifting</span><span class="p">():</span>  <span class="c1"># total roundtrip takes ~5s</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;heavylifting other io-bound jobs, e.g. download, upload, file io&#39;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;heavylifting done after 5s&#39;</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">concurrent_main</span><span class="p">():</span>  <span class="c1"># about 5s; but some dispatch cost, can&#39;t be just 5s, usually at &lt;7s</span>
+    <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">run_async_flow_5s</span><span class="p">(),</span> <span class="n">heavylifting</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">concurrent_main</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> is very useful when using Jina inside a Jupyter Notebook. As <code class="docutils literal notranslate"><span class="pre">Jupyter</span></code>/ipython already manages an eventloop and thanks to autoawait, <code class="docutils literal notranslate"><span class="pre">AsyncFlow</span></code> can run out-of-the-box in <code class="docutils literal notranslate"><span class="pre">Jupyter</span></code>.</p>
+</div>
+</div>
+<div class="section" id="design-a-flow-with-dashboard">
 <h3>Design a Flow with Dashboard<a class="headerlink" href="#design-a-flow-with-dashboard" title="Permalink to this headline">¶</a></h3>
 <p>With Jina Dashboard, you can interactively drag and drop Pods, set their attribute and export to a Flow YAML file.</p>
 <p>More information on the dashboard can be found <a class="reference external" href="https://github.com/jina-ai/dashboard">here</a>.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -780,7 +832,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 04, 2021.
+        Last updated on Apr 11, 2021.
       </span>
 
         </p>

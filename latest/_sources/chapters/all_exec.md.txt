@@ -5,35 +5,15 @@ This version of Jina includes 52 Executors.
 ## Inheritances in a Tree View
 - `JAMLCompatible`
    - `BaseExecutor`
-      - `BaseClassifier`
       - `BaseEvaluator`
+         - `BaseEmbeddingEvaluator`
+            - `CosineEvaluator`
+            - `EuclideanEvaluator`
+         - `BaseTextEvaluator`
+            - `TextLengthEvaluator`
          - `BaseRankingEvaluator`
             - `PrecisionEvaluator`
             - `RecallEvaluator`
-         - `BaseEmbeddingEvaluator`
-            - `EuclideanEvaluator`
-            - `CosineEvaluator`
-         - `BaseTextEvaluator`
-            - `TextLengthEvaluator`
-      - `BaseMultiModalEncoder`
-      - `BaseSegmenter`
-      - `BaseIndexer`
-         - `BaseKVIndexer`
-            - `BinaryPbIndexer`
-               - `DataURIPbIndexer`
-               - `KeyValueIndexer`
-            - `BaseCache`
-               - `DocCache`
-         - `BaseVectorIndexer`
-            - `BaseNumpyIndexer`
-               - `NumpyIndexer`
-                  - `VectorIndexer`
-      - `CompoundExecutor`
-         - `CompoundIndexer`
-         - `UniqueVectorIndexer`
-         - `FileBasedEvaluator`
-         - `UniquePbIndexer`
-      - `BaseCrafter`
       - `BaseEncoder`
          - `BaseNumericEncoder`
             - `BaseAudioEncoder`
@@ -52,6 +32,26 @@ This version of Jina includes 52 Executors.
                - `BaseTFEncoder`
             - `TorchDevice`
                - `BaseTorchEncoder`
+      - `CompoundExecutor`
+         - `CompoundIndexer`
+         - `UniqueVectorIndexer`
+         - `UniquePbIndexer`
+         - `FileBasedEvaluator`
+      - `BaseIndexer`
+         - `BaseKVIndexer`
+            - `BinaryPbIndexer`
+               - `DataURIPbIndexer`
+               - `KeyValueIndexer`
+            - `BaseCache`
+               - `DocCache`
+         - `BaseVectorIndexer`
+            - `BaseNumpyIndexer`
+               - `NumpyIndexer`
+                  - `VectorIndexer`
+      - `BaseCrafter`
+      - `BaseClassifier`
+      - `BaseSegmenter`
+      - `BaseMultiModalEncoder`
       - `BaseRanker`
          - `Chunk2DocRanker`
          - `Match2DocRanker`
@@ -62,39 +62,39 @@ This version of Jina includes 52 Executors.
 | --- | --- |
 | `BaseAudioEncoder` | `jina.executors.encoders.numeric` |
 | `BaseCache` | `jina.executors.indexers.cache` |
-| `BaseClassifier` | `jina.executors.compound` |
-| `BaseCrafter` | `jina.executors.compound` |
+| `BaseClassifier` | `jina.executors.rankers` |
+| `BaseCrafter` | `jina.executors.rankers` |
 | `BaseDevice` | `jina.executors.encoders.frameworks` |
-| `BaseEmbeddingEvaluator` | `jina.executors.evaluators.embedding` |
-| `BaseEncoder` | `jina.executors.compound` |
-| `BaseEvaluator` | `jina.executors.compound` |
+| `BaseEmbeddingEvaluator` | `jina.executors.evaluators.rank` |
+| `BaseEncoder` | `jina.executors.rankers` |
+| `BaseEvaluator` | `jina.executors.rankers` |
 | `BaseExecutor` |   |
 | `BaseImageEncoder` | `jina.executors.encoders.numeric` |
-| `BaseIndexer` | `jina.executors.compound` |
+| `BaseIndexer` | `jina.executors.rankers` |
 | `BaseKVIndexer` | `jina.executors.indexers` |
 | `BaseMindsporeEncoder` |   |
-| `BaseMultiModalEncoder` | `jina.executors.compound` |
+| `BaseMultiModalEncoder` | `jina.executors.rankers` |
 | `BaseNumericEncoder` | `jina.executors.encoders.frameworks` |
 | `BaseNumpyIndexer` | `jina.executors.indexers.vector` |
 | `BaseOnnxEncoder` |   |
 | `BasePaddleEncoder` |   |
-| `BaseRanker` | `jina.executors.compound` |
-| `BaseRankingEvaluator` | `jina.executors.evaluators.embedding` |
-| `BaseSegmenter` | `jina.executors.compound` |
+| `BaseRanker` | `jina.executors.rankers` |
+| `BaseRankingEvaluator` | `jina.executors.evaluators.rank` |
+| `BaseSegmenter` | `jina.executors.rankers` |
 | `BaseTFEncoder` |   |
 | `BaseTextEncoder` | `jina.executors.encoders.frameworks` |
-| `BaseTextEvaluator` | `jina.executors.evaluators.embedding` |
+| `BaseTextEvaluator` | `jina.executors.evaluators.rank` |
 | `BaseTorchEncoder` |   |
 | `BaseVectorIndexer` | `jina.executors.indexers` |
 | `BaseVideoEncoder` | `jina.executors.encoders.numeric` |
 | `BinaryPbIndexer` | `jina.executors.indexers.cache` |
 | `Chunk2DocRanker` | `jina.executors.rankers` |
-| `CompoundExecutor` | `jina.executors.compound` |
+| `CompoundExecutor` | `jina.executors.rankers` |
 | `CompoundIndexer` | `jina.executors.compound` |
-| `CosineEvaluator` | `jina.executors.evaluators.embedding.cosine` |
+| `CosineEvaluator` | `jina.executors.evaluators.embedding` |
 | `DataURIPbIndexer` | `jina.executors.indexers.keyvalue` |
 | `DocCache` | `jina.executors.indexers.cache` |
-| `EuclideanEvaluator` | `jina.executors.evaluators.embedding.cosine` |
+| `EuclideanEvaluator` | `jina.executors.evaluators.embedding` |
 | `FileBasedEvaluator` | `jina.executors.compound` |
 | `JAMLCompatible` |   |
 | `KeyValueIndexer` | `jina.executors.indexers.keyvalue` |
@@ -106,7 +106,7 @@ This version of Jina includes 52 Executors.
 | `PrecisionEvaluator` | `jina.executors.evaluators.rank` |
 | `RecallEvaluator` | `jina.executors.evaluators.rank` |
 | `TFDevice` |   |
-| `TextLengthEvaluator` | `jina.executors.evaluators.text` |
+| `TextLengthEvaluator` | `jina.executors.evaluators.text.length` |
 | `TorchDevice` |   |
 | `TransformEncoder` | `jina.executors.encoders.numeric` |
 | `UniquePbIndexer` | `jina.executors.compound` |
