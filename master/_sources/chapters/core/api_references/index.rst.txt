@@ -4,9 +4,9 @@ API References
 .. toctree::
    :titlesonly:
    :glob:
-   :caption: Jina REST API Specification
+   :caption: Jina REST API Reference
 
-   ../../restapi
+   ../../rest/index
 
 .. toctree::
    :titlesonly:
