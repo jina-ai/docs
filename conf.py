@@ -142,9 +142,11 @@ nitpicky = True
 nitpick_ignore = [('py:class', 'type')]
 linkcheck_ignore = [
     # Avoid link check on local uri
-    "http://0.0.0.0:*",
+    'http://0.0.0.0:*',
     'pods/encode.yml',
-    "https://github.com/jina-ai/jina/commit/*",
+    'https://github.com/jina-ai/jina/commit/*',
+    '.github/*',
+    'extra-requirements.txt',
 ]
 linkcheck_timeout = 20
 linkcheck_retries = 2
