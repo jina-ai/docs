@@ -282,45 +282,7 @@ You can use enviroment variables with `$` in YAML. More information on the Flow 
 
 #### Add a Driver in YAML
 
-`Executors` are equipped with default `Drivers` if no `Drivers` defined. If you want to add other `Drivers` for `Executors`, you need to define your customized YAML file for the Executor and uses it in the Flow YAML file. You can find more information about the YAML configuration [here](https://docs.jina.ai/chapters/yaml/index.html).
-The following example shows how to add drivers in a compound executor.
-
-```yaml
-jtype: CompoundIndexer
-components:
-  - jtype: NumpyIndexer
-    with:
-      index_filename: vec.gz
-      metric: cosine
-    metas:
-      name: vecidx  # a customized name
-  - jtype: BinaryPbIndexer
-    with:
-      index_filename: doc.gz
-    metas:
-      name: docidx  # a customized name
-metas:
-  name: indexer
-  workspace: $JINA_WORKSPACE
-requests:
-  on:
-    SearchRequest:
-      - jtype: VectorSearchDriver  # Search Driver for NumpyIndexer
-        with:
-          executor: vecidx
-      - jtype: KVSearchDriver  # Search Driver for BinaryPbIndexer
-        with:
-          executor: docidx
-          is_update: True
-          traversal_paths: ['m']
-    [IndexRequest, UpdateRequest]:
-      - jtype: VectorIndexDriver  # Index Driver for NumpyIndexer
-        with:
-          executor: vecidx
-      - jtype: KVIndexDriver  # Index Driver for BinaryPbIndexer
-        with:
-          executor: docidx
-```
+`Executors` are equipped with default `Drivers` if no `Drivers` defined. More information, on adding other Drivers for Executors can be found [here](https://docs.jina.ai/chapters/yaml/index.html).
 
 ##### Load a Flow from YAML
 
