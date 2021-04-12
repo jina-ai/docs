@@ -1,17 +1,17 @@
 # Speed-up Jina app development in PyCharm and VSCode
 
-Jina App development can be time consuming if you do not have the IDE setup correctly. This chapter describes how to speed up your developer experience
+Jina app development can be time consuming if you do not have the IDE setup correctly. This chapter describes how to speed up your developer experience
 in PyCharm and VSCode IDE while using Jina. In particular we focus on how to enable Intellisense for Jina YAML configuration files. Intellisense can provide code completion, showing number and arguments list, validating your YAML config.
 
 These features can help you build your Jina application much faster.
 
 ## Set up your developer environment for Jina
 
-Once you have the latest Jina version installed with PyPI, you can begin to create your Jina application. Two types of files need to be written: Python code and YAML config. The Python file defines the entry point and customized logic while the YAML configuration files define the flow composition and the configuration of each individual Executor. Depending on the cases and the depth of customization, you can develop the project in both ways. In Jina, it is even possible to build a completely code free project that only depends on the configuration. Most IDEs have provided smart intelligence for Python development - due to
+Once you have the latest Jina version installed with PyPI, you can begin to create your Jina application. Two types of files need to be written: Python code and YAML configuration files. The Python file defines the entry point and customized logic while the YAML configuration files define the flow composition and the configuration of each individual Executor. Depending on the cases and the depth of customization, you can develop the project in both ways. In Jina, it is even possible to build a completely code free project that only depends on the configuration. Most IDEs have provided smart intelligence for Python development - due to
 straightforward API type hints and 100% string coverage in Jina framework, you can enjoy a pretty smooth development experience. However, for YAML configuration files, it doesn't help so much besides simple code highlight which could slow down your development speed as you have to navigate through the documentation of the code base in order to figure out which component
 or argument you really want to use.
 
-## Enable Intellisense for JINA YAML configuration files in PyCharm:
+## Enable Intellisense for Jina YAML configuration files in PyCharm:
 
 1. First open PyCharm, click on the Menu and select Preference. 
 2. In the left panel, search for JSON schema in the search box and select JSON schema mappings.
@@ -86,5 +86,6 @@ PyCharm or VSCode. Most mainstream IDEs also support JSON schema. You can config
 
 ## Conclusion
 A schema file enables code completion, syntax validation and argument filtering, filling default values and displaying help text.
+Check out the [video link to the IDE setup tutorial](https://youtu.be/qOD-6mihUzQ).
 
 
