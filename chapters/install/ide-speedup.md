@@ -8,8 +8,12 @@ These features can help you build your Jina application much faster.
 ## Set up your developer environment for Jina
 
 Once you have the latest Jina version installed with PyPI, you can begin to create your Jina application. Two types of files need to be written: Python code and YAML configuration files. The Python file defines the entry point and customized logic while the YAML configuration files define the flow composition and the configuration of each individual Executor. Depending on the cases and the depth of customization, you can develop the project in both ways. In Jina, it is even possible to build a completely code free project that only depends on the configuration. Most IDEs have provided smart intelligence for Python development - due to
-straightforward API type hints and 100% string coverage in Jina framework, you can enjoy a pretty smooth development experience. However, for YAML configuration files, it doesn't help so much besides simple code highlight which could slow down your development speed as you have to navigate through the documentation of the code base in order to figure out which component
-or argument you really want to use.
+straightforward API type hints and 100% string coverage in Jina framework, you can enjoy a pretty smooth development experience.
+
+### Painpoint for developers:
+For YAML configuration files, it doesn't help so much besides simple code highlight which could slow down your development speed as you have to navigate through the documentation of the code base in order to figure out which component or argument you really want to use.
+
+To solve the above issue, this tutorial explains how to enable and use plugins in PyCharm and VSCode IDEs.
 
 ## Enable Intellisense for Jina YAML configuration files in PyCharm:
 
