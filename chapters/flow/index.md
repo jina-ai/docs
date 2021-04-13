@@ -282,7 +282,8 @@ You can use enviroment variables with `$` in YAML. More information on the Flow 
 
 #### Add a Driver in YAML
 
-`Executors` are equipped with default `Drivers` if no `Drivers` defined. More information, on adding other Drivers for Executors can be found [here](https://docs.jina.ai/chapters/yaml/index.html).
+`Executors` are equipped with default `Drivers` if no `Drivers` defined. 
+More information, on adding other Drivers for Executors can be found [here](https://docs.jina.ai/chapters/yaml/index.html).
 
 ##### Load a Flow from YAML
 
