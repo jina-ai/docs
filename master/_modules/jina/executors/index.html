@@ -243,8 +243,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 52 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 73 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 75 Drivers in Jina</a></li>
 </ul>
 
             
@@ -480,6 +480,8 @@
         <span class="s1">&#39;query_by_key&#39;</span><span class="p">,</span>
         <span class="s1">&#39;delete&#39;</span><span class="p">,</span>
         <span class="s1">&#39;update&#39;</span><span class="p">,</span>
+        <span class="c1"># TODO make Dump a control request to be passed to the Pod directly</span>
+        <span class="s1">&#39;dump&#39;</span><span class="p">,</span>
     <span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -847,7 +849,10 @@
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">fill_metas_with_defaults</span><span class="p">(</span><span class="n">raw_config</span><span class="p">)</span>
         <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;pea_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pea_id</span>
         <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;read_only&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">read_only</span>
-
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">):</span>
+            <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">])</span>
+            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tmp</span></div>
 
 <div class="viewcode-block" id="BaseExecutor.load"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.load">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -889,9 +894,9 @@
 <span class="sd">        :param args: Additional arguments.</span>
 <span class="sd">        :param kwargs: Additional key word arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-                <span class="n">d</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="o">=</span><span class="n">runtime</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">drivers</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">driver</span> <span class="ow">in</span> <span class="n">drivers</span><span class="p">:</span>
+                <span class="n">driver</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="o">=</span><span class="n">runtime</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># replacing the logger to runtime&#39;s logger</span>
         <span class="k">if</span> <span class="n">runtime</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">runtime</span><span class="p">,</span> <span class="s1">&#39;logger&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">JinaLogger</span><span class="p">):</span>
@@ -1052,7 +1057,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 12, 2021.
+        Last updated on Apr 13, 2021.
       </span>
 
         </p>
