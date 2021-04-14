@@ -1,13 +1,11 @@
-Using Jina Pods Remotely
-=======================
+Distributed Jina
+=================
 
 
 
 .. toctree::
    :maxdepth: 1
 
-   run-remote-pod-console
    jinad
-   create-remote-flow
-   create-remote-pod-console-jinad
-   create-remote-pod-flow
+   remote-pods
+   remote-flows
