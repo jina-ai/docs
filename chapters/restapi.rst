@@ -5,7 +5,7 @@ Jina REST API Specification
     To use REST API support, you need to install jina via :command:`pip install "jina[http]"` or use the corresponding feature-enabled Docker image.
 
 API reference
--------------
+---------
 
 You can view the API reference on external the `ReDocs page <https://api.jina.ai/rest/>`_ .
 
