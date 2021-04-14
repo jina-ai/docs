@@ -38,5 +38,5 @@ pods:
 
 ## What's next?
 
-In case you've missed, you may want to check out the following article.
+In case you've missed it, you may want to check out the following article.
 [Remote Flows with JinaD](remote-flows.md)

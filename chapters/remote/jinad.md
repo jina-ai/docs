@@ -18,7 +18,7 @@ docker pull jinaai/jina:latest-daemon
 
 ##### PyPi package
 
-> Note: As one part of the jina package, `JinaD` follows the same [installation instructions of jina](https://docs.jina.ai/chapters/install/os/via-pip.html) and you only need to cherry pick `[daemon]`
+> Note: `JinaD` is a part of the Jina and follows the same [installation instructions](https://docs.jina.ai/chapters/install/os/via-pip.html) and you only need to pick `[daemon]`
 
 On Linux/Mac, simply run:
 
@@ -55,7 +55,7 @@ docker run -d --network host jinaai/jina:latest-daemon
 
 ##### Native Python
 
-> Note: This doesn't ship fluentd, hence log streaming wouldn't be possible.
+> Note: Using Native Python doesn't ship fluentd, hence log streaming is not possible.
 
 ```bash
 jinad
@@ -66,8 +66,8 @@ jinad
 - Start `JinaD` on a remote machine (say `1.2.3.4`)
 - JinaD listens on port `8000` by default.
 - To change the port number, run `jinad --port-expose <your-port>`
-- Make sure `1.2.3.4:8000` is publicly accessible.
-- `http://1.2.3.4:8000/` should return `{}` if JinaD is accessible.
+- Make sure `1.2.3.4:<your-port>` is publicly accessible.
+- `http://1.2.3.4:<your-port>/` should return `{}` if JinaD is accessible.
 
 
 ### [Remote Pods with JinaD](remote-pods.md)

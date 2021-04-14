@@ -6,13 +6,13 @@ Before you start, make sure you have read the [prerequisites for using JinaD](ht
 
 ## REST API
 
-[Refer the detailed API reference for JinaD](https://api.jina.ai/daemon/#tag/flows)
+[Refer the detailed API](https://api.jina.ai/daemon/#tag/flows)
 
 A common use case is running the Flow on the remote with pods distributed across different machines.
 
 #### Examples
 
-Define `flow.yml` with the correct `JinaD` host details.
+Given we have JinaD running on `1.2.3.4:8000` & `2.3.4.5:8000`, define `flow.yml` with the host config.
 
 ```yaml
 jtype: Flow
@@ -67,5 +67,5 @@ curl --request DELETE \
 
 ## What's next?
 
-In case you've missed, you may want to check out the following article.
+In case you've missed it, you may want to check out the following article.
 [Remote Pods with JinaD](remote-pods.md)
