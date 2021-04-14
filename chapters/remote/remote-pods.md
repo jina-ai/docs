@@ -39,4 +39,4 @@ pods:
 ## What's next?
 
 In case you've missed, you may want to check out the following article.
-[Remote Flows with JinaD](https://docs.jina.ai/chapters/remote/remote-flows.html)
+[Remote Flows with JinaD](remote-flows.md)

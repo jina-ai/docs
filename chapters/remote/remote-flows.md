@@ -68,4 +68,4 @@ curl --request DELETE \
 ## What's next?
 
 In case you've missed, you may want to check out the following article.
-[Remote Pods with JinaD](https://docs.jina.ai/chapters/remote/remote-pods.html)
+[Remote Pods with JinaD](remote-pods.md)

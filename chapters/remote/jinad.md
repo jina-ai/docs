@@ -70,6 +70,6 @@ jinad
 - `http://1.2.3.4:8000/` should return `{}` if JinaD is accessible.
 
 
-### [Remote Pods with JinaD](https://docs.jina.ai/chapters/remote/remote-pods.html)
+### [Remote Pods with JinaD](remote-pods.md)
 
-### [Remote Flows with JinaD](https://docs.jina.ai/chapters/remote/remote-flows.html)
+### [Remote Flows with JinaD](remote-flows.md)
