@@ -72,7 +72,7 @@ For Docker users the following command updates Jina in the Docker container:
 
 
 Cherry-pick extra dependencies
-============
+==============================
 
 Jina requires only five dependencies ``numpy``\ , ``pyzmq``\ , ``protobuf``\ , ``grpcio`` and ``pyyaml``. No third-party pre-trained models, deep learning/NLP/CV packages will be installed.
 
