@@ -271,7 +271,7 @@ with f:
 You can also write a Flow in YAML:
 
 ```yaml
-!Flow
+jtype: Flow
 version: '1.0'
 with:
     restful: true
@@ -290,6 +290,11 @@ pods:
 ```
 
 You can use enviroment variables with `$` in YAML. More information on the Flow YAML Schema can be found [here](https://docs.jina.ai/chapters/yaml/index.html).
+
+#### Add a Driver in YAML
+
+`Executors` are equipped with default `Drivers` if no `Drivers` defined. 
+More information, on adding other Drivers for Executors can be found [here](https://docs.jina.ai/chapters/yaml/index.html).
 
 ##### Load a Flow from YAML
 
