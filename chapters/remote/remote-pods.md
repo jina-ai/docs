@@ -6,7 +6,7 @@ Before you start, make sure you have read the [prerequisites for using JinaD](ht
 
 ## Inside a Flow
 
-A common case of using Jina remotely is to have a Flow running locally with Pod on the remote. Following code creates a Flow with a remote Pod on `1.2.3.4` and uploads the pod yml to remote using `upload_files`. All remote logs are collected by the Flow.
+A common case of using Jina remotely is to have a Flow running locally with Pod on the remote. Following code creates a Flow with a remote Pod on `1.2.3.4` and uploads the pod yaml to remote using `upload_files`. All remote logs are collected by the Flow.
 
 #### Python
 
@@ -34,7 +34,7 @@ pods:
 
 ## REST API
 
-[Refer the detailed API reference for JinaD](https://api.jina.ai/daemon/#tag/pods)
+[Refer the detailed API](https://api.jina.ai/daemon/#tag/pods)
 
 ## What's next?
 
