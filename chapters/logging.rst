@@ -12,11 +12,12 @@ Logging Configuration in Jina
 Motivation
 -------------------
 
-In order to better monitor, and debug the running and lifetime of Jina's peas, pods, and flow, Jina offers logging to help log the messages.
+In order to better monitor, and debug the running and lifetime of Peas, Pods, and Flows, Jina offers configurable logging.
 
 Before you start
 -------------------
-You have installed the latest stable release of Jina according to the instructions found `here <https://docs.jina.ai/chapters/core/setup/index.html>`_ .
+
+You have installed the latest stable release of Jina Core according to the instructions found `here <https://docs.jina.ai/chapters/install/index.html>`_ .
 
 
 Overview
@@ -25,74 +26,60 @@ Overview
 Jina logging messages at first glance
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Let's start from an logging example. Jina logs messages with different formats in different situations. The example below follows the most commonly used format:
+Let's start from a logging example.
+Jina logs messages with different formats in different situations.
+The example below follows the most commonly used format:
 
 .. highlight:: bash
 .. code-block:: bash
 
-   pod1@25908[I]:starting jina.peapods.runtimes.zmq.zed.ZEDRuntime...
-   pod1@25908[I]:input tcp://0.0.0.0:63915 (PULL_BIND) output tcp://0.0.0.0:63916 (PUSH_BIND) control over tcp://0.0.0.0:63914 (PAIR_BIND)
-   pod1@25903[S]:ready and listening
+    pod1@25908[I]:starting jina.peapods.runtimes.zmq.zed.ZEDRuntime...
+    pod1@25908[I]:input tcp://0.0.0.0:63915 (PULL_BIND) output tcp://0.0.0.0:63916 (PUSH_BIND) control over tcp://0.0.0.0:63914 (PAIR_BIND)
+    pod1@25903[S]:ready and listening
 
 This is how the message is composed:
 
 .. highlight:: text
 .. code-block:: text
 
-    name@process[levelname]:message
+    pod_name@process_id[log_level]:message
 
-Where ``name`` is the name of the Pod, ``process`` is the process ID, ``levelname`` is the level.
-Jina has six different levels of log messages (DEBUG, INFO, WARNING, ERROR, CRITICAL, SUCCESS).
-The default level can be controlled by ``JINA_LOG_LEVEL`` environment variable or in YAML configuration.
+Jina has six different log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL, SUCCESS).
+The default level can be controlled by the ``JINA_LOG_LEVEL`` environment variable or in YAML configuration.
 
 
 Logging handler
 ^^^^^^^^^^^^^^^
 
-You can choose the way to monitor and save logs by using different logging handlers. Jina logger supports different ``Handlers`` to control where the messages are sent/stored:
+You can control where the logs are sent/stored by using different logging handlers.
+Jina supports four different handlers:
 
-.. list-table:: Logging handler
-   :widths: 25 50 25 30
-   :header-rows: 1
-
-   * - Name
-     - Description
-     - Format
-     - Notes
-   * - FileHandler
-     - Jina offers the possibility to put the logs in local files either as simple text or as json format.
-     - asctime:name@process[levelname]:message
-     - output: jina-uptime.log
-   * - StreamHandler
-     - Jina logger uses a `StreamHandler` to print the logs in each Pea's local stdout, which you can view in console.
-     - name@process[levelname]:message
-     -
-   * - SysLogHandler
-     - Jina uses SysLogHandler to output logs to system logs.
-     - name@process[levelname]:message
-     - When host and port not given then record it locally, /dev/log on linux /var/run/syslog on mac.
-   * - FluentHandler
-     - Given the distributed nature of Jina's Peas and Pods, Jina offers a flexible solution that lets the user configure how and where the logs are forwarded.
-     - Need to set ``hostname``, ``process`` ``levelname``
-     - FluentD then will have its own configuration to forward the messages according to its own syntax
-
+- The ``FileHandler`` puts the logs in local files either as simple text or as json format.
+- The ``StreamHandler`` prints the logs in each Pea's local stdout, which you can view in console.
+- The ``SysLogHandler`` outputs logs to system logs.
+  When host and port are not given it records locally, /dev/log on linux /var/run/syslog on mac.
+- The ``FluentHandler`` caters for the distributed nature of Jina's Peas and Pods.
+  FluentD has its own configuration to forward the messages according to its own syntax.
 
 Logging Configuration in Action
 --------------------------------------
 
-Jina logging can be configured in a YAML file.
+You can configure the logging either on ``Flow`` level
 
 .. highlight:: python
 .. code-block:: python
 
-        from jina.flow import Flow
-        from jina import Document
+    f = Flow(log_config='logging_cfg.yml').add().add()
 
-        f = Flow(log_config='logging_cfg.yml').add().add()
-        # If you want to set the configuration for a certain Pod
-        #f = Flow().add(log_config='logging_cfg.yml').add()
+or ``Pod`` level
 
-In a YAML file you can customized the logger, choose the handler you need to monitor and save logs. ``logging_cfg.yml`` can be configured as follows:
+.. highlight:: python
+.. code-block:: python
+
+    f = Flow().add(log_config='logging_cfg.yml').add()
+
+In a YAML file you can customize the logger, choose the handler you need to monitor and save logs.
+``logging_cfg.yml`` can be configured as follows:
 
 .. highlight:: yaml
 .. code-block:: yaml
@@ -101,7 +88,7 @@ In a YAML file you can customized the logger, choose the handler you need to mon
       - StreamHandler
       - SysLogHandler
       - FluentHandler
-    level: INFO  # set verbose level
+    level: INFO
     configs:
       FileHandler:
         format: '%(asctime)s:{name:>15}@%(process)2d[%(levelname).1s]:%(message)s'
@@ -128,8 +115,7 @@ In a YAML file you can customized the logger, choose the handler you need to mon
           process: '%(process)s'
           type: '%(levelname)s'
 
-
-If you want to hide the logs of a certain Pod, you can set ``quiet=True`` in flow like:
+If you want to hide the logs of a certain Pod, you can set ``quiet=True`` in a Flow like:
 
 .. highlight:: python
 .. code-block:: python
@@ -138,7 +124,7 @@ If you want to hide the logs of a certain Pod, you can set ``quiet=True`` in flo
         with f:
             f.index(Document())
 
-Or in YAML flow configuration:
+Or in YAML Flow configuration:
 
 .. highlight:: yaml
 .. code-block:: yaml
@@ -157,14 +143,15 @@ FluentD
 ^^^^^^^^^
 `Fluentd <https://github.com/fluent/fluentd>`_ is an open source data collector for unified logging layer.
 
-`Fluentd <https://github.com/fluent/fluentd>`_ is expected to be used as a daemon receiving messages from the Jina logger and forwarding them to specific outputs using its
-output plugins and configurations. 
- 
-Although fluentd can be configured to forward logs to the user's preferred destinations, Jina offers a default configuration under `/resources` folder which expects a fluentd daemon to be running
-inside every machine running a Jina instance or Pea. Then the default configuration must be adapted to send the logs to the specific server where the Flow and the dashboard will be run. (This default behavior will evolve)
+`Fluentd <https://github.com/fluent/fluentd>`_ is expected to be used as a daemon receiving messages from the Jina logger and forwarding them to specific outputs using its output plugins and configurations.
 
-See the default `fluent.conf` configuration provided by Jina. It takes every input coming in the listening 24224 port and
-depending on the kind of message, sends it to a local temporary file, from where the Flow will read the incoming file.
+Although fluentd can be configured to forward logs to the user's preferred destinations, Jina offers a default configuration under `/resources` folder which expects a fluentd daemon to be running
+inside every machine running a Jina instance or Pea.
+Then the default configuration must be adapted to send the logs to the specific server where the Flow and the dashboard will be run.
+(This default behavior will evolve)
+
+See the default `fluent.conf` configuration provided by Jina.
+It takes every input coming in the listening 24224 port and depending on the kind of message, sends it to a local temporary file, from where the Flow will read the incoming file.
 
 .. highlight:: xml
 .. code-block:: xml
@@ -200,16 +187,13 @@ depending on the kind of message, sends it to a local temporary file, from where
     </match>
 
 
-This is the default configuration, that works well together with the configuration provided in ``logging.fluentd.yml``,
-which controls the tags assigned to the different type of logs, as well as the host and port where the handler will send the 
-logs. By default it expects a fluentd daemon to run in every local and remote Pea (this is the most scalable configuration)
+This is the default configuration, that works well together with the configuration provided in ``logging.fluentd.yml``.
+It controls the tags assigned to the different type of logs, as well as the host and port where the handler will send the logs.
+By default it expects a fluentd daemon to run in every local and remote Pea (this is the most scalable configuration).
 
 .. highlight:: yaml
 .. code-block:: yaml
 
-    # this configuration describes where is the fluentD daemon running and waiting for logs to be emitted.
-    # FluentD then will have its own configuration to forward the messages according to its own syntax
-    # prefix will help fluentD filter data. This will be prepended for FluentD to easily filter incoming messages
     tag: jina
     profile-tag: jina-profile
     host: 0.0.0.0
@@ -221,8 +205,8 @@ To better understand fluentd configuration and to see how you can adapt to your 
 Start fluentd daemon
 ^^^^^^^^^^^^^^^^^^^^^
 
-For the logging using fluentd to work and therefore for the dashboard to properly have access to the logs, the user needs to
-start fluentd daemon. It can be done in every remote and local machine or just in the host where the FluentDHandler will send the logs.
+For the logging using fluentd to work and therefore for the dashboard to properly have access to the logs, the user needs to start fluentd daemon.
+It can be done in every remote and local machine or just in the host where the FluentDHandler will send the logs.
 
 - Install `https://docs.fluentd.org/installation <https://docs.fluentd.org/installation>`_ .
 - Run ``fluentd -c ${FLUENTD_CONF_FILE}`` (Default conf file ``${JINA_RESOURCES_PATH}/fluent.conf``)
@@ -231,11 +215,11 @@ start fluentd daemon. It can be done in every remote and local machine or just i
 Conclusion
 -----------------
 
-In this guide, we introduced what is Jina Logger and how we can configure the logging in Jina.
+In this guide, we introduced the Jina Logger and how we can configure the logging in Jina.
 
 What's Next
 -----------------
 
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://slack.jina.ai>`_ .
 
-To gain a deeper knowledge on the implementation of Jina logging, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/logging>`_.
+To gain deeper knowledge on the implementation of Jina logging, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/logging>`_.
