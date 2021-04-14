@@ -169,14 +169,16 @@ Unfortunately there are some limitations to what Jina can do for the moment. The
 
 5. **Compound Indexer**
 
-While using a `!CompoundIndexer`, it is not possible to return embeddings to the next Driver in the Flow. This is because  the [!CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) has an `!ExcludeQL` for all the embeddings during `IndexRequest` and `UpdateRequest`
+While using a `jtype: CompoundIndexer`, it is not possible to return embeddings to the next Driver in the Flow. This is because the [jtype: CompoundIndexer](https://github.com/jina-ai/jina/blob/master/jina/resources/executors.requests.CompoundIndexer.yml) has an `jtype: ExcludeQL` for all the embeddings during `IndexRequest` and `UpdateRequest`
 
 ``` python
- !ExcludeQL
+ jtype: ExcludeQL
       with:
         fields:
           - embedding
 ```
 
 This is done because otherwise the embeddings would be stored in the `BaseVectorIndexer` but also in the `BaseKVIndexer`.
-If you want to be able to access the embeddings anyway, you can can overwrite it in your own `index.yml` and `query.yml` files removing the `!ExcludeQL` directive.
+If you want to be able to access the embeddings anyway, you can can overwrite it in your own `index.yml` and `query.yml` files removing the `jtype: ExcludeQL` directive.
+
+The example of using `jtype: CompoundIndexer` without `jtype: ExcludeQL` can be seen [here](https://docs.jina.ai/chapters/flow/#use-flow-api-in-yaml).
