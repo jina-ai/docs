@@ -335,7 +335,7 @@ Since it is an Encoder, we need to overwrite the :meth:`encode`.
 
 In the code sample above, we called CLIP's :meth:`encode_text` to use the pre-trained CLIP model and encode input data into vector embeddings.
 
-.. note:: The example above is a minimum working example of a `CLIPTextEncoder`, for full features such as GPU support, batching and dockerization, please checkout `Jina-hub <https://github.com/jina-ai/jina-hub/tree/master/encoders>`_.
+.. note:: The example above is a minimum working example of a `CLIPTextEncoder`, for full features such as GPU support, batching and dockerization, please check out `Jina-hub <https://github.com/jina-ai/jina-hub/tree/master/encoders>`_.
 
 The same applies to `CLIPImageEncoder`, the only difference is to use :meth:`self.model.encode_image` in :meth:`encode`.
 Last but not least, create the YAML configuration for the encoder and use it with Jina CLI or Flow API.
@@ -406,7 +406,7 @@ What's next
 ^^^^^^^^^^^
 Thanks for your time and effort while reading this guide!
 
-Please checkout `Jina-Hub <https://github.com/jina-ai/jina-hub>`_ to explore the executors.
+Please check out `Jina-Hub <https://github.com/jina-ai/jina-hub>`_ to explore the executors.
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
 
 To gain a deeper knowledge on the implementation of Jina Executors, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors>`_.

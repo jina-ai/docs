@@ -326,7 +326,7 @@
 </li>
 <li><p>On all the machines, apart from the client:</p>
 <ol>
-<li><p>Install Jina, JinaD and the other requirements on each of the machines</p>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">Jina</span></code>, <code class="docutils literal notranslate"><span class="pre">JinaD</span></code> and the other requirements on each of the machines</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> files can be found in the folders <code class="docutils literal notranslate"><span class="pre">image</span></code> or <code class="docutils literal notranslate"><span class="pre">text</span></code>. Install the ones you plan to run.</p>
 </li>
 </ol>
@@ -353,8 +353,12 @@
 <li><p>Clone this repository from <a class="reference external" href="https://github.com/jina-ai/cloud-ops/">here</a></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">cloud-ops/stress-example</span></code></p></li>
 <li><p>Build Docker image <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">build</span> <span class="pre">-f</span> <span class="pre">debianx.Dockerfile</span> <span class="pre">-t</span> <span class="pre">stress_example_image_search</span> <span class="pre">$PATH_TO_JINA_CORE_REPO</span></code></p></li>
-<li><p>Create Docker compose containers <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">-f</span> <span class="pre">docker-compose.yml</span> <span class="pre">--project-directory</span> <span class="pre">.</span> <span class="pre">up</span> <span class="pre">--build</span> <span class="pre">-d</span></code></p></li>
-<li><p>Proceed as normal with configuring the machines and the client, as above.</p></li>
+<li><p>Configure the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file. The defaults should work fine for a basic demo in Docker Compose.</p></li>
+<li><p>Start up Docker compose containers <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">-f</span> <span class="pre">docker-compose.yml</span> <span class="pre">--project-directory</span> <span class="pre">.</span> <span class="pre">up</span> <span class="pre">--build</span> <span class="pre">-d</span></code></p></li>
+<li><p>Modify the <code class="docutils literal notranslate"><span class="pre">FLOW_HOST</span></code> in <code class="docutils literal notranslate"><span class="pre">.env</span></code>. You can get this by running <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">inspect</span> <span class="pre">-f</span> <span class="pre">'{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}'</span> <span class="pre">stress-example_flow_1</span></code></p></li>
+<li><p>Run the script <code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">run_test.sh</span></code></p>
+<p><strong>NOTE</strong>: The script will fail when trying to query with any of the advanced indexers. This is because we do not yet support starting a Docker image from within a Docker image, when it requires mounting a specific volume. You can however still query with the simple Numpy-based Indexer.</p>
+</li>
 <li><p>Tear down containers: <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">-f</span> <span class="pre">docker-compose.yml</span> <span class="pre">--project-directory</span> <span class="pre">.</span> <span class="pre">down</span></code></p></li>
 </ol>
 </div>
