@@ -7,7 +7,7 @@
 JinaD is a REST + Websockets based server to allow remote workflows in Jina. <br/>
 It is built using [FastAPI](https://fastapi.tiangolo.com/)
  and deployed using [Uvicorn](https://www.uvicorn.org/).
-For more information checkout the [documentation](../remote/jinad.md)
+For more information check out the [documentation](../remote/jinad.md)
 
 ### Before you start
 
