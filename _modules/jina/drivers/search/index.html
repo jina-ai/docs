@@ -244,7 +244,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 75 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
             
@@ -430,7 +430,7 @@
 
 
 <div class="viewcode-block" id="VectorSearchDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.search/#jina.drivers.search.VectorSearchDriver">[docs]</a><span class="k">class</span> <span class="nc">VectorSearchDriver</span><span class="p">(</span><span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">QuerySetReader</span><span class="p">,</span> <span class="n">BaseSearchDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Extract embeddings from the request for the executor to query.</span>
+    <span class="sd">&quot;&quot;&quot;Extract dense embeddings from the request for the executor to query.</span>
 
 <span class="sd">    :param top_k: top-k document ids to retrieve</span>
 <span class="sd">    :param fill_embedding: fill in the embedding of the corresponding doc,</span>
@@ -443,8 +443,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_top_k</span> <span class="o">=</span> <span class="n">top_k</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fill_embedding</span> <span class="o">=</span> <span class="n">fill_embedding</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_documents_embeddings</span><span class="p">(</span><span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_fill_matches</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">topks</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">topk_embed</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">numpy_match_id</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">vec</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">topks</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">topk_embed</span><span class="p">):</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">numpy_match_id</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span><span class="n">op_name</span><span class="o">=</span><span class="n">op_name</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">score</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">r</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">vec</span>
+
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">embed_vecs</span><span class="p">,</span> <span class="n">doc_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
+        <span class="n">embed_vecs</span><span class="p">,</span> <span class="n">doc_pts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_documents_embeddings</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_pts</span><span class="p">:</span>
             <span class="k">return</span>
@@ -456,21 +469,34 @@
             <span class="p">)</span>
 
         <span class="n">idx</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">embed_vecs</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_k</span><span class="p">))</span>
-
         <span class="n">op_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">topks</span><span class="p">,</span> <span class="n">scores</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">doc_pts</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">dist</span><span class="p">):</span>
-
             <span class="n">topk_embed</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">fill_fn</span><span class="p">(</span><span class="n">topks</span><span class="p">)</span>
                 <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fill_embedding</span> <span class="ow">and</span> <span class="n">fill_fn</span><span class="p">)</span>
                 <span class="k">else</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">topks</span><span class="p">)</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">numpy_match_id</span><span class="p">,</span> <span class="n">score</span><span class="p">,</span> <span class="n">vec</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">topks</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">topk_embed</span><span class="p">):</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">numpy_match_id</span><span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span><span class="n">op_name</span><span class="o">=</span><span class="n">op_name</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">score</span><span class="p">)</span>
-                <span class="n">r</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">vec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">r</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">vec</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fill_matches</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">topks</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">topk_embed</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SparseVectorSearchDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.search/#jina.drivers.search.SparseVectorSearchDriver">[docs]</a><span class="k">class</span> <span class="nc">SparseVectorSearchDriver</span><span class="p">(</span><span class="n">VectorSearchDriver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extract sparse embeddings from the request for the executor to query.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_documents_embeddings</span><span class="p">(</span><span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_sparse_embeddings</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_fill_matches</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">op_name</span><span class="p">,</span> <span class="n">topks</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">topk_embed</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="p">(</span><span class="n">numpy_match_id</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">topks</span><span class="p">,</span> <span class="n">scores</span><span class="p">)):</span>
+            <span class="n">vec</span> <span class="o">=</span> <span class="n">topk_embed</span><span class="o">.</span><span class="n">getrow</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">numpy_match_id</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="n">NamedScore</span><span class="p">(</span><span class="n">op_name</span><span class="o">=</span><span class="n">op_name</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">score</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">vec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">r</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">vec</span></div>
 </pre></div>
 
            </div>
