@@ -243,7 +243,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
@@ -325,7 +325,7 @@
             
   <h1>Source code for jina.executors.indexers.dbms.keyvalue</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Generator</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">jina.executors.indexers.dump</span> <span class="kn">import</span> <span class="n">export_dump_streaming</span>
@@ -336,7 +336,9 @@
 <div class="viewcode-block" id="BinaryPbDBMSIndexer"><a class="viewcode-back" href="../../../../../../api/jina.executors.indexers.dbms.keyvalue/#jina.executors.indexers.dbms.keyvalue.BinaryPbDBMSIndexer">[docs]</a><span class="k">class</span> <span class="nc">BinaryPbDBMSIndexer</span><span class="p">(</span><span class="n">BinaryPbWriterMixin</span><span class="p">,</span> <span class="n">BaseDBMSIndexer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A DBMS Indexer (no query method)&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_get_generator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">_get_generator</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
         <span class="k">for</span> <span class="n">id_</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
             <span class="n">vecs_metas_bytes</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_query</span><span class="p">(</span><span class="n">id_</span><span class="p">)</span>
             <span class="n">vec</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">vecs_metas_bytes</span><span class="p">)</span>
