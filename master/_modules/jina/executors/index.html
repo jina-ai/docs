@@ -330,7 +330,6 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">from</span> <span class="nn">.decorators</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">as_train_method</span><span class="p">,</span>
     <span class="n">as_update_method</span><span class="p">,</span>
     <span class="n">store_init_kwargs</span><span class="p">,</span>
     <span class="n">as_aggregate_method</span><span class="p">,</span>
@@ -410,8 +409,7 @@
 <span class="sd">        :param cls: The class.</span>
 <span class="sd">        :return: The class, after being registered.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">update_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">]</span>
-        <span class="n">train_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span>
+        <span class="n">update_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">]</span>
         <span class="n">aggregate_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;evaluate&#39;</span><span class="p">]</span>
 
         <span class="n">reg_cls_set</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_registered_class&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
@@ -419,7 +417,6 @@
         <span class="n">cls_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">cls_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reg_cls_set</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;force_register&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
             <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;__init__&#39;</span><span class="p">],</span> <span class="n">store_init_kwargs</span><span class="p">)</span>
-            <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">train_funcs</span><span class="p">,</span> <span class="n">as_train_method</span><span class="p">)</span>
             <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">update_funcs</span><span class="p">,</span> <span class="n">as_update_method</span><span class="p">)</span>
             <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">aggregate_funcs</span><span class="p">,</span> <span class="n">as_aggregate_method</span><span class="p">)</span>
 
@@ -759,15 +756,6 @@
                 <span class="sa">f</span><span class="s1">&#39;which often can be solved by &quot;pip install&quot; relevant package: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">,</span>
                 <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
-
-<div class="viewcode-block" id="BaseExecutor.train"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Train this executor, need to be overridden</span>
-
-<span class="sd">        :param args: Additional arguments.</span>
-<span class="sd">        :param kwargs: Additional key word arguments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="BaseExecutor.touch"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.touch">[docs]</a>    <span class="k">def</span> <span class="nf">touch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Touch the executor and change ``is_updated`` to ``True`` so that one can call :func:`save`. &quot;&quot;&quot;</span>
