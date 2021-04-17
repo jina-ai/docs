@@ -243,8 +243,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 76 Drivers in Jina</a></li>
 </ul>
 
             
@@ -326,11 +326,25 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseExecutor</span>
-<span class="kn">from</span> <span class="nn">..compound</span> <span class="kn">import</span> <span class="n">CompoundExecutor</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="c1"># fix type-hint complain for sphinx and flake</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span>
     <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">scipy</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+
+    <span class="n">EncodingType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
+        <span class="s1">&#39;EncodingType&#39;</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">bsr_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">,</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">sparse_coo_tensor</span><span class="p">,</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">SparseTensor</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="BaseEncoder"><a class="viewcode-back" href="../../../../api/jina.executors.encoders/#jina.executors.encoders.BaseEncoder">[docs]</a><span class="k">class</span> <span class="nc">BaseEncoder</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
@@ -339,10 +353,10 @@
 <span class="sd">    The key function is :func:`encode`.</span>
 
 <span class="sd">    .. seealso::</span>
-<span class="sd">        :mod:`jina.drivers.handlers.encode`</span>
+<span class="sd">        :mod:`jina.drivers.encode`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="BaseEncoder.encode"><a class="viewcode-back" href="../../../../api/jina.executors.encoders/#jina.executors.encoders.BaseEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseEncoder.encode"><a class="viewcode-back" href="../../../../api/jina.executors.encoders/#jina.executors.encoders.BaseEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;EncodingType&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Encode the data, needs to be implemented in subclass.</span>
 <span class="sd">        :param data: the data to be encoded</span>
 <span class="sd">        :param args: additional positional arguments</span>
@@ -355,7 +369,7 @@
 <div class="viewcode-block" id="BaseNumericEncoder"><a class="viewcode-back" href="../../../../api/jina.executors.encoders/#jina.executors.encoders.BaseNumericEncoder">[docs]</a><span class="k">class</span> <span class="nc">BaseNumericEncoder</span><span class="p">(</span><span class="n">BaseEncoder</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;BaseNumericEncoder encodes data from a ndarray, potentially B x ([T] x D) into a ndarray of B x D&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="BaseNumericEncoder.encode"><a class="viewcode-back" href="../../../../api/jina.executors.encoders/#jina.executors.encoders.BaseNumericEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseNumericEncoder.encode"><a class="viewcode-back" href="../../../../api/jina.executors.encoders/#jina.executors.encoders.BaseNumericEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;EncodingType&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param data: a `B x ([T] x D)` numpy ``ndarray``, `B` is the size of the batch</span>
 <span class="sd">        :param args: additional positional arguments</span>
@@ -387,7 +401,7 @@
 <span class="sd">    BaseTextEncoder encodes data from an array of string type (data.dtype.kind == &#39;U&#39;) of size B into a ndarray of B x D.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="BaseTextEncoder.encode"><a class="viewcode-back" href="../../../../api/jina.executors.encoders/#jina.executors.encoders.BaseTextEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseTextEncoder.encode"><a class="viewcode-back" href="../../../../api/jina.executors.encoders/#jina.executors.encoders.BaseTextEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;EncodingType&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param data: an 1d array of string type (data.dtype.kind == &#39;U&#39;) in size B</span>

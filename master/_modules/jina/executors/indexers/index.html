@@ -243,8 +243,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 76 Drivers in Jina</a></li>
 </ul>
 
             
@@ -331,6 +331,23 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseExecutor</span>
 <span class="kn">from</span> <span class="nn">..compound</span> <span class="kn">import</span> <span class="n">CompoundExecutor</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">call_obj_fn</span><span class="p">,</span> <span class="n">cached_property</span><span class="p">,</span> <span class="n">get_readable_size</span>
+
+<span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span>
+    <span class="kn">import</span> <span class="nn">scipy</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+
+    <span class="n">EncodingType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
+        <span class="s1">&#39;EncodingType&#39;</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">bsr_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">,</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">sparse_coo_tensor</span><span class="p">,</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">SparseTensor</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="BaseIndexer"><a class="viewcode-back" href="../../../../api/jina.executors.indexers/#jina.executors.indexers.BaseIndexer">[docs]</a><span class="k">class</span> <span class="nc">BaseIndexer</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
@@ -571,6 +588,8 @@
 <span class="sd">    It can be used to tell whether an indexer is vector indexer, via ``isinstance(a, BaseVectorIndexer)``</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="n">embedding_cls_type</span> <span class="o">=</span> <span class="s1">&#39;dense&#39;</span>
+
 <div class="viewcode-block" id="BaseVectorIndexer.query_by_key"><a class="viewcode-back" href="../../../../api/jina.executors.indexers/#jina.executors.indexers.BaseVectorIndexer.query_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">query_by_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the vectors by id, return a subset of indexed vectors</span>
 
@@ -580,7 +599,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-<div class="viewcode-block" id="BaseVectorIndexer.add"><a class="viewcode-back" href="../../../../api/jina.executors.indexers/#jina.executors.indexers.BaseVectorIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseVectorIndexer.add"><a class="viewcode-back" href="../../../../api/jina.executors.indexers/#jina.executors.indexers.BaseVectorIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;EncodingType&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add new chunks and their vector representations</span>
 
 <span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
@@ -591,7 +612,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="BaseVectorIndexer.query"><a class="viewcode-back" href="../../../../api/jina.executors.indexers/#jina.executors.indexers.BaseVectorIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;EncodingType&#39;</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Find k-NN using query vectors, return chunk ids and chunk scores</span>
 
@@ -603,7 +624,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 <div class="viewcode-block" id="BaseVectorIndexer.update"><a class="viewcode-back" href="../../../../api/jina.executors.indexers/#jina.executors.indexers.BaseVectorIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;EncodingType&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Update vectors on the index.</span>
 
@@ -622,10 +643,6 @@
 <span class="sd">        :param kwargs: Additional keyword arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
-
-
-<div class="viewcode-block" id="BaseSparseVectorIndexer"><a class="viewcode-back" href="../../../../api/jina.executors.indexers/#jina.executors.indexers.BaseSparseVectorIndexer">[docs]</a><span class="k">class</span> <span class="nc">BaseSparseVectorIndexer</span><span class="p">(</span><span class="n">BaseVectorIndexer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Alias to provide proper default drivers in resources&quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="BaseKVIndexer"><a class="viewcode-back" href="../../../../api/jina.executors.indexers/#jina.executors.indexers.BaseKVIndexer">[docs]</a><span class="k">class</span> <span class="nc">BaseKVIndexer</span><span class="p">(</span><span class="n">BaseIndexer</span><span class="p">):</span>
