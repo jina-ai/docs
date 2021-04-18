@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Using Jina remotely with Jina Daemon &mdash; Jina 1.1.6-master documentation</title>
+  <title>Distributing Jina across multiple machines using JinaD &mdash; Jina 1.1.7-master documentation</title>
   
 
   
@@ -54,8 +54,8 @@
     
     <link rel="index" title="Index" href="../../../genindex/" />
     <link rel="search" title="Search" href="../../../search/" />
-    <link rel="next" title="Creating a Remote Flow with jinad" href="../create-remote-flow/" />
-    <link rel="prev" title="Creating a Remote Jina Pod from Console" href="../run-remote-pod-console/" /> 
+    <link rel="next" title="Remote Pods with JinaD" href="../remote-pods/" />
+    <link rel="prev" title="Distributed Jina" href="../" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,10 +84,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.6-master</button>
+            <button class="dropbtn version">1.1.7-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.1.5">1.1.5</a>
+              
+              <a class="dropdown-item" href="/v1.1.4">1.1.4</a>
+              
+              <a class="dropdown-item" href="/v1.1.3">1.1.3</a>
               
               <a class="dropdown-item" href="/v1.1.2">1.1.2</a>
               
@@ -231,12 +237,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../request_size/">Understanding the Request Size parameter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../evaluation/">A Guide to Jina Flow Evaluation Mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../incremental_indexing/">How to Use Incremental Indexing</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../">Using Jina Pods Remotely</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../run-remote-pod-console/">Creating a Remote Jina Pod from Console</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Using Jina remotely with Jina Daemon</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../create-remote-flow/">Creating a Remote Flow with jinad</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../create-remote-pod-console-jinad/">Creating a Remote Jina Pod from Console with jinad</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../create-remote-pod-flow/">Creating a Remote Jina Pod from Flow APIs with jinad</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../">Distributed Jina</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Distributing Jina across multiple machines using JinaD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../remote-pods/">Remote Pods with JinaD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../remote-flows/">Remote Flows with JinaD</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../stress/">Jina Cloud Benchmark &amp; Deployment</a></li>
@@ -278,8 +282,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../all_exec/">List of 52 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../all_driver/">List of 73 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../all_exec/">List of 68 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../all_driver/">List of 76 Drivers in Jina</a></li>
 </ul>
 
             
@@ -328,9 +332,9 @@
         
           <li><a href="../../core/guides/">Developer Guides</a> &raquo;</li>
         
-          <li><a href="../">Using Jina Pods Remotely</a> &raquo;</li>
+          <li><a href="../">Distributed Jina</a> &raquo;</li>
         
-      <li>Using Jina remotely with Jina Daemon</li>
+      <li>Distributing Jina across multiple machines using JinaD</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -356,52 +360,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="using-jina-remotely-with-jina-daemon">
-<h1>Using Jina remotely with Jina Daemon<a class="headerlink" href="#using-jina-remotely-with-jina-daemon" title="Permalink to this headline">¶</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">jinad</span></code>, aka <code class="docutils literal notranslate"><span class="pre">Jina</span> <span class="pre">Daemon</span></code>, is a persistent process for deploying and managing Jina Flow, Pods, and Peas in a distributed system.</p>
-<div class="section" id="terminologies">
-<h2>Terminologies<a class="headerlink" href="#terminologies" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p><em>Workflow</em>: a set of connected pods for accomplishing certain task, e.g. indexing, searching, extracting.</p></li>
-<li><p><em>Flow API</em>: a pythonic way for users to construct workflows in Jina with clean, readable idioms.</p></li>
-<li><p><em>Remote</em>, <em>remote instance</em>, <em>remote machine</em>: the place where you want to run the pod, the place offers better computational capability or larger storage. For example, one may want to run an encode pod on the remote GPU instance.</p></li>
-<li><p><em>Local</em>, <em>local instance</em>, <em>local machine</em>: the place of your entrypoint and the rest parts of your workflow.</p></li>
-</ul>
-</div>
-<div class="section" id="design">
-<h2>Design<a class="headerlink" href="#design" title="Permalink to this headline">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">jinad</span></code> is designed to maintain bookkeeping for the running Flows, Pods and Peas on the remote machines. <code class="docutils literal notranslate"><span class="pre">jinad</span></code> can also spawn Pods and Peas to other remote machines that have <code class="docutils literal notranslate"><span class="pre">jinad</span></code> running. <a class="reference external" href="https://github.com/fluent/fluentd"><code class="docutils literal notranslate"><span class="pre">fluentd</span></code></a> is used to collect logs from different Processes and ensure the logs belonging to the same Flow are stored consistently.</p>
-<p><img alt="jinad design" src="../../../_images/jinad_design.png" /></p>
-</div>
+  <div class="section" id="distributing-jina-across-multiple-machines-using-jinad">
+<h1>Distributing Jina across multiple machines using JinaD<a class="headerlink" href="#distributing-jina-across-multiple-machines-using-jinad" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">JinaD</span></code> is a <a class="reference external" href="https://en.wikipedia.org/wiki/Daemon_(computing)">daemon</a> for deploying and managing Jina Flows / Pods / Peas on a distributed system via a RESTful interface. It ships with <a class="reference external" href="https://github.com/fluent/fluentd"><code class="docutils literal notranslate"><span class="pre">fluentd</span></code></a> to collect &amp; stream logs from a Flow.</p>
+<p><img alt="JinaD design" src="../../../_images/jinad_design.png" /></p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="using-docker-images-recommended">
-<h3>Using Docker Images (Recommended)<a class="headerlink" href="#using-docker-images-recommended" title="Permalink to this headline">¶</a></h3>
-<p>The simplest way to use <code class="docutils literal notranslate"><span class="pre">jinad</span></code> is via Docker. There is no need to worry about <a class="reference external" href="https://github.com/fluent/fluentd"><code class="docutils literal notranslate"><span class="pre">fluentd</span></code></a> installation. You only need to have <a class="reference external" href="https://docs.docker.com/install/">Docker installed</a> first.</p>
-<p>In the command below, we use the tag <code class="docutils literal notranslate"><span class="pre">latest-daemon</span></code> which uses the latest release version of <code class="docutils literal notranslate"><span class="pre">jinad</span></code>. Of course, you can switch to other versions, and you can find all the available versions at <a class="reference external" href="https://hub.docker.com/repository/docker/jinaai/jina/tags?page=1&amp;ordering=last_updated&amp;name=daemon">hub.docker.com</a>. You can found more information about the versioning at <a class="reference external" href="https://github.com/jina-ai/jina/blob/master/RELEASE.md">github.com/jina-ai/jina</a>.</p>
+<div class="section" id="docker-image-recommended">
+<h3>Docker Image (Recommended)<a class="headerlink" href="#docker-image-recommended" title="Permalink to this headline">¶</a></h3>
+<p>The simplest way to use <code class="docutils literal notranslate"><span class="pre">JinaD</span></code> is via Docker. You only need to have <a class="reference external" href="https://docs.docker.com/install/">Docker installed</a>.</p>
+<p>We use the tag <code class="docutils literal notranslate"><span class="pre">latest-daemon</span></code> in the below command, which uses the latest release of <code class="docutils literal notranslate"><span class="pre">JinaD</span></code>. To use other versions, please refer to <a class="reference external" href="https://github.com/jina-ai/jina/blob/master/RELEASE.md">versioning in Jina</a> and find all the available versions at <a class="reference external" href="https://hub.docker.com/repository/docker/jinaai/jina/tags?page=1&amp;ordering=last_updated&amp;name=daemon">Docker Hub</a>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker pull jinaai/jina:latest-daemon
 </pre></div>
 </div>
 </div>
-<div class="section" id="using-pypi-package">
-<h3>Using PyPi package<a class="headerlink" href="#using-pypi-package" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="pypi-package">
+<h3>PyPi package<a class="headerlink" href="#pypi-package" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p>Notes: As one part of the jina package, <code class="docutils literal notranslate"><span class="pre">jinad</span></code> follows the same <a class="reference external" href="https://docs.jina.ai/chapters/install/os/via-pip.html">installation instructions of jina</a> and you only need to cherry pick <code class="docutils literal notranslate"><span class="pre">[daemon]</span></code></p>
+<div><p>Note: <code class="docutils literal notranslate"><span class="pre">JinaD</span></code> is a part of the Jina and follows the same <a class="reference external" href="https://docs.jina.ai/chapters/install/os/via-pip.html">installation instructions</a> and you only need to pick <code class="docutils literal notranslate"><span class="pre">[daemon]</span></code></p>
 </div></blockquote>
 <p>On Linux/Mac, simply run:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="s2">&quot;jina[daemon]&quot;</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="install-from-the-master-branch">
-<h3>Install from the Master Branch<a class="headerlink" href="#install-from-the-master-branch" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="master-branch">
+<h3>Master branch<a class="headerlink" href="#master-branch" title="Permalink to this headline">¶</a></h3>
 <p>If you want to keep track of the master branch of our development repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install <span class="s2">&quot;git+https://github.com/jina-ai/jina.git#egg=jina[daemon]&quot;</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="install-from-your-local-fork-clone">
-<h3>Install from Your Local Fork/Clone<a class="headerlink" href="#install-from-your-local-fork-clone" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="local-fork-clone">
+<h3>Local fork/clone<a class="headerlink" href="#local-fork-clone" title="Permalink to this headline">¶</a></h3>
 <p>If you are a developer and want to test your changes on-the-fly:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/jina-ai/jina
 <span class="nb">cd</span> jina <span class="o">&amp;&amp;</span> pip install -e <span class="s2">&quot;.[daemon]&quot;</span>
@@ -411,36 +402,37 @@
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="prerequisites">
-<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
-<p>Run <code class="docutils literal notranslate"><span class="pre">jinad</span></code> on the remote machine. We assume the remote is in the intranet and its IP address is <code class="docutils literal notranslate"><span class="pre">12.34.56.78</span></code>. By default, <code class="docutils literal notranslate"><span class="pre">jinad</span></code> will use the port <code class="docutils literal notranslate"><span class="pre">8000</span></code> for receiving requests. Make sure <code class="docutils literal notranslate"><span class="pre">8000</span></code> port is publicly accessible.</p>
-<p>After having <code class="docutils literal notranslate"><span class="pre">jinad</span></code> running on the remote, you can open the browser and visit <code class="docutils literal notranslate"><span class="pre">http://3.16.166.3:8000/alive</span></code> to check whether <code class="docutils literal notranslate"><span class="pre">jinad</span></code> is properly set up.
-If everything works well, you will see the following response.</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;status_code&quot;</span><span class="p">:</span><span class="mi">200</span><span class="p">,</span><span class="nt">&quot;jina_version&quot;</span><span class="p">:</span><span class="s2">&quot;0.9.12&quot;</span><span class="p">}</span>
-</pre></div>
-</div>
-<div class="section" id="using-docker-container">
-<h4>Using Docker Container<a class="headerlink" href="#using-docker-container" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id1">
+<h3>Docker Image (Recommended)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>We start a Docker container under the <code class="docutils literal notranslate"><span class="pre">host</span></code> mode so that it will connect all the ports to the host machine. <code class="docutils literal notranslate"><span class="pre">-d</span></code> option is to keep the container running in the background</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -d --network host jinaai/jina:latest-daemon
 </pre></div>
 </div>
 </div>
-<div class="section" id="using-native-python">
-<h4>Using Native Python<a class="headerlink" href="#using-native-python" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="native-python">
+<h3>Native Python<a class="headerlink" href="#native-python" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Note: Using Native Python doesn’t ship fluentd, hence log streaming is not possible.</p>
+</div></blockquote>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jinad
 </pre></div>
 </div>
 </div>
+<div class="section" id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Start <code class="docutils literal notranslate"><span class="pre">JinaD</span></code> on a remote machine (say <code class="docutils literal notranslate"><span class="pre">1.2.3.4</span></code>)</p></li>
+<li><p>JinaD listens on port <code class="docutils literal notranslate"><span class="pre">8000</span></code> by default.</p></li>
+<li><p>To change the port number, run <code class="docutils literal notranslate"><span class="pre">jinad</span> <span class="pre">--port-expose</span> <span class="pre">&lt;your-port&gt;</span></code></p></li>
+<li><p>Make sure <code class="docutils literal notranslate"><span class="pre">1.2.3.4:&lt;your-port&gt;</span></code> is publicly accessible.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">http://1.2.3.4:&lt;your-port&gt;/</span></code> should return <code class="docutils literal notranslate"><span class="pre">{}</span></code> if JinaD is accessible.</p></li>
+</ul>
 </div>
-<div class="section" id="creating-a-remote-pod-from-console">
-<h3><a class="reference external" href="https://docs.jina.ai/chapters/remote/create-remote-pod-console-jinad.html">Creating a Remote Pod from Console</a><a class="headerlink" href="#creating-a-remote-pod-from-console" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="remote-pods-with-jinad">
+<h3><a class="reference internal" href="../remote-pods/"><span class="doc">Remote Pods with JinaD</span></a><a class="headerlink" href="#remote-pods-with-jinad" title="Permalink to this headline">¶</a></h3>
 </div>
-<div class="section" id="creating-a-remote-pod-via-flow-apis">
-<h3><a class="reference external" href="https://docs.jina.ai/chapters/remote/create-remote-pod-flow.html">Creating a Remote Pod via Flow APIs</a><a class="headerlink" href="#creating-a-remote-pod-via-flow-apis" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="creating-a-remote-flow">
-<h3><a class="reference external" href="https://docs.jina.ai/chapters/remote/create-remote-flow.html">Creating a Remote Flow</a><a class="headerlink" href="#creating-a-remote-flow" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="remote-flows-with-jinad">
+<h3><a class="reference internal" href="../remote-flows/"><span class="doc">Remote Flows with JinaD</span></a><a class="headerlink" href="#remote-flows-with-jinad" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 </div>
@@ -453,11 +445,11 @@ If everything works well, you will see the following response.</p>
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="../create-remote-flow/" class="btn btn-neutral float-right" title="Creating a Remote Flow with jinad"
+        <a href="../remote-pods/" class="btn btn-neutral float-right" title="Remote Pods with JinaD"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
-        <a href="../run-remote-pod-console/" class="btn btn-neutral float-left" title="Creating a Remote Jina Pod from Console"
+        <a href="../" class="btn btn-neutral float-left" title="Distributed Jina"
            accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
         
     </div>
@@ -587,7 +579,7 @@ If everything works well, you will see the following response.</p>
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 11, 2021.
+        Last updated on Apr 18, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.sets.document &mdash; Jina 1.1.6-master documentation</title>
+  <title>jina.types.sets.document &mdash; Jina 1.1.7-master documentation</title>
   
 
   
@@ -82,10 +82,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.6-master</button>
+            <button class="dropbtn version">1.1.7-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.1.5">1.1.5</a>
+              
+              <a class="dropdown-item" href="/v1.1.4">1.1.4</a>
+              
+              <a class="dropdown-item" href="/v1.1.3">1.1.3</a>
               
               <a class="dropdown-item" href="/v1.1.2">1.1.2</a>
               
@@ -237,8 +243,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 52 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 73 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 76 Drivers in Jina</a></li>
 </ul>
 
             
@@ -313,7 +319,7 @@
             
   <h1>Source code for jina.types.sets.document</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">MutableSequence</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -336,8 +342,41 @@
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..document</span> <span class="kn">import</span> <span class="n">Document</span>
+    <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DocumentSet&#39;</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span>
+
+    <span class="c1"># fix type-hint complain for sphinx and flake</span>
+    <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TypeVar</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">import</span> <span class="nn">scipy</span>
+    <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+
+    <span class="n">EmbeddingType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
+        <span class="s1">&#39;EncodingType&#39;</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">bsr_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">,</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">sparse_coo_tensor</span><span class="p">,</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">SparseTensor</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">SparseEmbeddingType</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span>
+        <span class="s1">&#39;SparseEmbeddingType&#39;</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">bsr_matrix</span><span class="p">,</span>
+        <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">,</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">sparse_coo_tensor</span><span class="p">,</span>
+        <span class="n">tf</span><span class="o">.</span><span class="n">SparseTensor</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="DocumentSet"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet">[docs]</a><span class="k">class</span> <span class="nc">DocumentSet</span><span class="p">(</span><span class="n">TraversableSequence</span><span class="p">,</span> <span class="n">MutableSequence</span><span class="p">):</span>
@@ -475,6 +514,73 @@
 <span class="sd">        :rtype: A tuple of embedding in :class:`np.ndarray`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span><span class="s1">&#39;embedding&#39;</span><span class="p">,</span> <span class="n">stack_contents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DocumentSet.get_all_sparse_embeddings"><a class="viewcode-back" href="../../../../../api/jina.types.sets.document/#jina.DocumentSet.get_all_sparse_embeddings">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_sparse_embeddings</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sparse_cls_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scipy_cls_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;SparseEmbeddingType&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return all embeddings from every document in this set as a sparse array</span>
+
+<span class="sd">        :param sparse_cls_type: Type of sparse matrix backend, e.g. `scipy`, `torch` or `tf`.</span>
+<span class="sd">        :param scipy_cls_type: Type of scipy sparse vector type, e.g. `coo` or `csr`, needed with `sparse_cls_type`</span>
+<span class="sd">            is `scipy`.</span>
+
+<span class="sd">        :return: The corresponding documents in a :class:`DocumentSet`,</span>
+<span class="sd">            and the documents have no embedding in a :class:`DocumentSet`.</span>
+<span class="sd">        :rtype: A tuple of embedding and DocumentSet as sparse arrays</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">stack_embeddings</span><span class="p">(</span><span class="n">embeddings</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">sparse_cls_type</span> <span class="o">==</span> <span class="s1">&#39;scipy&#39;</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">scipy</span>
+
+                <span class="k">return</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">sparse_cls_type</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">torch</span>
+
+                <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">sparse_cls_type</span> <span class="o">==</span> <span class="s1">&#39;tf&#39;</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+                <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sp_inputs</span><span class="o">=</span><span class="n">embeddings</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">get_sparse_ndarray_type_kwargs</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">sparse_cls_type</span> <span class="o">==</span> <span class="s1">&#39;scipy&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">jina.types.ndarray.sparse.scipy</span> <span class="kn">import</span> <span class="n">SparseNdArray</span>
+
+                <span class="k">if</span> <span class="n">scipy_cls_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;coo&#39;</span><span class="p">,</span> <span class="s1">&#39;csr&#39;</span><span class="p">]:</span>
+                    <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;found `</span><span class="si">{</span><span class="n">scipy_cls_type</span><span class="si">}</span><span class="s1">` matrix, recommend to use `coo` or `csr` type.&#39;</span>
+                    <span class="p">)</span>
+                <span class="k">return</span> <span class="n">SparseNdArray</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;sp_format&#39;</span><span class="p">:</span> <span class="n">scipy_cls_type</span><span class="p">}</span>
+            <span class="k">elif</span> <span class="n">sparse_cls_type</span> <span class="o">==</span> <span class="s1">&#39;torch&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">jina.types.ndarray.sparse.pytorch</span> <span class="kn">import</span> <span class="n">SparseNdArray</span>
+
+                <span class="k">return</span> <span class="n">SparseNdArray</span><span class="p">,</span> <span class="p">{}</span>
+            <span class="k">elif</span> <span class="n">sparse_cls_type</span> <span class="o">==</span> <span class="s1">&#39;tf&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">jina.types.ndarray.sparse.tensorflow</span> <span class="kn">import</span> <span class="n">SparseNdArray</span>
+
+                <span class="k">return</span> <span class="n">SparseNdArray</span><span class="p">,</span> <span class="p">{}</span>
+
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">docs_pts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">bad_docs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sparse_ndarray_type</span><span class="p">,</span> <span class="n">sparse_kwargs</span> <span class="o">=</span> <span class="n">get_sparse_ndarray_type_kwargs</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">embedding</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">get_sparse_embedding</span><span class="p">(</span>
+                <span class="n">sparse_ndarray_cls_type</span><span class="o">=</span><span class="n">sparse_ndarray_type</span><span class="p">,</span> <span class="o">**</span><span class="n">sparse_kwargs</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">embedding</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">bad_docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">embeddings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
+            <span class="n">docs_pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">bad_docs</span><span class="p">:</span>
+            <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bad_docs</span><span class="p">)</span><span class="si">}</span><span class="s1"> docs at granularity </span><span class="si">{</span><span class="n">bad_docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="si">}</span><span class="s1"> are missing sparse_embedding&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">stack_embeddings</span><span class="p">(</span><span class="n">embeddings</span><span class="p">),</span> <span class="n">docs_pts</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_contents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">]:</span>
@@ -701,7 +807,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 11, 2021.
+        Last updated on Apr 18, 2021.
       </span>
 
         </p>

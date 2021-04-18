@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers.keyvalue &mdash; Jina 1.1.6-master documentation</title>
+  <title>jina.executors.indexers.keyvalue &mdash; Jina 1.1.7-master documentation</title>
   
 
   
@@ -82,10 +82,16 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.6-master</button>
+            <button class="dropbtn version">1.1.7-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.1.5">1.1.5</a>
+              
+              <a class="dropdown-item" href="/v1.1.4">1.1.4</a>
+              
+              <a class="dropdown-item" href="/v1.1.3">1.1.3</a>
               
               <a class="dropdown-item" href="/v1.1.2">1.1.2</a>
               
@@ -237,8 +243,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 52 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 73 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 76 Drivers in Jina</a></li>
 </ul>
 
             
@@ -332,257 +338,112 @@
 <span class="n">HEADER_NONE_ENTRY</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="BinaryPbIndexer"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer">[docs]</a><span class="k">class</span> <span class="nc">BinaryPbIndexer</span><span class="p">(</span><span class="n">BaseKVIndexer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Simple Key-value indexer.&quot;&quot;&quot;</span>
+<span class="k">class</span> <span class="nc">_WriteHandler</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write file handler.</span>
 
-<div class="viewcode-block" id="BinaryPbIndexer.WriteHandler"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.WriteHandler">[docs]</a>    <span class="k">class</span> <span class="nc">WriteHandler</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Write file handler.</span>
+<span class="sd">    :param path: Path of the file.</span>
+<span class="sd">    :param mode: Writing mode. (e.g. &#39;ab&#39;, &#39;wb&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-<span class="sd">        :param path: Path of the file.</span>
-<span class="sd">        :param mode: Writing mode. (e.g. &#39;ab&#39;, &#39;wb&#39;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close the file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<div class="viewcode-block" id="BinaryPbIndexer.WriteHandler.close"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.WriteHandler.close">[docs]</a>        <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;Close the file.&quot;&quot;&quot;</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clear the body and header.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-<div class="viewcode-block" id="BinaryPbIndexer.WriteHandler.flush"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.WriteHandler.flush">[docs]</a>        <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;Clear the body and header.&quot;&quot;&quot;</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div></div>
 
-<div class="viewcode-block" id="BinaryPbIndexer.ReadHandler"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.ReadHandler">[docs]</a>    <span class="k">class</span> <span class="nc">ReadHandler</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Read file handler.</span>
+<span class="k">class</span> <span class="nc">_ReadHandler</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read file handler.</span>
 
-<span class="sd">        :param path: Path of the file.</span>
-<span class="sd">        :param key_length: Length of key.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    :param path: Path of the file.</span>
+<span class="sd">    :param key_length: Length of key.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">key_length</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
-                    <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">key_length</span><span class="p">)),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                    <span class="p">],</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="kc">None</span>
-                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">HEADER_NONE_ENTRY</span><span class="p">)</span>
-                    <span class="k">else</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">tmp</span>
-                <span class="p">}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r+b&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">key_length</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
+                <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
+                    <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">key_length</span><span class="p">)),</span>
+                    <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                    <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                <span class="p">],</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">HEADER_NONE_ENTRY</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">tmp</span>
+            <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r+b&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
 
-<div class="viewcode-block" id="BinaryPbIndexer.ReadHandler.close"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.ReadHandler.close">[docs]</a>        <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;Close the file.&quot;&quot;&quot;</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close the file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># called on pickle save</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_delete_invalid_indices</span><span class="p">()</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">d</span>
 
-    <span class="k">def</span> <span class="nf">_delete_invalid_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<div class="viewcode-block" id="BinaryPbWriterMixin"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbWriterMixin">[docs]</a><span class="k">class</span> <span class="nc">BinaryPbWriterMixin</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Mixing for providing the binarypb writing and reading methods&quot;&quot;&quot;</span>
 
-        <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">vals</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1"># we read the valid values and write them to the intermediary file</span>
-        <span class="n">read_handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ReadHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">read_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">pos_info</span> <span class="o">=</span> <span class="n">read_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">pos_info</span><span class="p">:</span>
-                <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">pos_info</span>
-                <span class="k">with</span> <span class="n">mmap</span><span class="o">.</span><span class="n">mmap</span><span class="p">(</span><span class="n">read_handler</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">l</span><span class="p">)</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
-                    <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-                    <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">r</span><span class="p">:])</span>
-        <span class="n">read_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="c1"># intermediary file</span>
-        <span class="n">tmp_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span> <span class="o">+</span> <span class="s1">&#39;-tmp&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">filtered_data_writer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">WriteHandler</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span>
-        <span class="c1"># reset size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">filtered_data_writer</span><span class="p">)</span>
-        <span class="n">filtered_data_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_page_size</span> <span class="o">=</span> <span class="n">mmap</span><span class="o">.</span><span class="n">ALLOCATIONGRANULARITY</span>
 
-        <span class="c1"># replace orig. file</span>
-        <span class="c1"># and .head file</span>
-        <span class="n">head_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">head_path</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_file</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="n">head_path</span><span class="p">)</span>
-
-<div class="viewcode-block" id="BinaryPbIndexer.get_add_handler"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.get_add_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;WriteHandler&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="BinaryPbWriterMixin.get_add_handler"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbWriterMixin.get_add_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;_WriteHandler&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get write file handler.</span>
 
 <span class="sd">        :return: write handler</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># keep _start position as in pickle serialization</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">WriteHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">_WriteHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BinaryPbIndexer.get_create_handler"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.get_create_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_create_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;WriteHandler&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="BinaryPbWriterMixin.get_create_handler"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbWriterMixin.get_create_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_create_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;_WriteHandler&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get write file handler.</span>
 
 <span class="sd">        :return: write handler.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># override _start position</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">WriteHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">_WriteHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="BinaryPbIndexer.get_query_handler"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.get_query_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_query_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;ReadHandler&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="BinaryPbWriterMixin.get_query_handler"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbWriterMixin.get_query_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_query_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;_ReadHandler&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get read file handler.</span>
 
 <span class="sd">        :return: read handler.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ReadHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">_ReadHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delete_on_dump</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_page_size</span> <span class="o">=</span> <span class="n">mmap</span><span class="o">.</span><span class="n">ALLOCATIONGRANULARITY</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span> <span class="o">=</span> <span class="n">delete_on_dump</span>
+    <span class="k">def</span> <span class="nf">_add</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="n">writer</span><span class="p">:</span> <span class="n">_WriteHandler</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">writer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;write_handler&#39;</span><span class="p">):</span>
+                <span class="n">writer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                    <span class="s1">&#39;No writer provided to add() and no self.write_handler available&#39;</span>
+                <span class="p">)</span>
 
-<div class="viewcode-block" id="BinaryPbIndexer.add"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add the serialized documents to the index via document ids.</span>
-
-<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
-<span class="sd">        :param values: serialized documents</span>
-<span class="sd">        :param args: extra arguments</span>
-<span class="sd">        :param kwargs: keyword arguments</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
-            <span class="k">return</span>
-
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-            <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1">#: the length</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_size</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_size</span>
-            <span class="p">)</span>  <span class="c1">#: offset of the page</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_size</span>
-            <span class="p">)</span>  <span class="c1">#: the remainder, i.e. the start position given the offset</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                    <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="n">l</span><span class="p">),</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                    <span class="p">],</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">+=</span> <span class="n">l</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="BinaryPbIndexer.sample"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return a random entry from the indexer for sanity check.</span>
-
-<span class="sd">        :return: A random entry from the indexer.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span></div>
-
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="k">yield</span> <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-
-<div class="viewcode-block" id="BinaryPbIndexer.query"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Find the serialized document to the index via document id.</span>
-
-<span class="sd">        :param key: document id</span>
-<span class="sd">        :param args: extra arguments</span>
-<span class="sd">        :param kwargs: keyword arguments</span>
-<span class="sd">        :return: serialized documents</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pos_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">pos_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">pos_info</span>
-            <span class="k">with</span> <span class="n">mmap</span><span class="o">.</span><span class="n">mmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">l</span><span class="p">)</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">m</span><span class="p">[</span><span class="n">r</span><span class="p">:]</span></div>
-
-<div class="viewcode-block" id="BinaryPbIndexer.update"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Update the serialized documents on the index via document ids.</span>
-
-<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
-<span class="sd">        :param values: serialized documents</span>
-<span class="sd">        :param args: extra arguments</span>
-<span class="sd">        :param kwargs: keyword arguments</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">keys</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys_values</span><span class="p">(</span>
-            <span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="p">)</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                    <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">key</span><span class="p">],</span> <span class="n">HEADER_NONE_ENTRY</span><span class="p">])),</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                    <span class="p">],</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">-=</span> <span class="mi">1</span>
-
-<div class="viewcode-block" id="BinaryPbIndexer.delete"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Delete the serialized documents from the index via document ids.</span>
-
-<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
-<span class="sd">        :param args: extra arguments</span>
-<span class="sd">        :param kwargs: keyword arguments</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="n">writer</span><span class="p">:</span> <span class="n">WriteHandler</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
             <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1">#: the length</span>
             <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
@@ -606,7 +467,160 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">+=</span> <span class="n">l</span>
             <span class="n">writer</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+        <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BinaryPbWriterMixin.delete"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbWriterMixin.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Delete the serialized documents from the index via document ids.</span>
+
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
+<span class="sd">        :param args: not used</span>
+<span class="sd">        :param kwargs: not used</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">key</span><span class="p">],</span> <span class="n">HEADER_NONE_ENTRY</span><span class="p">])),</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
+                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)),</span>
+                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                    <span class="p">],</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">pos_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pos_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">pos_info</span>
+            <span class="k">with</span> <span class="n">mmap</span><span class="o">.</span><span class="n">mmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">l</span><span class="p">)</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">m</span><span class="p">[</span><span class="n">r</span><span class="p">:]</span></div>
+
+
+<div class="viewcode-block" id="BinaryPbIndexer"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer">[docs]</a><span class="k">class</span> <span class="nc">BinaryPbIndexer</span><span class="p">(</span><span class="n">BinaryPbWriterMixin</span><span class="p">,</span> <span class="n">BaseKVIndexer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple Key-value indexer.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># called on pickle save</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delete_invalid_indices</span><span class="p">()</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+    <span class="k">def</span> <span class="nf">_delete_invalid_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># we read the valid values and write them to the intermediary file</span>
+        <span class="n">read_handler</span> <span class="o">=</span> <span class="n">_ReadHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">read_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">pos_info</span> <span class="o">=</span> <span class="n">read_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pos_info</span><span class="p">:</span>
+                <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">pos_info</span>
+                <span class="k">with</span> <span class="n">mmap</span><span class="o">.</span><span class="n">mmap</span><span class="p">(</span><span class="n">read_handler</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">l</span><span class="p">)</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">r</span><span class="p">:])</span>
+        <span class="n">read_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># intermediary file</span>
+        <span class="n">tmp_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span> <span class="o">+</span> <span class="s1">&#39;-tmp&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">filtered_data_writer</span> <span class="o">=</span> <span class="n">_WriteHandler</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span>
+        <span class="c1"># reset size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">filtered_data_writer</span><span class="p">)</span>
+        <span class="n">filtered_data_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># replace orig. file</span>
+        <span class="c1"># and .head file</span>
+        <span class="n">head_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">head_path</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_file</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="n">head_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delete_on_dump</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span> <span class="o">=</span> <span class="n">delete_on_dump</span>
+
+<div class="viewcode-block" id="BinaryPbIndexer.add"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Add the serialized documents to the index via document ids.</span>
+
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
+<span class="sd">        :param values: serialized documents</span>
+<span class="sd">        :param args: extra arguments</span>
+<span class="sd">        :param kwargs: keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BinaryPbIndexer.sample"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a random entry from the indexer for sanity check.</span>
+
+<span class="sd">        :return: A random entry from the indexer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+<div class="viewcode-block" id="BinaryPbIndexer.query"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Find the serialized document to the index via document id.</span>
+
+<span class="sd">        :param key: document id</span>
+<span class="sd">        :param args: extra arguments</span>
+<span class="sd">        :param kwargs: keyword arguments</span>
+<span class="sd">        :return: serialized documents</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BinaryPbIndexer.update"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update the serialized documents on the index via document ids.</span>
+
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
+<span class="sd">        :param values: serialized documents</span>
+<span class="sd">        :param args: extra arguments</span>
+<span class="sd">        :param kwargs: keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keys</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys_values</span><span class="p">(</span>
+            <span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BinaryPbIndexer.delete"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Delete the serialized documents from the index via document ids.</span>
+
+<span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
+<span class="sd">        :param args: not used</span>
+<span class="sd">        :param kwargs: not used&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">BinaryPbIndexer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="KeyValueIndexer"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.KeyValueIndexer">[docs]</a><span class="k">class</span> <span class="nc">KeyValueIndexer</span><span class="p">(</span><span class="n">BinaryPbIndexer</span><span class="p">):</span>
@@ -751,7 +765,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 11, 2021.
+        Last updated on Apr 18, 2021.
       </span>
 
         </p>
