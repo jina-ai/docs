@@ -305,7 +305,7 @@ Docstrings are how we document Jina's functions. This is suitable for more exper
 
 #### Building Documentation Locally
 
-To build the documentation locally, please check out our [jina-ai/docs](https://github.com/jina-ai/docs) repo:
+To build the documentation locally, please checkout our [jina-ai/docs](https://github.com/jina-ai/docs) repo:
 
 ```bash
 make clean
