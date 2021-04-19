@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers &mdash; Jina 1.1.7-master documentation</title>
+  <title>jina.drivers &mdash; Jina 1.1.8-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.7-master</button>
+            <button class="dropbtn version">1.1.8-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -231,6 +231,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../jina.drivers.dump/">jina.drivers.dump</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.drivers.encode/">jina.drivers.encode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.drivers.evaluate/">jina.drivers.evaluate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../jina.drivers.generic/">jina.drivers.generic</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.drivers.index/">jina.drivers.index</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.drivers.multimodal/">jina.drivers.multimodal</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.drivers.predict/">jina.drivers.predict</a></li>
@@ -295,7 +296,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver/">List of 76 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
             
@@ -401,6 +402,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../jina.drivers.dump/">jina.drivers.dump</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jina.drivers.encode/">jina.drivers.encode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jina.drivers.evaluate/">jina.drivers.evaluate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jina.drivers.generic/">jina.drivers.generic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jina.drivers.index/">jina.drivers.index</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jina.drivers.multimodal/">jina.drivers.multimodal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../jina.drivers.predict/">jina.drivers.predict</a></li>
@@ -646,6 +648,70 @@ when no context is needed and batching is possible.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt id="jina.drivers.DocsExtractUpdateMixin">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">jina.drivers.</span></code><code class="sig-name descname"><span class="pre">DocsExtractUpdateMixin</span></code><a class="reference internal" href="../../_modules/jina/drivers/#DocsExtractUpdateMixin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.drivers.DocsExtractUpdateMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A Driver pattern for extracting attributes from Documents, feeding to an executor and updating the Documents with
+the results.</p>
+<p>Drivers equipped with this mixin will have <a href="#id1"><span class="problematic" id="id2">:method:`_apply_all`</span></a> inherited.</p>
+<dl class="simple">
+<dt>The <a href="#id3"><span class="problematic" id="id4">:method:`_apply_all`</span></a> implements the following logics:</dt><dd><ul class="simple">
+<li><p>From <code class="docutils literal notranslate"><span class="pre">docs</span></code>, it extracts the attributes defined <a href="#id5"><span class="problematic" id="id6">:method:`exec_fn`</span></a>’s arguments.</p></li>
+<li><p>It feeds the attributes to the bind executor’s <a href="#id7"><span class="problematic" id="id8">:method:`exec_fn`</span></a>.</p></li>
+<li><p>It updates <code class="docutils literal notranslate"><span class="pre">docs</span></code> with results returned from <a href="#id9"><span class="problematic" id="id10">:method:`exec_fn`</span></a></p></li>
+</ul>
+</dd>
+<dt>The following shortcut logics are implemented:</dt><dd><ul class="simple">
+<li><p>while extracting: attributes defined <a href="#id11"><span class="problematic" id="id12">:method:`exec_fn`</span></a>’s arguments are extracted from <code class="docutils literal notranslate"><span class="pre">docs</span></code>;</p></li>
+<li><p>while extracting: attributes annotated with <code class="docutils literal notranslate"><span class="pre">ndarray</span></code> are stacked into Numpy NdArray objects;</p></li>
+<li><p>while updating: if <code class="docutils literal notranslate"><span class="pre">exec_fn</span></code> returns a List of Dict, then <code class="docutils literal notranslate"><span class="pre">doc.set_attrs(**exec_result)</span></code> is called;</p></li>
+<li><p>while updating: if <code class="docutils literal notranslate"><span class="pre">exec_fn</span></code> returns a Document, then <a href="#id13"><span class="problematic" id="id14">``</span></a>doc.update(exec_result)` is called.</p></li>
+<li><p>while updating: if none of above applies, then calling <a class="reference internal" href="#jina.drivers.DocsExtractUpdateMixin.update_single_doc" title="jina.drivers.DocsExtractUpdateMixin.update_single_doc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_single_doc()</span></code></a></p></li>
+</ul>
+</dd>
+<dt>To override the update behavior, you can choose to override:</dt><dd><ul class="simple">
+<li><p><a class="reference internal" href="#jina.drivers.DocsExtractUpdateMixin.update_docs" title="jina.drivers.DocsExtractUpdateMixin.update_docs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_docs()</span></code></a> if you want to modify the behavior of updating docs in bulk</p></li>
+<li><p><a class="reference internal" href="#jina.drivers.DocsExtractUpdateMixin.update_single_doc" title="jina.drivers.DocsExtractUpdateMixin.update_single_doc"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_single_doc()</span></code></a> if you want to modify the behavior of updating a single doc</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="jina.drivers.DocsExtractUpdateMixin.update_docs">
+<code class="sig-name descname"><span class="pre">update_docs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">docs_pts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exec_results</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/drivers/#DocsExtractUpdateMixin.update_docs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.drivers.DocsExtractUpdateMixin.update_docs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update Documents with the Executor returned results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>docs_pts: the set of document to be updated</p>
+</dd>
+<dt class="field-even">Param</dt>
+<dd class="field-even"><p>exec_results: the results from <code class="xref py py-meth docutils literal notranslate"><span class="pre">exec_fn()</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="jina.drivers.DocsExtractUpdateMixin.update_single_doc">
+<code class="sig-name descname"><span class="pre">update_single_doc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exec_result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/drivers/#DocsExtractUpdateMixin.update_single_doc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.drivers.DocsExtractUpdateMixin.update_single_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a single Document with the Executor returned result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doc</strong> (<a class="reference internal" href="../jina/#jina.Document" title="jina.Document"><em>Document</em></a>) – the Document object</p></li>
+<li><p><strong>exec_result</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – the single result from <code class="xref py py-meth docutils literal notranslate"><span class="pre">exec_fn()</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="jina.drivers.BaseRecursiveDriver">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">jina.drivers.</span></code><code class="sig-name descname"><span class="pre">BaseRecursiveDriver</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">traversal_paths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">('c',</span> <span class="pre">'r')</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/drivers/#BaseRecursiveDriver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.drivers.BaseRecursiveDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#jina.drivers.BaseDriver" title="jina.drivers.BaseDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseDriver</span></code></a></p>
@@ -671,7 +737,7 @@ It is intended to be mixed in with either <a class="reference internal" href="#j
 
 <dl class="py class">
 <dt id="jina.drivers.BaseExecutableDriver">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">jina.drivers.</span></code><code class="sig-name descname"><span class="pre">BaseExecutableDriver</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/drivers/#BaseExecutableDriver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.drivers.BaseExecutableDriver" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">jina.drivers.</span></code><code class="sig-name descname"><span class="pre">BaseExecutableDriver</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict_method_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/drivers/#BaseExecutableDriver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.drivers.BaseExecutableDriver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#jina.drivers.BaseRecursiveDriver" title="jina.drivers.BaseRecursiveDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.drivers.BaseRecursiveDriver</span></code></a></p>
 <p>A <a class="reference internal" href="#jina.drivers.BaseExecutableDriver" title="jina.drivers.BaseExecutableDriver"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExecutableDriver</span></code></a> is an intermediate logic unit between the <a class="reference internal" href="../jina.peapods.runtimes.zmq.zed/#jina.peapods.runtimes.zmq.zed.ZEDRuntime" title="jina.peapods.runtimes.zmq.zed.ZEDRuntime"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.peapods.runtimes.zmq.zed.ZEDRuntime</span></code></a> and <a class="reference internal" href="../jina.executors/#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a>
 It reads the protobuf message, extracts/modifies the required information and then sends to the <a class="reference internal" href="../jina.executors/#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a>,
@@ -684,6 +750,7 @@ This is done by <a class="reference internal" href="#jina.drivers.BaseExecutable
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>executor</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the name of the sub-executor, only necessary when <a class="reference internal" href="../jina.executors.compound/#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a> is used</p></li>
 <li><p><strong>method</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the function name of the executor that the driver feeds to</p></li>
+<li><p><strong>strict_method_args</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if set, then the input args of <code class="docutils literal notranslate"><span class="pre">executor.method</span></code> must be valid <code class="xref py py-class docutils literal notranslate"><span class="pre">Document</span></code> attributes</p></li>
 <li><p><strong>args</strong> – additional positional arguments which are just used for the parent initialization</p></li>
 <li><p><strong>kwargs</strong> – additional key value arguments which are just used for the parent initialization</p></li>
 </ul>
@@ -716,12 +783,13 @@ This is done by <a class="reference internal" href="#jina.drivers.BaseExecutable
 
 <dl class="py method">
 <dt id="jina.drivers.BaseExecutableDriver.attach">
-<code class="sig-name descname"><span class="pre">attach</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executor</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/drivers/#BaseExecutableDriver.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.drivers.BaseExecutableDriver.attach" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">attach</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">executor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">req_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/drivers/#BaseExecutableDriver.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.drivers.BaseExecutableDriver.attach" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attach the driver to a <a class="reference internal" href="../jina.executors/#jina.executors.BaseExecutor" title="jina.executors.BaseExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.BaseExecutor</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>executor</strong> (<em>AnyExecutor</em>) – the executor to which we attach</p></li>
+<li><p><strong>req_type</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – the request type to attach to</p></li>
 <li><p><strong>args</strong> – additional positional arguments for the call of super().attach()</p></li>
 <li><p><strong>kwargs</strong> – additional key value arguments for the call of super().attach()</p></li>
 </ul>
@@ -883,7 +951,7 @@ This is done by <a class="reference internal" href="#jina.drivers.BaseExecutable
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 18, 2021.
+        Last updated on Apr 19, 2021.
       </span>
 
         </p>

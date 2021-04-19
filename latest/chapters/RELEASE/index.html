@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>Release &amp; Version Identifier &mdash; Jina 1.1.7-master documentation</title>
+  <title>Release &amp; Version Identifier &mdash; Jina 1.1.8-master documentation</title>
   
 
   
@@ -84,7 +84,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.7-master</button>
+            <button class="dropbtn version">1.1.8-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -246,7 +246,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 76 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
             
@@ -323,11 +323,24 @@
 <h1>Release &amp; Version Identifier<a class="headerlink" href="#release-version-identifier" title="Permalink to this headline">¶</a></h1>
 <p>Jina is shipped from two package management systems, PyPi and Docker Hub. This article clarifies the release cycle and version identifier behind each system.</p>
 <!-- START doctoc generated TOC please keep comment here to allow auto update --><!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE --><ul class="simple">
+<li><p><a class="reference external" href="#release-cycle-and-versioning">Release cycle and versioning</a></p></li>
 <li><p><a class="reference external" href="#pypi-package-versioning">PyPi package versioning</a></p></li>
 <li><p><a class="reference external" href="#docker-image-versioning">Docker image versioning</a></p></li>
 <li><p><a class="reference external" href="#manual-release-entrypoint">Manual Release Entrypoint</a></p></li>
+<li><p><a class="reference external" href="#breaking-changes">Breaking changes</a></p></li>
 </ul>
-<!-- END doctoc generated TOC please keep comment here to allow auto update --><div class="section" id="pypi-package-versioning">
+<!-- END doctoc generated TOC please keep comment here to allow auto update --><div class="section" id="release-cycle-and-versioning">
+<h2>Release cycle and versioning<a class="headerlink" href="#release-cycle-and-versioning" title="Permalink to this headline">¶</a></h2>
+<p>Jina products are developed continuously by the community and core team. Updates are grouped and released at regular intervals to align with software development best practices.</p>
+<p>Jina Core, Box, and Dashboard all follow a staged release cycle. Jina Hub images are constantly released as Jina core is updated.</p>
+<p>Jina Core, Box, and Dashboard all follow a form of numbered versioning. The version number of the product is a three-part value X.Y.Z where X, Y, and Z are the major, minor, and patch components respectively.</p>
+<ul class="simple">
+<li><p>Patch release (X.Y.Z -&gt; X.Y.(Z+1)): Contain bug fixes, new features and breaking changes. Released weekly on a Wednesday morning CET.</p></li>
+<li><p>Minor release (X.Y.Z -&gt; X.Y.(Z+1)): Contain bug fixes, new features and breaking changes. Released monthly on the first Wednesday of the month CET. This release is more QA tested and considered more stable than a patch release.</p></li>
+<li><p>Major release (X.Y.Z -&gt; (X+1).0.0): Are released based on the development cycle of the Jina company. There is no set scheduled for when these will occur.</p></li>
+</ul>
+</div>
+<div class="section" id="pypi-package-versioning">
 <h2>PyPi package versioning<a class="headerlink" href="#pypi-package-versioning" title="Permalink to this headline">¶</a></h2>
 <p>We follow the <a class="reference external" href="https://semver.org/">semantic versioning</a> and <a class="reference external" href="https://www.python.org/dev/peps/pep-0440/">PEP-440</a>. Jina’s version is identified by <code class="docutils literal notranslate"><span class="pre">x.y.z</span></code> (i.e. “major.minor.patch”).</p>
 <p>To install the latest final release:</p>
@@ -565,6 +578,68 @@
 <p>Note, the manual rebuild on Docker images will <em>NOT</em> update <code class="docutils literal notranslate"><span class="pre">:latest-*</span></code> and <code class="docutils literal notranslate"><span class="pre">:x.y-*</span></code> aliases.</p>
 </div>
 </div>
+<div class="section" id="breaking-changes">
+<h2>Breaking changes<a class="headerlink" href="#breaking-changes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="definition-of-breaking-changes">
+<h3>Definition of breaking changes<a class="headerlink" href="#definition-of-breaking-changes" title="Permalink to this headline">¶</a></h3>
+<p>Breaking changes are non-backward compatible changes to the contracts of methods we expose to our users through our public API interfaces.</p>
+<p>We define our public API are being the public functions and Classes in the following modules:</p>
+<ul class="simple">
+<li><p>YAML Syntax interface</p></li>
+<li><p>Python interface</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">jina/flow</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jina/peapods/pods</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jina/executors</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jina/drivers</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jina/types</span></code> (doc/doc sets)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jina/resources</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jina/clients</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jina/optimizers</span></code></p></li>
+</ul>
+</li>
+<li><p>REST API</p></li>
+<li><p>Command line Interface API</p></li>
+<li><p>Jina Deamon (JinaD) API</p></li>
+<li><p>Jina.proto</p></li>
+<li><p>Jina Hub API</p></li>
+</ul>
+<p>Examples of breaking changes are:</p>
+<ul class="simple">
+<li><p>Changing the name of a field.</p></li>
+<li><p>Deleting a field</p></li>
+<li><p>Changing the shape or type of a response</p></li>
+<li><p>Changing the method used to get a response (Example: GET to POST).</p></li>
+<li><p>Adding new required parameters to a response.</p></li>
+</ul>
+<p>Examples of non-breaking changes are:</p>
+<ul class="simple">
+<li><p>Deleting/changing the arguments in a public function/class with a deprecation warning.</p></li>
+<li><p>Deleting unused fields from jina.proto</p></li>
+<li><p>Adding fields to jina.proto with unused positions</p></li>
+<li><p>Experimental APIs claimed in the previous release notes</p></li>
+<li><p>Fixing bugs if the implementation is clearly broken, if it contradicts documentation or if a well-known and well-defined intended behavior is not properly implemented.</p></li>
+<li><p>Deleting unused APIs for which we find no documented uses. We use the following tools to perform checks,</p>
+<ul>
+<li><p>https://Github.com</p></li>
+<li><p>Searchcode.com</p></li>
+<li><p>https://sourcegraph.com/search</p></li>
+<li><p>https://github.com/Quansight-Labs/python-api-inspect</p></li>
+<li><p>https://github.com/data-apis/python-record-api</p></li>
+</ul>
+</li>
+<li><p>Replacing error behaviors with non-error behaviors. Changes to low-level APIs such as drivers are not considered breaking changes.</p></li>
+</ul>
+</div>
+<div class="section" id="documenting-a-breaking-change">
+<h3>Documenting a breaking change<a class="headerlink" href="#documenting-a-breaking-change" title="Permalink to this headline">¶</a></h3>
+<ol class="simple">
+<li><p>Breaking changes should be highlighted in the pull request checklist.</p></li>
+<li><p>At the start of a month, a GitHub breaking change issue is opened. If a developer’s pull request contains breaking changes, it is their reasonability to record it there.  This is the inital source of truth for recent breaking changes.</p></li>
+<li><p>The contents of this GitHub issue are then merged into the release notes.</p></li>
+</ol>
+</div>
+</div>
 </div>
 
 
@@ -709,7 +784,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 18, 2021.
+        Last updated on Apr 19, 2021.
       </span>
 
         </p>
