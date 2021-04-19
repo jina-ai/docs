@@ -11,9 +11,9 @@ Use Sparse Embedding in Jina
 Overview
 --------
 
-Summarize what this How To article is about in a sentence or two. How To
-articles primarily include tasks, and answer the question "how do I do
-it?".
+A sparse matrix is a special case of a matrix in which the number of zero elements is much higher than the number of non-zero elements.
+The space used for representing data and the time for scanning the matrix can be reduced significantly using a sparse representation.
+In this guideline, we'll introduce how to use sparse matrix in Jina.
 
 Before you start
 ----------------
