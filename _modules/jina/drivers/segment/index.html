@@ -244,7 +244,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 76 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
             
@@ -323,17 +323,13 @@
 <span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span>
-<span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">LengthMismatchException</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">DocsExtractUpdateMixin</span>
 <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 
-<span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
 
-
-<div class="viewcode-block" id="SegmentDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.segment/#jina.drivers.segment.SegmentDriver">[docs]</a><span class="k">class</span> <span class="nc">SegmentDriver</span><span class="p">(</span><span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">BaseExecutableDriver</span><span class="p">):</span>
+<div class="viewcode-block" id="SegmentDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.segment/#jina.drivers.segment.SegmentDriver">[docs]</a><span class="k">class</span> <span class="nc">SegmentDriver</span><span class="p">(</span><span class="n">DocsExtractUpdateMixin</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">BaseExecutableDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Drivers inherited from this Driver will bind :meth:`segment` by default &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -348,41 +344,19 @@
             <span class="n">executor</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">traversal_paths</span><span class="o">=</span><span class="n">traversal_paths</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">docs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;an empty DocumentSet </span><span class="si">{</span><span class="n">docs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">return</span>
+<div class="viewcode-block" id="SegmentDriver.update_single_doc"><a class="viewcode-back" href="../../../../api/jina.drivers.segment/#jina.drivers.segment.SegmentDriver.update_single_doc">[docs]</a>    <span class="k">def</span> <span class="nf">update_single_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">exec_result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update the document&#39;s chunks field with executor&#39;s returns.</span>
 
-        <span class="n">contents</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">docs_pts</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no Document is extracted </span><span class="si">{</span><span class="n">docs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">return</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">required_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">docs_chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="o">*</span><span class="n">contents</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">docs_chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">docs_chunks</span><span class="p">):</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;mismatched </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">)</span><span class="si">}</span><span class="s1"> docs from level </span><span class="si">{</span><span class="n">docs_pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="si">}</span><span class="s1"> &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;and length of returned crafted documents: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs_chunks</span><span class="p">)</span><span class="si">}</span><span class="s1">, the length must be the same&#39;</span>
-            <span class="p">)</span>
-            <span class="k">raise</span> <span class="n">LengthMismatchException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">chunks</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">,</span> <span class="n">docs_chunks</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add_chunks</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">chunks</span><span class="p">)</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_add_chunks</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">chunks</span><span class="p">):</span>
+<span class="sd">        :param doc: the Document object</span>
+<span class="sd">        :param exec_result: the single result from :meth:`exec_fn`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_chunks</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">exec_result</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">Document</span><span class="p">(</span><span class="o">**</span><span class="n">chunk</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">mime_type</span><span class="p">:</span>
                     <span class="n">c</span><span class="o">.</span><span class="n">mime_type</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">mime_type</span>
             <span class="n">new_chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-        <span class="n">doc</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_chunks</span><span class="p">)</span></div>
+        <span class="n">doc</span><span class="o">.</span><span class="n">chunks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_chunks</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

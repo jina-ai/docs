@@ -244,7 +244,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 76 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
             
@@ -1579,6 +1579,48 @@
     <span class="n">soundfx</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;soundfx&#39;</span><span class="p">,</span> <span class="s1">&#39;bell.mp3&#39;</span><span class="p">)))</span>
 
     <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;ffplay  -nodisp -autoexit </span><span class="si">{</span><span class="n">soundfx</span><span class="si">}</span><span class="s1"> &gt;/dev/null 2&gt;&amp;1&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">find_request_binding</span><span class="p">(</span><span class="n">target</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find `@request` decorated methods in a class.</span>
+
+<span class="sd">    :param target: the target class to check</span>
+<span class="sd">    :return: a dictionary with key as request type and value as method name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">ast</span><span class="o">,</span> <span class="nn">inspect</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">visit_function_def</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">decorator_list</span><span class="p">:</span>
+            <span class="n">req_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Call</span><span class="p">)</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">func</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="s1">&#39;requests&#39;</span><span class="p">:</span>
+                <span class="n">req_name</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">keywords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">s</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="s1">&#39;requests&#39;</span><span class="p">:</span>
+                <span class="n">req_name</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
+            <span class="k">if</span> <span class="n">req_name</span><span class="p">:</span>
+                <span class="n">req_name</span> <span class="o">=</span> <span class="n">_canonical_request_name</span><span class="p">(</span><span class="n">req_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">req_name</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;you already bind `</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="n">req_name</span><span class="p">]</span><span class="si">}</span><span class="s1">` with `</span><span class="si">{</span><span class="n">req_name</span><span class="si">}</span><span class="s1">` request&#39;</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">res</span><span class="p">[</span><span class="n">req_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="n">V</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">()</span>
+    <span class="n">V</span><span class="o">.</span><span class="n">visit_FunctionDef</span> <span class="o">=</span> <span class="n">visit_function_def</span>
+    <span class="n">V</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="nb">compile</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">target</span><span class="p">),</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="s1">&#39;exec&#39;</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">PyCF_ONLY_AST</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span> <span class="nf">_canonical_request_name</span><span class="p">(</span><span class="n">req_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the canonical name of a request</span>
+
+<span class="sd">    :param req_name: the orginal request name</span>
+<span class="sd">    :return: canonical form of the request</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">req_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 
            </div>

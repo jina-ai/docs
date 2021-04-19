@@ -244,7 +244,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 76 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
             
@@ -331,15 +331,22 @@
     <span class="n">Optional</span><span class="p">,</span>
     <span class="n">Sequence</span><span class="p">,</span>
     <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">google.protobuf.struct_pb2</span> <span class="kn">import</span> <span class="n">Struct</span>
 
 <span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">OnErrorStrategy</span>
-<span class="kn">from</span> <span class="nn">..executors</span> <span class="kn">import</span> <span class="n">BaseExecutor</span>
+<span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">LengthMismatchException</span>
 <span class="kn">from</span> <span class="nn">..executors.compound</span> <span class="kn">import</span> <span class="n">CompoundExecutor</span>
 <span class="kn">from</span> <span class="nn">..executors.decorators</span> <span class="kn">import</span> <span class="n">wrap_func</span>
-<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">convert_tuple_to_list</span>
+<span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">convert_tuple_to_list</span><span class="p">,</span>
+    <span class="n">cached_property</span><span class="p">,</span>
+    <span class="n">find_request_binding</span><span class="p">,</span>
+    <span class="n">_canonical_request_name</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAMLCompatible</span>
 <span class="kn">from</span> <span class="nn">..types.querylang</span> <span class="kn">import</span> <span class="n">QueryLang</span>
 <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
@@ -717,6 +724,163 @@
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 
+<div class="viewcode-block" id="DocsExtractUpdateMixin"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.DocsExtractUpdateMixin">[docs]</a><span class="k">class</span> <span class="nc">DocsExtractUpdateMixin</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A Driver pattern for extracting attributes from Documents, feeding to an executor and updating the Documents with</span>
+<span class="sd">    the results.</span>
+
+<span class="sd">    Drivers equipped with this mixin will have :method:`_apply_all` inherited.</span>
+
+<span class="sd">    The :method:`_apply_all` implements the following logics:</span>
+<span class="sd">        - From ``docs``, it extracts the attributes defined :method:`exec_fn`&#39;s arguments.</span>
+<span class="sd">        - It feeds the attributes to the bind executor&#39;s :method:`exec_fn`.</span>
+<span class="sd">        - It updates ``docs`` with results returned from :method:`exec_fn`</span>
+
+<span class="sd">    The following shortcut logics are implemented:</span>
+<span class="sd">        - while extracting: attributes defined :method:`exec_fn`&#39;s arguments are extracted from ``docs``;</span>
+<span class="sd">        - while extracting: attributes annotated with ``ndarray`` are stacked into Numpy NdArray objects;</span>
+<span class="sd">        - while updating: if ``exec_fn`` returns a List of Dict, then ``doc.set_attrs(**exec_result)`` is called;</span>
+<span class="sd">        - while updating: if ``exec_fn`` returns a Document, then ``doc.update(exec_result)` is called.</span>
+<span class="sd">        - while updating: if none of above applies, then calling :meth:`update_single_doc`</span>
+
+<span class="sd">    To override the update behavior, you can choose to override:</span>
+<span class="sd">        - :meth:`update_docs` if you want to modify the behavior of updating docs in bulk</span>
+<span class="sd">        - :meth:`update_single_doc` if you want to modify the behavior of updating a single doc</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply function works on a list of docs, modify the docs in-place.</span>
+
+<span class="sd">        The list refers to all reachable leaves of a single ``traversal_path``.</span>
+
+<span class="sd">        :param docs: the Documents that should be handled</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">contents</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys</span><span class="p">,</span>
+            <span class="n">stack_contents</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys_is_ndarray</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">docs_pts</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">exec_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="o">*</span><span class="n">contents</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">exec_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">exec_results</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># if exec_fn returns None then exec_fn is assumed to be immutable wrt. doc, hence skipped</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">len_results</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exec_results</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">len_results</span> <span class="o">=</span> <span class="n">exec_results</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">len_results</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">)</span> <span class="o">!=</span> <span class="n">len_results</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;mismatched </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">)</span><span class="si">}</span><span class="s1"> docs from level </span><span class="si">{</span><span class="n">docs_pts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">granularity</span><span class="si">}</span><span class="s1"> &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;and length of returned: </span><span class="si">{</span><span class="n">len_results</span><span class="si">}</span><span class="s1">, their length must be the same&#39;</span>
+                    <span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">LengthMismatchException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_docs</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">,</span> <span class="n">exec_results</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DocsExtractUpdateMixin.update_docs"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.DocsExtractUpdateMixin.update_docs">[docs]</a>    <span class="k">def</span> <span class="nf">update_docs</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">docs_pts</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
+        <span class="n">exec_results</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update Documents with the Executor returned results.</span>
+
+<span class="sd">        :param: docs_pts: the set of document to be updated</span>
+<span class="sd">        :param: exec_results: the results from :meth:`exec_fn`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
+
+        <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">exec_result</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">,</span> <span class="n">exec_results</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exec_result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">doc</span><span class="o">.</span><span class="n">set_attrs</span><span class="p">(</span><span class="o">**</span><span class="n">exec_result</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exec_result</span><span class="p">,</span> <span class="n">Document</span><span class="p">):</span>
+                <span class="c1"># doc id should not be override with this method</span>
+                <span class="n">doc</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">exec_result</span><span class="p">,</span> <span class="n">exclude_fields</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">update_single_doc</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">exec_result</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DocsExtractUpdateMixin.update_single_doc"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.DocsExtractUpdateMixin.update_single_doc">[docs]</a>    <span class="k">def</span> <span class="nf">update_single_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">exec_result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update a single Document with the Executor returned result.</span>
+
+<span class="sd">        :param doc: the Document object</span>
+<span class="sd">        :param exec_result: the single result from :meth:`exec_fn`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">_exec_fn_required_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Get the arguments of :attr:`exec_fn`.</span>
+
+<span class="sd">        If ``strict_method_args`` set, then all arguments of :attr:`exec_fn` must be valid :class:`Document` attribute.</span>
+
+<span class="sd">        :return: a list of supported arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;`exec_fn` is None, maybe </span><span class="si">{</span><span class="bp">self</span><span class="si">}</span><span class="s1"> is not attached? call `self.attach`.&#39;</span>
+            <span class="p">)</span>
+
+        <span class="n">required_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">k</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">))</span><span class="o">.</span><span class="n">args</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s1">&#39;self&#39;</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">required_keys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="si">}</span><span class="s1"> takes no argument.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strict_method_args</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">..proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
+            <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">Document</span>
+
+            <span class="n">support_keys</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">get_all_attributes</span><span class="p">()</span>
+            <span class="n">unrecognized_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">required_keys</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">support_keys</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unrecognized_keys</span><span class="p">:</span>
+                <span class="n">camel_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+                    <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields_by_camelcase_name</span>
+                <span class="p">)</span>
+                <span class="n">legacy_keys</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">}</span>
+                <span class="n">unrecognized_camel_keys</span> <span class="o">=</span> <span class="n">unrecognized_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">camel_keys</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">unrecognized_camel_keys</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unrecognized_camel_keys</span><span class="si">}</span><span class="s1"> are supported but you give them in CamelCase, &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;please rewrite them in canonical form.&#39;</span>
+                    <span class="p">)</span>
+                <span class="k">elif</span> <span class="n">unrecognized_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">legacy_keys</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unrecognized_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">legacy_keys</span><span class="p">)</span><span class="si">}</span><span class="s1"> is now deprecated and not a valid argument of &#39;</span>
+                        <span class="s1">&#39;the executor function, &#39;</span>
+                        <span class="s1">&#39;please change `data` to `content: </span><span class="se">\&#39;</span><span class="s1">np.ndarray</span><span class="se">\&#39;</span><span class="s1">` in your executor function. &#39;</span>
+                        <span class="s1">&#39;details: https://github.com/jina-ai/jina/pull/2313/&#39;</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unrecognized_keys</span><span class="si">}</span><span class="s1"> are invalid Document attributes, must come from </span><span class="si">{</span><span class="n">support_keys</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">required_keys</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">_exec_fn_required_keys_is_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of boolean indicators for showing if a key is annotated as ndarray</span>
+
+<span class="sd">        :return: a list of boolean idicator, True if the corresponding key is annotated as ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">anno</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">))</span><span class="o">.</span><span class="n">annotations</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;ndarray&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">anno</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="BaseRecursiveDriver"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.BaseRecursiveDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRecursiveDriver</span><span class="p">(</span><span class="n">BaseDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A :class:`BaseRecursiveDriver` is an abstract Driver class containing information about the `traversal_paths`</span>
 <span class="sd">    that a `Driver` must apply its logic.</span>
@@ -747,6 +911,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">executor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">strict_method_args</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
@@ -754,12 +919,14 @@
 
 <span class="sd">        :param executor: the name of the sub-executor, only necessary when :class:`jina.executors.compound.CompoundExecutor` is used</span>
 <span class="sd">        :param method: the function name of the executor that the driver feeds to</span>
+<span class="sd">        :param strict_method_args: if set, then the input args of ``executor.method`` must be valid :class:`Document` attributes</span>
 <span class="sd">        :param args: additional positional arguments which are just used for the parent initialization</span>
 <span class="sd">        :param kwargs: additional key value arguments which are just used for the parent initialization</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_executor_name</span> <span class="o">=</span> <span class="n">executor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_strict_method_args</span> <span class="o">=</span> <span class="n">strict_method_args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -778,7 +945,9 @@
 
 <span class="sd">        :return: the Callable to execute in the driver</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="p">(</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn</span>
+        <span class="k">elif</span> <span class="p">(</span>
             <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">is_error</span>
             <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">on_error_strategy</span> <span class="o">&lt;</span> <span class="n">OnErrorStrategy</span><span class="o">.</span><span class="n">SKIP_EXECUTOR</span>
         <span class="p">):</span>
@@ -786,10 +955,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="BaseExecutableDriver.attach"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.BaseExecutableDriver.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="s1">&#39;AnyExecutor&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseExecutableDriver.attach"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.BaseExecutableDriver.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="s1">&#39;AnyExecutor&#39;</span><span class="p">,</span> <span class="n">req_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Attach the driver to a :class:`jina.executors.BaseExecutor`</span>
 
 <span class="sd">        :param executor: the executor to which we attach</span>
+<span class="sd">        :param req_type: the request type to attach to</span>
 <span class="sd">        :param args: additional positional arguments for the call of super().attach()</span>
 <span class="sd">        :param kwargs: additional key value arguments for the call of super().attach()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -812,13 +984,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span> <span class="o">=</span> <span class="n">executor</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">exec_methods</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;Using method </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span><span class="si">}</span><span class="s1"> as driver execution function which is not registered&#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;as a potential `exec_method` of an Executor. It won</span><span class="se">\&#39;</span><span class="s1">t work if used inside a CompoundExecutor&#39;</span>
-                <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span><span class="p">:</span>
+            <span class="n">decor_bindings</span> <span class="o">=</span> <span class="n">find_request_binding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">req_type</span><span class="p">:</span>
+                <span class="n">canonic_name</span> <span class="o">=</span> <span class="n">_canonical_request_name</span><span class="p">(</span><span class="n">req_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">req_type</span> <span class="ow">and</span> <span class="n">canonic_name</span> <span class="ow">in</span> <span class="n">decor_bindings</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="o">=</span> <span class="n">decor_bindings</span><span class="p">[</span><span class="n">canonic_name</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="s1">&#39;default&#39;</span> <span class="ow">in</span> <span class="n">decor_bindings</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="o">=</span> <span class="n">decor_bindings</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>

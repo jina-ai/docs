@@ -244,7 +244,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 76 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
             
@@ -320,18 +320,21 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.drivers.predict</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">DocsExtractUpdateMixin</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">typename</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+    <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 
 
-<div class="viewcode-block" id="BasePredictDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.predict/#jina.drivers.predict.BasePredictDriver">[docs]</a><span class="k">class</span> <span class="nc">BasePredictDriver</span><span class="p">(</span><span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">BaseExecutableDriver</span><span class="p">):</span>
+<div class="viewcode-block" id="BasePredictDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.predict/#jina.drivers.predict.BasePredictDriver">[docs]</a><span class="k">class</span> <span class="nc">BasePredictDriver</span><span class="p">(</span>
+    <span class="n">DocsExtractUpdateMixin</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">BaseExecutableDriver</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Drivers inherited from :class:`BasePredictDriver` will bind :meth:`predict` by default</span>
 
 <span class="sd">    :param fields: name of fields to be used to predict tags, default &quot;embeddings&quot;</span>
@@ -343,11 +346,9 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">executor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;predict&#39;</span><span class="p">,</span>
-        <span class="n">fields</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;embedding&#39;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
@@ -363,28 +364,17 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_tag</span> <span class="o">=</span> <span class="n">output_tag</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;embedding&#39;</span><span class="p">:</span>
-            <span class="n">predict_input</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span>
-            <span class="n">predict_input</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_contents</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="si">}</span><span class="s1"> is not a valid field name for </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1">, must be one of embeddings, contents&#39;</span>
-            <span class="p">)</span>
+<div class="viewcode-block" id="BaseLabelPredictDriver.update_docs"><a class="viewcode-back" href="../../../../api/jina.drivers.predict/#jina.drivers.predict.BaseLabelPredictDriver.update_docs">[docs]</a>    <span class="k">def</span> <span class="nf">update_docs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs_pts</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="n">exec_results</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update doc tags attribute with executor&#39;s return</span>
 
-        <span class="k">if</span> <span class="n">docs_pts</span><span class="p">:</span>
-            <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">predict_input</span><span class="p">)</span>
-            <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prediction2label</span><span class="p">(</span>
-                <span class="n">prediction</span>
-            <span class="p">)</span>  <span class="c1"># type: List[Union[str, List[str]]]</span>
-            <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
-                <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span>
+<span class="sd">        :param: docs_pts: the set of document to be updated</span>
+<span class="sd">        :param: exec_results: the results from :meth:`exec_fn`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prediction2label</span><span class="p">(</span>
+            <span class="n">exec_results</span>
+        <span class="p">)</span>  <span class="c1"># type: List[Union[str, List[str]]]</span>
+        <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">output_tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span></div>
 
 <div class="viewcode-block" id="BaseLabelPredictDriver.prediction2label"><a class="viewcode-back" href="../../../../api/jina.drivers.predict/#jina.drivers.predict.BaseLabelPredictDriver.prediction2label">[docs]</a>    <span class="k">def</span> <span class="nf">prediction2label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prediction</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Converting ndarray prediction into list of readable labels</span>
@@ -505,25 +495,13 @@
 <span class="sd">        This will erase the content in ``document.text`` and ``document.buffer``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;embedding&#39;</span><span class="p">:</span>
-            <span class="n">predict_input</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">==</span> <span class="s1">&#39;content&#39;</span><span class="p">:</span>
-            <span class="n">predict_input</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_contents</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="si">}</span><span class="s1"> is not a valid field name for </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1">, must be one of embeddings, contents&#39;</span>
-            <span class="p">)</span>
+<div class="viewcode-block" id="Prediction2DocBlobDriver.update_single_doc"><a class="viewcode-back" href="../../../../api/jina.drivers.predict/#jina.drivers.predict.Prediction2DocBlobDriver.update_single_doc">[docs]</a>    <span class="k">def</span> <span class="nf">update_single_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">exec_result</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update doc blob with executor&#39;s return.</span>
 
-        <span class="k">if</span> <span class="n">docs_pts</span><span class="p">:</span>
-            <span class="n">prediction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">predict_input</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">pred</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">,</span> <span class="n">prediction</span><span class="p">):</span>
-                <span class="n">doc</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">pred</span></div>
+<span class="sd">        :param doc: the Document object</span>
+<span class="sd">        :param exec_result: the single result from :meth:`exec_fn`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">blob</span> <span class="o">=</span> <span class="n">exec_result</span></div></div>
 </pre></div>
 
            </div>
