@@ -33,7 +33,55 @@ Step-by-step guide
 Step 1: Prepare your sparse data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Blah blah blah
+In Jina, we support three `backends` to create your sparse matrix/Tensor:
+`Scipy`, `Tenroflow` and `Pytorch`.
+You might noticed that `Scipy.sparse` supports different sparse formats:
+
+.. list-table:: Sparse Matrix Formats
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - ShortName
+     - FullName
+     - Scipy
+     - Tensorflow
+     - Pytorch
+   * - COO
+     - COOrdinate format
+     - Yes
+     - Yes
+     - Yes
+   * - BSR
+     - Block Sparse Row matrix
+     - Yes
+     - No
+     - No
+   * - CSC
+     - Compressed Sparse Column matrix
+     - Yes
+     - No
+     - No
+   * - CSR
+     - Compressed Sparse Row matrix
+     - Yes
+     - No
+     - No
+   * - DIA
+     - Sparse matrix with DIAgonal storage
+     - Yes
+     - No
+     - No
+   * - DOK
+     - Dictionary Of Keys based sparse matrix.
+     - Yes
+     - No
+     - No
+   * - LIL
+     - Row-based list of lists sparse matrix
+     - Yes
+     - No
+     - No
+
 
 Step 2: Make use of Jina Primitive Types
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
