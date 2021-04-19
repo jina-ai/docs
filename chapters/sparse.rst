@@ -23,7 +23,7 @@ Before you begin, make sure you meet these prerequisites:
 -  Make sure you have basic understanding on Jina.
 -  Make sure you have basic understanding on sparse matrices.
 -  We assume you have some experience with `sparse module in scipy <https://docs.scipy.org/doc/scipy/reference/sparse.html>`_,
-or you have used `Tnesorflow Sparse Tensor <https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor>`_ /\
+or you have used `Tnesorflow Sparse Tensor <https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor>`_ / \
 `PyTorch Sparse COO Tensor <https://pytorch.org/docs/stable/sparse.html#sparse-coo-tensors>`_.
 
 .. Note::
