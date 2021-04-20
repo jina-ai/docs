@@ -6,7 +6,7 @@ This chapter explains how input and output data is handled by the ``Flow API``.
 Input
 -----
 The input data for the ``Flow`` functions ``flow.index(...)``, ``flow.update(...)`` and ``flow.search(...)`` can be provided in three different ways.
-In the following example, the input functionality is shown using the ``Flor.index(...)`` function.
+In the following example, the input functionality is shown using the ``flow.index(...)`` function.
 For ``flow.update(...)`` and ``flow.search(...)``, the input is provided the same way.
 
 #. A single ``Document`` can be sent through the ``Flow`` as shown below.
