@@ -32,6 +32,7 @@ When the process is done, you will find the results in `output.txt`. Look for th
 
 1. Clone this repository from [here](https://github.com/jina-ai/cloud-ops/)
 1. `cd cloud-ops/stress-example`
+1. Install the requirements for the `image` dataset: `pip install -r image/requirements.txt`
 1. Build Docker image `docker build -f debianx.Dockerfile -t stress_example_image_search $PATH_TO_JINA_CORE_REPO`
 1. Configure the `.env` file. The defaults should work fine for a basic demo in Docker Compose.
 1. Start up Docker compose containers `docker-compose -f docker-compose.yml --project-directory . up --build -d`
