@@ -32,10 +32,14 @@ Behind Jina Sparse Matrix
 
 In Jina, we support three `backends` to create your sparse matrix/Tensor:
 `Scipy`, `Tenroflow` and `Pytorch`.
-You might noticed that `Scipy.sparse` supports different sparse formats:
+You might noticed that `Scipy.sparse` supports different sparse formats,
+while Jina only supports `COO`, `BSR`, `CSR` and `CSC`.
+
+When creating your own sparse matrix,
+we suggest you use `COO` as default matrix type.
 
 .. list-table:: Sparse Matrix Formats
-   :widths: 25 25 50 50 50
+   :widths: 25 25 25 25 25
    :header-rows: 1
 
    * - ShortName
@@ -79,32 +83,31 @@ You might noticed that `Scipy.sparse` supports different sparse formats:
      - No
      - No
 
-When creating your own sparse matrix,
-we suggest you use `coo` as matrix type.
-
-Make use of Jina Primitive Types
----------------------------------
-
-Lead-in sentence for an ordered list:
-
-1. Sub-step A
-2. Sub-step B
-3. Sub-step C
 
 Define your Jina Sparse Encoder
 -----------------------------------
 
-Lead-in sentence explaining the code snippet. For example:
+After defining your Jina `Document` with Jina's Primitive Types,
+You need to use a sparse encoder to encode the `content` into a sparse representation,
+for instance, a Scipy `COO` matrix.
+We'll create a simple COO Encoder first
 
-Run the ``apt`` command to install the Asciidoctor package and check the
-version.
+.. highlight:: python
+.. code-block:: python
 
-.. code:: bash
+    from scipy.sparse import coo_matrix
+    from jina.executors.encoders import BaseEncoder
 
-    $ sudo apt install asciidoctor
+    class SimpleScipyCOOEncoder(BaseEncoder):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
 
-    $ asciidoctor --version
-    Asciidoctor 1.5.6.2 [https://asciidoctor.org]
+        def encode(self, content: 'np.ndarray', *args, **kwargs) -> Any:
+            """Encode document content into `coo` format."""
+            return coo_matrix(content)
+
+Then we're able to make use of the `SimpleScipyCOOEncoder` defined above,
+inside the Jina Index and Search Flow.
 
 Use a Jina Sparse Indexer
 -----------------------------------
