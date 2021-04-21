@@ -82,7 +82,7 @@ we suggest you use `COO` as default matrix type.
 
 
 Define your Jina Sparse Encoder
------------------------------------
+---------------------------------
 
 After defining your Jina `Document` with Jina's Primitive Types,
 You need to use a sparse encoder to encode the `content` into a sparse representation,
@@ -120,7 +120,7 @@ In contains an algorithm that can be used to perform fast approximate search wit
 Developed by Facebook AI Research.
 
 Build your Sparse Pipeline In Action
------------------------------------------------------------
+--------------------------------------
 
 In this pipeline, we will make use of Jina's ``TFIDFTextEncoder`` together with ``PysparnnIndexer`` for encoding and indexing.
 
@@ -226,9 +226,23 @@ To run the Index and Query Flow:
 
     from jina import Flow
 
+    def index_generator():
+        """
+        Define data as Document to be indexed.
+        """
+        import csv
+        data_path = os.path.join(os.path.dirname(__file__), os.environ['JINA_DATA_PATH'])
+
+        with open(data_path) as f:
+            reader = csv.reader(f, delimiter='\t')
+            for i, data in enumerate(reader):
+                d = Document()
+                d.tags['id'] = int(i)
+                d.text = data[0]
+                yield d
+
     f = Flow.load_config('index.yml')
     with f:
-        # index_generator is a function yields a jina Document per iteration
         f.index(input_fn=index_generator, request_size=16)
 
     f = Flow.load_config('flows/query.yml')
