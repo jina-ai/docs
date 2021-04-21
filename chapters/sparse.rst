@@ -108,7 +108,12 @@ We'll create a simple COO Encoder first
 
 Then we're able to make use of the `SimpleScipyCOOEncoder` defined above,
 inside the Jina Index and Search Flow.
-You can create your own Encoder to encode your Document content into your expected format.
+
+In Jina-Hub, we have created the `TFIDFTextEncoder <https://github.com/jina-ai/jina-hub/tree/master/encoders/nlp/TFIDFTextEncoder>`_ to encode text into sparse representation,
+the ``TFIDFTextEncoder`` is a wrapper on top of scikit-learn ``TfidfVectorizer`` to encode text data into a Scipy sparse matrix.
+
+
+You can create your own Encoder to encode your Document content into the expected format.
 
 Use a Jina Sparse Indexer
 --------------------------
@@ -119,10 +124,122 @@ is a library for fast similarity search of Sparse Scipy vectors.
 In contains an algorithm that can be used to perform fast approximate search with sparse inputs.
 Developed by Facebook AI Research.
 
-Build your Sparse Index & Search FLow
---------------------------------------
+Build your Sparse Pipeline In Action
+-----------------------------------------------------------
 
-Build
+In this pipeline, we will make use of Jina's ``TFIDFTextEncoder`` together with ``PysparnnIndexer`` for encoding and indexing.
+
+As was mentioned before, ``TFIDFTextEncoder`` was created based on Scikit-learn,
+before using the Encoder, you need to ``fit`` the vectorizer with your training data.
+
+.. highlight:: python
+.. code-block:: python
+
+    import pickle
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    corpus = [
+        'This is the first document.',
+        'This document is the second document.',
+        'And this is the third one.',
+        'Is this the first document?',
+    ]
+
+    vectorizer = TfidfVectorizer()
+    vectorizer.fit(corpus)
+    # Dump the vectorizer fitted on your training data.
+    pickle.dump(tfidf_vectorizer, open("./tfidf_vectorizer.pickle", "wb"))
+
+Then you are able to define the Jina YAML configuration for your Encoder:
+
+.. highlight:: yaml
+.. code-block:: yaml
+
+    !TFIDFTextEncoder
+    metas:
+      name: tfidf_encoder
+    with:
+      path_vectorizer: ./tfidf_vectorizer.pickle
+
+For the indexer,
+we will use the ``PysparnnIndexer`` with approximate nearest neighbor for sparse data.
+Since we want to store the indexed result, we combined ``PysparnnIndexer`` and ``BinaryPbIndexer`` together.
+
+.. highlight:: yaml
+.. code-block:: yaml
+
+    !CompoundIndexer
+    components:
+      - !PysparnnIndexer
+        with:
+          prefix_filename: 'pysparnn'
+        metas:
+          name: vecidx
+      - !BinaryPbIndexer
+        with:
+          index_filename: doc.gz
+        metas:
+          name: docidx
+    metas:
+      name: doc_compound_indexer
+      workspace: $WORKDIR
+
+And we're able to create our Index Flow:
+
+.. highlight:: yaml
+.. code-block:: yaml
+
+    jtype: Flow
+    pods:
+      encoder:
+        uses: encode.yml
+        show_exc_info: true
+        parallel: 1
+        timeout_ready: 600000
+        read_only: true
+      doc_indexer:
+        uses: indexer.yml
+        shards: 1
+        separated_workspace: true
+
+And Query Flow:
+
+.. highlight:: yaml
+.. code-block:: yaml
+
+    jtype: Flow
+    with:
+      read_only: true
+    pods:
+      encoder:
+        uses: encode.yml
+        parallel: 1
+        timeout_ready: 600000
+        read_only: true
+      doc_indexer:
+        uses: indexer.yml
+        shards: 1
+        separated_workspace: true
+        polling: all
+        uses_reducing: _merge_all
+        timeout_ready: 100000
+
+To run the Index and Query Flow:
+
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Flow
+
+    f = Flow.load_config('index.yml')
+    with f:
+        # index_generator is a function yields a jina Document per iteration
+        f.index(input_fn=index_generator, batch_size=16)
+
+    f = Flow.load_config('flows/query.yml')
+    with f:
+        f.search_lines(lines=['my query', ], top_k=3)
+
 
 Limitations [optional]
 ------------------------
