@@ -24,14 +24,11 @@ Before you begin, make sure you meet these prerequisites:
 -  Make sure you have basic understanding on sparse matrices.
 -  We assume you have some experience with `sparse module in scipy <https://docs.scipy.org/doc/scipy/reference/sparse.html>`_, or you have used `Tnesorflow Sparse Tensor <https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor>`_ / `PyTorch Sparse COO Tensor <https://pytorch.org/docs/stable/sparse.html#sparse-coo-tensors>`_.
 
-.. Note::
-    This feature is not yet production-ready.
-
 Behind Jina Sparse Matrix
 -------------------------
 
 In Jina, we support three `backends` to create your sparse matrix/Tensor:
-`Scipy`, `Tenroflow` and `Pytorch`.
+`Scipy`, `Tensorflow` and `Pytorch`.
 You might noticed that `Scipy.sparse` supports different sparse formats,
 while Jina only supports `COO`, `BSR`, `CSR` and `CSC`.
 
@@ -234,16 +231,15 @@ To run the Index and Query Flow:
     f = Flow.load_config('index.yml')
     with f:
         # index_generator is a function yields a jina Document per iteration
-        f.index(input_fn=index_generator, batch_size=16)
+        f.index(input_fn=index_generator, request_size=16)
 
     f = Flow.load_config('flows/query.yml')
     with f:
         f.search_lines(lines=['my query', ], top_k=3)
 
-
 Limitations [optional]
 ------------------------
- If there are known feature limitations that a user would expect to see mention them here.
+It should be noted that sparse indexers in the hub do not support ACID features.
 
 What's Next
 ------------
