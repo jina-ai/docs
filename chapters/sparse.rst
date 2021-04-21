@@ -108,14 +108,16 @@ We'll create a simple COO Encoder first
 
 Then we're able to make use of the `SimpleScipyCOOEncoder` defined above,
 inside the Jina Index and Search Flow.
+You can create your own Encoder to encode your Document content into your expected format.
 
 Use a Jina Sparse Indexer
 -----------------------------------
 
-Provide a summary of the steps completed and explain what the user has
-achieved by following them. You can also include links to related
-articles that may help the reader reinforce concepts discussed in this
-How To article.
+In Jina, we've created several Indexers to help you encode your Document content into sparse format.
+For instance, `PysparnnIndexer <https://github.com/jina-ai/jina-hub/tree/master/indexers/vector/PysparnnIndexer>`_
+is a library for fast similarity search of Sparse Scipy vectors.
+In contains an algorithm that can be used to perform fast approximate search with sparse inputs.
+Developed by Facebook AI Research.
 
 Build your Sparse Index & Search FLow
 -----------------------------------
