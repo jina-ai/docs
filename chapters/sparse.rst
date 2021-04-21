@@ -8,8 +8,8 @@ Use Sparse Embedding in Jina
 .. contents:: Table of Contents
     :depth: 2
 
-Overview
---------
+Motivation
+------------
 
 A sparse matrix is a special case of a matrix in which the number of zero elements is much higher than the number of non-zero elements.
 The space used for representing data and the time for scanning the matrix can be reduced significantly using a sparse representation.
@@ -27,11 +27,8 @@ Before you begin, make sure you meet these prerequisites:
 .. Note::
     This is an experimental feature, more notes to be added.
 
-Step-by-step guide
-------------------
-
-Step 1: Prepare your sparse data
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Behind Jina Sparse Matrix
+-------------------------
 
 In Jina, we support three `backends` to create your sparse matrix/Tensor:
 `Scipy`, `Tenroflow` and `Pytorch`.
@@ -82,9 +79,11 @@ You might noticed that `Scipy.sparse` supports different sparse formats:
      - No
      - No
 
+When creating your own sparse matrix,
+we suggest you use `coo` as matrix type.
 
-Step 2: Make use of Jina Primitive Types
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Make use of Jina Primitive Types
+---------------------------------
 
 Lead-in sentence for an ordered list:
 
@@ -92,8 +91,8 @@ Lead-in sentence for an ordered list:
 2. Sub-step B
 3. Sub-step C
 
-Step 3: Create/Reuse a Sparse Encoder
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Define your Jina Sparse Encoder
+-----------------------------------
 
 Lead-in sentence explaining the code snippet. For example:
 
@@ -107,16 +106,16 @@ version.
     $ asciidoctor --version
     Asciidoctor 1.5.6.2 [https://asciidoctor.org]
 
-Step 4: Create/Reuse a Sparse Indexer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use a Jina Sparse Indexer
+-----------------------------------
 
 Provide a summary of the steps completed and explain what the user has
 achieved by following them. You can also include links to related
 articles that may help the reader reinforce concepts discussed in this
 How To article.
 
-Step 4: Build your Sparse Index & Search FLow
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Build your Sparse Index & Search FLow
+-----------------------------------
 
 to be added
 
