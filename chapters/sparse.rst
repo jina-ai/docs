@@ -96,8 +96,6 @@ We'll create a simple COO Encoder first
     from jina.executors.encoders import BaseEncoder
 
     class SimpleScipyCOOEncoder(BaseEncoder):
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
 
         def encode(self, content: 'np.ndarray', *args, **kwargs) -> Any:
             """Encode document content into `coo` format."""
@@ -237,8 +235,8 @@ To run the Index and Query Flow:
     with f:
         f.search_lines(lines=['my query', ], top_k=3)
 
-Limitations [optional]
-------------------------
+Limitations
+-------------
 It should be noted that sparse indexers in the hub do not support ACID features.
 
 What's Next
