@@ -354,6 +354,7 @@
 <span class="n">_ref_desolve_map</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
 <span class="n">_ref_desolve_map</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
 <span class="n">_ref_desolve_map</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;pea_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">_ref_desolve_map</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;replica_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
 
 <div class="viewcode-block" id="ExecutorType"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.ExecutorType">[docs]</a><span class="k">class</span> <span class="nc">ExecutorType</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">JAMLCompatible</span><span class="p">),</span> <span class="nb">type</span><span class="p">):</span>
@@ -651,18 +652,27 @@
 
 <div class="viewcode-block" id="BaseExecutor.get_shard_workspace"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.get_shard_workspace">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_shard_workspace</span><span class="p">(</span>
-        <span class="n">workspace_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span>
+        <span class="n">workspace_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">replica_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the path of the current shard.</span>
 
-<span class="sd">        :param workspace_folder: Folder of the workspace.</span>
-<span class="sd">        :param workspace_name: Name of the workspace.</span>
-<span class="sd">        :param pea_id: Id of the pea,</span>
+<span class="sd">        :param workspace_folder: folder of the workspace.</span>
+<span class="sd">        :param workspace_name: name of the workspace.</span>
+<span class="sd">        :param pea_id: id of the pea</span>
+<span class="sd">        :param replica_id: id of the replica</span>
 
 <span class="sd">        :return: returns the workspace of the shard of this Executor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">replica_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">replica_id</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">workspace_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -694,7 +704,7 @@
 <span class="sd">        :return: returns the workspace of the shard of this Executor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">get_shard_workspace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">replica_id</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="BaseExecutor.get_file_from_workspace"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.get_file_from_workspace">[docs]</a>    <span class="k">def</span> <span class="nf">get_file_from_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -801,6 +811,7 @@
         <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">AnyExecutor</span><span class="p">],</span>
         <span class="n">raw_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
         <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">replica_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">read_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -809,6 +820,7 @@
 
 <span class="sd">        :param raw_config: raw config to work on</span>
 <span class="sd">        :param pea_id: the id of the storage of this parallel pea</span>
+<span class="sd">        :param replica_id: the id of the replica the pea is contained in</span>
 <span class="sd">        :param read_only: if the executor should be readonly</span>
 <span class="sd">        :param args: Additional arguments.</span>
 <span class="sd">        :param kwargs: Additional key word arguments.</span>
@@ -819,6 +831,7 @@
             <span class="n">raw_config</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">fill_metas_with_defaults</span><span class="p">(</span><span class="n">raw_config</span><span class="p">)</span>
         <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;pea_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pea_id</span>
+        <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;replica_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">replica_id</span>
         <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;read_only&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">read_only</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">):</span>
             <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">])</span>

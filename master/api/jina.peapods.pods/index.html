@@ -54,7 +54,7 @@
     
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
-    <link rel="next" title="jina.peapods.pods.helper" href="../jina.peapods.pods.helper/" />
+    <link rel="next" title="jina.peapods.pods.compoundpod" href="../jina.peapods.pods.compoundpod/" />
     <link rel="prev" title="jina.peapods.peas.helper" href="../jina.peapods.peas.helper/" /> 
 </head>
 
@@ -365,23 +365,42 @@
 <h1>jina.peapods.pods<a class="headerlink" href="#jina-peapods-pods" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../jina.peapods.pods.helper/">jina.peapods.pods.helper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jina.peapods.pods.compoundpod/">jina.peapods.pods.compoundpod</a></li>
 </ul>
 </div>
 <span class="target" id="module-jina.peapods.pods"></span><dl class="py class">
 <dt id="jina.peapods.pods.BasePod">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">jina.peapods.pods.</span></code><code class="sig-name descname"><span class="pre">BasePod</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">needs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">contextlib.ExitStack</span></code></p>
-<p>A BasePod is a immutable set of peas, which run in parallel. They share the same input and output socket.
-Internally, the peas can run with the process/thread backend. They can be also run in their own containers
-:type args: <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Namespace</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]
-:param args: arguments parsed from the CLI
-:type needs: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]
-:param needs: pod names of preceding pods, the output of these pods are going into the input of this pod</p>
+<p>A BasePod is an immutable set of peas. They share the same input and output socket.
+Internally, the peas can run with the process/thread backend.
+They can be also run in their own containers on remote machines.</p>
 <dl class="py attribute">
 <dt id="jina.peapods.pods.BasePod.needs">
 <code class="sig-name descname"><span class="pre">needs</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.needs" title="Permalink to this definition">¶</a></dt>
 <dd><p>used in the <a class="reference internal" href="../jina.flow/#jina.flow.Flow" title="jina.flow.Flow"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.flow.Flow</span></code></a> to build the graph</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="jina.peapods.pods.BasePod.start">
+<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start to run all <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePea</span></code> in this BasePod.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If one of the <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePea</span></code> fails to start, make sure that all of them
+are properly closed.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#jina.peapods.pods.BasePod" title="jina.peapods.pods.BasePod"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePod</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="jina.peapods.pods.BasePod.close">
+<code class="sig-name descname"><span class="pre">close</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop all <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePea</span></code> in this BasePod.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -396,42 +415,9 @@ Internally, the peas can run with the process/thread backend. They can be also r
 </dd></dl>
 
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.is_singleton">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_singleton</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.is_singleton" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return if the Pod contains only a single Pea</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt id="jina.peapods.pods.BasePod.name">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>The name of this <a class="reference internal" href="#jina.peapods.pods.BasePod" title="jina.peapods.pods.BasePod"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePod</span></code></a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="jina.peapods.pods.BasePod.port_expose">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">port_expose</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.port_expose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the grpc port number</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="jina.peapods.pods.BasePod.host">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">host</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.host" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the host name of this Pod</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
@@ -483,9 +469,32 @@ Internally, the peas can run with the process/thread backend. They can be also r
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt id="jina.peapods.pods.Pod">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">jina.peapods.pods.</span></code><code class="sig-name descname"><span class="pre">Pod</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">needs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#Pod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.Pod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#jina.peapods.pods.BasePod" title="jina.peapods.pods.BasePod"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.peapods.pods.BasePod</span></code></a></p>
+<p>A BasePod is an immutable set of peas, which run in parallel. They share the same input and output socket.
+Internally, the peas can run with the process/thread backend. They can be also run in their own containers
+:type args: <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Namespace</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>]
+:param args: arguments parsed from the CLI
+:type needs: <code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]
+:param needs: pod names of preceding pods, the output of these pods are going into the input of this pod</p>
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.first_pea_args">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">first_pea_args</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.first_pea_args" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.is_singleton">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_singleton</span></code><a class="headerlink" href="#jina.peapods.pods.Pod.is_singleton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return if the Pod contains only a single Pea</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="jina.peapods.pods.Pod.first_pea_args">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">first_pea_args</span></code><a class="headerlink" href="#jina.peapods.pods.Pod.first_pea_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the first non-head/tail pea’s args</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -495,20 +504,42 @@ Internally, the peas can run with the process/thread backend. They can be also r
 </dd></dl>
 
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.head_args">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">head_args</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.head_args" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.port_expose">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">port_expose</span></code><a class="headerlink" href="#jina.peapods.pods.Pod.port_expose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the grpc port number</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="jina.peapods.pods.Pod.host">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">host</span></code><a class="headerlink" href="#jina.peapods.pods.Pod.host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the host name of this Pod</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="jina.peapods.pods.Pod.head_args">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">head_args</span></code><a class="headerlink" href="#jina.peapods.pods.Pod.head_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the arguments for the <cite>head</cite> of this BasePod.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.tail_args">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">tail_args</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.tail_args" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.tail_args">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">tail_args</span></code><a class="headerlink" href="#jina.peapods.pods.Pod.tail_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the arguments for the <cite>tail</cite> of this BasePod.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.all_args">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">all_args</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.all_args" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.all_args">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">all_args</span></code><a class="headerlink" href="#jina.peapods.pods.Pod.all_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all arguments of all Peas in this BasePod.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -518,8 +549,8 @@ Internally, the peas can run with the process/thread backend. They can be also r
 </dd></dl>
 
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.num_peas">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">num_peas</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.num_peas" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.num_peas">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">num_peas</span></code><a class="headerlink" href="#jina.peapods.pods.Pod.num_peas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the number of running <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePea</span></code></p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -528,9 +559,14 @@ Internally, the peas can run with the process/thread backend. They can be also r
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt id="jina.peapods.pods.Pod.peas">
+<code class="sig-name descname"><span class="pre">peas</span></code><em class="property"><span class="pre">:</span> <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">BasePea</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#jina.peapods.pods.Pod.peas" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.start">
-<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod.start" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.start">
+<code class="sig-name descname"><span class="pre">start</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#Pod.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.Pod.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start to run all <code class="xref py py-class docutils literal notranslate"><span class="pre">BasePea</span></code> in this BasePod.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -548,8 +584,8 @@ are properly closed.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.wait_start_success">
-<code class="sig-name descname"><span class="pre">wait_start_success</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod.wait_start_success"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod.wait_start_success" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.wait_start_success">
+<code class="sig-name descname"><span class="pre">wait_start_success</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#Pod.wait_start_success"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.Pod.wait_start_success" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block until all peas starts successfully.</p>
 <p>If not successful, it will raise an error hoping the outer function to catch it</p>
 <dl class="field-list simple">
@@ -560,14 +596,14 @@ are properly closed.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.join">
-<code class="sig-name descname"><span class="pre">join</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod.join" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.join">
+<code class="sig-name descname"><span class="pre">join</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#Pod.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.Pod.join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wait until all peas exit</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.is_ready">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_ready</span></code><a class="headerlink" href="#jina.peapods.pods.BasePod.is_ready" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.is_ready">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_ready</span></code><a class="headerlink" href="#jina.peapods.pods.Pod.is_ready" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if Pod is ready</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -581,8 +617,8 @@ are properly closed.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="jina.peapods.pods.BasePod.dump">
-<code class="sig-name descname"><span class="pre">dump</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shards</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod.dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod.dump" title="Permalink to this definition">¶</a></dt>
+<dt id="jina.peapods.pods.Pod.dump">
+<code class="sig-name descname"><span class="pre">dump</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shards</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#Pod.dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.Pod.dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>Emit a Dump request to its Peas</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -607,7 +643,7 @@ are properly closed.</p>
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="../jina.peapods.pods.helper/" class="btn btn-neutral float-right" title="jina.peapods.pods.helper"
+        <a href="../jina.peapods.pods.compoundpod/" class="btn btn-neutral float-right" title="jina.peapods.pods.compoundpod"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
