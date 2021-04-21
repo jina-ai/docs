@@ -35,7 +35,7 @@ In Jina, we support three `backends` to create your sparse matrix/Tensor:
 You might noticed that `Scipy.sparse` supports different sparse formats:
 
 .. list-table:: Sparse Matrix Formats
-   :widths: 25 25 50 50
+   :widths: 25 25 50 50 50
    :header-rows: 1
 
    * - ShortName
