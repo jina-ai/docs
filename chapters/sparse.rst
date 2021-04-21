@@ -25,7 +25,7 @@ Before you begin, make sure you meet these prerequisites:
 -  We assume you have some experience with `sparse module in scipy <https://docs.scipy.org/doc/scipy/reference/sparse.html>`_, or you have used `Tnesorflow Sparse Tensor <https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor>`_ / `PyTorch Sparse COO Tensor <https://pytorch.org/docs/stable/sparse.html#sparse-coo-tensors>`_.
 
 .. Note::
-    This is an experimental feature, more notes to be added.
+    This feature is not yet production-ready.
 
 Behind Jina Sparse Matrix
 -------------------------
@@ -35,7 +35,7 @@ In Jina, we support three `backends` to create your sparse matrix/Tensor:
 You might noticed that `Scipy.sparse` supports different sparse formats:
 
 .. list-table:: Sparse Matrix Formats
-   :widths: 25 25 50
+   :widths: 25 25 50 50
    :header-rows: 1
 
    * - ShortName
