@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.helloworld.chatbot &mdash; Jina 1.1.9-master documentation</title>
+  <title>jina.helloworld.chatbot &mdash; Jina 1.1.10-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.9-master</button>
+            <button class="dropbtn version">1.1.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -363,20 +363,9 @@
     <span class="c1"># now comes the real work</span>
     <span class="c1"># load index flow from a YAML file</span>
 
-    <span class="c1"># TODO: remove this patch after https://github.com/jina-ai/jina/pull/2313 is merged</span>
-    <span class="c1"># BEGIN PATCH</span>
-    <span class="kn">from</span> <span class="nn">jina.hub.encoders.nlp.TransformerTorchEncoder</span> <span class="kn">import</span> <span class="n">TransformerTorchEncoder</span>
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-    <span class="k">class</span> <span class="nc">MyTransformer</span><span class="p">(</span><span class="n">TransformerTorchEncoder</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyTransformer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="c1"># END PATCH</span>
-
     <span class="n">f</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">Flow</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">&#39;MyTransformer&#39;</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">uses</span><span class="o">=</span><span class="s1">&#39;TransformerTorchEncoder&#39;</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
         <span class="o">.</span><span class="n">add</span><span class="p">(</span>
             <span class="n">uses</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">resource_filename</span><span class="p">(</span><span class="s2">&quot;jina&quot;</span><span class="p">,</span> <span class="s2">&quot;resources&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">/chatbot/helloworld.indexer.yml&#39;</span>
         <span class="p">)</span>

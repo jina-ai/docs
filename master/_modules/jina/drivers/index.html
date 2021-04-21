@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers &mdash; Jina 1.1.9-master documentation</title>
+  <title>jina.drivers &mdash; Jina 1.1.10-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.9-master</button>
+            <button class="dropbtn version">1.1.10-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -322,6 +322,7 @@
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
 <span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">typing</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
@@ -335,6 +336,7 @@
     <span class="n">Union</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">google.protobuf.struct_pb2</span> <span class="kn">import</span> <span class="n">Struct</span>
 
 <span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">OnErrorStrategy</span>
@@ -800,6 +802,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_return_is_ndarray</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exec_results</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">r_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">exec_results</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">if</span> <span class="n">r_type</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;EagerTensor&#39;</span><span class="p">,</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">}:</span>
+                <span class="n">exec_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">exec_results</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unrecognized type </span><span class="si">{</span><span class="n">exec_results</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">exec_result</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs_pts</span><span class="p">,</span> <span class="n">exec_results</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">exec_result</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">doc</span><span class="o">.</span><span class="n">set_attrs</span><span class="p">(</span><span class="o">**</span><span class="n">exec_result</span><span class="p">)</span>
@@ -877,8 +886,29 @@
 <span class="sd">        :return: a list of boolean idicator, True if the corresponding key is annotated as ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">anno</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">))</span><span class="o">.</span><span class="n">annotations</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s1">&#39;ndarray&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">anno</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys</span><span class="p">]</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">anno</span> <span class="o">=</span> <span class="n">typing</span><span class="o">.</span><span class="n">get_type_hints</span><span class="p">((</span><span class="n">inspect</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="n">anno</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys</span>
+            <span class="p">]</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys</span><span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">_exec_fn_return_is_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return a boolean value for showing if the return of :meth:`exec_fn` is annotated as `ndarray`</span>
+
+<span class="sd">        :return: a bool indicator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span>
+                <span class="n">typing</span><span class="o">.</span><span class="n">get_type_hints</span><span class="p">((</span><span class="n">inspect</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">)))</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                    <span class="s1">&#39;return&#39;</span><span class="p">,</span> <span class="kc">None</span>
+                <span class="p">)</span>
+                <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="BaseRecursiveDriver"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.BaseRecursiveDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRecursiveDriver</span><span class="p">(</span><span class="n">BaseDriver</span><span class="p">):</span>
