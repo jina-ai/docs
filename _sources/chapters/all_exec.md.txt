@@ -5,6 +5,16 @@ This version of Jina includes 68 Executors.
 ## Inheritances in a Tree View
 - `JAMLCompatible`
    - `BaseExecutor`
+      - `BaseCrafter`
+      - `BaseEvaluator`
+         - `BaseTextEvaluator`
+            - `TextLengthEvaluator`
+         - `BaseEmbeddingEvaluator`
+            - `EuclideanEvaluator`
+            - `CosineEvaluator`
+         - `BaseRankingEvaluator`
+            - `PrecisionEvaluator`
+            - `RecallEvaluator`
       - `BaseIndexer`
          - `BaseKVIndexer`
             - `BinaryPbWriterMixin`
@@ -13,6 +23,10 @@ This version of Jina includes 68 Executors.
                   - `KeyValueIndexer`
             - `BaseCache`
                - `DocCache`
+         - `BaseVectorIndexer`
+            - `BaseNumpyIndexer`
+               - `NumpyIndexer`
+                  - `VectorIndexer`
          - `BaseQueryIndexer`
             - `CompoundExecutor`
                - `CompoundQueryExecutor`
@@ -28,33 +42,22 @@ This version of Jina includes 68 Executors.
             - `BinaryPbWriterMixin`
                - `BinaryPbDBMSIndexer`
                   - `KeyValueDBMSIndexer`
-         - `BaseVectorIndexer`
-            - `BaseNumpyIndexer`
-               - `NumpyIndexer`
-                  - `VectorIndexer`
       - `CompoundExecutor`
          - `UniquePbIndexer`
          - `CompoundIndexer`
          - `UniqueVectorIndexer`
          - `FileBasedEvaluator`
-      - `BaseEvaluator`
-         - `BaseRankingEvaluator`
-            - `PrecisionEvaluator`
-            - `RecallEvaluator`
-         - `BaseTextEvaluator`
-            - `TextLengthEvaluator`
-         - `BaseEmbeddingEvaluator`
-            - `EuclideanEvaluator`
-            - `CosineEvaluator`
       - `BaseMultiModalEncoder`
-      - `BaseCrafter`
-      - `BaseSegmenter`
+      - `BaseClassifier`
+      - `BaseRanker`
+         - `Chunk2DocRanker`
+         - `Match2DocRanker`
       - `BaseEncoder`
          - `BaseNumericEncoder`
+            - `TransformEncoder`
             - `BaseAudioEncoder`
             - `BaseImageEncoder`
             - `BaseVideoEncoder`
-            - `TransformEncoder`
          - `BaseTextEncoder`
          - `BaseDevice`
             - `MindsporeDevice`
@@ -67,46 +70,43 @@ This version of Jina includes 68 Executors.
                - `BaseTFEncoder`
             - `TorchDevice`
                - `BaseTorchEncoder`
-      - `BaseClassifier`
-      - `BaseRanker`
-         - `Chunk2DocRanker`
-         - `Match2DocRanker`
+      - `BaseSegmenter`
 
 ## Modules in a Table View 
 
 | Class | Module |
 | --- | --- |
-| `BaseAudioEncoder` | `jina.executors.encoders.numeric` |
+| `BaseAudioEncoder` | `jina.executors.encoders` |
 | `BaseCache` | `jina.executors.indexers.cache` |
-| `BaseClassifier` | `jina.executors.evaluators` |
-| `BaseCrafter` | `jina.executors.evaluators` |
+| `BaseClassifier` | `jina.executors.segmenters` |
+| `BaseCrafter` | `jina.executors.segmenters` |
 | `BaseDBMSIndexer` | `jina.executors.indexers.query` |
 | `BaseDevice` | `jina.executors.encoders.frameworks` |
 | `BaseEmbeddingEvaluator` | `jina.executors.evaluators.embedding` |
-| `BaseEncoder` | `jina.executors.evaluators` |
-| `BaseEvaluator` | `jina.executors.evaluators` |
+| `BaseEncoder` | `jina.executors.segmenters` |
+| `BaseEvaluator` | `jina.executors.segmenters` |
 | `BaseExecutor` |   |
-| `BaseImageEncoder` | `jina.executors.encoders.numeric` |
-| `BaseIndexer` | `jina.executors.evaluators` |
+| `BaseImageEncoder` | `jina.executors.encoders` |
+| `BaseIndexer` | `jina.executors.segmenters` |
 | `BaseKVIndexer` | `jina.executors.indexers.query` |
 | `BaseMindsporeEncoder` |   |
-| `BaseMultiModalEncoder` | `jina.executors.evaluators` |
+| `BaseMultiModalEncoder` | `jina.executors.segmenters` |
 | `BaseNumericEncoder` | `jina.executors.encoders.frameworks` |
 | `BaseNumpyIndexer` |   |
-| `BaseNumpyIndexer` | `jina.executors.indexers.vector` |
+| `BaseNumpyIndexer` | `jina.executors.indexers` |
 | `BaseOnnxEncoder` |   |
 | `BasePaddleEncoder` |   |
 | `BaseQueryIndexer` | `jina.executors.indexers.query` |
-| `BaseRanker` | `jina.executors.evaluators` |
+| `BaseRanker` | `jina.executors.segmenters` |
 | `BaseRankingEvaluator` | `jina.executors.evaluators.embedding` |
-| `BaseSegmenter` | `jina.executors.evaluators` |
+| `BaseSegmenter` | `jina.executors.segmenters` |
 | `BaseTFEncoder` |   |
 | `BaseTextEncoder` | `jina.executors.encoders.frameworks` |
 | `BaseTextEvaluator` | `jina.executors.evaluators.embedding` |
 | `BaseTorchEncoder` |   |
 | `BaseVectorIndexer` | `jina.executors.indexers.query.keyvalue` |
 | `BaseVectorIndexer` | `jina.executors.indexers.query` |
-| `BaseVideoEncoder` | `jina.executors.encoders.numeric` |
+| `BaseVideoEncoder` | `jina.executors.encoders` |
 | `BinaryPbDBMSIndexer` |   |
 | `BinaryPbIndexer` |   |
 | `BinaryPbQueryIndexer` |   |
@@ -114,8 +114,8 @@ This version of Jina includes 68 Executors.
 | `BinaryPbWriterMixin` | `jina.executors.indexers.dbms.keyvalue` |
 | `BinaryPbWriterMixin` | `jina.executors.indexers.query.keyvalue` |
 | `Chunk2DocRanker` | `jina.executors.rankers` |
-| `CompoundExecutor` | `jina.executors.evaluators` |
 | `CompoundExecutor` | `jina.executors.indexers.query.keyvalue` |
+| `CompoundExecutor` | `jina.executors.segmenters` |
 | `CompoundIndexer` | `jina.executors.evaluators` |
 | `CompoundQueryExecutor` |   |
 | `CompoundQueryIndexer` | `jina.executors.indexers.query.compound` |
@@ -138,9 +138,9 @@ This version of Jina includes 68 Executors.
 | `PrecisionEvaluator` | `jina.executors.evaluators.rank` |
 | `RecallEvaluator` | `jina.executors.evaluators.rank` |
 | `TFDevice` |   |
-| `TextLengthEvaluator` | `jina.executors.evaluators.text.length` |
+| `TextLengthEvaluator` | `jina.executors.evaluators.text` |
 | `TorchDevice` |   |
-| `TransformEncoder` | `jina.executors.encoders.numeric` |
+| `TransformEncoder` | `jina.executors.encoders` |
 | `UniquePbIndexer` | `jina.executors.evaluators` |
 | `UniqueVectorIndexer` | `jina.executors.evaluators` |
-| `VectorIndexer` | `jina.executors.indexers.vector` |
+| `VectorIndexer` | `jina.executors.indexers.query.vector` |
