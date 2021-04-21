@@ -111,7 +111,7 @@ inside the Jina Index and Search Flow.
 You can create your own Encoder to encode your Document content into your expected format.
 
 Use a Jina Sparse Indexer
------------------------------------
+--------------------------
 
 In Jina, we've created several Indexers to help you encode your Document content into sparse format.
 For instance, `PysparnnIndexer <https://github.com/jina-ai/jina-hub/tree/master/indexers/vector/PysparnnIndexer>`_
@@ -120,10 +120,17 @@ In contains an algorithm that can be used to perform fast approximate search wit
 Developed by Facebook AI Research.
 
 Build your Sparse Index & Search FLow
------------------------------------
+--------------------------------------
 
-to be added
+Build
 
-Limitations [optional]:
+Limitations [optional]
 ------------------------
  If there are known feature limitations that a user would expect to see mention them here.
+
+What's Next
+------------
+
+If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
+
+To gain a deeper knowledge on the implementation of Jina's primitive data types, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/types>`_.
