@@ -30,32 +30,22 @@ jobs:
           echo "JINA_VERSION=${JINA_VERSION}" >> $GITHUB_ENV
       - name: Checkout to docs repo
         uses: actions/checkout@v2
-      - name: Build docs & Sitemap
+      - name: Build docs
         run: |
-          pwd
-          cat html_extra/robots.txt
-          rm html_extra/robots.txt
-          touch html_extra/robots.txt
-          echo "User-agent: *" >> html_extra/robots.txt
-          echo "Disallow:" >> html_extra/robots.txt
-          echo "sitemap: https://docs.jina.ai/sitemap.xml" >> html_extra/robots.txt
-          echo "sitemap: https://docs.jina.ai/${RELEASE_VER}/sitemap.xml" >> html_extra/robots.txt
-          cat html_extra/robots.txt
           bash .github/scripts/make-doc.sh commit "update ${{env.JINA_VERSION}} due to ${{github.event_name}} on ${{github.repository}}"
-          cat html_extra/robots.txt
-#      - name: Commit documentation changes to gh-pages
-#        run: |
-#          git clone https://github.com/jina-ai/docs.git --branch gh-pages --single-branch gh-pages
-#          cp -r _build/dirhtml/* gh-pages/
-#          cd gh-pages
-#          git config --local user.email "dev-bot@jina.ai"
-#          git config --local user.name "Jina Dev Bot"
-#          git add .
-#          git commit -m "update ${{env.JINA_VERSION}} due to ${{github.event_name}} on ${{github.repository}}" -a || true
-#      - name: Push changes to gh-pages
-#        uses: ad-m/github-push-action@master
-#        with:
-#          branch: gh-pages
-#          directory: gh-pages
-#          github_token: ${{ secrets.JINA_DEV_BOT }}
-#          force: true
+      - name: Commit documentation changes to gh-pages
+        run: |
+          git clone https://github.com/jina-ai/docs.git --branch gh-pages --single-branch gh-pages
+          cp -r _build/dirhtml/* gh-pages/
+          cd gh-pages
+          git config --local user.email "dev-bot@jina.ai"
+          git config --local user.name "Jina Dev Bot"
+          git add .
+          git commit -m "update ${{env.JINA_VERSION}} due to ${{github.event_name}} on ${{github.repository}}" -a || true
+      - name: Push changes to gh-pages
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.JINA_DEV_BOT }}
+          force: true
