@@ -28,10 +28,22 @@ docker run --rm \
   pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md
 cd -
 
+# create new sitemap
+cd ${DOC_DIR}
+rm html_extra/robots.txt
+touch html_extra/robots.txt
+printf "User-agent: *" >> html_extra/robots.txt
+printf "Disallow:" >> html_extra/robots.txt
+printf "sitemap: https://docs.jina.ai/sitemap.xml" >> html_extra/robots.txt
+printf "sitemap: https://docs.jina.ai/${RELEASE_VER}/sitemap.xml" >> html_extra/robots.txt
+cat html_extra/robots.txt
+cd -
+
+
 # create markdown for List [X] drivers in Jina & List [X] executors in Jina to chapters/
 cd ${DOC_DIR} && jina check --summary-driver chapters/all_driver.md && cd -
 cd ${DOC_DIR} && jina check --summary-exec chapters/all_exec.md && cd -
-cd ${DOC_DIR} && pwd && make dirhtml && cd -
+cd ${DOC_DIR} && make dirhtml && cd -
 
 if [[ $1 == "commit" ]]; then
   cd ${DOC_DIR}
