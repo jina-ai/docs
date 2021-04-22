@@ -36,7 +36,6 @@ printf "User-agent: *" >> html_extra/robots.txt
 printf "Disallow:" >> html_extra/robots.txt
 printf "sitemap: https://docs.jina.ai/sitemap.xml" >> html_extra/robots.txt
 printf "sitemap: https://docs.jina.ai/${RELEASE_VER}/sitemap.xml" >> html_extra/robots.txt
-cat html_extra/robots.txt
 cd -
 
 
