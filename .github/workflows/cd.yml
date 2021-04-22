@@ -30,11 +30,15 @@ jobs:
           echo "JINA_VERSION=${JINA_VERSION}" >> $GITHUB_ENV
       - name: Checkout to docs repo
         uses: actions/checkout@v2
-      - name: Build docs
+      - name: Build docs & Sitemap
         run: |
           bash .github/scripts/make-doc.sh commit "update ${{env.JINA_VERSION}} due to ${{github.event_name}} on ${{github.repository}}"
-          pwd
-          ls
+          rm html_extra/robots.txt
+          touch html_extra/robots.txt
+          printf "User-agent: *" >> html_extra/robots.txt
+          printf "Disallow:" >> html_extra/robots.txt
+          printf "sitemap: https://docs.jina.ai/sitemap.xml" >> html_extra/robots.txt
+          printf "sitemap: https://docs.jina.ai/${RELEASE_VER}/sitemap.xml" >> html_extra/robots.txt
           cat html_extra/robots.txt
       - name: Commit documentation changes to gh-pages
         run: |
