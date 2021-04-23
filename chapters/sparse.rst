@@ -1,8 +1,8 @@
-Use Sparse Embedding in Jina
-==============================
+How to use Sparse Embeddings in Jina
+=====================================
 
 .. meta::
-   :description: Sparse Embedding in Jina
+   :description: How to use Sparse Embeddings in Jina
    :keywords: Jina, sparse, coo, csr
 
 .. contents:: Table of Contents
@@ -22,13 +22,13 @@ Before you begin, make sure you meet these prerequisites:
 
 -  Make sure you have basic understanding on Jina.
 -  Make sure you have basic understanding on sparse matrices.
--  We assume you have some experience with `sparse module in scipy <https://docs.scipy.org/doc/scipy/reference/sparse.html>`_, or you have used `Tnesorflow Sparse Tensor <https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor>`_ / `PyTorch Sparse COO Tensor <https://pytorch.org/docs/stable/sparse.html#sparse-coo-tensors>`_.
+-  We assume you have some experience with `sparse module in scipy <https://docs.scipy.org/doc/scipy/reference/sparse.html>`_, or you have used `TensorFlow Sparse Tensor <https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor>`_ / `PyTorch Sparse COO Tensor <https://pytorch.org/docs/stable/sparse.html#sparse-coo-tensors>`_.
 
 Behind Jina Sparse Matrix
 -------------------------
 
 In Jina, we support three `backends` to create your sparse matrix/Tensor:
-`Scipy`, `Tensorflow` and `Pytorch`.
+`Scipy`, `TensorFlow` and `Pytorch`.
 You might noticed that `Scipy.sparse` supports different sparse formats,
 while Jina only supports `COO`, `BSR`, `CSR` and `CSC`.
 
@@ -42,7 +42,7 @@ we suggest you use `COO` as default matrix type.
    * - ShortName
      - FullName
      - Scipy
-     - Tensorflow
+     - TensorFlow
      - Pytorch
    * - COO
      - COOrdinate format
@@ -126,6 +126,7 @@ In this pipeline, we will make use of Jina's ``TFIDFTextEncoder`` together with 
 
 As was mentioned before, ``TFIDFTextEncoder`` was created based on Scikit-learn,
 before using the Encoder, you need to ``fit`` the vectorizer with your training data.
+In this example, we use a simple corpus containing four sentences of text.
 
 .. highlight:: python
 .. code-block:: python
@@ -137,7 +138,7 @@ before using the Encoder, you need to ``fit`` the vectorizer with your training 
         'This is the first document.',
         'This document is the second document.',
         'And this is the third one.',
-        'Is this the first document?',
+        'Is this the first document?'
     ]
 
     vectorizer = TfidfVectorizer()
