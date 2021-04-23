@@ -270,6 +270,7 @@ Use a Jina Sparse Indexer
 --------------------------
 
 In Jina, we've created several Indexers to help you encode your Document content into sparse format.
+You need to set the `embedding_cls_type` to determine which sparse type your indexer supports.
 For instance, `PysparnnIndexer <https://github.com/jina-ai/jina-hub/tree/master/indexers/vector/PysparnnIndexer>`_
 is a library for fast similarity search of Sparse Scipy vectors.
 In contains an algorithm that can be used to perform fast approximate search with sparse inputs.
