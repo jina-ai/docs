@@ -24,6 +24,14 @@ Before you begin, make sure you meet these prerequisites:
 -  Make sure you have basic understanding on sparse matrices.
 -  We assume you have some experience with `sparse module in scipy <https://docs.scipy.org/doc/scipy/reference/sparse.html>`_, or you have used `TensorFlow Sparse Tensor <https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor>`_ / `PyTorch Sparse COO Tensor <https://pytorch.org/docs/stable/sparse.html#sparse-coo-tensors>`_.
 
+And have Jina installed on your machine:
+
+.. highlight:: shell
+.. code-block:: shell
+
+    pip install "jina[hub]"
+
+
 Behind Jina Sparse Matrix
 -------------------------
 
