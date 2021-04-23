@@ -28,7 +28,8 @@ Behind Jina Sparse Matrix
 -------------------------
 
 As a framework of search, Jina don't have a native sparse matrix support.
-The `Ndarray` module in Jina's Primitive Types is an adapter between Jina and other sparse backends.
+The `Ndarray.sparse` module in Jina's Primitive Types is an adapter between Jina and other sparse backends,
+such as `Scipy.sparse`.
 In Jina, we support three `backends` to create your sparse matrix/Tensor:
 `Scipy`, `TensorFlow` and `Pytorch`.
 You might noticed that `Scipy.sparse` supports different sparse formats,
