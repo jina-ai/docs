@@ -150,7 +150,7 @@ In this example, we use a simple corpus containing four sentences of text.
     vectorizer = TfidfVectorizer()
     vectorizer.fit(corpus)
     # Dump the vectorizer fitted on your training data.
-    pickle.dump(tfidf_vectorizer, open("./tfidf_vectorizer.pickle", "wb"))
+    pickle.dump(vectorizer, open("./tfidf_vectorizer.pickle", "wb"))
 
 Step 2. Setup Encoder & Indexer YAML configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -239,7 +239,7 @@ Step 5. Combine your flows and run Jina
 
     def index_generator():
         """
-        Define data as Document to be indexed.
+        Data from which we create `Documents`.
         """
         import csv
         data_path = os.path.join(os.path.dirname(__file__), os.environ['JINA_DATA_PATH'])
@@ -252,10 +252,12 @@ Step 5. Combine your flows and run Jina
                 d.text = data[0]
                 yield d
 
+    # Load index flow configuration and run the index flow.
     f = Flow.load_config('index.yml')
     with f:
         f.index(input_fn=index_generator, request_size=16)
 
+    # Load query flow configuration and run the query flow.
     f = Flow.load_config('flows/query.yml')
     with f:
         f.search_lines(lines=['my query', ], top_k=3)
