@@ -97,6 +97,20 @@ Build your Sparse Pipeline In Action
 
 In this pipeline, we will make use of Jina's ``TFIDFTextEncoder`` together with ``PysparnnIndexer`` for encoding and indexing.
 
+::
+
+    project
+    ├── tfidf_vectorizer.pickle
+    ├── encode.yml
+    ├── index.yml
+    ├── flow_index.yml
+    ├── flow_query.yml
+    ├── __init__.py
+    ├── app.py
+    ├── fit_vectorizer.py
+
+
+
 Step 1. Vectorize your data into sparse vector encoding
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -107,6 +121,7 @@ In this example, we use a simple corpus containing four sentences of text.
 .. highlight:: python
 .. code-block:: python
 
+    # fit_vectorizer.py
     import pickle
     from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -171,7 +186,7 @@ Step 3. Create your index flow
         timeout_ready: 600000
         read_only: true
       doc_indexer:
-        uses: indexer.yml
+        uses: index.yml
         shards: 1
         separated_workspace: true
 
