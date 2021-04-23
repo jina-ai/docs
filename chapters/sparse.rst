@@ -124,6 +124,9 @@ Build your Sparse Pipeline In Action
 
 In this pipeline, we will make use of Jina's ``TFIDFTextEncoder`` together with ``PysparnnIndexer`` for encoding and indexing.
 
+Step 1. Vectorize your data into sparse vector encoding
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 As was mentioned before, ``TFIDFTextEncoder`` was created based on Scikit-learn,
 before using the Encoder, you need to ``fit`` the vectorizer with your training data.
 In this example, we use a simple corpus containing four sentences of text.
@@ -146,7 +149,8 @@ In this example, we use a simple corpus containing four sentences of text.
     # Dump the vectorizer fitted on your training data.
     pickle.dump(tfidf_vectorizer, open("./tfidf_vectorizer.pickle", "wb"))
 
-Then you are able to define the Jina YAML configuration for your Encoder:
+Step 2. Setup Encoder & Indexer YAML configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. highlight:: yaml
 .. code-block:: yaml
@@ -180,7 +184,8 @@ Since we want to store the indexed result, we combined ``PysparnnIndexer`` and `
       name: doc_compound_indexer
       workspace: $WORKDIR
 
-And we're able to create our Index Flow:
+Step 3. Create your index flow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. highlight:: yaml
 .. code-block:: yaml
@@ -198,7 +203,8 @@ And we're able to create our Index Flow:
         shards: 1
         separated_workspace: true
 
-And Query Flow:
+Step 4. Create your query flow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. highlight:: yaml
 .. code-block:: yaml
@@ -220,7 +226,8 @@ And Query Flow:
         uses_reducing: _merge_all
         timeout_ready: 100000
 
-To run the Index and Query Flow:
+Step 5. Combine your flows and run Jina
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. highlight:: python
 .. code-block:: python
