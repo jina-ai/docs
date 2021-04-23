@@ -36,7 +36,7 @@ You might noticed that `Scipy.sparse` supports different sparse formats,
 while Jina only supports `COO`, `BSR`, `CSR` and `CSC`.
 
 When creating your own sparse matrix,
-we suggest you use `COO` as default matrix type.
+we suggest you use `CSR` as default matrix type.
 
 .. list-table:: Sparse Matrix Formats
    :widths: 25 25 25 25 25
@@ -112,7 +112,7 @@ In this example, we use a simple corpus containing four sentences of text.
     vectorizer = TfidfVectorizer()
     vectorizer.fit(corpus)
     # Dump the vectorizer fitted on your training data.
-    pickle.dump(vectorizer, open("./tfidf_vectorizer.pickle", "wb"))
+    pickle.dump(vectorizer, open('./tfidf_vectorizer.pickle', 'wb'))
 
 Step 2. Setup Encoder & Indexer YAML configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -160,7 +160,6 @@ Step 3. Create your index flow
       encoder:
         uses: encode.yml
         show_exc_info: true
-        parallel: 1
         timeout_ready: 600000
         read_only: true
       doc_indexer:
@@ -180,15 +179,12 @@ Step 4. Create your query flow
     pods:
       encoder:
         uses: encode.yml
-        parallel: 1
         timeout_ready: 600000
         read_only: true
       doc_indexer:
         uses: indexer.yml
         shards: 1
         separated_workspace: true
-        polling: all
-        uses_reducing: _merge_all
         timeout_ready: 100000
 
 Step 5. Combine your flows and run Jina
