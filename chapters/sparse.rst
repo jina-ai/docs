@@ -84,44 +84,6 @@ we suggest you use `COO` as default matrix type.
      - No
 
 
-Define your Jina Sparse Encoder
----------------------------------
-
-After defining your Jina `Document` with Jina's Primitive Types,
-You need to use a sparse encoder to encode the `content` into a sparse representation,
-for instance, a Scipy `COO` matrix.
-We'll create a simple COO Encoder first
-
-.. highlight:: python
-.. code-block:: python
-
-    from scipy.sparse import coo_matrix
-    from jina.executors.encoders import BaseEncoder
-
-    class SimpleScipyCOOEncoder(BaseEncoder):
-
-        def encode(self, content: 'np.ndarray', *args, **kwargs) -> Any:
-            """Encode document content into `coo` format."""
-            return coo_matrix(content)
-
-Then we're able to make use of the `SimpleScipyCOOEncoder` defined above,
-inside the Jina Index and Search Flow.
-
-In Jina-Hub, we have created the `TFIDFTextEncoder <https://github.com/jina-ai/jina-hub/tree/master/encoders/nlp/TFIDFTextEncoder>`_ to encode text into sparse representation,
-the ``TFIDFTextEncoder`` is a wrapper on top of scikit-learn ``TfidfVectorizer`` to encode text data into a Scipy sparse matrix.
-
-
-You can create your own Encoder to encode your Document content into the expected format.
-
-Use a Jina Sparse Indexer
---------------------------
-
-In Jina, we've created several Indexers to help you encode your Document content into sparse format.
-For instance, `PysparnnIndexer <https://github.com/jina-ai/jina-hub/tree/master/indexers/vector/PysparnnIndexer>`_
-is a library for fast similarity search of Sparse Scipy vectors.
-In contains an algorithm that can be used to perform fast approximate search with sparse inputs.
-Developed by Facebook AI Research.
-
 Build your Sparse Pipeline In Action
 --------------------------------------
 
@@ -261,6 +223,38 @@ Step 5. Combine your flows and run Jina
     f = Flow.load_config('flows/query.yml')
     with f:
         f.search_lines(lines=['my query', ], top_k=3)
+
+Define your own Jina Sparse Encoder
+-----------------------------------
+
+If you want to create a customized `Encoder` with Jina,
+for example,
+encode your data with Scipy `COO` matrix format,
+the code snippet blow shows how you could achieve it:
+
+.. highlight:: python
+.. code-block:: python
+
+    from scipy.sparse import coo_matrix
+    from jina.executors.encoders import BaseEncoder
+
+    class SimpleScipyCOOEncoder(BaseEncoder):
+
+        def encode(self, content: 'np.ndarray', *args, **kwargs) -> Any:
+            """Encode document content into `coo` format."""
+            return coo_matrix(content)
+
+Then we're able to make use of the `SimpleScipyCOOEncoder` defined above,
+inside the Jina Index and Search Flow.
+
+Use a Jina Sparse Indexer
+--------------------------
+
+In Jina, we've created several Indexers to help you encode your Document content into sparse format.
+For instance, `PysparnnIndexer <https://github.com/jina-ai/jina-hub/tree/master/indexers/vector/PysparnnIndexer>`_
+is a library for fast similarity search of Sparse Scipy vectors.
+In contains an algorithm that can be used to perform fast approximate search with sparse inputs.
+Developed by Facebook AI Research.
 
 Limitations
 -------------
