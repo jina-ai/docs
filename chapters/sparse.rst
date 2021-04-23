@@ -13,7 +13,7 @@ Motivation
 
 A sparse matrix is a special case of a matrix in which the number of zero elements is much higher than the number of non-zero elements.
 The space used for representing data and the time for scanning the matrix can be reduced significantly using a sparse representation.
-In this guideline, we'll introduce how to use sparse matrix in Jina.
+In this guideline, we'll introduce how to use a sparse matrix in Jina.
 
 Before you start
 ----------------
@@ -24,7 +24,7 @@ Before you begin, make sure you meet these prerequisites:
 -  Make sure you have basic understanding on sparse matrices.
 -  We assume you have some experience with `sparse module in scipy <https://docs.scipy.org/doc/scipy/reference/sparse.html>`_, or you have used `TensorFlow Sparse Tensor <https://www.tensorflow.org/api_docs/python/tf/sparse/SparseTensor>`_ / `PyTorch Sparse COO Tensor <https://pytorch.org/docs/stable/sparse.html#sparse-coo-tensors>`_.
 
-And have Jina installed on your machine:
+And have installed Jina with Hub compounds on your machine:
 
 .. highlight:: shell
 .. code-block:: shell
@@ -32,10 +32,10 @@ And have Jina installed on your machine:
     pip install "jina[hub]"
 
 
-Behind Jina Sparse Matrix
--------------------------
+How does Jina handle sparse matrices?
+--------------------------------------
 
-As a framework of search, Jina don't have a native sparse matrix support.
+As a framework of search, Jina does not have a native sparse matrix support.
 The `Ndarray.sparse` module in Jina's Primitive Types is an adapter between Jina and other sparse backends,
 such as `Scipy.sparse`.
 In Jina, we support three `backends` to create your sparse matrix/Tensor:
@@ -92,10 +92,13 @@ we suggest you use `CSR` as default matrix type.
      - No
 
 
-Build your Sparse Pipeline In Action
+How to build a sparse pipeline in Jina
 --------------------------------------
 
 In this pipeline, we will make use of Jina's ``TFIDFTextEncoder`` together with ``PysparnnIndexer`` for encoding and indexing.
+You should begin by creating a clean folder that will store your python and YAML files.
+In the subsequent steps of this guide,
+you will create the following files.
 
 ::
 
@@ -140,6 +143,10 @@ In this example, we use a simple corpus containing four sentences of text.
 Step 2. Setup Encoder & Indexer YAML configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Create a YAML file with the following code snippet.
+This imports the `tfidf_encoder` from our Jina Hub and links it to the pickled vectorizer.
+The file should be named `encode.yml`.
+
 .. highlight:: yaml
 .. code-block:: yaml
 
@@ -152,6 +159,8 @@ Step 2. Setup Encoder & Indexer YAML configuration
 For the indexer,
 we will use the ``PysparnnIndexer`` with approximate nearest neighbor for sparse data.
 Since we want to store the indexed result, we combined ``PysparnnIndexer`` and ``BinaryPbIndexer`` together.
+
+Create a second YAML file with the following code snippet. The file should be called `index.yml`
 
 .. highlight:: yaml
 .. code-block:: yaml
@@ -175,6 +184,10 @@ Since we want to store the indexed result, we combined ``PysparnnIndexer`` and `
 Step 3. Create your index flow
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+In this step,
+we create a third YAML file that contains our index flow.
+Copy the following code snippet and create a YAML file named `flow_index.yml`.
+
 .. highlight:: yaml
 .. code-block:: yaml
 
@@ -193,6 +206,10 @@ Step 3. Create your index flow
 Step 4. Create your query flow
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+In this step,
+we create an fourth YAML file that contains our query flow.
+Copy the following code snippet and create a YAML file named `flow_query.yml`.
+
 .. highlight:: yaml
 .. code-block:: yaml
 
@@ -205,13 +222,16 @@ Step 4. Create your query flow
         timeout_ready: 600000
         read_only: true
       doc_indexer:
-        uses: indexer.yml
+        uses: index.yml
         shards: 1
         separated_workspace: true
         timeout_ready: 100000
 
 Step 5. Combine your flows and run Jina
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Now you can run the whole project.
+Add the following code snippet to a python file and run!
 
 .. highlight:: python
 .. code-block:: python
@@ -234,12 +254,12 @@ Step 5. Combine your flows and run Jina
                 yield d
 
     # Load index flow configuration and run the index flow.
-    f = Flow.load_config('index.yml')
+    f = Flow.load_config('flow_index.yml')
     with f:
         f.index(input_fn=index_generator, request_size=16)
 
     # Load query flow configuration and run the query flow.
-    f = Flow.load_config('flows/query.yml')
+    f = Flow.load_config('flow_query.yml')
     with f:
         f.search_lines(lines=['my query', ], top_k=3)
 
