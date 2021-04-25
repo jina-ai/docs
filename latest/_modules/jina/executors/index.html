@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors &mdash; Jina 1.1.10-master documentation</title>
+  <title>jina.executors &mdash; Jina 1.1.11-master documentation</title>
   
 
   
@@ -82,10 +82,18 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.10-master</button>
+            <button class="dropbtn version">1.1.11-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.1.9">1.1.9</a>
+              
+              <a class="dropdown-item" href="/v1.1.8">1.1.8</a>
+              
+              <a class="dropdown-item" href="/v1.1.7">1.1.7</a>
+              
+              <a class="dropdown-item" href="/v1.1.6">1.1.6</a>
               
               <a class="dropdown-item" href="/v1.1.5">1.1.5</a>
               
@@ -354,6 +362,7 @@
 <span class="n">_ref_desolve_map</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
 <span class="n">_ref_desolve_map</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
 <span class="n">_ref_desolve_map</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;pea_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">_ref_desolve_map</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;replica_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
 
 <div class="viewcode-block" id="ExecutorType"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.ExecutorType">[docs]</a><span class="k">class</span> <span class="nc">ExecutorType</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">JAMLCompatible</span><span class="p">),</span> <span class="nb">type</span><span class="p">):</span>
@@ -651,18 +660,27 @@
 
 <div class="viewcode-block" id="BaseExecutor.get_shard_workspace"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.get_shard_workspace">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_shard_workspace</span><span class="p">(</span>
-        <span class="n">workspace_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span>
+        <span class="n">workspace_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">replica_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the path of the current shard.</span>
 
-<span class="sd">        :param workspace_folder: Folder of the workspace.</span>
-<span class="sd">        :param workspace_name: Name of the workspace.</span>
-<span class="sd">        :param pea_id: Id of the pea,</span>
+<span class="sd">        :param workspace_folder: folder of the workspace.</span>
+<span class="sd">        :param workspace_name: name of the workspace.</span>
+<span class="sd">        :param pea_id: id of the pea</span>
+<span class="sd">        :param replica_id: id of the replica</span>
 
 <span class="sd">        :return: returns the workspace of the shard of this Executor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">replica_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">replica_id</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">workspace_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -694,7 +712,7 @@
 <span class="sd">        :return: returns the workspace of the shard of this Executor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">get_shard_workspace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea_id</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">replica_id</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="BaseExecutor.get_file_from_workspace"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.get_file_from_workspace">[docs]</a>    <span class="k">def</span> <span class="nf">get_file_from_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -756,10 +774,11 @@
 <span class="sd">            - (pre)trained models</span>
 
 <span class="sd">        .. warning::</span>
-<span class="sd">            All class members created here will NOT be serialized when calling :func:`save`. Therefore if you</span>
-<span class="sd">            want to store them, please implement the :func:`__getstate__`.</span>
 
-<span class="sd">        It uses ``pickle`` for dumping. For members/attributes that are not valid or not efficient for ``pickle``, you</span>
+<span class="sd">            Class members created in `post_init` will NOT be serialized when calling :func:`save`. Therefore if you</span>
+<span class="sd">            want to store them, please override the :func:`__getstate__`.</span>
+
+<span class="sd">        It uses ``pickle`` for dumping. For members/attributes that are invalid or inefficient for ``pickle``, you</span>
 <span class="sd">        need to implement their own persistence strategy in the :func:`__getstate__`.</span>
 
 <span class="sd">        :param filename: file path of the serialized file, if not given then :attr:`save_abspath` is used</span>
@@ -801,6 +820,7 @@
         <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">AnyExecutor</span><span class="p">],</span>
         <span class="n">raw_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
         <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">replica_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">read_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -809,6 +829,7 @@
 
 <span class="sd">        :param raw_config: raw config to work on</span>
 <span class="sd">        :param pea_id: the id of the storage of this parallel pea</span>
+<span class="sd">        :param replica_id: the id of the replica the pea is contained in</span>
 <span class="sd">        :param read_only: if the executor should be readonly</span>
 <span class="sd">        :param args: Additional arguments.</span>
 <span class="sd">        :param kwargs: Additional key word arguments.</span>
@@ -819,6 +840,7 @@
             <span class="n">raw_config</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">fill_metas_with_defaults</span><span class="p">(</span><span class="n">raw_config</span><span class="p">)</span>
         <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;pea_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pea_id</span>
+        <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;replica_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">replica_id</span>
         <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;read_only&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">read_only</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">):</span>
             <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">])</span>
@@ -1034,7 +1056,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 21, 2021.
+        Last updated on Apr 25, 2021.
       </span>
 
         </p>

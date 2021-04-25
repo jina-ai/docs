@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers.keyvalue &mdash; Jina 1.1.10-master documentation</title>
+  <title>jina.executors.indexers.keyvalue &mdash; Jina 1.1.11-master documentation</title>
   
 
   
@@ -82,10 +82,18 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.10-master</button>
+            <button class="dropbtn version">1.1.11-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.1.9">1.1.9</a>
+              
+              <a class="dropdown-item" href="/v1.1.8">1.1.8</a>
+              
+              <a class="dropdown-item" href="/v1.1.7">1.1.7</a>
+              
+              <a class="dropdown-item" href="/v1.1.6">1.1.6</a>
               
               <a class="dropdown-item" href="/v1.1.5">1.1.5</a>
               
@@ -328,7 +336,7 @@
 <span class="kn">import</span> <span class="nn">mmap</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -347,8 +355,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the file.&quot;&quot;&quot;</span>
@@ -374,29 +394,54 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">key_length</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-            <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
-                <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                    <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">key_length</span><span class="p">)),</span>
-                    <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                    <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                <span class="p">],</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
+                    <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
+                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">key_length</span><span class="p">)),</span>
+                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                    <span class="p">],</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">HEADER_NONE_ENTRY</span><span class="p">)</span>
+                    <span class="k">else</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">tmp</span>
+                <span class="p">}</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r+b&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Path not found </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s1">. Querying will not work&#39;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Path not found </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;.head&quot;</span><span class="si">}</span><span class="s1">. Querying will not work&#39;</span>
             <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="kc">None</span>
-                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">HEADER_NONE_ENTRY</span><span class="p">)</span>
-                <span class="k">else</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
-                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">tmp</span>
-            <span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r+b&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_body&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">_CloseHandler</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;_WriteHandler&#39;</span><span class="p">,</span> <span class="s1">&#39;_ReadHandler&#39;</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="n">handler</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="BinaryPbWriterMixin"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbWriterMixin">[docs]</a><span class="k">class</span> <span class="nc">BinaryPbWriterMixin</span><span class="p">:</span>
@@ -422,6 +467,7 @@
 
 <span class="sd">        :return: write handler.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># override _start position</span>
         <span class="k">return</span> <span class="n">_WriteHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span></div>
 
@@ -434,16 +480,8 @@
         <span class="k">return</span> <span class="n">_ReadHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_add</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="n">writer</span><span class="p">:</span> <span class="n">_WriteHandler</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="n">write_handler</span><span class="p">:</span> <span class="n">_WriteHandler</span>
     <span class="p">):</span>
-        <span class="k">if</span> <span class="n">writer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;write_handler&#39;</span><span class="p">):</span>
-                <span class="n">writer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                    <span class="s1">&#39;No writer provided to add() and no self.write_handler available&#39;</span>
-                <span class="p">)</span>
-
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
             <span class="n">l</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1">#: the length</span>
             <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
@@ -453,7 +491,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_page_size</span>
             <span class="p">)</span>  <span class="c1">#: the remainder, i.e. the start position given the offset</span>
             <span class="c1"># noinspection PyTypeChecker</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="n">write_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
                     <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="n">l</span><span class="p">),</span>
                     <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
@@ -465,9 +503,8 @@
                 <span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">+=</span> <span class="n">l</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">write_handler</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
 <div class="viewcode-block" id="BinaryPbWriterMixin.delete"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbWriterMixin.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Delete the serialized documents from the index via document ids.</span>
@@ -483,19 +520,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                    <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">key</span><span class="p">],</span> <span class="n">HEADER_NONE_ENTRY</span><span class="p">])),</span>
-                    <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                        <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
-                    <span class="p">],</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span> <span class="k">as</span> <span class="n">write_handler</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">write_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                        <span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([[</span><span class="n">key</span><span class="p">],</span> <span class="n">HEADER_NONE_ENTRY</span><span class="p">])),</span>
+                        <span class="n">dtype</span><span class="o">=</span><span class="p">[</span>
+                            <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)),</span>
+                            <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                        <span class="p">],</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">-=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="n">pos_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -508,6 +546,10 @@
 <div class="viewcode-block" id="BinaryPbIndexer"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer">[docs]</a><span class="k">class</span> <span class="nc">BinaryPbIndexer</span><span class="p">(</span><span class="n">BinaryPbWriterMixin</span><span class="p">,</span> <span class="n">BaseKVIndexer</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simple Key-value indexer.&quot;&quot;&quot;</span>
 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delete_on_dump</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span> <span class="o">=</span> <span class="n">delete_on_dump</span>
+
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># called on pickle save</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span><span class="p">:</span>
@@ -516,35 +558,33 @@
         <span class="k">return</span> <span class="n">d</span>
 
     <span class="k">def</span> <span class="nf">_delete_invalid_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c1"># make sure the file is closed before querying.</span>
+        <span class="k">with</span> <span class="n">_CloseHandler</span><span class="p">(</span><span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="p">):</span>
+            <span class="k">pass</span>
 
         <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="c1"># we read the valid values and write them to the intermediary file</span>
-        <span class="n">read_handler</span> <span class="o">=</span> <span class="n">_ReadHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">read_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">pos_info</span> <span class="o">=</span> <span class="n">read_handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">pos_info</span><span class="p">:</span>
-                <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">pos_info</span>
-                <span class="k">with</span> <span class="n">mmap</span><span class="o">.</span><span class="n">mmap</span><span class="p">(</span><span class="n">read_handler</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">l</span><span class="p">)</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
-                    <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-                    <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">r</span><span class="p">:])</span>
-        <span class="n">read_handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">_CloseHandler</span><span class="p">(</span>
+            <span class="n">handler</span><span class="o">=</span><span class="n">_ReadHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">close_handler</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">close_handler</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">pos_info</span> <span class="o">=</span> <span class="n">close_handler</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">pos_info</span><span class="p">:</span>
+                    <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">pos_info</span>
+                    <span class="k">with</span> <span class="n">mmap</span><span class="o">.</span><span class="n">mmap</span><span class="p">(</span><span class="n">close_handler</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">l</span><span class="p">)</span> <span class="k">as</span> <span class="n">m</span><span class="p">:</span>
+                        <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                        <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">r</span><span class="p">:])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="c1"># intermediary file</span>
         <span class="n">tmp_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span> <span class="o">+</span> <span class="s1">&#39;-tmp&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_start</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">filtered_data_writer</span> <span class="o">=</span> <span class="n">_WriteHandler</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span>
-        <span class="c1"># reset size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">filtered_data_writer</span><span class="p">)</span>
-        <span class="n">filtered_data_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">with</span> <span class="n">_CloseHandler</span><span class="p">(</span><span class="n">handler</span><span class="o">=</span><span class="n">_WriteHandler</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">close_handler</span><span class="p">:</span>
+            <span class="c1"># reset size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">write_handler</span><span class="o">=</span><span class="n">close_handler</span><span class="o">.</span><span class="n">handler</span><span class="p">)</span>
 
         <span class="c1"># replace orig. file</span>
         <span class="c1"># and .head file</span>
@@ -553,10 +593,6 @@
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">head_path</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_file</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_file</span> <span class="o">+</span> <span class="s1">&#39;.head&#39;</span><span class="p">,</span> <span class="n">head_path</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delete_on_dump</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span> <span class="o">=</span> <span class="n">delete_on_dump</span>
 
 <div class="viewcode-block" id="BinaryPbIndexer.add"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">values</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -571,7 +607,14 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
             <span class="k">return</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
+        <span class="n">need_to_remove_handler</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_exist</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span> <span class="k">as</span> <span class="n">writer_handler</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">write_handler</span><span class="o">=</span><span class="n">writer_handler</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">need_to_remove_handler</span><span class="p">:</span>
+            <span class="c1"># very hacky way to ensure write_handler will use add_handler at next computation, this must be solved</span>
+            <span class="c1"># by touching file at __init__ time</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_handler_loaded</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="BinaryPbIndexer.sample"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.keyvalue/#jina.executors.indexers.keyvalue.BinaryPbIndexer.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Return a random entry from the indexer for sanity check.</span>
@@ -765,7 +808,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 21, 2021.
+        Last updated on Apr 25, 2021.
       </span>
 
         </p>

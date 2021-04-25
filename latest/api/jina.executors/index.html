@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors &mdash; Jina 1.1.10-master documentation</title>
+  <title>jina.executors &mdash; Jina 1.1.11-master documentation</title>
   
 
   
@@ -84,10 +84,18 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.10-master</button>
+            <button class="dropbtn version">1.1.11-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.1.9">1.1.9</a>
+              
+              <a class="dropdown-item" href="/v1.1.8">1.1.8</a>
+              
+              <a class="dropdown-item" href="/v1.1.7">1.1.7</a>
+              
+              <a class="dropdown-item" href="/v1.1.6">1.1.6</a>
               
               <a class="dropdown-item" href="/v1.1.5">1.1.5</a>
               
@@ -532,14 +540,15 @@ want to store them, please override the <code class="xref py py-func docutils li
 
 <dl class="py method">
 <dt id="jina.executors.BaseExecutor.get_shard_workspace">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_shard_workspace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workspace_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workspace_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pea_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/#BaseExecutor.get_shard_workspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.BaseExecutor.get_shard_workspace" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_shard_workspace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workspace_folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workspace_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pea_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replica_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/#BaseExecutor.get_shard_workspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.BaseExecutor.get_shard_workspace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the path of the current shard.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>workspace_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Folder of the workspace.</p></li>
-<li><p><strong>workspace_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the workspace.</p></li>
-<li><p><strong>pea_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Id of the pea,</p></li>
+<li><p><strong>workspace_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – folder of the workspace.</p></li>
+<li><p><strong>workspace_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – name of the workspace.</p></li>
+<li><p><strong>pea_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – id of the pea</p></li>
+<li><p><strong>replica_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – id of the replica</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -633,10 +642,10 @@ a file or collection of files produced/used during an executor run.</p>
 </div></blockquote>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>All class members created here will NOT be serialized when calling <a class="reference internal" href="#jina.executors.BaseExecutor.save" title="jina.executors.BaseExecutor.save"><code class="xref py py-func docutils literal notranslate"><span class="pre">save()</span></code></a>. Therefore if you
-want to store them, please implement the <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code>.</p>
+<p>Class members created in <cite>post_init</cite> will NOT be serialized when calling <a class="reference internal" href="#jina.executors.BaseExecutor.save" title="jina.executors.BaseExecutor.save"><code class="xref py py-func docutils literal notranslate"><span class="pre">save()</span></code></a>. Therefore if you
+want to store them, please override the <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code>.</p>
 </div>
-<p>It uses <code class="docutils literal notranslate"><span class="pre">pickle</span></code> for dumping. For members/attributes that are not valid or not efficient for <code class="docutils literal notranslate"><span class="pre">pickle</span></code>, you
+<p>It uses <code class="docutils literal notranslate"><span class="pre">pickle</span></code> for dumping. For members/attributes that are invalid or inefficient for <code class="docutils literal notranslate"><span class="pre">pickle</span></code>, you
 need to implement their own persistence strategy in the <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -647,13 +656,14 @@ need to implement their own persistence strategy in the <code class="xref py py-
 
 <dl class="py method">
 <dt id="jina.executors.BaseExecutor.inject_config">
-<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">inject_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pea_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/#BaseExecutor.inject_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.BaseExecutor.inject_config" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span> </em><code class="sig-name descname"><span class="pre">inject_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pea_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replica_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/#BaseExecutor.inject_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.BaseExecutor.inject_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inject config into the raw_config before loading into an object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>raw_config</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>) – raw config to work on</p></li>
 <li><p><strong>pea_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the id of the storage of this parallel pea</p></li>
+<li><p><strong>replica_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – the id of the replica the pea is contained in</p></li>
 <li><p><strong>read_only</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – if the executor should be readonly</p></li>
 <li><p><strong>args</strong> – Additional arguments.</p></li>
 <li><p><strong>kwargs</strong> – Additional key word arguments.</p></li>
@@ -890,7 +900,7 @@ need to implement their own persistence strategy in the <code class="xref py py-
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 21, 2021.
+        Last updated on Apr 25, 2021.
       </span>
 
         </p>
