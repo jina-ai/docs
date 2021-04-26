@@ -27,9 +27,15 @@ jobs:
           echo "NEXT_RELEASE_VER=${NEXT_RELEASE_VER}" >> $GITHUB_ENV
       - name: Checkout to docs repo
         uses: actions/checkout@v2
-      - name: Build docs
+      - name: Build docs & Sitemap
         run: |
-          bash .github/scripts/make-doc.sh release "release ${{env.JINA_VERSION}} of ${{github.repository}}"
+          rm html_extra/robots.txt
+          touch html_extra/robots.txt
+          echo "User-agent: *" >> html_extra/robots.txt
+          echo "Disallow:" >> html_extra/robots.txt
+          echo "sitemap: https://docs.jina.ai/sitemap.xml" >> html_extra/robots.txt
+          echo "sitemap: https://docs.jina.ai/${{env.RELEASE_VER}}/sitemap.xml" >> html_extra/robots.txt
+          bash .github/scripts/make-doc.sh release "release ${{env.RELEASE_VER}} of ${{github.repository}}"
       - name: Commit documentation changes to gh-pages
         run: |
           git clone https://github.com/jina-ai/docs.git --branch gh-pages --single-branch gh-pages
