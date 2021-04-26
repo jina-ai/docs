@@ -59,10 +59,23 @@ which could be extremely useful when conducting a test.
 Executor
 =============
 
+Executors are Jina's algorithmic logical units that perform each task in an indexing or querying Flow, and are the most common interface for machine learning engineers and researchers.
 
-Executors perform each task in an indexing or querying Flow. Jina's algorithmic logical units are put into different subclasses namely segmenter, ranker, encoder, crafter, classifier, indexer and evaluator. They all originate from the same parent - the Executor.
-To introduce a new algorithm to Jina, you can simply create a new Executor class by inheriting from the existing Executors, with focus on writing the algorithm itself.
-Given the input, define your own logic to generate the expected output just like when you write standard load Numpy or Tensorflow code.
+Executors are organized into different subclasses, namely segmenter, ranker, encoder, crafter, classifier, indexer and evaluator. Jina comes with `over a hundred classic and state-of-the-art Executors`_ out of the box.
+
+
+.. _over a hundred classic and state-of-the-art Executors: https://docs.jina.ai/chapters/all_exec/
+
+
+To use a new algorithm with Jina, you can `create a new Executor class`_ by inheriting from existing Executors. This lets you focus on using the algorithm itself rather than worrying about implementation details.
+
+
+.. _create a new Executor class: https://docs.jina.ai/chapters/extend/executor/
+
+If you use `Google Colab`_ or a Jupyter notebook to visualize a Flow, each block in the graph is an Executor.
+
+
+.. _Google Colab: https://jina.ai/2021/03/17/Jina-now-with-Google-Colab.html
 
 Jina offers `many Executors`_, which can be divided as follows:
 
@@ -148,46 +161,6 @@ Evaluator
 	:width: 25%
 
 Not every search gets perfect results the first time. An Evaluator evaluates performance of other Executors by comparing the Document rankings you **get** with the Document rankings you **want**. Choosing the right set of Executors optimizes your search.
-
-
-Pea
-=============
-
-.. image:: /chapters/images/pea.png
-	:width: 25%
-
-A Pea wraps an Executor and lets it exchange data with other Peas. Peas can run locally, remotely, or inside a Docker container, containing all dependencies and context in one place.
-
-Every Pea runs inside a Pod. Sometimes multiple copies of a Pea run in a single Pod to improve efficiency and scaling.
-
-
-Pod
-=============
-
-.. image:: /chapters/images/pod.png
-	:width: 25%
-
-A Pod is a cloud native container for the algorithm and interface for one or multiple Peas that have the same properties. It coordinates Peas to improve efficiency and scaling. Beyond that, a Pod adds further control, scheduling, and context management to its Peas.
-
-It is also the basic unit in the Flow so when you code Flow `add` message you are basically adding Pods to the Flow. Pod allows you to customize its behavior on the cloud - it offers features such as scaling, smart routing, decentralizing, parallelization and containerization. When you visualize a Flow in jupyter
-notebook or Google Colab, each block in the graph is basically a part of the Executor (algorithm unit in Jina). This is the main interface that machine learning engineers and researchers would work with in Jina.  Jina has hundreds of classic and state-of-the-art Executors covering pre and post-processing indexing, ranking and encoding.
-
-
-
-Driver
-=============
-
-.. image:: /chapters/images/driver.png
-	:width: 25%
-
-A Driver “translates” input and output messages for an Executor. Each Executor requires a different data format to perform its task. Therefore, a Driver interprets incoming messages into Documents and extracts required fields for an Executor. 
-It is thus a translation layer between Jina data type and Python or Numpy data type. It makes the Executor agnostic to data type and network. Without the driver, you will need to convert, pass, extract back and forth between the general data type and the Numpy data type.
-
-You can define the Executor's behavior under the network request using drivers. It translates to -
-while receiving request x, call the Executor and do y.
-Your algorithm can hence directly handle the request - that's exactly the purpose of the driver.
-As an algorithm developer, driver is invisible to you and you don't have to worry about it.
-In general, the Executor and driver work together and serve as a logic layer in Jina.
 
 
 
