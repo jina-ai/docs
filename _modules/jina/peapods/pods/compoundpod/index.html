@@ -251,7 +251,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 67 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
@@ -331,7 +331,6 @@
 <span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
-<span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">Namespace</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
@@ -346,13 +345,18 @@
 
 
 <div class="viewcode-block" id="CompoundPod"><a class="viewcode-back" href="../../../../../api/jina.peapods.pods.compoundpod/#jina.peapods.pods.compoundpod.CompoundPod">[docs]</a><span class="k">class</span> <span class="nc">CompoundPod</span><span class="p">(</span><span class="n">BasePod</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A CompoundPod is a immutable set of pods, which run in parallel. They share the same input and output socket.</span>
-<span class="sd">    Internally, the peas of the pods can run with the process/thread backend. They can be also run in their own containers.</span>
-<span class="sd">    :param args: pod arguments parsed from the CLI</span>
+    <span class="sd">&quot;&quot;&quot;A CompoundPod is a immutable set of pods, which run in parallel.</span>
+<span class="sd">    A CompoundPod is an abstraction using a composable pattern to abstract the usage of parallel Pods that act as replicas.</span>
+
+<span class="sd">    CompoundPod will make sure to add a `HeadPea` and a `TailPea` to serve as routing/merging pattern for the different Pod replicas</span>
+
+<span class="sd">    :param args: pod arguments parsed from the CLI. These arguments will be used for each of the replicas</span>
 <span class="sd">    :param needs: pod names of preceding pods, the output of these pods are going into the input of this pod</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span> <span class="n">needs</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Namespace&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span> <span class="n">needs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">needs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">replica_list</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[&#39;Pod&#39;]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
