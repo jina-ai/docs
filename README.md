@@ -38,13 +38,13 @@ Jina documentation adheres to the following hierarchical structure. Each Jina pr
 
 If you find a gap in our documentation, please submit a GitHub issue [here](https://github.com/jina-ai/docs/issues/new).
 
-## Documentation Process
+## Documentation process
 
 All documentation should follow the same process as any other PR:
 
 1. Every developer who wrote the code should also write the Documentation.
 2. Documentation engineer will review the PR.
-3. After PR is approved by Doc-engineer it will be reviewed/edited by technical writer
+3. After the PR is approved by the Doc-engineer it will be reviewed/edited by a technical writer.
 4. It will be reviewed once more and approved by Doc-engineer.
 
 ### How to add pages
