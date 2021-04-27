@@ -536,12 +536,14 @@
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Zmqlet.close"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.Zmqlet.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Zmqlet.close"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.Zmqlet.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close all sockets and shutdown the ZMQ context associated to this `Zmqlet`.</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            This method is idempotent.</span>
 
+<span class="sd">        :param args: Extra positional arguments</span>
+<span class="sd">        :param kwargs: Extra key-value arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span> <span class="o">=</span> <span class="kc">True</span>
@@ -697,11 +699,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ctrl_sock</span> <span class="o">=</span> <span class="n">ZMQStream</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ctrl_sock</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">io_loop</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_sock</span><span class="o">.</span><span class="n">stop_on_recv</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ZmqStreamlet.close"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.ZmqStreamlet.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ZmqStreamlet.close"><a class="viewcode-back" href="../../../../api/jina.peapods.zmq/#jina.peapods.zmq.ZmqStreamlet.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flush</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close all sockets and shutdown the ZMQ context associated to this `Zmqlet`.</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            This method is idempotent.</span>
+
+<span class="sd">        :param flush: flag indicating if `sockets` need to be flushed before close is done</span>
+<span class="sd">        :param args: Extra positional arguments</span>
+<span class="sd">        :param kwargs: Extra key-value arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_sock_type</span> <span class="o">==</span> <span class="n">zmq</span><span class="o">.</span><span class="n">DEALER</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -714,8 +720,9 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_closed</span><span class="p">:</span>
             <span class="c1"># wait until the close signal is received</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opened_socks</span><span class="p">:</span>
-                <span class="n">s</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">flush</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">opened_socks</span><span class="p">:</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;io_loop&#39;</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -1195,7 +1202,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 26, 2021.
+        Last updated on Apr 27, 2021.
       </span>
 
         </p>
