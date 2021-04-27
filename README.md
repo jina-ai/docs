@@ -38,34 +38,43 @@ Jina documentation adheres to the following hierarchical structure. Each Jina pr
 
 If you find a gap in our documentation, please submit a GitHub issue [here](https://github.com/jina-ai/docs/issues/new).
 
-## How to add pages
+## Documentation Process
+
+All documentation should follow the same process as any other PR:
+
+1. Every developer who wrote the code should also write the Documentation.
+2. Documentation engineer will review the PR.
+3. After PR is approved by Doc-engineer it will be reviewed/edited by technical writer
+4. It will be reviewed once more and approved by Doc-engineer.
+
+### How to add pages
 
 For getting started pages and developer guides:
 
-1.  A page can be written in Markdown or reStructuredText format.
+1.  Read [Documentation Style Guide](https://github.com/jina-ai/docs/blob/master/page_templates/style_guide.md)
 
-2.  Use a template from the [page_templates](https://github.com/jina-ai/docs/tree/master/page_templates) folder.
+2.  Using Git, clone the repo: `git clone https://github.com/jina-ai/docs` .
 
-3.  Using Git, clone the repo: `git clone https://github.com/jina-ai/docs` .
+3.  Create a git new branch: `git checkout -b fix_pods` .
 
-4.  Create a git new branch: `git checkout -b fix_pods` .
+4.  Use a template from the [page_templates](https://github.com/jina-ai/docs/tree/master/page_templates) folder. We want to have an uniform structure in all of our docs, so we provide two templates for you to use:
+    *  The [How-to Documentation](https://github.com/jina-ai/docs/blob/master/page_templates/developer_guide_how_to.rst) is for concrete guidelines. For topics that can be better explained step-by-step.
+    * The [explanatory articles](https://github.com/jina-ai/docs/blob/master/page_templates/developer_guide_explanation.md) are to explain theory and background without any how-to details. 
 
 5. Your commit messages should following the standard Jina format seen [here](https://github.com/jina-ai/jina#contributing).
 
-5.  Add your file to the chapters folder.
+6.  Add your file to the chapters folder.
 
-6.  Add your file to a table of contents.
+7.  Add your file to a table of contents.
 
-8.  Push your branch and create a pull request.
+8.  Push your branch and create a pull request. Add at least two people as reviewers for your PR. One product manager and one documentation engineer.
 
-9.  Add at least two people to your pull request review. One product manager and one developer.
+You can use Markdown or reStructuredText format. To preview how the docs website will look with your changes, navigate to checks and click 'preview with netlify'. After the pull request is merged, the website will automatically update.
 
-10.  You can preview how the docs website will look with your changes. Inside your pull request, navigate to checks and click 'preview with netlify'.
+### Extra guides
 
-11.  After the pull request is merged, the website will automatically update.
-
-* A guide to RST can be found [here](https://bashtage.github.io/sphinx-material/rst-cheatsheet/rst-cheatsheet.html)
-*  A guide to MD formatting can be found [here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) [*Note that MD is more limited in functionality then RST*]
+* A guide to RST can be found [here](https://bashtage.github.io/sphinx-material/rst-cheatsheet/rst-cheatsheet.html).
+*  A guide to MD formatting can be found [here](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) [*Note that MD is more limited in functionality then RST*].
 
 ## Updating Docstrings
 
