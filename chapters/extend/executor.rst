@@ -13,27 +13,23 @@ How to Add New Executors
 Motivation
 ^^^^^^^^^^^
 
-As a Jina user, you might already noticed that `Jina-hub <https://github.com/jina-ai/jina-hub>`_ is the open-registry for hosting Jina executors.
-These `Executors <https://docs.jina.ai/chapters/all_exec.html>`_ has been categorised into folders by their types, such as `Encoder`, `Ranker`, `Crafter` etc.
+As a Jina user, you may have noticed that `Jina Hub <https://github.com/jina-ai/jina-hub>`_ is the open registry for hosting Jina Executors.
+These `Executors <https://docs.jina.ai/chapters/all_exec.html>`_ have been categorised into categories by their type, such as `Encoder`, `Ranker`, `Crafter` etc.
 
-However, when the existing Executors does not fit your specific use case,
-you might be curious on how to **extend** Jina.
-For example, integrate a new deep learning model,
-add a new indexing algorithm,
-or create your own evaluation metric.
+However, when existing Executors do not fit your specific use case, you may want to **extend** Jina. For example, by integrating a new deep learning model, adding a new indexing algorithm, or creating your own evaluation metric.
 
 In this tutorial, we'll guide you through the steps.
 First of all, we will introduce the general steps on how to customize a Jina Executor.
-At the end, we will give a concrete example of integrating the text encoder & image encoder on top of OpenAI's latest published `CLIP <https://github.com/openai/CLIP>`_ model.
+At the end, we will give a concrete example of integrating the text encoder and image encoder on top of OpenAI's latest published `CLIP <https://github.com/openai/CLIP>`_ model.
 
 Overview
 ^^^^^^^^^
 
-To make an extension of a Jina `Executor`, please follow the steps listed below:
+To add a new Jina `Executor`:
 
 1. Decide which `Executor` class to inherit from.
 2. Override :meth:`__init__` and :meth:`post_init`.
-3. Overwrite the **Core** method of the `Executor`.
+3. Overwrite the **core** method of the `Executor`.
 4. (Optional) Implement the save logic.
 
 Implementation
@@ -42,7 +38,7 @@ Implementation
 Decide which :class:`Executor` class to inherit from
 -----------------------------------------------------
 
-When adding a customised Executor, the first thing is to inherit the "correct" class based on the use case.
+When adding a custom Executor, first inherit the "correct" class based on the use case.
 The built-in Executor types are:
 
 1. `Encoder`: encode document as vector embeddings.
@@ -52,13 +48,13 @@ The built-in Executor types are:
 5. `Ranker`: calculate scores of documents.
 6. `Classifier`: enrich document with a model.
 7. `Evaluator`: evaluate score based on output and GroundTruth.
-8. `CompoundExecutor`: combine multiple executors into one.
+8. `CompoundExecutor`: combine multiple Executors into one.
 
-Rule of thumb, you always pick the executor that shares the similar logic to inherit.
+As a rule of thumb, you pick the Executor that shares the similar logic to inherit.
 
-.. note:: If your algorithm is so unique and does not fit any any of the category above, you may want to `submit an issue for discussion <https://github.com/jina-ai/jina/issues>`_ before you start.
+.. note:: If your algorithm is relatively unique and does not fit in any of the categories above, you may want to `submit an issue for discussion <https://github.com/jina-ai/jina/issues>`_ before you start.
 
-.. list-table:: Built-in Executors to Inherit
+.. list-table:: Built-in Executors to inherit from
    :widths: 25 25 50
    :header-rows: 1
 
@@ -94,31 +90,31 @@ Rule of thumb, you always pick the executor that shares the similar logic to inh
      - Transform the content of Documents.
    * - `BaseSegmenter`
      - `BaseExecutor`
-     - Segment Document into small pieces of Document.
+     - Segment Document into smaller pieces.
    * - `BaseRanker`
      - `BaseExecutor`
      - Calculate scores of Documents.
    * - `Chunk2DocRanker`
      - `BaseRanker`
-     - Translates the chunk-wise score (distance) to the doc-wise score.
+     - Translate chunk-wise score (distance) to doc-wise score.
    * - `Match2DocRanker`
      - `BaseRanker`
-     - Re-scores the matches for a document.
+     - Re-score matches for a Document.
    * - `BaseClassifier`
      - `BaseExecutor`
-     - Enrich the documents with a classifier.
+     - Enrich documents with a classifier.
    * - `BaseEvaluator`
      - `BaseExecutor`
      - Evaluate score based on output and GroundTruth.
    * - `CompoundExecutor`
      - `BaseExecutor`
-     - Combine multiple executors in one.
+     - Combine multiple Executors into one.
 
 
 Override :meth:`__init__` and :meth:`post_init`
 ------------------------------------------------
 
-You can put simple type attributes that define the behavior of your ``Executor`` into :meth:`__init__`. Simple types represent all `pickle`-able types, including: integer, bool, string, tuple of simple types, list of simple types, map of simple type. For example,
+You can put simple type attributes that define the behavior of your ``Executor`` into :meth:`__init__`. Simple types represent all `pickle`-able types, including: integer, bool, string, tuple of simple types, list of simple types, and map of simple type. For example:
 
 .. highlight:: python
 .. code-block:: python
@@ -133,7 +129,7 @@ You can put simple type attributes that define the behavior of your ``Executor``
         self.max_frame = max_frame
         self.from_bytes = from_bytes
 
-Remember to add ``super().__init__(*args, **kwargs)`` to your :meth:`__init__`. Only in this way you can enjoy many magic features, e.g. YAML support, persistence from the base class (and :class:`BaseExecutor`).
+Remember to add ``super().__init__(*args, **kwargs)`` to your :meth:`__init__`. This is the only way you can enjoy many magic features like YAML support, persistence from the base class (and :class:`BaseExecutor`).
 
 
 .. note::
@@ -143,10 +139,10 @@ Remember to add ``super().__init__(*args, **kwargs)`` to your :meth:`__init__`. 
 
 
 What if the data you need to load cannot be stored in a simple type?
-For example, a deep learning graph, a big pretrained model, a gRPC stub, a tensorflow session, a thread? The you can put them into :meth:`post_init`.
+For example, a deep learning graph, a big pretrained model, a gRPC stub, a TensorFlow session, a thread? The you can put them into :meth:`post_init`.
 
 It is also interesting to override :meth:`post_init` when there is a better persistence method other than pickle.
-For example, your hyperparameters matrix in numpy ``ndarray`` is certainly pickable. However, you can simply read and write it via standard file IO, and it is likely more efficient than ``pickle``. In this case, you do the data loading in :meth:`post_init`.
+For example, your hyperparameters matrix in numpy ``ndarray`` is certainly pickle-able. However, you can simply read and write it via standard file IO, and it is likely more efficient than ``pickle``. In this case, you load data in :meth:`post_init`.
 
 Please check the example below:
 
@@ -176,14 +172,14 @@ Please check the example below:
 
 .. note::
 
-    :meth:`post_init` is also a good place to introduce package dependency, e.g. ``import x`` or ``from x import y``. Naively, you can always put all imports upfront at the top of the file. However, this will throw an ``ModuleNotFound`` exception when this package is not installed locally. Sometimes it may break the whole system because of this one missing dependency.
+    :meth:`post_init` is also a good place to introduce package dependencies, e.g. ``import x`` or ``from x import y``. Naively, you can always put all imports upfront at the top of the file. However, this will throw a ``ModuleNotFound`` exception when the package is not installed locally. Sometimes one missing dependency may break the whole system.
 
     As a rule of thumb, only import packages where you really need them. Often these dependencies are only required in :meth:`post_init` and the core method, which we shall see later.
 
 Override the *core* method of the base class
 --------------------------------------------
 
-Each :class:`Executor` has a core method, which defines the algorithmic behavior of the :class:`Executor`. For making your own extension, you have to override the core method. The following table lists the core method you may want to override. Note some executors may have multiple core methods.
+Each :class:`Executor` has a core method, which defines its algorithmic behavior. When making your own extension, you have to override this core method. The following table lists the core method you may want to override. Note some Executors may have multiple core methods.
 
 
 +-------------------------+-----------------------------+
@@ -210,14 +206,14 @@ Feel free to override other methods/properties as you need. But probably, most o
 Implement the persistence logic
 -------------------------------
 
-If you don't override :meth:`post_init`, then you don't need to implement persistence logic. You get YAML and persistency support off-the-shelf because of :class:`BaseExecutor`. Simple crafters and rankers fall into this category.
+If you don't override :meth:`post_init`, then you don't need to implement persistence logic. You get YAML and persistency support out-of-the-box because of :class:`BaseExecutor`. Simple crafters and rankers fall into this category.
 
-If you override :meth:`post_init` but you don't care about persisting its state in the next run (when the executor process is restarted); or the state is simply unchanged during the run, then you don't need to implement persistence logic. Loading from a fixed pretrained deep learning model falls into this category.
+If you override :meth:`post_init` but you don't care about persisting its state in the next run (when the Executor process is restarted); or the state is simply unchanged during the run, then you don't need to implement persistence logic. Loading from a fixed pretrained deep learning model falls into this category.
 
-Persistence logic is only required **when you implement customized loading logic in :meth:`post_init` and the state is changed during the run**. Then you need to override :meth:`__getstate__`. Many of the indexers fall into this category.
+Persistence logic is only required **when you implement custom loading logic in :meth:`post_init` and the state is changed during the run**. Then you need to override :meth:`__getstate__`. Many of the indexers fall into this category.
 
 
-In the example below, the ``tokenizer`` is loaded in :meth:`post_init` and saved in :meth:`__getstate__`, whcih completes the persistency cycle.
+In the example below, the ``tokenizer`` is loaded in :meth:`post_init` and saved in :meth:`__getstate__`, which completes the persistency cycle.
 
 .. highlight:: python
 .. code-block:: python
@@ -233,7 +229,7 @@ In the example below, the ``tokenizer`` is loaded in :meth:`post_init` and saved
             return super().__getstate__()
 
 
-How Can I Use My Extension
+How can I use my extension?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You can use the extension by specifying ``py_modules`` in the YAML file. For example, your extension Python file is called ``my_encoder.py``, which describes :class:`MyEncoder`. Then you can define a YAML file (say ``my.yml``) as follows:
@@ -249,21 +245,21 @@ You can use the extension by specifying ``py_modules`` in the YAML file. For exa
 
 .. note::
 
-    You can also assign a list of files to ``metas.py_modules`` if your Python logic is splitted over multiple files. This YAML file and all Python extension files should be put under the same directory.
+    You can also assign a list of files to ``metas.py_modules`` if your Python logic is split over multiple files. This YAML file and all Python extension files should be put in the same directory.
 
 Then simply use it in Jina CLI by specifying ``jina pod --uses=my.yml``, or ``Flow().add(uses='my.yml')`` in Flow API.
 
 
 .. warning::
 
-    If you use customized executor inside a :class:`jina.executors.CompoundExecutor`, then you only need to set ``metas.py_modules`` at the root level, not at the sub-component level.
+    If you use a customized Executor inside a :class:`jina.executors.CompoundExecutor`, then you only need to set ``metas.py_modules`` at the root level, not at the sub-component level.
 
 
-Customize Executor in Action: CLIP Encoder
+Customize executor in action: CLIP encoder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 `CLIP <https://github.com/openai/CLIP>`_ (Contrastive Language-Image Pre-Training) is a neural network trained on a variety of (image, text) pairs.
-It can be instructed in natural language to predict the most relevant text snippet given an image.
+Given an image ti can be instructed in natural language to predict the most relevant text snippet.
 
 The pre-trained CLIP model is able to transform both images and text into the same latent space,
 where image and text emebddings can be compared using a similarity measure.
@@ -275,12 +271,12 @@ Since CLIP maps image and text into a common latent space,
 it's objective is to represent documents as vector embeddings.
 So we need to inherit from `BaseEncoder` class.
 To encode a piece of text using CLIP, we might create a `CLIPTextEncoder` and inherit from `BaseTextEncoder`.
-To encoder an image using CLIP, we might create a `CLIPImageEncoder` and inherit from `BaseNumericEncoder`.
+To encode an image using CLIP, we might create a `CLIPImageEncoder` and inherit from `BaseNumericEncoder`.
 
 The next step is to override :meth:`__init__` and :meth:`post_init`.
-For :meth:`__init__`, we could specify a new parameter called `model_name` since CLIP has 2 pre-trained models,
+For :meth:`__init__`, we can specify a new parameter called `model_name` since CLIP has two pre-trained models,
 i.e. ResNet50 and ViT-B/32.
-As was mentioned before, it is a good practice to load pre-trained model inside :meth:`post_init`, now we have an Encoder like this:
+As mentioned before, it is a good practice to load pre-trained model inside :meth:`post_init`. Now we have an Encoder like this:
 
 .. highlight:: python
 .. code-block:: python
@@ -352,15 +348,15 @@ Then use it in Jina CLI by specifying ``jina pod --uses=config.yml``,
 or ``Flow().add(uses='config.yml')`` in Flow API.
 And you have a good foundation to build your index/query Flow powered by CLIP.
 
-Share Your Work!
+Share your work!
 ^^^^^^^^^^^^^^^^^^^^^
 
-If you would like to share your customized Executor with the community, more than welcome!
-We use `cookiecutter <https://github.com/cookiecutter/cookiecutter>`_ to create Jina Executor from the template.
+If you would like to share your customized Executor with the community, you are more than welcome!
+We use `cookiecutter <https://github.com/cookiecutter/cookiecutter>`_ to create Jina Executors from a template.
 
 .. note:: Install Docker and run `pip install "jina[devel]"` before you start.
 
-To make sure your work has a good shape, Jina provides a wizard to help you create a Executor, start it with `jina hub new --type pod`.
+To make sure your work is in good shape, Jina provides a wizard to help you create a Executor. Start it with `jina hub new --type pod`.
 It will generate a standard Executor project like this:
 
 .. highlight:: text
@@ -377,36 +373,36 @@ It will generate a standard Executor project like this:
         ├── test_CLIPTextEncoder.py
         └── __init__.py
 
-And you can put your customized Encoder, such as `CLIPTextEncoder` inside `__init__.py`.
-The YAML configurations should be placed in `config.yml`.
+You can put your customized Encoder, such as `CLIPTextEncoder` inside `__init__.py`.
+The YAML configuration should be placed in `config.yml`.
 
-To ensure your customised Executor, such as `CLIPTextEncoder` performs exactly the same as the original CLIP model,
-please add tests inside `tests` folder.
+To ensure your custom Executor, like `CLIPTextEncoder`, performs exactly the same as the original CLIP model,
+add tests inside `tests` folder.
 For example, encode some text data with the raw CLIP model, and assert we get the same result with `CLIPTextEncoder`.
 
-Please build and test your Encoder locally with:
+Build and test your Encoder locally with:
 
 .. highlight:: shell
 .. code-block:: shell
 
     jina hub build -t jinahub/type.kind.jina-image-name:image_version-jina_version <your_folder>
 
-Once tested, you should login to jina hub with `jina hub login`, copy/paste the token into GitHub to verify your account.
-Now you are able to push your work to jina hub:
+Once tested, you should login to Jina Hub with `jina hub login`, and copy/paste the token into GitHub to verify your account.
+You are now able to push your work to Jina Hub:
 
 .. highlight:: shell
 .. code-block:: shell
 
     jina hub push jinahub/type.kind.jina-image-name:image-jina_version
 
-In our example, the type is `pod`, kind is `encoders` and `jina-image-name` is `cliptextencoder` and `clipimageencoder`.
+In our example, the type is `pod`, kind is `encoder` and `jina-image-name` is `cliptextencoder` and `clipimageencoder`.
 
 
-What's next
-^^^^^^^^^^^
+What's next?
+^^^^^^^^^^^^
 Thanks for your time and effort while reading this guide!
 
-Please check out `Jina-Hub <https://github.com/jina-ai/jina-hub>`_ to explore the executors.
+Please check out `Jina Hub <https://github.com/jina-ai/jina-hub>`_ to explore the Executors.
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://docs.jina.ai/chapters/CONTRIBUTING.html#join-us-on-slack>`_ .
 
-To gain a deeper knowledge on the implementation of Jina Executors, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors>`_.
+To gain a deeper knowledge of the implementation of Jina Executors, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors>`_.
