@@ -67,12 +67,12 @@ jobs:
           wget -O chapters/RELEASE.md https://raw.githubusercontent.com/jina-ai/jina/master/RELEASE.md
           wget -O chapters/CHANGELOG.md https://raw.githubusercontent.com/jina-ai/jina/master/CHANGELOG.md
           RELEASE_VER=$(curl -sL https://api.github.com/repos/jina-ai/jina/releases/latest | grep '"tag_name":' | cut -d'"' -f4)
-          echo "RELEASE_VER=${RELEASE_VER}" >> $GITHUB_ENV
-          echo ${{env.RELEASE_VER}} >> versions
+          RELEASE_VER=${RELEASE_VER:1}
+          echo $RELEASE_VER >> versions
           git config --local user.email "dev-bot@jina.ai"
           git config --local user.name "Jina Dev Bot"
           git add .
-          git commit -m "update ${{env.RELEASE_VER}} on ${{github.repository}}" -a || true
+          git commit -m "update $RELEASE_VER on ${{github.repository}}" -a || true
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
