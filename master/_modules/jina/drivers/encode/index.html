@@ -331,14 +331,15 @@
 <span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">DocsExtractUpdateMixin</span>
 
 <span class="c1"># noinspection PyUnreachableCode</span>
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">Document</span>
-    <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+    <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">Document</span><span class="p">,</span> <span class="n">DocumentSet</span><span class="p">,</span> <span class="n">NdArray</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+    <span class="kn">from</span> <span class="nn">..proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
 
 
 <div class="viewcode-block" id="BaseEncodeDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.encode/#jina.drivers.encode.BaseEncodeDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseEncodeDriver</span><span class="p">(</span><span class="n">BaseExecutableDriver</span><span class="p">):</span>
@@ -353,7 +354,11 @@
 <div class="viewcode-block" id="EncodeDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.encode/#jina.drivers.encode.EncodeDriver">[docs]</a><span class="k">class</span> <span class="nc">EncodeDriver</span><span class="p">(</span><span class="n">DocsExtractUpdateMixin</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">BaseEncodeDriver</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Extract the content from documents and call executor and do encoding&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="EncodeDriver.update_single_doc"><a class="viewcode-back" href="../../../../api/jina.drivers.encode/#jina.drivers.encode.EncodeDriver.update_single_doc">[docs]</a>    <span class="k">def</span> <span class="nf">update_single_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span> <span class="n">exec_result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="EncodeDriver.update_single_doc"><a class="viewcode-back" href="../../../../api/jina.drivers.encode/#jina.drivers.encode.EncodeDriver.update_single_doc">[docs]</a>    <span class="k">def</span> <span class="nf">update_single_doc</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">doc</span><span class="p">:</span> <span class="s1">&#39;Document&#39;</span><span class="p">,</span>
+        <span class="n">exec_result</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.NdArrayProto&#39;</span><span class="p">,</span> <span class="s1">&#39;NdArray&#39;</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Update the document embedding with returned ndarray result</span>
 
 <span class="sd">        :param doc: the Document object</span>
