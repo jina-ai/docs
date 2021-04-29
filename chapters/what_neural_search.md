@@ -16,7 +16,7 @@ Unlike traditional search methods, neural search offers a number of advantages:
 
 ##### Universality
 
-When most people think of search, they think about a text box, like Google. That's the traditional thinking, and that's what traditional search frameworks offer: text-to-text search. If a developer wants to offer a new language option in their search engine, implementing all the rules and logic is hard work.
+When most people think of search, they think about a text box, like Google. That's the traditional thinking, and that's what traditional search frameworks offer: text-to-text search. If you want to offer a new language option in their search engine, implementing all the rules and logic is hard work.
 
 With neural search, the algorithm does all the work. So if you want to switch from English to French, you just switch out an [English language algorithm](https://huggingface.co/distilbert-base-uncased) for a [French one](https://huggingface.co/camembert-base). Or if you want to search images, just drop in [image recognition algorithm](https://github.com/google-research/big_transfer). There's no need to rewrite the rules (since the algorithm "knows" them already).
 
@@ -24,7 +24,7 @@ In short, if data can be encoded to something a computer can understand, it can 
 
 ##### Flexibility
 
-Traditional searches are very brittle. For example, unless a developer creates a rule that states "red", "scarlet" and "crimson" are very similar, there's no way the search engine would "know" that. So if a user searches `red sneakers`, crimson or scarlet sneakers wouldn't rank highly in the search results.
+Traditional searches are very brittle. For example, unless you create a rule that states "red", "scarlet" and "crimson" are very similar, there's no way the search engine would "know" that. So if a user searches `red sneakers`, crimson or scarlet sneakers wouldn't rank highly in the search results.
 
 Neural search uses algorithms that have been trained on huge datasets to understand natural language. So it's likely whatever synonym for red you can think up, the algorithm (and thus your search engine) already knows it. The result? Crimson and scarlet sneakers rank highly for the search term `red sneakers`.
 
@@ -96,3 +96,8 @@ A search “works” if it understands and returns quality results for:
 ![](https://cdn-images-1.medium.com/max/1200/0*9uRA1OnkjU6h1D_C)
 
 
+#### Next Steps
+
+- [Jina 101: Basic components](./101)
+- [Jina 102: How basic components work together](./102)
+- [Jina “Hello, World!” 👋🌍](./helloworld)
