@@ -1,4 +1,4 @@
-# What is Neural Search?
+# What Is Neural Search?
 
 ##### In this section, you will get an understanding of what neural search is and how it differs from existing search methods
 
