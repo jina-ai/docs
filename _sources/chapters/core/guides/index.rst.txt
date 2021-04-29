@@ -8,35 +8,54 @@ Brand new users to Jina Core should first begin with the :doc:`../introduction/i
 
 Further information on any specific method can be obtained in the :doc:`../api_references/index`.
 
-
 .. toctree::
    :maxdepth: 1
-   :caption: Understanding Jina
+   :caption: Getting started
    :titlesonly:
    :glob:
 
    ../setup/index
-   ../../my_first_jina_app
+   ../../project-guide
    ../../extend/mwu.rst
-   ../../project-guide/project-guide
-   ../../project_guide
-   ../../executors
-   ../../peas-and-pods
+   ../../my_first_jina_app
+   ../../cli/exit
+   ../../install/ide-speedup.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Documents
+   :titlesonly:
+   :glob:
+
    ../../primitive_data_type
    ../../traversal
-   ../../traversal/index
+   ../../mime-type/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Flows
+   :titlesonly:
+   :glob:
+
    ../../flow/index
-   ../../flow/pattern
    ../../input_output
    ../../crud
-   ../../ranker
-   ../../cli/exit
    ../../cross_multi_modality
-   ../../extend/*
-   ../../envs
-   ../../mime-type/index
+   ../../ranker
+   ../../optimization
    ../../sparse
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Executors
+   :titlesonly:
+   :glob:
+
+   ../../executors
+   ../../simple_exec
+   ../../extend/executor
+   ../../peas-and-pods
+   ../../extend/driver
 
 .. toctree::
    :maxdepth: 1
@@ -47,14 +66,10 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../logging
    ../../prevent_duplicate_indexing
    ../../parallel
-   ../../simple_exec
-   ../../optimization
    ../../batching
    ../../request_size
    ../../evaluation
    ../../incremental_indexing
-
-
 
 .. toctree::
    :maxdepth: 1
@@ -64,3 +79,12 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
    ../../remote/index
    ../../stress/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Reference
+   :titlesonly:
+   :glob:
+
+   ../../envs
+   ../../flow/pattern
