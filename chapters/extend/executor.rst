@@ -259,7 +259,7 @@ Customize executor in action: CLIP encoder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 `CLIP <https://github.com/openai/CLIP>`_ (Contrastive Language-Image Pre-Training) is a neural network trained on a variety of (image, text) pairs.
-Given an image ti can be instructed in natural language to predict the most relevant text snippet.
+Given an image it can be instructed in natural language to predict the most relevant text snippet.
 
 The pre-trained CLIP model is able to transform both images and text into the same latent space,
 where image and text emebddings can be compared using a similarity measure.
