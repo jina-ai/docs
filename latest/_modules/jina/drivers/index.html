@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers &mdash; Jina 1.1.11-master documentation</title>
+  <title>jina.drivers &mdash; Jina 1.2.1-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.11-master</button>
+            <button class="dropbtn version">1.2.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -758,6 +758,10 @@
 <span class="sd">        - :meth:`update_single_doc` if you want to modify the behavior of updating a single doc</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_stack_document_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys_is_ndarray</span>
+
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Apply function works on a list of docs, modify the docs in-place.</span>
 
@@ -768,7 +772,7 @@
 
         <span class="n">contents</span><span class="p">,</span> <span class="n">docs_pts</span> <span class="o">=</span> <span class="n">docs</span><span class="o">.</span><span class="n">extract_docs</span><span class="p">(</span>
             <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys</span><span class="p">,</span>
-            <span class="n">stack_contents</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys_is_ndarray</span><span class="p">,</span>
+            <span class="n">stack_contents</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_stack_document_content</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">docs_pts</span><span class="p">:</span>
@@ -856,34 +860,38 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">required_keys</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="si">}</span><span class="s1"> takes no argument.&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strict_method_args</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">..proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
-            <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">Document</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strict_method_args</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">required_keys</span>
 
-            <span class="n">support_keys</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">get_all_attributes</span><span class="p">()</span>
-            <span class="n">unrecognized_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">required_keys</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">support_keys</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">unrecognized_keys</span><span class="p">:</span>
-                <span class="n">camel_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-                    <span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields_by_camelcase_name</span>
-                <span class="p">)</span>
-                <span class="n">legacy_keys</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">}</span>
-                <span class="n">unrecognized_camel_keys</span> <span class="o">=</span> <span class="n">unrecognized_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">camel_keys</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">unrecognized_camel_keys</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unrecognized_camel_keys</span><span class="si">}</span><span class="s1"> are supported but you give them in CamelCase, &#39;</span>
-                        <span class="sa">f</span><span class="s1">&#39;please rewrite them in canonical form.&#39;</span>
-                    <span class="p">)</span>
-                <span class="k">elif</span> <span class="n">unrecognized_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">legacy_keys</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unrecognized_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">legacy_keys</span><span class="p">)</span><span class="si">}</span><span class="s1"> is now deprecated and not a valid argument of &#39;</span>
-                        <span class="s1">&#39;the executor function, &#39;</span>
-                        <span class="s1">&#39;please change `data` to `content: </span><span class="se">\&#39;</span><span class="s1">np.ndarray</span><span class="se">\&#39;</span><span class="s1">` in your executor function. &#39;</span>
-                        <span class="s1">&#39;details: https://github.com/jina-ai/jina/pull/2313/&#39;</span>
-                    <span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unrecognized_keys</span><span class="si">}</span><span class="s1"> are invalid Document attributes, must come from </span><span class="si">{</span><span class="n">support_keys</span><span class="si">}</span><span class="s1">&#39;</span>
-                    <span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">Document</span>
+
+        <span class="n">support_keys</span> <span class="o">=</span> <span class="n">Document</span><span class="o">.</span><span class="n">get_all_attributes</span><span class="p">()</span>
+        <span class="n">unrecognized_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">required_keys</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">support_keys</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">unrecognized_keys</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">required_keys</span>
+
+        <span class="kn">from</span> <span class="nn">..proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
+
+        <span class="n">camel_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">jina_pb2</span><span class="o">.</span><span class="n">DocumentProto</span><span class="p">()</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">fields_by_camelcase_name</span><span class="p">)</span>
+        <span class="n">legacy_keys</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">}</span>
+        <span class="n">unrecognized_camel_keys</span> <span class="o">=</span> <span class="n">unrecognized_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">camel_keys</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unrecognized_camel_keys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unrecognized_camel_keys</span><span class="si">}</span><span class="s1"> are supported but you give them in CamelCase, &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;please rewrite them in canonical form.&#39;</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">unrecognized_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">legacy_keys</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unrecognized_keys</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">legacy_keys</span><span class="p">)</span><span class="si">}</span><span class="s1"> is now deprecated and not a valid argument of &#39;</span>
+                <span class="s1">&#39;the executor function, &#39;</span>
+                <span class="s1">&#39;please change `data` to `content: </span><span class="se">\&#39;</span><span class="s1">np.ndarray</span><span class="se">\&#39;</span><span class="s1">` in your executor function. &#39;</span>
+                <span class="s1">&#39;details: https://github.com/jina-ai/jina/pull/2313/&#39;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">unrecognized_keys</span><span class="si">}</span><span class="s1"> are invalid Document attributes, must come from </span><span class="si">{</span><span class="n">support_keys</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">required_keys</span>
 
@@ -1026,8 +1034,10 @@
             <span class="n">decor_bindings</span> <span class="o">=</span> <span class="n">find_request_binding</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">req_type</span><span class="p">:</span>
                 <span class="n">canonic_name</span> <span class="o">=</span> <span class="n">_canonical_request_name</span><span class="p">(</span><span class="n">req_type</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">req_type</span> <span class="ow">and</span> <span class="n">canonic_name</span> <span class="ow">in</span> <span class="n">decor_bindings</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="o">=</span> <span class="n">decor_bindings</span><span class="p">[</span><span class="n">canonic_name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">canonic_name</span> <span class="ow">in</span> <span class="n">decor_bindings</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="o">=</span> <span class="n">decor_bindings</span><span class="p">[</span><span class="n">canonic_name</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="s1">&#39;default&#39;</span> <span class="ow">in</span> <span class="n">decor_bindings</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="o">=</span> <span class="n">decor_bindings</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
             <span class="k">elif</span> <span class="s1">&#39;default&#39;</span> <span class="ow">in</span> <span class="n">decor_bindings</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_method_name</span> <span class="o">=</span> <span class="n">decor_bindings</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">]</span>
 
@@ -1178,7 +1188,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 25, 2021.
+        Last updated on Apr 29, 2021.
       </span>
 
         </p>

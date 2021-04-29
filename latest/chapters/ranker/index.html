@@ -23,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>A Guide to Jina Rankers &mdash; Jina 1.1.11-master documentation</title>
+  <title>A Guide to Jina Rankers &mdash; Jina 1.2.1-master documentation</title>
   
 
   
@@ -86,7 +86,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.1.11-master</button>
+            <button class="dropbtn version">1.2.1-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -378,7 +378,7 @@
 <li><p><a class="reference internal" href="#motivation" id="id5">Motivation</a></p></li>
 <li><p><a class="reference internal" href="#before-you-start" id="id6">Before you start</a></p></li>
 <li><p><a class="reference internal" href="#overview" id="id7">Overview</a></p></li>
-<li><p><a class="reference internal" href="#ranker-in-action" id="id8">Ranker in action</a></p></li>
+<li><p><a class="reference internal" href="#rankers-in-action" id="id8">Rankers in action</a></p></li>
 <li><p><a class="reference internal" href="#conclusion" id="id9">Conclusion</a></p></li>
 <li><p><a class="reference internal" href="#what-s-next" id="id10">What’s next</a></p></li>
 </ul>
@@ -396,8 +396,8 @@ For one search request, we may have multiple matches and we want to have the mos
 </div>
 <div class="section" id="overview">
 <h2><a class="toc-backref" href="#id7">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>To achieve our objectives, Jina has a family of <a class="reference internal" href="../glossary/#term-Executor"><span class="xref std std-term">Executor</span></a> named <a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Ranker</span></a>.
-Jina <a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Ranker</span></a> inherits either the <code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code> or the <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code>.
+<p>To achieve our objectives, Jina has a family of <a class="reference internal" href="../glossary/#term-Executor"><span class="xref std std-term">Executors</span></a> named <a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Rankers</span></a>.
+A Jina <a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Ranker</span></a> inherits either the <code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code> or the <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code>.
 For the <code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code>, it re-scores the matches with different mechanisms. For the <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code>, it aggegrates the chunks to Documents.</p>
 <div class="section" id="match2docranker">
 <h3>Match2DocRanker<a class="headerlink" href="#match2docranker" title="Permalink to this headline">¶</a></h3>
@@ -405,12 +405,12 @@ For the <code class="xref py py-class docutils literal notranslate"><span class=
 </div>
 <div class="section" id="chunk2docranker">
 <h3>Chunk2DocRanker<a class="headerlink" href="#chunk2docranker" title="Permalink to this headline">¶</a></h3>
-<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code> translates the chunk-wise score to the doc-wise score. If you want to aggregate the already existed top-k chunks into top-k  Documents, <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code> will be your choice.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code> translates the chunk-wise score to the doc-wise score. If you want to aggregate already-existing top-k chunks into top-k Documents, use <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code>.</p>
 </div>
-<div class="section" id="chose-drivers">
-<h3>Chose Drivers<a class="headerlink" href="#chose-drivers" title="Permalink to this headline">¶</a></h3>
-<p>Different <span class="xref std std-term">Rankers</span> will need different <span class="xref std std-term">Drivers</span> to be equipped with.
-For <code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code>, we need to choose <code class="xref py py-class docutils literal notranslate"><span class="pre">Matches2DocRankDriver</span></code> to get the scores from a <a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Ranker</span></a> and help to resort the scores.</p>
+<div class="section" id="choose-drivers">
+<h3>Choose Drivers<a class="headerlink" href="#choose-drivers" title="Permalink to this headline">¶</a></h3>
+<p>Different <span class="xref std std-term">Rankers</span> will need to be equipped with different <span class="xref std std-term">Drivers</span>.
+For <code class="xref py py-class docutils literal notranslate"><span class="pre">Match2DocRanker</span></code>, we need to choose <code class="xref py py-class docutils literal notranslate"><span class="pre">Matches2DocRankDriver</span></code> to get the scores from a <a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Ranker</span></a> and help to re-sort the scores.</p>
 <p>class:<cite>Matches2DocRankDriver</cite> Input-Output:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Input:
 document: {granularity: 0, adjacency: k}
@@ -420,7 +420,7 @@ document: {granularity: 0, adjacency: k}
     |- matches: {granularity: 0, adjacency: k+1} (Sorted according to scores from Ranker Executor)
 </pre></div>
 </div>
-<p>For <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code>, we need to choose <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRankDriver</span></code> to extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the granularity level above.</p>
+<p>For <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code>, we need to choose <code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRankDriver</span></code> to extract matches scores from chunks and use the Executor to compute the rank and assign the resulting matches to the granularity level above.</p>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRankDriver</span></code> Input-Output:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Input:
 document: {granularity: k-1}
@@ -453,8 +453,8 @@ document: {granularity: k}
 </div>
 </div>
 <div class="section" id="rankers-in-jina-hub">
-<h3>Rankers in Jina hub<a class="headerlink" href="#rankers-in-jina-hub" title="Permalink to this headline">¶</a></h3>
-<p>Jina provides some built-in Rankers in Jina hub. You are welcome to add customized Rankers by referring to the guide <a class="reference external" href="https://docs.jina.ai/chapters/extend/executor.html">here</a>.</p>
+<h3>Rankers in Jina Hub<a class="headerlink" href="#rankers-in-jina-hub" title="Permalink to this headline">¶</a></h3>
+<p>Jina provides some built-in Rankers in Jina Hub. You are welcome to add customized Rankers by referring to the guide <a class="reference external" href="https://docs.jina.ai/chapters/extend/executor.html">here</a>.</p>
 <table class="colwidths-given docutils align-default" id="id3">
 <caption><span class="caption-text">Jina Rankers</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
 <colgroup>
@@ -475,7 +475,7 @@ document: {granularity: k}
 <tbody>
 <tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">BiMatchRanker</span></code></p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRanker</span></code></p></td>
-<td><p>Computes the score taking into account from both query and doc perspective.</p></td>
+<td><p>Computes the score taking into account both query and doc.</p></td>
 <td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Chunk2DocRankDriver</span></code></p></td>
 <td><p><a class="reference external" href="https://github.com/jina-ai/jina-hub/blob/master/rankers/BiMatchRanker/README.md">https://github.com/jina-ai/jina-hub/blob/master/rankers/BiMatchRanker/README.md</a></p></td>
 </tr>
@@ -495,9 +495,9 @@ document: {granularity: k}
 </table>
 </div>
 </div>
-<div class="section" id="ranker-in-action">
-<h2><a class="toc-backref" href="#id8">Ranker in action</a><a class="headerlink" href="#ranker-in-action" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Ranker</span></a> can be used in several ways in Jina.</p>
+<div class="section" id="rankers-in-action">
+<h2><a class="toc-backref" href="#id8">Rankers in action</a><a class="headerlink" href="#rankers-in-action" title="Permalink to this headline">¶</a></h2>
+<p>A <a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Ranker</span></a> can be used in several ways in Jina.</p>
 <div class="section" id="run-with-docker-docker-run">
 <h3>Run with Docker (docker run)<a class="headerlink" href="#run-with-docker-docker-run" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run jinahub/pod.ranker.simpleaggregateranker:0.0.13-1.0.4 --port-in <span class="m">55555</span> --port-out <span class="m">55556</span>
@@ -510,7 +510,7 @@ document: {granularity: k}
 
 <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="n">Flow</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;my_encoder&#39;</span><span class="p">,</span> <span class="n">uses</span><span class="o">=</span><span class="s1">&#39;docker://jinahub/pod.ranker.simpleaggregateranker:0.0.13-1.0.4&#39;</span><span class="p">))</span>
 <span class="c1"># Or use YAML file.</span>
-<span class="c1">#f = (Flow().add(name=&#39;my_encoder&#39;, uses=&#39;SimpleAggregateRanker.yml&#39;))</span>
+<span class="c1"># f = (Flow().add(name=&#39;my_encoder&#39;, uses=&#39;SimpleAggregateRanker.yml&#39;))</span>
 </pre></div>
 </div>
 </div>
@@ -542,12 +542,12 @@ document: {granularity: k}
 </div>
 <div class="section" id="conclusion">
 <h2><a class="toc-backref" href="#id9">Conclusion</a><a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
-<p>In this guide, we introduced why we need and how to use <a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Ranker</span></a>. Apart from that, we provided some concrete examples of how to use <a class="reference internal" href="../glossary/#term-Ranker"><span class="xref std std-term">Ranker</span></a>.</p>
+<p>In this guide, we introduced why we need <span class="xref std std-term">Rankers</span> and how to use them. Apart from that, we provided some concrete examples of <span class="xref std std-term">Rankers</span> in use.</p>
 </div>
 <div class="section" id="what-s-next">
 <h2><a class="toc-backref" href="#id10">What’s next</a><a class="headerlink" href="#what-s-next" title="Permalink to this headline">¶</a></h2>
 <p>If you still have questions, feel free to <a class="reference external" href="https://github.com/jina-ai/jina/issues">submit an issue</a> or post a message in our <a class="reference external" href="https://slack.jina.ai">community slack channel</a> .</p>
-<p>To gain a deeper knowledge on the implementation of Jina Ranker, you can find the source code <a class="reference external" href="https://github.com/jina-ai/jina/tree/master/jina/executors/rankers">here</a>.</p>
+<p>To gain a deeper knowledge of the implementation of Jina Ranker, you can find the source code <a class="reference external" href="https://github.com/jina-ai/jina/tree/master/jina/executors/rankers">here</a>.</p>
 </div>
 </div>
 
@@ -693,7 +693,7 @@ document: {granularity: k}
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 25, 2021.
+        Last updated on Apr 29, 2021.
       </span>
 
         </p>
