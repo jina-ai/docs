@@ -1,4 +1,4 @@
-How to Add New Drivers
+Add New Drivers
 ====================================
 
 .. meta::

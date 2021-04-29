@@ -1,5 +1,5 @@
 =================
-How to Optimize the Jina Flow 
+Optimize the Jina Flow 
 =================
 -----------------------------------------------------------------------------------------------------------------------
 The FlowOptimizer runs Flows with different parameter sets. It allows out of the box hyperparameter tuning inside Jina.

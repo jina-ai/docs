@@ -1,5 +1,5 @@
 ==========================================
-A Guide to Jina Flow Evaluation Mode
+Jina Flow Evaluation Mode
 ==========================================
 
 .. meta::

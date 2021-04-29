@@ -1,6 +1,6 @@
-=======================================
-Understanding Jina Primitive Data Types
-=======================================
+===========================
+Jina's Primitive Data Types
+===========================
 
 .. meta::
    :description: A guide on Jina Primitive Data Types
