@@ -88,3 +88,4 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
    ../../envs
    ../../flow/pattern
+   ../../autocomplete

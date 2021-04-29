@@ -8,4 +8,3 @@ Installing Jina Core
    os/on-rasp-linux
    os/on-wsl
    oson-x
-   autocomplete
