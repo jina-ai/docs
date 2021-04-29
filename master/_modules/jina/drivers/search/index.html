@@ -251,7 +251,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 67 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
@@ -401,12 +401,16 @@
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">doc_sequences</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
         <span class="k">for</span> <span class="n">docs</span> <span class="ow">in</span> <span class="n">doc_sequences</span><span class="p">:</span>
             <span class="n">miss_idx</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="p">[]</span>
             <span class="p">)</span>  <span class="c1">#: missed hit results, some search may not end with results. especially in shards</span>
-            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">retrieved_doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">docs</span><span class="p">):</span>
-                <span class="n">serialized_doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">retrieved_doc</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">serialized_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">])</span>
+
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">retrieved_doc</span><span class="p">,</span> <span class="n">serialized_doc</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">serialized_docs</span><span class="p">)</span>
+            <span class="p">):</span>
                 <span class="k">if</span> <span class="n">serialized_doc</span><span class="p">:</span>
                     <span class="n">r</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">serialized_doc</span><span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_update</span><span class="p">:</span>
@@ -415,6 +419,7 @@
                         <span class="n">retrieved_doc</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">miss_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+
             <span class="c1"># delete non-existed matches in reverse</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">miss_idx</span><span class="p">):</span>
                 <span class="k">del</span> <span class="n">docs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span></div>
