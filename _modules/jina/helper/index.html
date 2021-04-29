@@ -380,6 +380,7 @@
     <span class="s1">&#39;convert_tuple_to_list&#39;</span><span class="p">,</span>
     <span class="s1">&#39;run_async&#39;</span><span class="p">,</span>
     <span class="s1">&#39;deprecated_alias&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;deprecated_class&#39;</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="kn">from</span> <span class="nn">jina.excepts</span> <span class="kn">import</span> <span class="n">NotSupportedError</span>
@@ -454,6 +455,55 @@
         <span class="k">return</span> <span class="n">wrapper</span>
 
     <span class="k">return</span> <span class="n">deco</span></div>
+
+
+<div class="viewcode-block" id="deprecated_class"><a class="viewcode-back" href="../../../api/jina.helper/#jina.helper.deprecated_class">[docs]</a><span class="k">def</span> <span class="nf">deprecated_class</span><span class="p">(</span><span class="n">dep_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom_msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    After applying `deprecated_class` the `dep_class` will only be an alias for the `new_class`.</span>
+<span class="sd">    Any code inside of `dep_class` will be completely overwritten.</span>
+
+<span class="sd">    For example:</span>
+<span class="sd">        .. highlight:: python</span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            @deprecated_class(new_class=NewClass)</span>
+<span class="sd">            @deprecated_class(new_class=NewClass, custom_msg=&quot;custom message&quot;)</span>
+
+<span class="sd">    :param dep_class: deprecated class</span>
+<span class="sd">    :param new_class: new class</span>
+<span class="sd">    :param custom_msg: a custom message to describe the new class</span>
+<span class="sd">    :return: wrapper</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dep_class</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
+            <span class="n">deprecated_class</span><span class="p">,</span> <span class="n">new_class</span><span class="o">=</span><span class="n">new_class</span><span class="p">,</span> <span class="n">custom_msg</span><span class="o">=</span><span class="n">custom_msg</span>
+        <span class="p">)</span>
+
+    <span class="n">new_init</span> <span class="o">=</span> <span class="n">new_class</span><span class="o">.</span><span class="fm">__init__</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">dep_class</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set wrapper function.</span>
+
+<span class="sd">        :param args: wrapper arguments</span>
+<span class="sd">        :param kwargs: wrapper key word arguments</span>
+<span class="sd">        :return: class instance of the new type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">warnings_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">dep_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> class is deprecated and will be removed in the next version. &#39;</span>
+        <span class="k">if</span> <span class="n">new_class</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">custom_msg</span><span class="p">:</span>
+            <span class="n">warnings_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;A new name of the class is </span><span class="si">{</span><span class="n">new_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">. &#39;</span>
+        <span class="k">if</span> <span class="n">custom_msg</span><span class="p">:</span>
+            <span class="n">warnings_msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">custom_msg</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="n">warnings_msg</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_init</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">new_class</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="n">wrapper</span>
+    <span class="k">return</span> <span class="n">new_class</span></div>
 
 
 <span class="k">def</span> <span class="nf">get_readable_size</span><span class="p">(</span><span class="n">num_bytes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

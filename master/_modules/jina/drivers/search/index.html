@@ -344,7 +344,7 @@
 <span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">EmbeddingClsType</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+    <span class="kn">from</span> <span class="nn">..types.arrays</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 
 <div class="viewcode-block" id="BaseSearchDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.search/#jina.drivers.search.BaseSearchDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseSearchDriver</span><span class="p">(</span><span class="n">BaseExecutableDriver</span><span class="p">):</span>
@@ -399,7 +399,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_update</span> <span class="o">=</span> <span class="n">is_update</span>
 
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">doc_sequences</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;DocumentSet&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">doc_sequences</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">docs</span> <span class="ow">in</span> <span class="n">doc_sequences</span><span class="p">:</span>
             <span class="n">miss_idx</span> <span class="o">=</span> <span class="p">(</span>
@@ -432,7 +432,7 @@
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">embedding</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">embeds</span><span class="p">):</span>
             <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding</span></div>
@@ -460,7 +460,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">EmbeddingClsType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">embedding_cls_type</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_documents_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_documents_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">):</span>
         <span class="n">embedding_cls_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_embedding_cls_type</span>
         <span class="k">if</span> <span class="n">embedding_cls_type</span><span class="o">.</span><span class="n">is_dense</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
@@ -487,7 +487,7 @@
                 <span class="k">if</span> <span class="n">vector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">match</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">vector</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">embed_vecs</span><span class="p">,</span> <span class="n">doc_pts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_documents_embeddings</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_pts</span><span class="p">:</span>
