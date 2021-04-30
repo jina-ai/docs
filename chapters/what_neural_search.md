@@ -54,7 +54,6 @@ On the other hand, there are some situations where neural search makes more sens
 - Your search needs are likely to expand over different languages and data types
 - Accurate results are important, even if you can't perfectly understand why you got *those* results
 - You have a "noisy" set of data to search through
-- You have a large dataset for the neural network to "learn"
 - You don't have much knowledge in the search domain
 - You want something that "just works" out of the box
 
