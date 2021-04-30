@@ -9,6 +9,7 @@ This section introduces fundamental concepts related to Jina Core.
    :maxdepth: 3
    :glob:
 
+   ../../what_neural_search
    ../../101
    ../../102
    ../../helloworld
