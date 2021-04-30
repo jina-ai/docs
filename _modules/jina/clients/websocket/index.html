@@ -394,13 +394,19 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">num_responses</span> <span class="o">=</span> <span class="mi">0</span>
 
                 <span class="k">async</span> <span class="k">def</span> <span class="nf">_send_requests</span><span class="p">(</span><span class="n">request_iterator</span><span class="p">):</span>
+                    <span class="n">next_request</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="k">for</span> <span class="n">next_request</span> <span class="ow">in</span> <span class="n">request_iterator</span><span class="p">:</span>
                         <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">next_request</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">())</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">num_requests</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="c1"># Server has no way of knowing when to stop the await on sending response back to the client</span>
-                    <span class="c1"># We send one last message to say `request_iterator` is completed.</span>
-                    <span class="c1"># On the client side, this :meth:`send` doesn&#39;t need to be awaited with a :meth:`recv`</span>
-                    <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+                    <span class="c1"># Check if there was any request generated</span>
+                    <span class="k">if</span> <span class="n">next_request</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="c1"># Server has no way of knowing when to stop the await on sending response back to the client</span>
+                        <span class="c1"># We send one last message to say `request_iterator` is completed.</span>
+                        <span class="c1"># On the client side, this :meth:`send` doesn&#39;t need to be awaited with a :meth:`recv`</span>
+                        <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="kc">True</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># There is nothing to send, disconnect gracefully</span>
+                        <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="s1">&#39;No data to send&#39;</span><span class="p">)</span>
 
                 <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">task_name</span><span class="o">=</span><span class="n">tname</span><span class="p">)</span> <span class="k">as</span> <span class="n">p_bar</span><span class="p">,</span> <span class="n">TimeContext</span><span class="p">(</span><span class="n">tname</span><span class="p">):</span>
                     <span class="c1"># Unlike gRPC, any arbitrary function (generator) cannot be passed via websockets.</span>
