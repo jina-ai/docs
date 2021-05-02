@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.rank &mdash; Jina 1.2.1-master documentation</title>
+  <title>jina.drivers.rank &mdash; Jina 1.2.2-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.1-master</button>
+            <button class="dropbtn version">1.2.2-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -215,7 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/setup/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/guides/">Developer Guides</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/api_references/">API References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/api_references/">API Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Jina Dashboard</span></p>
 <ul>
@@ -226,7 +226,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/guides/">Developer Guides</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/api_references/">API References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/api_references/">API Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Jina Box</span></p>
 <ul>
@@ -331,11 +331,11 @@
 <span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseExecutableDriver</span><span class="p">,</span> <span class="n">FlatRecursiveMixin</span>
-<span class="kn">from</span> <span class="nn">...types.sets</span> <span class="kn">import</span> <span class="n">MatchSet</span>
+<span class="kn">from</span> <span class="nn">...types.arrays</span> <span class="kn">import</span> <span class="n">MatchArray</span>
 <span class="kn">from</span> <span class="nn">...types.score</span> <span class="kn">import</span> <span class="n">NamedScore</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">...types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+    <span class="kn">from</span> <span class="nn">...types.arrays</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 
 <div class="viewcode-block" id="BaseRankDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.rank/#jina.drivers.rank.BaseRankDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseRankDriver</span><span class="p">(</span><span class="n">FlatRecursiveMixin</span><span class="p">,</span> <span class="n">BaseExecutableDriver</span><span class="p">):</span>
@@ -389,7 +389,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">traversal_paths</span><span class="o">=</span><span class="n">traversal_paths</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reverse</span> <span class="o">=</span> <span class="n">reverse</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param docs: the matches of the ``context_doc``, they are at granularity ``k``</span>
@@ -440,7 +440,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_sort_matches_in_place</span><span class="p">(</span><span class="n">matches</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_sort_matches_in_place</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">matches</span><span class="p">:</span> <span class="s1">&#39;MatchSet&#39;</span><span class="p">,</span> <span class="n">match_scores</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">matches</span><span class="p">:</span> <span class="s1">&#39;MatchArray&#39;</span><span class="p">,</span> <span class="n">match_scores</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">op_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="n">ref_doc_id</span> <span class="o">=</span> <span class="n">matches</span><span class="o">.</span><span class="n">_ref_doc</span><span class="o">.</span><span class="n">id</span>
@@ -581,7 +581,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 29, 2021.
+        Last updated on May 02, 2021.
       </span>
 
         </p>

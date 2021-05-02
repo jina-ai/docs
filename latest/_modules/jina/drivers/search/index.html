@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.search &mdash; Jina 1.2.1-master documentation</title>
+  <title>jina.drivers.search &mdash; Jina 1.2.2-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.1-master</button>
+            <button class="dropbtn version">1.2.2-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -215,7 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/setup/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/guides/">Developer Guides</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/api_references/">API References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/core/api_references/">API Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Jina Dashboard</span></p>
 <ul>
@@ -226,7 +226,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/guides/">Developer Guides</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/api_references/">API References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/hub/api_references/">API Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Jina Box</span></p>
 <ul>
@@ -344,7 +344,7 @@
 <span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">EmbeddingClsType</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+    <span class="kn">from</span> <span class="nn">..types.arrays</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 
 <div class="viewcode-block" id="BaseSearchDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.search/#jina.drivers.search.BaseSearchDriver">[docs]</a><span class="k">class</span> <span class="nc">BaseSearchDriver</span><span class="p">(</span><span class="n">BaseExecutableDriver</span><span class="p">):</span>
@@ -399,14 +399,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_update</span> <span class="o">=</span> <span class="n">is_update</span>
 
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">doc_sequences</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;DocumentSet&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">doc_sequences</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
         <span class="k">for</span> <span class="n">docs</span> <span class="ow">in</span> <span class="n">doc_sequences</span><span class="p">:</span>
             <span class="n">miss_idx</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="p">[]</span>
             <span class="p">)</span>  <span class="c1">#: missed hit results, some search may not end with results. especially in shards</span>
-            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">retrieved_doc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">docs</span><span class="p">):</span>
-                <span class="n">serialized_doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">(</span><span class="n">retrieved_doc</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">serialized_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">])</span>
+
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">retrieved_doc</span><span class="p">,</span> <span class="n">serialized_doc</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">serialized_docs</span><span class="p">)</span>
+            <span class="p">):</span>
                 <span class="k">if</span> <span class="n">serialized_doc</span><span class="p">:</span>
                     <span class="n">r</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">serialized_doc</span><span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_update</span><span class="p">:</span>
@@ -415,6 +419,7 @@
                         <span class="n">retrieved_doc</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">miss_idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+
             <span class="c1"># delete non-existed matches in reverse</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">miss_idx</span><span class="p">):</span>
                 <span class="k">del</span> <span class="n">docs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span></div>
@@ -432,7 +437,7 @@
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">executor</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_fn</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">embedding</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">embeds</span><span class="p">):</span>
             <span class="n">doc</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding</span></div>
@@ -460,7 +465,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">EmbeddingClsType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exec</span><span class="o">.</span><span class="n">embedding_cls_type</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_documents_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_documents_embeddings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">):</span>
         <span class="n">embedding_cls_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_embedding_cls_type</span>
         <span class="k">if</span> <span class="n">embedding_cls_type</span><span class="o">.</span><span class="n">is_dense</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">docs</span><span class="o">.</span><span class="n">all_embeddings</span>
@@ -487,7 +492,7 @@
                 <span class="k">if</span> <span class="n">vector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">match</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">vector</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">embed_vecs</span><span class="p">,</span> <span class="n">doc_pts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_documents_embeddings</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">doc_pts</span><span class="p">:</span>
@@ -640,7 +645,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 29, 2021.
+        Last updated on May 02, 2021.
       </span>
 
         </p>

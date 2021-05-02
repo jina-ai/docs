@@ -1,0 +1,200 @@
+============================
+Jina 101: Basic components
+============================
+
+
+In Jina 101, you will learn about the basic components of Jina. Before you start, read [the basics of Neural Search](https://github.com/jina-ai/jina/blob/master/.github/pages/hello-world.md) to get some context and run Jina's Hello World demos to see Jina in action.
+
+
+
+
+.. _the basics of Neural Search: https://jina.ai/2020/07/06/What-is-Neural-Search-and-Why-Should-I-Care.html
+
+.. contents:: Table of Contents
+    :depth: 3
+
+
+.. _document:
+
+Document
+============
+
+
+.. image:: /chapters/images/document.png
+	:width: 25%
+
+
+Documents are pieces of data in any dataset you want to search, and the input queries you use to find what you want. Basically, they are the input and output data for your search workflows.
+
+A Document is a primitive data type in Jina. You can compare the document of Jina to `ndarray` of `Numpy` or `tensor` of `Tensorflow`. It is also a powerful container for multimedia data. 
+A good example is the text we type into a search engine like Google. Documents can also be video clips, genetic sequences, MP3 files, scientific papers, funny GIFs, or many other things. You can hence store text, image, audio and the array inside the document. 
+
+A Document can be recursive in two directions - a document has its nearest neighbors and neighbors can have their own nearest neighbors. This is considered as high order matches in Jina.
+In the other direction a document can be divided into sub-documents and the sub-document can be further segmented into finer granularities. This rich structure allows Jina to represent complex documents with hierarchies and multiple modalities.
+
+
+You can think of a Document as a chocolate bar: Different Documents have different formats or ingredients, and you can :ref:`break them into smaller chunks<segmenter>`.
+
+
+Flow
+=============
+
+
+.. image:: /chapters/images/flow.png
+	:width: 25%
+
+
+Flows manage the two main search workflows: indexing data (indexing Flow) and then querying it (querying Flow).
+
+A Flow is made up of several sub-tasks, and it manages the states and context of these sub-tasks. The input and output data of Flows are Documents.
+It is a high level concept in Jina, representing a sequence of steps for accomplishing a task.
+
+You can add logic to the Flow by using `add` message and create parallelization using `needs` method. Once the Flow is built you can open it like opening a file in Python and then feed data into it.
+
+Jina Flow is fully decentralized and can be fully distributed on the cloud. You can simply distribute a part of the Flow by setting the host to a remote address. You can also containerize a Flow either partially or completely. Besides building a Flow from Python, you can also build a Flow from a yaml config - this creates a separation between the code base and the configuration
+which could be extremely useful when conducting a test. 
+
+
+
+Executor
+=============
+
+Executors are Jina's algorithmic logical units that perform each task in an indexing or querying Flow, and are the most common interface for machine learning engineers and researchers.
+
+Executors are organized into different subclasses, namely segmenter, ranker, encoder, crafter, classifier, indexer and evaluator. Jina comes with `over a hundred classic and state-of-the-art Executors`_ out of the box.
+
+
+.. _over a hundred classic and state-of-the-art Executors: https://docs.jina.ai/chapters/all_exec/
+
+
+To use a new algorithm with Jina, you can `create a new Executor class`_ by inheriting from existing Executors. This lets you focus on using the algorithm itself rather than worrying about implementation details.
+
+
+.. _create a new Executor class: https://docs.jina.ai/chapters/extend/executor/
+
+If you use `Google Colab`_ or a Jupyter notebook to visualize a Flow, each block in the graph is an Executor.
+
+
+.. _Google Colab: https://jina.ai/2021/03/17/Jina-now-with-Google-Colab.html
+
+Jina offers `many Executors`_, which can be divided as follows:
+
+
+.. _many Executors: https://docs.jina.ai/chapters/all_exec.html
+
+
+.. _crafter:
+
+Crafter
+---------------
+
+.. image:: /chapters/images/crafter.png
+	:width: 25%
+
+Crafters pre-process input Documents, for example, resizing images or converting text to lower case. A Crafter often comes before the :ref:`Encoder<encoder>` but it’s not always required.
+
+
+
+
+.. _segmenter: 
+
+Segmenter
+----------------
+
+.. image:: /chapters/images/segmenter.png
+	:width: 25%
+
+Like a :ref:`Crafter<crafter>`, a Segmenter also pre-processes Documents. A Segmenter breaks Documents into **multiple** chunks. For example, breaking a paragraph into sentences.
+
+
+
+.. _encoder: 
+
+Encoder 
+----------------
+
+.. image:: /chapters/images/encoder.png
+	:width: 25%
+
+
+Encoders create vector embeddings of Documents, letting users perform semantic search. 
+
+
+Indexer
+----------------
+
+
+.. image:: /chapters/images/indexer.png
+	:width: 25%
+
+
+After Documents are encoded, an Indexer:
+
+*   **Saves** Documents’ vector embeddings and metadata key-values pairs to storage (during indexing).
+*   **Retrieves** the vector embeddings and key-value pairs from storage (during querying).
+
+
+Ranker
+----------------
+
+
+.. image:: /chapters/images/ranker.png
+	:width: 25%
+
+Rankers sort and rank search results. They are frequently used in a querying Flow. 
+
+
+Classifier
+----------------
+
+
+.. image:: /chapters/images/classifier.png
+	:width: 25%
+
+Classifiers classify input Documents into categories and output the predicted hard/soft labels. Classifiers are optional, but may be useful depending on the use case.
+
+
+Evaluator
+----------------
+
+.. image:: /chapters/images/evaluator.png
+	:width: 25%
+
+Not every search gets perfect results the first time. An Evaluator evaluates performance of other Executors by comparing the Document rankings you **get** with the Document rankings you **want**. Choosing the right set of Executors optimizes your search.
+
+
+
+App
+=============
+
+Jina as a framework supports abstractions at different layers and exposes them as APIs to the users or developers. High-level APIs like Flow are public while other intermediate or low-level APIs for instance at the Driver level are hidden intentionally so developers can stay focused on developing their algortihm.
+
+The app is by far the highest level concept in Jina. It represents a new research project that delivers end-to-end user experience. For instance, the three `jina hello world` demos can be called as three Jina apps as they deliver the full user journey from indexing to searching.
+ A typical Jina app project contains two types of files - Python
+code and YAML config. The Python file defines the entrance point as a customized logic and YAML config defines a Flow composition as a configuration of each Executor.
+
+
+Advantages of Jina
+===================
+
+As a framework Jina is designed to be universal - it can solve all kinds of new research problems whether it is image to image search,
+semantic text search or question answering - Jina can handle them
+all regardless of the media type.
+One of the major benefits of using Jina is the time it saves. Jina provides a natural and
+straightforward design pattern for building your search solutions on the cloud which
+otherwise could take months.
+With Jina you keep an end to end stack ownership of your search solution and avoid the hassles with fragmented, multi-vendor, generic legacy tools.
+Unlike other deep learning frameworks which are designed to be local, Jina is designed to be distributed on the cloud so features like containerising, distributing, sharding, asynchronous architecture, REST, GRPC, websocket work out of the box.
+Finally, Jina builds many state-of-the-art AI models that are easily usable and extendable with a Pythonic interface.
+
+
+What comes next?
+===================
+
+Jina is a happy family. You can feel the harmony when you use Jina.
+
+You can design at the micro-level and scale up to the macro-level. YAML becomes algorithms, Pods become Flows. The patterns and logic always remain the same. This is the beauty of Jina.
+
+Now, continue to `Jina 102`_ to learn how these components work together! 
+
+.. _Jina 102: https://docs.jina.ai/chapters/102.html

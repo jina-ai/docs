@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers &mdash; Jina 1.2.1-master documentation</title>
+  <title>jina.drivers &mdash; Jina 1.2.2-master documentation</title>
   
 
   
@@ -82,7 +82,7 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.1-master</button>
+            <button class="dropbtn version">1.2.2-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
@@ -215,7 +215,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/setup/">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/guides/">Developer Guides</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/api_references/">API References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/core/api_references/">API Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Jina Dashboard</span></p>
 <ul>
@@ -226,7 +226,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/introduction/">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/guides/">Developer Guides</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/api_references/">API References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/hub/api_references/">API Reference</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Jina Box</span></p>
 <ul>
@@ -359,7 +359,7 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAMLCompatible</span>
 <span class="kn">from</span> <span class="nn">..types.querylang</span> <span class="kn">import</span> <span class="n">QueryLang</span>
-<span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+<span class="kn">from</span> <span class="nn">..types.arrays</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
 <span class="c1"># noinspection PyUnreachableCode</span>
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
@@ -369,7 +369,7 @@
     <span class="kn">from</span> <span class="nn">..logging.logger</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
     <span class="kn">from</span> <span class="nn">..types.message</span> <span class="kn">import</span> <span class="n">Message</span>
     <span class="kn">from</span> <span class="nn">..types.request</span> <span class="kn">import</span> <span class="n">Request</span>
-    <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">QueryLangSet</span>
+    <span class="kn">from</span> <span class="nn">..types.arrays</span> <span class="kn">import</span> <span class="n">QueryLangArray</span>
     <span class="kn">from</span> <span class="nn">..types.document</span> <span class="kn">import</span> <span class="n">Document</span>
 
 
@@ -583,15 +583,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">expect_parts</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The DocumentSet after applying the traversal</span>
+    <span class="k">def</span> <span class="nf">docs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The DocumentArray after applying the traversal</span>
 
 
 <span class="sd">        .. # noqa: DAR201&quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..types.sets</span> <span class="kn">import</span> <span class="n">DocumentSet</span>
+        <span class="kn">from</span> <span class="nn">..types.arrays</span> <span class="kn">import</span> <span class="n">DocumentArray</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">expect_parts</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">DocumentSet</span><span class="p">([</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">DocumentArray</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">partial_reqs</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">docs</span><span class="p">]</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">docs</span>
 
@@ -605,7 +607,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">message</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QueryLangSet&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;QueryLangArray&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 
@@ -660,7 +662,7 @@
 <div class="viewcode-block" id="ContextAwareRecursiveMixin"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.ContextAwareRecursiveMixin">[docs]</a><span class="k">class</span> <span class="nc">ContextAwareRecursiveMixin</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The full data structure version of :class:`FlatRecursiveMixin`, to be mixed in with :class:`BaseRecursiveDriver`.</span>
-<span class="sd">    It uses :meth:`traverse` in :class:`DocumentSet` and allows direct manipulation of Chunk-/Match-/DocumentSets.</span>
+<span class="sd">    It uses :meth:`traverse` in :class:`DocumentArray` and allows direct manipulation of Chunk-/Match-/DocumentArrays.</span>
 
 <span class="sd">    .. seealso::</span>
 <span class="sd">       https://github.com/jina-ai/jina/issues/1932</span>
@@ -678,16 +680,16 @@
 
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">doc_sequences</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;DocumentSet&#39;</span><span class="p">],</span>
+        <span class="n">doc_sequences</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="s1">&#39;DocumentArray&#39;</span><span class="p">],</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Apply function works on an Iterable of DocumentSet, modify the docs in-place.</span>
+        <span class="sd">&quot;&quot;&quot;Apply function works on an Iterable of DocumentArray, modify the docs in-place.</span>
 
-<span class="sd">        Each DocumentSet refers to a leaf (e.g. roots, matches or chunks wrapped</span>
-<span class="sd">        in a :class:`jina.DocumentSet`) in the traversal_paths. Modifications on the</span>
-<span class="sd">        DocumentSets (e.g. adding or deleting Documents) are directly applied on the underlying objects.</span>
-<span class="sd">        Adding a chunk to a ChunkSet results in adding a chunk to the parent Document.</span>
+<span class="sd">        Each DocumentArray refers to a leaf (e.g. roots, matches or chunks wrapped</span>
+<span class="sd">        in a :class:`jina.DocumentArray`) in the traversal_paths. Modifications on the</span>
+<span class="sd">        DocumentArrays (e.g. adding or deleting Documents) are directly applied on the underlying objects.</span>
+<span class="sd">        Adding a chunk to a ChunkArray results in adding a chunk to the parent Document.</span>
 
 <span class="sd">        :param doc_sequences: the Documents that should be handled</span>
 <span class="sd">        :param args: driver specific arguments, which might be forwarded to the Executor</span>
@@ -698,7 +700,7 @@
 <div class="viewcode-block" id="FlatRecursiveMixin"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.FlatRecursiveMixin">[docs]</a><span class="k">class</span> <span class="nc">FlatRecursiveMixin</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The batch optimized version of :class:`ContextAwareRecursiveMixin`, to be mixed in with :class:`BaseRecursiveDriver`.</span>
-<span class="sd">    It uses :meth:`traverse_flattened_per_path` in :class:`DocumentSet` and yield much better performance</span>
+<span class="sd">    It uses :meth:`traverse_flattened_per_path` in :class:`DocumentArray` and yield much better performance</span>
 <span class="sd">    when no context is needed and batching is possible.</span>
 
 <span class="sd">    .. seealso::</span>
@@ -719,7 +721,7 @@
 
     <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
+        <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -762,7 +764,7 @@
     <span class="k">def</span> <span class="nf">_stack_document_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exec_fn_required_keys_is_ndarray</span>
 
-    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_apply_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Apply function works on a list of docs, modify the docs in-place.</span>
 
 <span class="sd">        The list refers to all reachable leaves of a single ``traversal_path``.</span>
@@ -803,7 +805,7 @@
 
 <div class="viewcode-block" id="DocsExtractUpdateMixin.update_docs"><a class="viewcode-back" href="../../../api/jina.drivers/#jina.drivers.DocsExtractUpdateMixin.update_docs">[docs]</a>    <span class="k">def</span> <span class="nf">update_docs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">docs_pts</span><span class="p">:</span> <span class="s1">&#39;DocumentSet&#39;</span><span class="p">,</span>
+        <span class="n">docs_pts</span><span class="p">:</span> <span class="s1">&#39;DocumentArray&#39;</span><span class="p">,</span>
         <span class="n">exec_results</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;Document&#39;</span><span class="p">],</span> <span class="n">Any</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1188,7 +1190,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on Apr 29, 2021.
+        Last updated on May 02, 2021.
       </span>
 
         </p>
