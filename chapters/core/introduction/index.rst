@@ -21,7 +21,7 @@ This section introduces fundamental concepts related to Jina Core.
 What neural search is, how it compares to alternatives, and why it might be the right fit for your needs.
 
 ***************************************************************
-`Jina 101: Jina's basic components <../../what_neural_search>`_
+`Jina 101: Jina's basic components <../../101>`_
 ***************************************************************
 
 In Jina 101, you will learn about the basic components of Jina, including Flows, Documents and Executors.
