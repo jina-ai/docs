@@ -1,4 +1,4 @@
-## How to Use Parallelization in Jina
+## Parallelization in Jina
 
 ##### Learn how Jina handles parallelization of data processing
 

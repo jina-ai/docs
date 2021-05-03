@@ -1,6 +1,6 @@
-=========================================================
-Understanding Multi-modal and Cross-modal Search in Jina
-=========================================================
+==================================
+Multi-modal and Cross-modal Search
+==================================
 
 .. meta::
    :description: Multi-modal and cross-modal search in Jina

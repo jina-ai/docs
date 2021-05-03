@@ -1,5 +1,5 @@
 ############################
-How to Set up Jina Correctly
+Set up Jina Correctly
 ############################
 
 .. meta::

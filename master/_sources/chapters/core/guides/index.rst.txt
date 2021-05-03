@@ -16,7 +16,6 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
    ../setup/index
    ../../project-guide
-   ../../extend/mwu.rst
    ../../my_first_jina_app
    ../../cli/exit
    ../../install/ide-speedup.md

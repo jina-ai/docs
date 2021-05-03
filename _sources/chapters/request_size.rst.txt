@@ -1,5 +1,5 @@
 =============================================
- Understanding the Request Size parameter
+Request Size 
 =============================================
 
 In some use cases, you may wish to vary the number of ``Documents`` a single ``Request`` will receive. You can achieve this by adjusting the ``request_size`` parameter when setting the Flow. This guide covers the different configuration options Jina offers.

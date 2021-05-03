@@ -1,5 +1,5 @@
-A Guide to MIME Types in Jina
-=============================
+MIME Types in Jina
+==================
 
 This guide explains what a mime type is, how to assign them manually or automatically to a Document
 and how you can work with them on a Chunk or Driver level.

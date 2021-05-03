@@ -1,4 +1,4 @@
-# Understand Jina Recursive Document Representation
+# Jina's Recursive Document Representation
 
 This guide explains how Documents are represented within the Jina framework. It is especially relevant for understanding how segmenters, crafters and rankers work.
 

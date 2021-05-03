@@ -1,4 +1,4 @@
-Understanding Peas and Pods in Jina
+Peas and Pods in Jina
 =========================================
 
 .. meta::

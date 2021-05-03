@@ -1,4 +1,4 @@
-How to Prevent Duplicate Indexing
+Prevent Duplicate Indexing
 =================================
 
 Summary
