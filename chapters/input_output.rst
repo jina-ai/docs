@@ -1,5 +1,5 @@
-How to handle Inputs and Outputs for Flows
-==========================================
+Inputs and Outputs for Flows
+============================
 
 This chapter explains how input and output data is handled by the ``Flow API``.
 

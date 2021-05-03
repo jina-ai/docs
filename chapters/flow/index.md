@@ -1,4 +1,4 @@
-## Using the Flow API to Compose Your Jina Workflow
+## Compose Your Workflow with the Flow API
 
 In this section, you will get to know how to construct the flow using different approaches.
 

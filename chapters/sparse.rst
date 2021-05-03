@@ -1,4 +1,4 @@
-How to use Sparse Embeddings in Jina
+Using Sparse Embeddings in Jina
 =====================================
 
 .. meta::
