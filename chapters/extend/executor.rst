@@ -1,4 +1,4 @@
-Add New Executors
+Adding New Executors
 =====================================
 
 .. meta::
