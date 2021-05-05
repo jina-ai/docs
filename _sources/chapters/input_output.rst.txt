@@ -77,8 +77,8 @@ The following examples show the usage of the ``flow.index_*(...)`` functions.
 Providing ``Documents`` to search for works in the same way using the respective functions.
 Here, a ``CSV`` file is used to index ``Documents``. The possible ways of feeding in the ``CSV`` are shown.
 The function ``flow.index_lines(...)`` can be used in combination with ``line_format = 'CSV'``.
-A simpler version is to use ``F.index_csv(...)`` where the ``line_format`` parameter is not needed.
-The ``CSV`` data can be provided as a file handler or directly as ``str array``.
+A simpler version is to use ``flow.index_csv(...)`` where the ``line_format`` parameter is not needed.
+The ``CSV`` data can be provided as a file handler or directly as ``List[str]``.
 
     .. highlight:: csv
     .. code-block:: csv
@@ -128,7 +128,7 @@ It's similar when using JSON lines.
         with f:
             f.index_csv(open('input.jsonlines').readlines(), line_format='json')
 
-The ``flow.index_files(...)`` function can be used if multiple files have to be fed into the ``Flow``.
+The ``flow.index_files(...)`` function can be used if multiple files have to be fed into the ``Flow``. Note that in this case each **file** will become its own Document. Compare this to ``flow.index_lines``, where each **line** in the input file becomes its own Document.
 
     .. highlight:: python
     .. code-block:: python
@@ -255,13 +255,13 @@ Find more details of the data structure at `jina.proto <https://docs.jina.ai/cha
 
 ``request`` contains input data and related metadata.
 The input is a 3*8 matrix that is sent to the ``Flow``, which matches 3 ``request.index.docs``,
-and the ``request.index.docs.blog.shape`` is 8.
+and the ``request.index.docs.blob.shape`` is 8.
 The vector of the matrix is stored in ``request.index.docs.blob``,
 and the ``request.index.docs.blob.dtype`` indicates the type of the vector.
 
 
 Request size
 ------------
-The functions ``flow.index(...)``, ``flow.update(...)``, ``flow.delete(...)``, ``flow.search(...)`` and ``flow.train(...)``
+The functions ``flow.index(...)``, ``flow.update(...)``, ``flow.delete(...)``, ``flow.search(...)``
 accept the ``request_size`` parameter. It sets the limit for ``Documents`` sent in one request.
 In case more ``Documents`` are provided, they split up into multiple requests.

@@ -288,7 +288,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../all_exec/">List of 67 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../all_exec/">List of 68 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
@@ -440,8 +440,8 @@ For <code class="docutils literal notranslate"><span class="pre">flow.update(...
 Providing <code class="docutils literal notranslate"><span class="pre">Documents</span></code> to search for works in the same way using the respective functions.
 Here, a <code class="docutils literal notranslate"><span class="pre">CSV</span></code> file is used to index <code class="docutils literal notranslate"><span class="pre">Documents</span></code>. The possible ways of feeding in the <code class="docutils literal notranslate"><span class="pre">CSV</span></code> are shown.
 The function <code class="docutils literal notranslate"><span class="pre">flow.index_lines(...)</span></code> can be used in combination with <code class="docutils literal notranslate"><span class="pre">line_format</span> <span class="pre">=</span> <span class="pre">'CSV'</span></code>.
-A simpler version is to use <code class="docutils literal notranslate"><span class="pre">F.index_csv(...)</span></code> where the <code class="docutils literal notranslate"><span class="pre">line_format</span></code> parameter is not needed.
-The <code class="docutils literal notranslate"><span class="pre">CSV</span></code> data can be provided as a file handler or directly as <code class="docutils literal notranslate"><span class="pre">str</span> <span class="pre">array</span></code>.</p>
+A simpler version is to use <code class="docutils literal notranslate"><span class="pre">flow.index_csv(...)</span></code> where the <code class="docutils literal notranslate"><span class="pre">line_format</span></code> parameter is not needed.
+The <code class="docutils literal notranslate"><span class="pre">CSV</span></code> data can be provided as a file handler or directly as <code class="docutils literal notranslate"><span class="pre">List[str]</span></code>.</p>
 <blockquote>
 <div><div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">input.csv</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
@@ -488,7 +488,7 @@ The <code class="docutils literal notranslate"><span class="pre">CSV</span></cod
 </pre></div>
 </div>
 </div></blockquote>
-<p>The <code class="docutils literal notranslate"><span class="pre">flow.index_files(...)</span></code> function can be used if multiple files have to be fed into the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">flow.index_files(...)</span></code> function can be used if multiple files have to be fed into the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>. Note that in this case each <strong>file</strong> will become its own Document. Compare this to <code class="docutils literal notranslate"><span class="pre">flow.index_lines</span></code>, where each <strong>line</strong> in the input file becomes its own Document.</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">f</span><span class="o">.</span><span class="n">index_files</span><span class="p">(</span><span class="s1">&#39;*.png&#39;</span><span class="p">,</span> <span class="n">on_done</span><span class="o">=</span><span class="nb">print</span><span class="p">)</span>
@@ -605,13 +605,13 @@ For instance calling the <code class="docutils literal notranslate"><span class=
 Find more details of the data structure at <a class="reference external" href="https://docs.jina.ai/chapters/proto/docs.html#jina.proto">jina.proto</a></p>
 <p><code class="docutils literal notranslate"><span class="pre">request</span></code> contains input data and related metadata.
 The input is a 3*8 matrix that is sent to the <code class="docutils literal notranslate"><span class="pre">Flow</span></code>, which matches 3 <code class="docutils literal notranslate"><span class="pre">request.index.docs</span></code>,
-and the <code class="docutils literal notranslate"><span class="pre">request.index.docs.blog.shape</span></code> is 8.
+and the <code class="docutils literal notranslate"><span class="pre">request.index.docs.blob.shape</span></code> is 8.
 The vector of the matrix is stored in <code class="docutils literal notranslate"><span class="pre">request.index.docs.blob</span></code>,
 and the <code class="docutils literal notranslate"><span class="pre">request.index.docs.blob.dtype</span></code> indicates the type of the vector.</p>
 </div>
 <div class="section" id="request-size">
 <h2>Request size<a class="headerlink" href="#request-size" title="Permalink to this headline">¶</a></h2>
-<p>The functions <code class="docutils literal notranslate"><span class="pre">flow.index(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">flow.update(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">flow.delete(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">flow.search(...)</span></code> and <code class="docutils literal notranslate"><span class="pre">flow.train(...)</span></code>
+<p>The functions <code class="docutils literal notranslate"><span class="pre">flow.index(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">flow.update(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">flow.delete(...)</span></code>, <code class="docutils literal notranslate"><span class="pre">flow.search(...)</span></code>
 accept the <code class="docutils literal notranslate"><span class="pre">request_size</span></code> parameter. It sets the limit for <code class="docutils literal notranslate"><span class="pre">Documents</span></code> sent in one request.
 In case more <code class="docutils literal notranslate"><span class="pre">Documents</span></code> are provided, they split up into multiple requests.</p>
 </div>
