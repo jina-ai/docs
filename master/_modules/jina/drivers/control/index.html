@@ -433,6 +433,14 @@
                         <span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_load_executor</span><span class="p">()</span>
                         <span class="k">break</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;ACTIVATE&#39;</span><span class="p">:</span>
+            <span class="c1"># TODO (Joan): This is a hack, but I checked in devel-2.0 branch, this _handle_control_req will be moved into the `ZedRuntime` so this code</span>
+            <span class="c1"># aligns very well with that view</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_zmqlet</span><span class="o">.</span><span class="n">_send_idle_to_router</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;DEACTIVATE&#39;</span><span class="p">:</span>
+            <span class="c1"># TODO (Joan): This is a hack, but I checked in devel-2.0 branch, this _handle_control_req will be moved into the `ZedRuntime` so this code</span>
+            <span class="c1"># aligns very well with that view</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_zmqlet</span><span class="o">.</span><span class="n">_send_cancel_to_router</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">UnknownControlCommand</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;don</span><span class="se">\&#39;</span><span class="s1">t know how to handle </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
@@ -511,6 +519,9 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;CANCEL&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span><span class="si">}</span><span class="s1"> is cancelled, now I know these idle peas </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -669,7 +680,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 05, 2021.
+        Last updated on May 06, 2021.
       </span>
 
         </p>
