@@ -253,7 +253,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 67 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
@@ -1271,7 +1271,19 @@
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;workspace_id&#39;</span><span class="p">):</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">workspace_id</span> <span class="o">=</span> <span class="n">value</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">peas_args</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;peas_args&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">args</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="s1">&#39;replicas_args&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;could not find &quot;peas_args&quot; or &quot;replicas_args&quot; on </span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="p">)</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">args</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">):</span>
                         <span class="n">v</span><span class="o">.</span><span class="n">workspace_id</span> <span class="o">=</span> <span class="n">value</span>
                     <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">List</span><span class="p">):</span>
@@ -1303,31 +1315,31 @@
     <span class="c1"># for backward support</span>
     <span class="n">join</span> <span class="o">=</span> <span class="n">needs</span>
 
-<div class="viewcode-block" id="BaseFlow.dump"><a class="viewcode-back" href="../../../../api/jina.flow.base/#jina.flow.base.BaseFlow.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pod_name</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shards</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Emit a Dump request to a specific Pod</span>
-
-<span class="sd">        :param shards: the nr of shards in the dump</span>
-<span class="sd">        :param path: the path to which to dump</span>
-<span class="sd">        :param pod_name: the name of the pod</span>
-<span class="sd">        :param timeout: time to wait (seconds)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">pod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">[</span><span class="n">pod_name</span><span class="p">]</span>
-        <span class="n">pod</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">shards</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="BaseFlow.rolling_update"><a class="viewcode-back" href="../../../../api/jina.flow.base/#jina.flow.base.BaseFlow.rolling_update">[docs]</a>    <span class="k">def</span> <span class="nf">rolling_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pod_name</span><span class="p">):</span>
+<div class="viewcode-block" id="BaseFlow.rolling_update"><a class="viewcode-back" href="../../../../api/jina.flow.base/#jina.flow.base.BaseFlow.rolling_update">[docs]</a>    <span class="k">def</span> <span class="nf">rolling_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pod_name</span><span class="p">,</span> <span class="n">dump_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update pods one after another - only used for compound pods.</span>
+<span class="sd">        Reload Pods sequentially - only used for compound pods.</span>
 
+<span class="sd">        :param dump_path: the path from which to read the dump data</span>
 <span class="sd">        :param pod_name: pod to update</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">compound_pod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">[</span><span class="n">pod_name</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compound_pod</span><span class="p">,</span> <span class="n">CompoundPod</span><span class="p">):</span>
-            <span class="n">compound_pod</span><span class="o">.</span><span class="n">rolling_update</span><span class="p">()</span>
+            <span class="n">compound_pod</span><span class="o">.</span><span class="n">rolling_update</span><span class="p">(</span><span class="n">dump_path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s1">&#39;The BasePod </span><span class="si">{</span><span class="n">pod_name</span><span class="si">}</span><span class="s1"> is not a CompoundPod and does not support updating&#39;</span>
-            <span class="p">)</span></div></div>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseFlow.dump"><a class="viewcode-back" href="../../../../api/jina.flow.base/#jina.flow.base.BaseFlow.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pod_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dump_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">shards</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Emit a Dump request to a specific Pod</span>
+<span class="sd">        :param shards: the nr of shards in the dump</span>
+<span class="sd">        :param dump_path: the path to which to dump</span>
+<span class="sd">        :param pod_name: the name of the pod</span>
+<span class="sd">        :param timeout: time to wait (seconds)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pod</span><span class="p">:</span> <span class="n">BasePod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">[</span><span class="n">pod_name</span><span class="p">]</span>
+        <span class="n">pod</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">pod_name</span><span class="p">,</span> <span class="n">dump_path</span><span class="p">,</span> <span class="n">shards</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -1460,7 +1472,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 06, 2021.
+        Last updated on May 07, 2021.
       </span>
 
         </p>

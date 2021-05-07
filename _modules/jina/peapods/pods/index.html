@@ -253,7 +253,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 67 Executors in Jina</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
 </ul>
 
@@ -348,6 +348,7 @@
 <span class="kn">from</span> <span class="nn">...enums</span> <span class="kn">import</span> <span class="n">SchedulerType</span><span class="p">,</span> <span class="n">PodRoleType</span>
 <span class="kn">from</span> <span class="nn">...enums</span> <span class="kn">import</span> <span class="n">SocketType</span><span class="p">,</span> <span class="n">PeaRoleType</span><span class="p">,</span> <span class="n">PollingType</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">get_public_ip</span><span class="p">,</span> <span class="n">get_internal_ip</span><span class="p">,</span> <span class="n">random_identity</span>
+<span class="kn">from</span> <span class="nn">...types.message.common</span> <span class="kn">import</span> <span class="n">ControlMessage</span>
 
 
 <div class="viewcode-block" id="ExitFIFO"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.ExitFIFO">[docs]</a><span class="k">class</span> <span class="nc">ExitFIFO</span><span class="p">(</span><span class="n">ExitStack</span><span class="p">):</span>
@@ -917,21 +918,6 @@
             <span class="c1"># ONLY reset when it is push</span>
             <span class="n">args</span><span class="o">.</span><span class="n">uses_after</span> <span class="o">=</span> <span class="s1">&#39;_pass&#39;</span>
 
-<div class="viewcode-block" id="Pod.dump"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.Pod.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">shards</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Emit a Dump request to its Peas</span>
-
-<span class="sd">        :param shards: the nr of shards in the dump</span>
-<span class="sd">        :param path: the path to which to dump</span>
-<span class="sd">        :param timeout: time to wait (seconds)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">pea</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;head&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pea</span><span class="o">.</span><span class="n">name</span> <span class="ow">and</span> <span class="s1">&#39;tail&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pea</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                <span class="n">send_ctrl_message</span><span class="p">(</span>
-                    <span class="n">pea</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span>
-                    <span class="n">DumpMessage</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">shards</span><span class="o">=</span><span class="n">shards</span><span class="p">),</span>
-                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
-                <span class="p">)</span></div>
-
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_set_peas_args</span><span class="p">(</span>
         <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">,</span>
@@ -998,7 +984,6 @@
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># reasons to separate head and tail from peas is that they</span>
             <span class="c1"># can be deducted based on the previous and next pods</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_after_to_pass</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_copy_to_head_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="p">)</span>
@@ -1029,7 +1014,30 @@
             <span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">args</span><span class="p">]</span>
 
         <span class="c1"># note that peas_args[&#39;peas&#39;][0] exist either way and carries the original property</span>
-        <span class="k">return</span> <span class="n">parsed_args</span></div>
+        <span class="k">return</span> <span class="n">parsed_args</span>
+
+<div class="viewcode-block" id="Pod.dump"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.Pod.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pod_name</span><span class="p">,</span> <span class="n">dump_path</span><span class="p">,</span> <span class="n">shards</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Emit a Dump request to its Peas</span>
+
+<span class="sd">        :param pod_name: the pod to target</span>
+<span class="sd">        :param shards: the nr of shards in the dump</span>
+<span class="sd">        :param dump_path: the path to which to dump</span>
+<span class="sd">        :param timeout: time to wait (seconds)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">pea</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pea</span><span class="o">.</span><span class="n">inner</span><span class="p">:</span>
+                <span class="n">send_ctrl_message</span><span class="p">(</span>
+                    <span class="n">pea</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span>
+                    <span class="n">ControlMessage</span><span class="p">(</span>
+                        <span class="n">command</span><span class="o">=</span><span class="s1">&#39;DUMP&#39;</span><span class="p">,</span>
+                        <span class="n">pod_name</span><span class="o">=</span><span class="n">pod_name</span><span class="p">,</span>
+                        <span class="n">args</span><span class="o">=</span><span class="p">{</span>
+                            <span class="s1">&#39;dump_path&#39;</span><span class="p">:</span> <span class="n">dump_path</span><span class="p">,</span>
+                            <span class="s1">&#39;shards&#39;</span><span class="p">:</span> <span class="n">shards</span><span class="p">,</span>
+                        <span class="p">},</span>
+                    <span class="p">),</span>
+                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                <span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -1162,7 +1170,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 06, 2021.
+        Last updated on May 07, 2021.
       </span>
 
         </p>
