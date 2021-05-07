@@ -254,7 +254,7 @@
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 78 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 77 Drivers in Jina</a></li>
 </ul>
 
             
@@ -345,8 +345,7 @@
 <span class="kn">from</span> <span class="nn">..peas</span> <span class="kn">import</span> <span class="n">BasePea</span>
 <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">__default_host__</span>
 <span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">helper</span>
-<span class="kn">from</span> <span class="nn">...enums</span> <span class="kn">import</span> <span class="n">SchedulerType</span><span class="p">,</span> <span class="n">PodRoleType</span>
-<span class="kn">from</span> <span class="nn">...enums</span> <span class="kn">import</span> <span class="n">SocketType</span><span class="p">,</span> <span class="n">PeaRoleType</span><span class="p">,</span> <span class="n">PollingType</span>
+<span class="kn">from</span> <span class="nn">...enums</span> <span class="kn">import</span> <span class="n">SchedulerType</span><span class="p">,</span> <span class="n">PodRoleType</span><span class="p">,</span> <span class="n">SocketType</span><span class="p">,</span> <span class="n">PeaRoleType</span><span class="p">,</span> <span class="n">PollingType</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">get_public_ip</span><span class="p">,</span> <span class="n">get_internal_ip</span><span class="p">,</span> <span class="n">random_identity</span>
 <span class="kn">from</span> <span class="nn">...types.message.common</span> <span class="kn">import</span> <span class="n">ControlMessage</span>
 
@@ -354,6 +353,11 @@
 <div class="viewcode-block" id="ExitFIFO"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.ExitFIFO">[docs]</a><span class="k">class</span> <span class="nc">ExitFIFO</span><span class="p">(</span><span class="n">ExitStack</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ExitFIFO changes the exiting order of exitStack to turn it into FIFO.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">    The `__exit__` method is copied literally from `ExitStack` and changed the call:</span>
+<span class="sd">    `is_sync, cb = self._exit_callbacks.pop()` to `is_sync, cb = self._exit_callbacks.popleft()`</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc_details</span><span class="p">):</span>
@@ -826,22 +830,6 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">True</span>
 
-<div class="viewcode-block" id="Pod.deactivate"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.Pod.deactivate">[docs]</a>    <span class="k">def</span> <span class="nf">deactivate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Force Dealer Peas to send CANCEL messages to their ROUTERs</span>
-
-<span class="sd">        .. note:</span>
-<span class="sd">            This is to make sure Head of Replica always sends CANCEL in a blocking manner.</span>
-<span class="sd">            Like this we are sure that in CANCEL has been properly handled by the time the Head of CompoundPod</span>
-<span class="sd">            receives any Request and so can&#39;t send it to the wrong replica.</span>
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># order is good. Deactivate from head to tail</span>
-        <span class="k">for</span> <span class="n">pea</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">pea</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">socket_in</span> <span class="o">==</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">DEALER_CONNECT</span><span class="p">:</span>
-                <span class="n">pea</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">deactivate</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">False</span></div>
-
 <div class="viewcode-block" id="Pod.start"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.Pod.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Start to run all :class:`BasePea` in this BasePod.</span>
@@ -893,6 +881,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">:</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">finally</span><span class="p">:</span>
