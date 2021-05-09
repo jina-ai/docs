@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.clients &mdash; Jina 1.2.2-master documentation</title>
+  <title>jina.clients &mdash; Jina 1.2.3-master documentation</title>
   
 
   
@@ -82,10 +82,12 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.2-master</button>
+            <button class="dropbtn version">1.2.3-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.2.1">1.2.1</a>
               
               <a class="dropdown-item" href="/v1.1.9">1.1.9</a>
               
@@ -528,6 +530,46 @@
             <span class="n">on_always</span><span class="p">,</span>
             <span class="n">command</span><span class="o">=</span><span class="s1">&#39;RELOAD&#39;</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.dump"><a class="viewcode-back" href="../../../api/jina.clients/#jina.Client.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">targets</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+        <span class="n">dump_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">shards</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">on_done</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_error</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">on_always</span><span class="p">:</span> <span class="n">CallbackFnType</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send &#39;reload&#39; request to the Flow.</span>
+
+<span class="sd">        :param shards: nr of shards to dump for</span>
+<span class="sd">        :param dump_path: the path to which to dump</span>
+<span class="sd">        :param targets: the regex string or list of regex strings to match the pea/pod names.</span>
+<span class="sd">        :param on_done: the function to be called when the :class:`Request` object is resolved.</span>
+<span class="sd">        :param on_error: the function to be called when the :class:`Request` object is rejected.</span>
+<span class="sd">        :param on_always: the function to be called when the :class:`Request` object is  is either resolved or rejected.</span>
+<span class="sd">        :param kwargs: additional parameters</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">targets</span><span class="p">]</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;targets&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">targets</span>
+        <span class="c1"># required in order for jina.clients.request.helper._add_control_propagate</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;dump_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dump_path</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">][</span><span class="s1">&#39;shards&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shards</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">CONTROL</span>
+        <span class="k">return</span> <span class="n">run_async</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_results</span><span class="p">,</span>
+            <span class="p">[],</span>
+            <span class="n">on_done</span><span class="p">,</span>
+            <span class="n">on_error</span><span class="p">,</span>
+            <span class="n">on_always</span><span class="p">,</span>
+            <span class="n">command</span><span class="o">=</span><span class="s1">&#39;DUMP&#39;</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 
 
@@ -703,7 +745,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 02, 2021.
+        Last updated on May 09, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.drivers.control &mdash; Jina 1.2.2-master documentation</title>
+  <title>jina.drivers.control &mdash; Jina 1.2.3-master documentation</title>
   
 
   
@@ -82,10 +82,12 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.2-master</button>
+            <button class="dropbtn version">1.2.3-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.2.1">1.2.1</a>
               
               <a class="dropdown-item" href="/v1.1.9">1.1.9</a>
               
@@ -416,23 +418,51 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;CANCEL&#39;</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;DUMP&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s1">&#39;DUMP command cannot be processed by ControlReqDriver. Use DumpDriver&#39;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dump</span><span class="p">()</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;RELOAD&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">targets</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;ZEDRuntime&#39;</span><span class="p">:</span>
-                <span class="n">patterns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">targets</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                    <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s1">&#39;reloading the Executor `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">` in `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">`&#39;</span>
-                        <span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_load_executor</span><span class="p">()</span>
-                        <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reload</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;ACTIVATE&#39;</span><span class="p">:</span>
+            <span class="c1"># TODO (Joan): This is a hack, but I checked in devel-2.0 branch, this _handle_control_req will be moved into the `ZedRuntime` so this code</span>
+            <span class="c1"># aligns very well with that view</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_zmqlet</span><span class="o">.</span><span class="n">_send_idle_to_router</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;DEACTIVATE&#39;</span><span class="p">:</span>
+            <span class="c1"># TODO (Joan): This is a hack, but I checked in devel-2.0 branch, this _handle_control_req will be moved into the `ZedRuntime` so this code</span>
+            <span class="c1"># aligns very well with that view</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_zmqlet</span><span class="o">.</span><span class="n">_send_cancel_to_router</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">UnknownControlCommand</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;don</span><span class="se">\&#39;</span><span class="s1">t know how to handle </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">UnknownControlCommand</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;don</span><span class="se">\&#39;</span><span class="s1">t know how to handle </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_reload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO should this be removed, since we now have proper rolling update?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">targets</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;ZEDRuntime&#39;</span><span class="p">:</span>
+            <span class="n">patterns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">targets</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;reloading the Executor `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">` in `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">`&#39;</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_load_executor</span><span class="p">()</span>
+                    <span class="k">break</span>
+
+    <span class="k">def</span> <span class="nf">_dump</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># TODO(Cristian): this is a smell, since we are accessing the private _executor</span>
+        <span class="c1"># to be reconsidered after the Executor API refactoring</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">targets</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;ZEDRuntime&#39;</span><span class="p">:</span>
+            <span class="n">patterns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">targets</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span><span class="n">patterns</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Dumping from Executor `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">` in `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">`&#39;</span>
+                    <span class="p">)</span>
+                    <span class="n">req_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
+                        <span class="n">req_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dump_path&#39;</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">req_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;shards&#39;</span><span class="p">))</span>
+                    <span class="p">)</span>
+                    <span class="k">break</span></div>
 
 
 <div class="viewcode-block" id="RouteDriver"><a class="viewcode-back" href="../../../../api/jina.drivers.control/#jina.drivers.control.RouteDriver">[docs]</a><span class="k">class</span> <span class="nc">RouteDriver</span><span class="p">(</span><span class="n">ControlReqDriver</span><span class="p">):</span>
@@ -509,6 +539,9 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">req</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s1">&#39;CANCEL&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span><span class="si">}</span><span class="s1"> is cancelled, now I know these idle peas </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">idle_dealer_ids</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
@@ -667,7 +700,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 02, 2021.
+        Last updated on May 09, 2021.
       </span>
 
         </p>

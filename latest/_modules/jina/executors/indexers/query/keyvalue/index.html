@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers.query.keyvalue &mdash; Jina 1.2.2-master documentation</title>
+  <title>jina.executors.indexers.query.keyvalue &mdash; Jina 1.2.3-master documentation</title>
   
 
   
@@ -82,10 +82,12 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.2-master</button>
+            <button class="dropbtn version">1.2.3-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.2.1">1.2.1</a>
               
               <a class="dropdown-item" href="/v1.1.9">1.1.9</a>
               
@@ -332,8 +334,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.executors.indexers.query.keyvalue</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 
+<span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">Document</span>
 <span class="kn">from</span> <span class="nn">jina.executors.indexers.dump</span> <span class="kn">import</span> <span class="n">import_metas</span>
 <span class="kn">from</span> <span class="nn">jina.executors.indexers.keyvalue</span> <span class="kn">import</span> <span class="n">BinaryPbWriterMixin</span>
 <span class="kn">from</span> <span class="nn">jina.executors.indexers.query</span> <span class="kn">import</span> <span class="n">BaseQueryIndexer</span>
@@ -347,23 +350,21 @@
 
 <span class="sd">        :param dump_path: the path of the dump&quot;&quot;&quot;</span>
         <span class="n">ids</span><span class="p">,</span> <span class="n">metas</span> <span class="o">=</span> <span class="n">import_metas</span><span class="p">(</span><span class="n">dump_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pea_id</span><span class="p">))</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span> <span class="k">as</span> <span class="n">write_handler</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_create_handler</span><span class="p">()</span> <span class="k">as</span> <span class="n">write_handler</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">metas</span><span class="p">),</span> <span class="n">write_handler</span><span class="p">)</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">is_handler_loaded</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># warming up</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="p">(</span><span class="s1">&#39;someid&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">([</span><span class="s1">&#39;someid&#39;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="BinaryPbQueryIndexer.query"><a class="viewcode-back" href="../../../../../../api/jina.executors.indexers.query.keyvalue/#jina.executors.indexers.query.keyvalue.BinaryPbQueryIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+<div class="viewcode-block" id="BinaryPbQueryIndexer.query"><a class="viewcode-back" href="../../../../../../api/jina.executors.indexers.query.keyvalue/#jina.executors.indexers.query.keyvalue.BinaryPbQueryIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]]:</span>
         <span class="sd">&quot;&quot;&quot;Get a document by its id</span>
 
-<span class="sd">        :param key: the id</span>
+<span class="sd">        :param keys: the ids</span>
 <span class="sd">        :param args: not used</span>
 <span class="sd">        :param kwargs: not used</span>
-<span class="sd">        :return: the bytes of the Document</span>
+<span class="sd">        :return: List of the bytes of the Documents (or None, if not found)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div></div>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_query</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div></div>
 
 
 <div class="viewcode-block" id="KeyValueQueryIndexer"><a class="viewcode-back" href="../../../../../../api/jina.executors.indexers.query.keyvalue/#jina.executors.indexers.query.keyvalue.KeyValueQueryIndexer">[docs]</a><span class="k">class</span> <span class="nc">KeyValueQueryIndexer</span><span class="p">(</span><span class="n">BinaryPbQueryIndexer</span><span class="p">):</span>
@@ -500,7 +501,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 02, 2021.
+        Last updated on May 09, 2021.
       </span>
 
         </p>

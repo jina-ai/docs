@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.pods &mdash; Jina 1.2.2-master documentation</title>
+  <title>jina.peapods.pods &mdash; Jina 1.2.3-master documentation</title>
   
 
   
@@ -84,10 +84,12 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.2-master</button>
+            <button class="dropbtn version">1.2.3-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.2.1">1.2.1</a>
               
               <a class="dropdown-item" href="/v1.1.9">1.1.9</a>
               
@@ -378,9 +380,18 @@
 </ul>
 </div>
 <span class="target" id="module-jina.peapods.pods"></span><dl class="py class">
+<dt id="jina.peapods.pods.ExitFIFO">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">jina.peapods.pods.</span></code><code class="sig-name descname"><span class="pre">ExitFIFO</span></code><a class="reference internal" href="../../_modules/jina/peapods/pods/#ExitFIFO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.ExitFIFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">contextlib.ExitStack</span></code></p>
+<p>ExitFIFO changes the exiting order of exitStack to turn it into FIFO.</p>
+<p>The <cite>__exit__</cite> method is copied literally from <cite>ExitStack</cite> and changed the call:
+<cite>is_sync, cb = self._exit_callbacks.pop()</cite> to <cite>is_sync, cb = self._exit_callbacks.popleft()</cite></p>
+</dd></dl>
+
+<dl class="py class">
 <dt id="jina.peapods.pods.BasePod">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">jina.peapods.pods.</span></code><code class="sig-name descname"><span class="pre">BasePod</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">needs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">contextlib.ExitStack</span></code></p>
+<dd><p>Bases: <a class="reference internal" href="#jina.peapods.pods.ExitFIFO" title="jina.peapods.pods.ExitFIFO"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.peapods.pods.ExitFIFO</span></code></a></p>
 <p>A BasePod is an immutable set of peas. They share the same input and output socket.
 Internally, the peas can run with the process/thread backend.
 They can be also run in their own containers on remote machines.</p>
@@ -488,6 +499,12 @@ are properly closed.</p>
 <dt id="jina.peapods.pods.BasePod.tail_args">
 <em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">tail_args</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod.tail_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod.tail_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the arguments for the <cite>tail</cite> of this BasePod.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="jina.peapods.pods.BasePod.join">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">join</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#BasePod.join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.BasePod.join" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until all pods and peas exit.</p>
 </dd></dl>
 
 </dd></dl>
@@ -634,13 +651,14 @@ are properly closed.</p>
 
 <dl class="py method">
 <dt id="jina.peapods.pods.Pod.dump">
-<code class="sig-name descname"><span class="pre">dump</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shards</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#Pod.dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.Pod.dump" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">dump</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pod_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dump_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shards</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/peapods/pods/#Pod.dump"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.peapods.pods.Pod.dump" title="Permalink to this definition">¶</a></dt>
 <dd><p>Emit a Dump request to its Peas</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>pod_name</strong> – the pod to target</p></li>
 <li><p><strong>shards</strong> – the nr of shards in the dump</p></li>
-<li><p><strong>path</strong> – the path to which to dump</p></li>
+<li><p><strong>dump_path</strong> – the path to which to dump</p></li>
 <li><p><strong>timeout</strong> – time to wait (seconds)</p></li>
 </ul>
 </dd>
@@ -793,7 +811,7 @@ are properly closed.</p>
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 02, 2021.
+        Last updated on May 09, 2021.
       </span>
 
         </p>

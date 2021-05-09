@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.pods.compoundpod &mdash; Jina 1.2.2-master documentation</title>
+  <title>jina.peapods.pods.compoundpod &mdash; Jina 1.2.3-master documentation</title>
   
 
   
@@ -82,10 +82,12 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.2-master</button>
+            <button class="dropbtn version">1.2.3-master</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.2.1">1.2.1</a>
               
               <a class="dropdown-item" href="/v1.1.9">1.1.9</a>
               
@@ -368,7 +370,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">head_args</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_copy_to_head_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">PollingType</span><span class="o">.</span><span class="n">ANY</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_copy_to_tail_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">PollingType</span><span class="o">.</span><span class="n">ANY</span><span class="p">)</span>
         <span class="n">cargs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_after_to_pass</span><span class="p">(</span><span class="n">cargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">replicas_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_replica_args</span><span class="p">(</span>
             <span class="n">cargs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span>
         <span class="p">)</span>
@@ -390,7 +391,6 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host</span>
 
     <span class="k">def</span> <span class="nf">_parse_pod_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">]:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_after_to_pass</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_replica_args</span><span class="p">(</span>
             <span class="n">args</span><span class="p">,</span>
             <span class="n">head_args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="p">,</span>
@@ -427,15 +427,14 @@
             <span class="n">head_args</span><span class="o">.</span><span class="n">noblock_on_start</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">head_pea</span> <span class="o">=</span> <span class="n">Pea</span><span class="p">(</span><span class="n">head_args</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head_pea</span><span class="p">)</span>
-            <span class="n">tail_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span>
-            <span class="n">tail_args</span><span class="o">.</span><span class="n">noblock_on_start</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tail_pea</span> <span class="o">=</span> <span class="n">Pea</span><span class="p">(</span><span class="n">tail_args</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_pea</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicas_args</span><span class="p">:</span>
                 <span class="n">_args</span><span class="o">.</span><span class="n">noblock_on_start</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">_args</span><span class="o">.</span><span class="n">polling</span> <span class="o">=</span> <span class="n">PollingType</span><span class="o">.</span><span class="n">ALL</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_enter_replica</span><span class="p">(</span><span class="n">Pod</span><span class="p">(</span><span class="n">_args</span><span class="p">))</span>
-
+            <span class="n">tail_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span>
+            <span class="n">tail_args</span><span class="o">.</span><span class="n">noblock_on_start</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tail_pea</span> <span class="o">=</span> <span class="n">Pea</span><span class="p">(</span><span class="n">tail_args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_pea</span><span class="p">)</span>
             <span class="c1"># now rely on higher level to call `wait_start_success`</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
@@ -443,12 +442,12 @@
                 <span class="n">head_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_args</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">head_pea</span> <span class="o">=</span> <span class="n">Pea</span><span class="p">(</span><span class="n">head_args</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head_pea</span><span class="p">)</span>
-                <span class="n">tail_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">tail_pea</span> <span class="o">=</span> <span class="n">Pea</span><span class="p">(</span><span class="n">tail_args</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_pea</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicas_args</span><span class="p">:</span>
                     <span class="n">_args</span><span class="o">.</span><span class="n">polling</span> <span class="o">=</span> <span class="n">PollingType</span><span class="o">.</span><span class="n">ALL</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_enter_replica</span><span class="p">(</span><span class="n">Pod</span><span class="p">(</span><span class="n">_args</span><span class="p">))</span>
+                <span class="n">tail_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tail_pea</span> <span class="o">=</span> <span class="n">Pea</span><span class="p">(</span><span class="n">tail_args</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_pea</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="k">raise</span>
@@ -506,11 +505,6 @@
             <span class="o">+</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">is_ready</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicas</span><span class="p">]</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_after_to_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">PollingType</span><span class="o">.</span><span class="n">ANY</span><span class="o">.</span><span class="n">is_push</span><span class="p">:</span>
-            <span class="c1"># ONLY reset when it is push</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">uses_after</span> <span class="o">=</span> <span class="s1">&#39;_pass&#39;</span>
-
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_set_replica_args</span><span class="p">(</span>
         <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">,</span>
@@ -563,18 +557,26 @@
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
-<div class="viewcode-block" id="CompoundPod.rolling_update"><a class="viewcode-back" href="../../../../../api/jina.peapods.pods.compoundpod/#jina.peapods.pods.compoundpod.CompoundPod.rolling_update">[docs]</a>    <span class="k">def</span> <span class="nf">rolling_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update all pods of this compound pod.</span>
+<div class="viewcode-block" id="CompoundPod.rolling_update"><a class="viewcode-back" href="../../../../../api/jina.peapods.pods.compoundpod/#jina.peapods.pods.compoundpod.CompoundPod.rolling_update">[docs]</a>    <span class="k">def</span> <span class="nf">rolling_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dump_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reload all Pods of this Compound Pod.</span>
+
+<span class="sd">        :param dump_path: the dump from which to read the data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replicas</span><span class="p">)):</span>
-            <span class="n">replica</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">replica</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="n">_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicas_args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">_args</span><span class="o">.</span><span class="n">noblock_on_start</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">new_replica</span> <span class="o">=</span> <span class="n">Pod</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">new_replica</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">replicas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_replica</span></div></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">replicas</span><span class="p">)):</span>
+                <span class="n">replica</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">replica</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="n">_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replicas_args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">_args</span><span class="o">.</span><span class="n">noblock_on_start</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1"># TODO better way to pass args to the new Pod</span>
+                <span class="n">_args</span><span class="o">.</span><span class="n">dump_path</span> <span class="o">=</span> <span class="n">dump_path</span>
+                <span class="n">new_replica</span> <span class="o">=</span> <span class="n">Pod</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">new_replica</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">replicas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_replica</span>
+                <span class="c1"># TODO might be required in order to allow time for the Replica to come online</span>
+                <span class="c1"># before taking down the next</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span></div></div>
 </pre></div>
 
            </div>
@@ -707,7 +709,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 02, 2021.
+        Last updated on May 09, 2021.
       </span>
 
         </p>
