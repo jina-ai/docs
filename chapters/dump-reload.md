@@ -1,4 +1,4 @@
-# Rolling Updates and Query while Indexing in Jina
+# Rolling Updates and Query While Indexing in Jina
 
 ##### In this section, you will learn how to configure Jina to allow queries while indexing
 
@@ -58,7 +58,7 @@ with flow_dbms:
 
 The method then extracts the data from the DBMS Indexer and stores it in the specified location, prepared to be read by Query Indexers.
 
-#### Replicas and Rolling Updates
+#### Replicas and rolling updates
 
 Replicas are, like the name suggests, duplicates of a specific Pod. 
 They are parallel, so a query request will have `polling: any` between the two of them. 
