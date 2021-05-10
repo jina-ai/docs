@@ -7,7 +7,7 @@
 Query while indexing refers to the capacity of still being able to search your system while data is being written to it. 
 Within Jina this is possible using the rolling updates paradigm. 
 This means you can have two Flows running at the same time, one for DBMS-type operations (adding, updating, deleting data) and one for searching (querying). 
-The two systems communicate with each other using a system of rolling updates calls to the respective Flows. 
+The two systems communicate with each other using a system of rolling update calls to the respective Flows. 
 
 
 #### DBMS and Query Indexers
@@ -33,7 +33,7 @@ In order to re-build it with new data, you need to use the `.rolling_update` met
 
 The Flow object provides two methods, `.dump` and `.rolling_update`, for configuring the rolling updates. 
 
-`.rolling_update` should be calle on the Query Flow, with the name of the Pod where the Indexer resides, and the path from which to read.
+`.rolling_update` should be called on the Query Flow, with the name of the Pod where the Indexer resides, and the path from which to read.
 The method then shuts down the indexers in the Flow sequentially, and instructs them to start again, but with the new data from the location provided.
 
 `.dump` should be called on the DBMS Flow, with the name of the Pod where the Indexer resides, which path to dump to, and how many shards you have in your Query Flow.
@@ -58,5 +58,4 @@ pods:
 ##### Jinad
 
 When running remote Flows, you can access these methods via `PUT /flows/{flow_id}`. You can check the endpoint docs [here](https://api.jina.ai/daemon/#operation/_update_flows__id__put)
-
 
