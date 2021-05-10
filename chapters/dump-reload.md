@@ -36,12 +36,15 @@ The Flow object provides two methods, `.dump` and `.rolling_update`, for configu
 `.rolling_update` should be called on the Query Flow, with the name of the Pod where the Indexer resides, and the path from which to read.
 The method then shuts down the indexers in the Flow sequentially, and instructs them to start again, but with the new data from the location provided.
 
-`.dump` should be called on the DBMS Flow, with the name of the Pod where the Indexer resides, which path to dump to, and how many shards you have in your Query Flow.
+`.dump` should be called on the DBMS Flow, with the name of the Pod where the Indexer resides, which path to dump to, and how many [shards](https://docs.jina.ai/chapters/parallel/#intra-parallelism) you have in your Query Flow.
 The method then extracts the data from the DBMS Indexer and stores it in the specified location, prepared to be read by Query Indexers.
 
 #### Replicas and Rolling Updates
 
-In order to maintain availability during the `.rolling_update` call you need to make sure that you have at least 2 replicas configured for your Query Indexer. 
+Replicas are, like the name suggests, duplicates of a specific Pod. 
+They are parallel, so a query request will have `polling: any` between the two of them. 
+These are required on the Query Flow side in order to maintain availability during the `.rolling_update` call.
+You need to make sure that you have at least 2 replicas configured for your Query Indexer. 
 This way, when one is taken offline for reloading, the other one is still alive and serving results.
 
 This can be configured via the Python API, or in the YAML of the Pod:
@@ -54,6 +57,7 @@ pods:
     replicas: 2
 ...
 ```
+
 
 ##### Jinad
 
