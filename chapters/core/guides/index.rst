@@ -17,7 +17,6 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../setup/index
    ../../project-guide
    ../../my_first_jina_app
-   ../../cli/exit
    ../../install/ide-speedup.md
 
 .. toctree::
@@ -29,20 +28,6 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../primitive_data_type
    ../../traversal
    ../../mime-type/index
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Flows
-   :titlesonly:
-   :glob:
-
-   ../../flow/index
-   ../../input_output
-   ../../crud
-   ../../cross_multi_modality
-   ../../ranker
-   ../../optimization
-   ../../sparse
 
 .. toctree::
    :maxdepth: 1
@@ -58,7 +43,22 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
 .. toctree::
    :maxdepth: 1
-   :caption: Improving Speed and Results in Jina
+   :caption: Flows
+   :titlesonly:
+   :glob:
+
+   ../../flow/index
+   ../../input_output
+   ../../crud
+   ../../cross_multi_modality
+   ../../ranker
+   ../../optimization
+   ../../sparse
+   ../../cli/exit
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Improving Speed and Results
    :titlesonly:
    :glob:
 
