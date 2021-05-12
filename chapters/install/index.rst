@@ -24,7 +24,7 @@ Install using Docker
 Install on Windows
 ------------------
 
-Read the `Jina on Windows installation guide`_.
+Jina supports WSL2 on Windows 10. Read the `Jina on Windows installation guide`_.
 
 Install on Raspberry Pi
 -----------------------
