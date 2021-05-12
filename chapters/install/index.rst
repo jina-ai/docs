@@ -1,10 +1,12 @@
 Installation
 ======================================
 
-Install using `pip`
+.. note:: You can use Jina without even installing it via `Google Colab <https://jina.ai/2021/03/17/Jina-now-with-Google-Colab.html>`_.
+
+Install on Mac/Linux using ``pip``
 -------------------
 
-To install Jina using Python's package manager, pip, simply run:
+To install using Python's package manager, pip, simply run:
 
 .. code-block:: bash
 
