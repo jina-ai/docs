@@ -38,7 +38,7 @@ Table of contents
    :caption: Jina Core
 
    chapters/core/introduction/index
-   chapters/core/setup/index
+   chapters/install/index
    chapters/core/guides/index
    chapters/core/api_references/index
 
