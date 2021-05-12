@@ -1,4 +1,4 @@
-Using Sparse Embeddings in Jina
+Using Sparse Embeddings
 =====================================
 
 .. meta::

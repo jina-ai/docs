@@ -1,4 +1,4 @@
-MIME Types in Jina
+MIME Types
 ==================
 
 This guide explains what a mime type is, how to assign them manually or automatically to a Document

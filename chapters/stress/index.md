@@ -1,4 +1,4 @@
-# Jina Cloud Benchmark & Deployment
+# Cloud Benchmark & Deployment
 
 #### Purpose: Showcase how to scale Jina and how to deploy to AWS
 

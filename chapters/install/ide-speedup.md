@@ -1,4 +1,4 @@
-# Speed-up Jina app development in PyCharm and VSCode
+# Speeding Up Development in PyCharm and VSCode
 
 Jina app development can be time consuming if you do not have the IDE setup correctly. This chapter describes how to speed up your developer experience
 in PyCharm and VSCode IDE while using Jina. In particular we focus on how to enable Intellisense for Jina YAML configuration files. Intellisense can provide code completion, showing number and arguments list, validating your YAML config.

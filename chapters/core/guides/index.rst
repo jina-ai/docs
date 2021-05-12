@@ -26,8 +26,8 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    :glob:
 
    ../../primitive_data_type
-   ../../traversal
    ../../mime-type/index
+   ../../traversal
 
 .. toctree::
    :maxdepth: 1
@@ -35,7 +35,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    :titlesonly:
    :glob:
 
-   ../../executors
+   Processing Documents with Executors <../../executors>
    ../../simple_exec
    ../../extend/executor
    ../../peas-and-pods
@@ -48,12 +48,11 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    :glob:
 
    ../../flow/index
-   ../../input_output
+   Inputs and Outputs <../../input_output>
    ../../crud
    ../../cross_multi_modality
-   ../../ranker
-   ../../optimization
    ../../sparse
+   ../../logging
    ../../cli/exit
 
 .. toctree::
@@ -62,13 +61,14 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    :titlesonly:
    :glob:
 
-   ../../logging
+   ../../evaluation
+   ../../optimization
+   ../../ranker
    ../../prevent_duplicate_indexing
+   ../../incremental_indexing
    ../../parallel
    ../../batching
    ../../request_size
-   ../../evaluation
-   ../../incremental_indexing
 
 .. toctree::
    :maxdepth: 1

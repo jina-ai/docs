@@ -1,4 +1,4 @@
-Peas and Pods in Jina
+Peas and Pods
 =========================================
 
 .. meta::
