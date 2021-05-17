@@ -22,6 +22,7 @@ DBMS and Query Indexers Understand the two Flows you will need
 Dump-Reload             The methods for interacting with the Flows
 Replicas                Configuration needed for uptime
 JinaD                   Remote Flows
+Example                 Link to a pre-configured Jina application
 ======================= ==========================================
 
 DBMS and Query Indexers
@@ -119,9 +120,9 @@ JinaD
 
 When running remote Flows, you can access these methods via
 ``PUT /flows/{flow_id}``. You can check the endpoint docs
-`here <https://api.jina.ai/daemon/#operation/_update_flows__id__put>`__
+`here <https://api.jina.ai/daemon/#operation/_update_flows__id__put>`__.
 
 Example
 ^^^^^^^
 
-To see how this would be used in an actual application, check out our example `here <https://github.com/jina-ai/examples/tree/master/wikipedia-sentences-query-while-indexing>`_
+To see how this would be used in an actual application, check out our example `here <https://github.com/jina-ai/examples/tree/master/wikipedia-sentences-query-while-indexing>`_.
