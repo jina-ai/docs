@@ -1,4 +1,4 @@
-## Composing a Search Workflow with the Flow API
+# Composing a Search Workflow with the Flow API
 
 In this section, you will get to know how to construct the flow using different approaches.
 
