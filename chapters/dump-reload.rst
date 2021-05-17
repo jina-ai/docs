@@ -34,7 +34,7 @@ As part of this feature, we provide two types of indexers:
 
 The **DBMS** (Database Management System) indexers store both the
 embedding and the Document’s metadata as one entity (as compared with
-the existing Indexers, which **either**, but **not both**). These
+the existing Indexers, which store **either**, but **not both**). These
 provide ``index``, ``update``, and ``delete`` methods. They should be
 part of your Indexing Flow, and function as normal Indexers.
 
