@@ -29,8 +29,8 @@ In practice, all chunks for text data will not neccesarily have the same size --
 
 A chunk also allows you to search for a section of the Document, for example an image followed by a paragraph of text. These are use cases that are more common than you might think.
 
-[//]: # "The original link below does not make sense any more"
-[//]: # "https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/"
+[//]: # ("The original link below does not make sense any more")
+[//]: # ("https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/")
 
 Following the definition of [primitive data types in Jina](primitive_data_type.rst), a chunk is a property of a Document:
 
@@ -100,16 +100,16 @@ print(root.adjacency)                  # outputs 0
 # Initialise two Documents and add as chunks to root.
 with Document() as chunk1:
     chunk1.text = 'What is love?'
-    root.chunks.add(chunk1)
+    root.chunks.append(chunk1)
 with Document() as chunk2:
-    chunk1.text = 'Oh baby do not hurt me.'
-    root.chunks.add(chunk2)
+    chunk2.text = 'Oh baby do not hurt me.'
+    root.chunks.append(chunk2)
 
 # Add a match Document.
 with Document() as match:
     # a match Document semantically related to our root
     match.text = 'What is love? Oh please do not hurt me.'
-    root.matches.add(match)
+    root.matchesa.append(match)
 
 print(len(root.matches))               # outputs 1
 print(root.matches[0].granularity)     # outputs 0
