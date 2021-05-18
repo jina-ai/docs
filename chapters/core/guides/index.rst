@@ -29,6 +29,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../mime-type/index
    ../../traversal
 
+
 .. toctree::
    :maxdepth: 1
    :caption: Executors
@@ -54,6 +55,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../sparse
    ../../logging
    ../../cli/exit
+   ../../dump-reload
 
 .. toctree::
    :maxdepth: 1

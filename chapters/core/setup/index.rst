@@ -12,7 +12,10 @@ Below you will find the setup guides for various, selected environments.
    :glob:
 
    ../../install/index
-   ../../install/ide-speedup
+   ../../install/os/via-pip
+   ../../install/os/via-docker
+   ../../install/os/on-rasp-linux
+   ../../install/os/on-wsl
+   ../../install/oson-x
 
-.. note:: You can use Jina without even installing it via `Google Colab
-https://jina.ai/2021/03/17/Jina-now-with-Google-Colab.html`_.
+.. note:: You can use Jina without even installing it via `Google Colab https://jina.ai/2021/03/17/Jina-now-with-Google-Colab.html`_.
