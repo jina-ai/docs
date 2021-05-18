@@ -1,6 +1,6 @@
-==========================================
-A Guide to Jina Rankers
-==========================================
+===============================
+Ranking Results
+===============================
 
 .. meta::
    :description: A guide on Jina Ranker
@@ -26,8 +26,8 @@ You have installed the latest stable release of Jina Core according to the instr
 Overview
 -----------------
 
-To achieve our objectives, Jina has a family of :term:`Executor` named :term:`Ranker`.
-Jina :term:`Ranker` inherits either the :class:`Match2DocRanker` or the :class:`Chunk2DocRanker`.
+To achieve our objectives, Jina has a family of :term:`Executors<Executor>` named :term:`Rankers<Ranker>`.
+A Jina :term:`Ranker` inherits either the :class:`Match2DocRanker` or the :class:`Chunk2DocRanker`.
 For the :class:`Match2DocRanker`, it re-scores the matches with different mechanisms. For the :class:`Chunk2DocRanker`, it aggegrates the chunks to Documents.
 
 
@@ -40,13 +40,13 @@ Match2DocRanker
 Chunk2DocRanker
 ^^^^^^^^^^^^^^^
 
-:class:`Chunk2DocRanker` translates the chunk-wise score to the doc-wise score. If you want to aggregate the already existed top-k chunks into top-k  Documents, :class:`Chunk2DocRanker` will be your choice.
+:class:`Chunk2DocRanker` translates the chunk-wise score to the doc-wise score. If you want to aggregate already-existing top-k chunks into top-k Documents, use :class:`Chunk2DocRanker`.
 
 
-Chose Drivers
+Choose Drivers
 ^^^^^^^^^^^^^
-Different :term:`Rankers` will need different :term:`Drivers` to be equipped with.
-For :class:`Match2DocRanker`, we need to choose :class:`Matches2DocRankDriver` to get the scores from a :term:`Ranker` and help to resort the scores.
+Different :term:`Rankers` will need to be equipped with different :term:`Drivers`.
+For :class:`Match2DocRanker`, we need to choose :class:`Matches2DocRankDriver` to get the scores from a :term:`Ranker` and help to re-sort the scores.
 
 class:`Matches2DocRankDriver` Input-Output:
 
@@ -60,7 +60,7 @@ class:`Matches2DocRankDriver` Input-Output:
     document: {granularity: 0, adjacency: k}
         |- matches: {granularity: 0, adjacency: k+1} (Sorted according to scores from Ranker Executor)
 
-For :class:`Chunk2DocRanker`, we need to choose :class:`Chunk2DocRankDriver` to extract matches score from chunks and use the executor to compute the rank and assign the resulting matches to the granularity level above.
+For :class:`Chunk2DocRanker`, we need to choose :class:`Chunk2DocRankDriver` to extract matches scores from chunks and use the Executor to compute the rank and assign the resulting matches to the granularity level above.
 
 :class:`Chunk2DocRankDriver` Input-Output:
 
@@ -99,10 +99,10 @@ Or use :class:`AggregateMatches2DocRankDriver` to substitute matches by the docu
     document: {granularity: k}
         |- matches: {granularity: k-1} (Sorted according to Ranker Executor)
 
-Rankers in Jina hub
+Rankers in Jina Hub
 ^^^^^^^^^^^^^^^^^^^^
 
-Jina provides some built-in Rankers in Jina hub. You are welcome to add customized Rankers by referring to the guide `here <https://docs.jina.ai/chapters/extend/executor.html>`_.
+Jina provides some built-in Rankers in Jina Hub. You are welcome to add customized Rankers by referring to the guide `here <https://docs.jina.ai/chapters/extend/executor.html>`_.
 
 .. list-table:: Jina Rankers
    :widths: 25 25 50 25 25
@@ -115,7 +115,7 @@ Jina provides some built-in Rankers in Jina hub. You are welcome to add customiz
      - Documentation
    * - :class:`BiMatchRanker`
      - :class:`Chunk2DocRanker`
-     - Computes the score taking into account from both query and doc perspective.
+     - Computes the score taking into account both query and doc.
      - :class:`Chunk2DocRankDriver`
      - https://github.com/jina-ai/jina-hub/blob/master/rankers/BiMatchRanker/README.md
    * - :class:`SimpleAggregateRanker`
@@ -130,10 +130,10 @@ Jina provides some built-in Rankers in Jina hub. You are welcome to add customiz
      - https://github.com/jina-ai/jina-hub/blob/master/rankers/LevenshteinRanker/README.md
 
 
-Ranker in action
+Rankers in action
 ----------------------
 
-:term:`Ranker` can be used in several ways in Jina.
+A :term:`Ranker` can be used in several ways in Jina.
 
 Run with Docker (docker run)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -153,7 +153,7 @@ Run with Flow API
 
      f = (Flow().add(name='my_encoder', uses='docker://jinahub/pod.ranker.simpleaggregateranker:0.0.13-1.0.4'))
      # Or use YAML file.
-     #f = (Flow().add(name='my_encoder', uses='SimpleAggregateRanker.yml'))
+     # f = (Flow().add(name='my_encoder', uses='SimpleAggregateRanker.yml'))
 
 Run with Jina CLI
 ^^^^^^^^^^^^^^^^^^
@@ -192,11 +192,11 @@ Conventional local usage with uses argument (YAML configuration)
 Conclusion
 -----------------
 
-In this guide, we introduced why we need and how to use :term:`Ranker`. Apart from that, we provided some concrete examples of how to use :term:`Ranker`.
+In this guide, we introduced why we need :term:`Rankers` and how to use them. Apart from that, we provided some concrete examples of :term:`Rankers` in use.
 
 What's next
 -----------------
 
 If you still have questions, feel free to `submit an issue <https://github.com/jina-ai/jina/issues>`_ or post a message in our `community slack channel <https://slack.jina.ai>`_ .
 
-To gain a deeper knowledge on the implementation of Jina Ranker, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors/rankers>`_.
+To gain a deeper knowledge of the implementation of Jina Ranker, you can find the source code `here <https://github.com/jina-ai/jina/tree/master/jina/executors/rankers>`_.

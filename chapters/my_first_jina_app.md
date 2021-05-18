@@ -1,4 +1,4 @@
-# How to Build Your First Jina App
+# Building Your First Jina App
 
 ## 👋 Introduction
 

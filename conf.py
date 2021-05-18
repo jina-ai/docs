@@ -147,6 +147,11 @@ linkcheck_ignore = [
     'https://github.com/jina-ai/jina/commit/*',
     '.github/*',
     'extra-requirements.txt',
+    '../../101',
+    '../../102',
+    'http://www.twinsun.com/tz/tz-link.htm', # Broken link from pytz library
+    'https://urllib3.readthedocs.io/en/latest/contrib.html#google-app-engine', # Broken link from urllib3 library
+    'https://linuxize.com/post/how-to-add-swap-space-on-ubuntu-20-04/', # This link works but gets 403 error on linkcheck
 ]
 linkcheck_timeout = 20
 linkcheck_retries = 2

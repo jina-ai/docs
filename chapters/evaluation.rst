@@ -1,5 +1,5 @@
 ==========================================
-A Guide to Jina Flow Evaluation Mode
+Evaluating a Flow
 ==========================================
 
 .. meta::

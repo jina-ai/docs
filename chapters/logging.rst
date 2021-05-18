@@ -1,5 +1,5 @@
 ==============================
-Logging Configuration in Jina
+Configuring Logging
 ==============================
 
 .. meta::

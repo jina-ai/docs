@@ -1,4 +1,4 @@
-How to Use Incremental Indexing
+Incremental Indexing
 ================================
 
 Summary

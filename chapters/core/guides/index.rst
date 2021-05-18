@@ -8,53 +8,69 @@ Brand new users to Jina Core should first begin with the :doc:`../introduction/i
 
 Further information on any specific method can be obtained in the :doc:`../api_references/index`.
 
-
 .. toctree::
    :maxdepth: 1
-   :caption: Understanding Jina
+   :caption: Getting started
    :titlesonly:
    :glob:
 
    ../setup/index
+   ../../project-guide
    ../../my_first_jina_app
-   ../../extend/mwu.rst
-   ../../project-guide/project-guide
-   ../../project_guide
-   ../../executors
-   ../../peas-and-pods
+   ../../install/ide-speedup.md
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Documents
+   :titlesonly:
+   :glob:
+
    ../../primitive_data_type
-   ../../traversal
-   ../../traversal/index
-   ../../flow/index
-   ../../flow/pattern
-   ../../input_output
-   ../../crud
-   ../../ranker
-   ../../cli/exit
-   ../../cross_multi_modality
-   ../../extend/*
-   ../../envs
    ../../mime-type/index
-   ../../sparse
+   ../../traversal
 
 
 .. toctree::
    :maxdepth: 1
-   :caption: Improving Speed and Results in Jina
+   :caption: Executors
    :titlesonly:
    :glob:
 
-   ../../logging
-   ../../prevent_duplicate_indexing
-   ../../parallel
+   Processing Documents with Executors <../../executors>
    ../../simple_exec
+   ../../extend/executor
+   ../../peas-and-pods
+   ../../extend/driver
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Flows
+   :titlesonly:
+   :glob:
+
+   ../../flow/index
+   Inputs and Outputs <../../input_output>
+   ../../crud
+   ../../cross_multi_modality
+   ../../sparse
+   ../../logging
+   ../../cli/exit
+   ../../dump-reload
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Improving Speed and Results
+   :titlesonly:
+   :glob:
+
+   ../../evaluation
    ../../optimization
+   ../../ranker
+   ../../prevent_duplicate_indexing
+   ../../incremental_indexing
+   ../../parallel
    ../../batching
    ../../request_size
-   ../../evaluation
-   ../../incremental_indexing
-
-
 
 .. toctree::
    :maxdepth: 1
@@ -64,3 +80,13 @@ Further information on any specific method can be obtained in the :doc:`../api_r
 
    ../../remote/index
    ../../stress/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Reference
+   :titlesonly:
+   :glob:
+
+   ../../envs
+   ../../flow/pattern
+   ../../autocomplete

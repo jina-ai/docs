@@ -1,4 +1,4 @@
-Distributed Jina
+Distributing Jina Remotely
 =================
 
 

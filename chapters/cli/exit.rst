@@ -1,5 +1,5 @@
 ==========================
-How to Correctly Exit Jina
+Exiting a Flow
 ==========================
 
 In this section, you will learn best practices for shutting down a Flow and exiting Jina correctly.
@@ -13,7 +13,7 @@ Jina provides several methods to exit this service gracefully. In this way, the 
 
 Before you start
 -----------------
-Make sure that Jina is installed properly as explained in `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_, and you had an active running Flow correctly set up as explained in `101: Basic components <../101.rst>` and `102: How basic components work together <../102.rst>`_.
+Make sure that Jina is installed properly as explained in `Installation <https://docs.jina.ai/chapters/install/os/index.html>`_, and you had an active running Flow correctly set up as explained in `101: Basic components <../../101>`_ and `102: How basic components work together <../../102>`_.
 
 Implementation
 ---------------

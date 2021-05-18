@@ -1,6 +1,6 @@
-================================================
-Understanding Jina Executors and How to Use Them
-================================================
+==================================
+Executors and How to Use Them
+==================================
 
 .. meta::
    :description: A Guide on What Are Jina Executors and How to Use Them
