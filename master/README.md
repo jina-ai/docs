@@ -2,7 +2,6 @@
 
 ![CD](https://github.com/jina-ai/docs/workflows/CD/badge.svg?branch=master)
 ![Release](https://github.com/jina-ai/docs/workflows/Release/badge.svg?branch=master)
-![Link Check](https://github.com/jina-ai/docs/workflows/incremental-linkcheck/badge.svg)
 
 > “Open source is this magical thing right? You release code, and the code gnomes come and make it better for you.
 >
