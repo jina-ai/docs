@@ -29,8 +29,8 @@ In practice, all chunks for text data will not neccesarily have the same size --
 
 A chunk also allows you to search for a section of the Document, for example an image followed by a paragraph of text. These are use cases that are more common than you might think.
 
-[//]: # ("The original link below does not make sense any more")
-[//]: # ("https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/")
+[//]: # (The original link below does not make sense any more)
+[//]: # (https://hanxiao.io/2020/11/22/Primitive-Data-Types-in-Neural-Search-System/)
 
 Following the definition of [primitive data types in Jina](primitive_data_type.rst), a chunk is a property of a Document:
 
