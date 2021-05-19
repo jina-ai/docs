@@ -16,14 +16,14 @@ We use the tag `latest-daemon` in the below command, which uses the latest relea
 docker pull jinaai/jina:latest-daemon
 ```
 
-##### Deploying AWS EC2 instance with inside jinad by [terraform](https://www.terraform.io/).
+##### Deploying AWS EC2 instance inside jinad by [terraform](https://www.terraform.io/)
 
 We extract a module [jinad-aws](https://registry.terraform.io/modules/jina-ai/jinad-aws/jina/latest) to simplify this work. 
 
-By this terraform module. We can: 
-- Deploy one or more instance with inside jinad
+With this terraform module We can: 
+- Deploy one or more instance inside jinad
 - Custom the type and size of the root disk
-- Add some other python packages as required
+- Add other python packages as required
 - Execute extra command line
 
 ##### PyPi package
