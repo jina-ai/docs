@@ -86,9 +86,9 @@ Let's talk a little bit about the Flow before moving. You can refer to our cookb
 
 1. Create a Flow
 2. Add elements to a Flow
-3. Use a Flow
-3.1. Create a Document. We will need a Document to pass to our Flow
-4. Visualize a Flow. This is an extra, but it can be very useful.
+3. Use Flow
+4. Create a Document. We will need a Document to pass to our Flow
+5. Visualize a Flow. This is an extra, but it can be very useful
 
 1 Create a Flow
 *******************
@@ -163,7 +163,7 @@ So in our example, we have a Flow with two executors (`MyTransformer` and `MyInd
 
 Now we have our Flow ready, we can start to index. But we can't just pass the dataset in the original format to our Flow, we need to create a Document with the data we want to use.
 
-3.1 Create a Document
+4 Create a Document
 ***************************
 
 To create a Document, we do it like this:
@@ -197,10 +197,45 @@ By now, you should have this:
     with f, open('our_dataset.csv']) as fp:
         f.index(Document.from_csv(fp, field_resolver={'question': 'text'}))
 
-2.2 Plot a Flow
+5 Visualize a Flow
 ****************
 
-7. Index and interpret output
+It can be useful to be able to see how our Flow looks like, and you can do with `plot`. For example:
+
+.. code-block:: python
+
+    from jina import Flow
+
+    f = (
+            Flow()
+            .add(uses=MyTransformer)
+            .add(uses=MyIndexer)
+            .plot('our_flow.svg')
+        )
+
+If you add this and run it you would see a file `our_flow.svg` created on your working folder, and if you open it you would see this:
+
+.. image:: res/plot_flow1.png
+   :width: 600
+
+You can see a Flow with two pods, but what if you have many pods? this can quickly become very messy, so it is best practice to name all the Executors you use:
+
+.. code-block:: python
+
+    from jina import Flow
+
+    f = (
+            Flow()
+            .add(name='MyTransformer', uses=MyTransformer)
+            .add(name='MyIndexer', uses=MyIndexer)
+            .plot('our_flow.svg')
+        )
+
+Now if you run this, you should have a Flow that is more explicit:
+
+.. image:: res/plot_flow2.png
+   :width: 600
+
 
 Query Flow
 ----------------------------------
