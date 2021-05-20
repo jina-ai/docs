@@ -86,9 +86,10 @@ Let's talk a little bit about the Flow before moving. You can refer to our cookb
 
 1. Create a Flow
 2. Add elements to a Flow
-3. Use Flow
-4. Create a Document. We will need a Document to pass to our Flow
-5. Visualize a Flow. This is an extra, but it can be very useful
+3. Create dummy Executors
+4. Visualize a Flow. This is an extra, but it can be very useful
+5. Use Flow
+6. Create a Document. We will need a Document to pass to our Flow
 
 1 Create a Flow
 *******************
@@ -126,79 +127,53 @@ And for our example, we need to add two elements:
             .add(uses=MyIndexer)
         )
 
-Right now we haven't defined `MyTransformer` or `MyIndexer`, we will do that later. But for now, you should understand that this is where you will use the command `add` to add any elements that you will need in your Flow.
+Right now we haven't defined `MyTransformer` or `MyIndexer`, let's create some dummy `Executors` so we can try our code.
 
-So now we have a Flow with two elements. Those elements are two `Executors`. We haven't formally talked about them, but you don't need to know the details yet, so for now don't worry too much about them.
-
-Since we have our Flow ready, the next step is to actually use it.
-
-3 Use a Flow
-****************
-
-The correct way to use a Flow is to open it as a context manager, with the `with` keyword:
-
-.. code-block:: python
-
-    with f:
-        ...
-
-So let's recap a bit what we have seen:
-
-.. code-block:: python
-
-    from jina import Flow
-    f = Flow()          # Create Flow
-
-    f.add().add()       # Add elements to Flow
-
-    with f:             # Use Flow as context manager
-        f.index()
-
-So in our example, we have a Flow with two executors (`MyTransformer` and `MyIndexer`) and we want to use our Flow to index our data. But in this case our data is a `csv` file, so we need to open it first
-
-.. code-block:: python
-
-    with f, open('our_dataset.csv']) as fp:
-            f.index()
-
-Now we have our Flow ready, we can start to index. But we can't just pass the dataset in the original format to our Flow, we need to create a Document with the data we want to use.
-
-4 Create a Document
+3 Create dummy Executors
 ***************************
 
-To create a Document, we do it like this:
-
+So now we have a Flow with two elements. Those elements are two `Executors`. We haven't formally talked about them, but for the moment let's see a very basic example of them:
 .. code-block:: python
 
-    from jina import Document
-    d = Document(content='hello, world!')
+    class MyTransformer(Executor):
 
-But in our case, the content of our Document needs to be the dataset set we want to use, so we do it like this:
+        def __init__(self, bar):
+            super().__init__()
+            self.bar = bar
 
-.. code-block:: python
+    class MyIndexer(Executor):
 
-    from jina import Document
-    d = Document.from_csv(fp, field_resolver={'question': 'text'})
+        def __init__(self, bar):
+            super().__init__()
+            self.bar = bar
 
-So what happened there? We created a Document `d`, and we uses `from_csv` to load our dataset.
-We use `field_resolver` to map the text from our dataset to the Document attributes.
+We will have more complex Executors later, for now the only important part for you to understand is that you can create any Executor you want inhereting from the `Executor` class.
+
+Since we have our Flow ready, but some times it can get messy if we start adding many elements to it. So it is very useful to have a tool to visualize our Flow.
+
+4 Visualize a Flow
+*******************
 
 By now, you should have this:
 
 .. code-block:: python
     from jina import Flow, Document
 
+    class MyTransformer(Executor):
+        def __init__(self, bar):
+        super().__init__()
+        self.bar = bar
+
+    class MyIndexer(Executor):
+        def __init__(self, bar):
+            super().__init__()
+            self.bar = bar
+
     f = (
             Flow()
             .add(uses=MyTransformer)
             .add(uses=MyIndexer)
         )
-
-    with f, open('our_dataset.csv']) as fp:
-        f.index(Document.from_csv(fp, field_resolver={'question': 'text'}))
-
-5 Visualize a Flow
-****************
 
 It can be useful to be able to see how our Flow looks like, and you can do with `plot`. For example:
 
@@ -235,6 +210,58 @@ Now if you run this, you should have a Flow that is more explicit:
 
 .. image:: res/plot_flow2.png
    :width: 600
+
+
+5 Use a Flow
+****************
+
+The correct way to use a Flow is to open it as a context manager, with the `with` keyword:
+
+.. code-block:: python
+
+    with f:
+        ...
+
+So let's recap a bit what we have seen:
+
+.. code-block:: python
+
+    from jina import Flow
+    f = Flow()          # Create Flow
+
+    f.add().add()       # Add elements to Flow
+
+    with f:             # Use Flow as context manager
+        f.index()
+
+So in our example, we have a Flow with two executors (`MyTransformer` and `MyIndexer`) and we want to use our Flow to index our data. But in this case our data is a `csv` file, so we need to open it first
+
+.. code-block:: python
+
+    with f, open('our_dataset.csv']) as fp:
+            f.index()
+
+Now we have our Flow ready, we can start to index. But we can't just pass the dataset in the original format to our Flow, we need to create a Document with the data we want to use.
+
+6 Create a Document
+***************************
+
+To create a Document, we do it like this:
+
+.. code-block:: python
+
+    from jina import Document
+    d = Document(content='hello, world!')
+
+But in our case, the content of our Document needs to be the dataset set we want to use, so we do it like this:
+
+.. code-block:: python
+
+    from jina import Document
+    d = Document.from_csv(fp, field_resolver={'question': 'text'})
+
+So what happened there? We created a Document `d`, and we uses `from_csv` to load our dataset.
+We use `field_resolver` to map the text from our dataset to the Document attributes.
 
 
 Query Flow
