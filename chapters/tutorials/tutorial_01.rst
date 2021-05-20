@@ -11,18 +11,22 @@ What is Jina
 Tutorial
 ----------------------------------
 
-At the end of this tutorial, you will have your search engine using text. You will use text as an input and get a matching text for that.
+At the end of this tutorial, you will have your own search engine. You will use text as an input and get a matching text as output.
 For this example, we will use the `Kaggle Wikipedia Corpus <https://www.kaggle.com/mikeortman/wikipedia-sentences>`_
 You will understand how every part of this example works and how you could create new apps with different datasets on your own.
 
 Set-up & overview
 ----------------------------------
 
-The first part is to install Jina.
+We recommend creating a `new python virtual environment <https://docs.python.org/3/tutorial/venv.html>`_ to have a clean install of Jina and prevent dependency clashing.
+
+Then we can install Jina:
 
   .. code-block:: python
 
     pip install jina
+
+For more information on installing Jina, refer to this `page <https://docs.jina.ai/chapters/install/os/via-pip>`_.
 
 And we will also need the following dependencies:
 
@@ -33,12 +37,12 @@ And we will also need the following dependencies:
     pip install torch==1.7.1
 
 
-Once you have Jina installed let's take a broad overview of what we should do:
+Once you have Jina installed, let's take a broad overview of what we should do:
 
 .. image:: res/flow.png
    :width: 600
 
-At the beginning of the flow, you have your data, this can be any type:
+At the beginning of the Flow, you have your data, and this can be any type:
 
 * Audio
 * Image
@@ -47,17 +51,17 @@ At the beginning of the flow, you have your data, this can be any type:
 
 In this case, we are using text, so in the image, you see text only. But it can be whatever type you want.
 
-Once we have our data, as usual in Machine Learning, it's probable that you might need to pre-process that data. To keep this as simple as possible for this first tutorial, and since we are using the #TBD (dataset used TBD), we won't need to do any pre-processing. But just remember that this is a possibility for another use case.
+Once we have our data, as usual in Machine Learning, it's probable that you might need to pre-process that data. To keep this as simple as possible for this first tutorial, and since we are using the #TBD (dataset used TBD), we won't need to do any pre-processing. But remember that this is a possibility for another use case.
 Once that is ready, we can encode our data into vectors and finally store those vectors, so it is ready for indexing and then querying.
 
-So what we need to do is:
+So the steps to build a search engine are:
 
 1. Define data
 2. Pre-process it (we won't need this for this example)
 3. Encode data
 4. Index / Query
 
-As you can see, the last part can be Indexing or Querying, so it means we will need to do these steps twice, one for when we want to Index and one for we want to Search. So let's see each Flow in detail.
+As you can see, the last part can be Indexing or Querying, so it means we will need to do these steps twice, one for when we want to index and one for we want to search. So let's see each Flow in detail.
 
 Index Flow
 ----------------------------------
@@ -65,7 +69,9 @@ Index Flow
 1. Define data
 +++++++++++++++
 
-The first thing we need is to `download our data <https://www.kaggle.com/mikeortman/wikipedia-sentences>`_, extract it and store it in a `/data` folder. So you should have something like this:
+We can start creating an empty folder, I'll call mine `wikipedia-sentences` and that's the name you'll see through the tutorial but feel free to use whatever you wish.
+
+Now let's create a `/data` folder inside your current working environment. We `download our data <https://www.kaggle.com/mikeortman/wikipedia-sentences>`_, and extract it under the `/data` folder . You should have something like this:
 
 .. image:: res/data.png
    :width: 600
@@ -74,7 +80,7 @@ The first thing we need is to `download our data <https://www.kaggle.com/mikeort
 +++++++++++++++
 
 
-We have our data ready, what now? Well, we can't use our data directly from its original data type, text in this case. We need first to transform that data into vectors, and this way, it doesn't matter if we have an image, video, text, 3D mesh, or any other type. All of them will be transformed into vector embeddings so we can all treat them the same way.
+We have our data ready. What now? Well, we can't use our data directly from its original data type, text in this case. We need first to transform that data into vectors, and this way, it doesn't matter if we have an image, video, text, 3D mesh, or any other type. All of them will be transformed into vector embeddings so we can all treat them the same way.
 
 Let's start to create our Index Flow so we can encode our data there.
 
@@ -85,7 +91,7 @@ To create a Flow you only need:
     from jina import Flow
     f = Flow()
 
-But this is an empty Flow, since we want to encode our data and then index it, we will need our Flow to have those 2 elements:
+But this is an empty Flow, since we want to encode our data and then index it, we will need our Flow to have the next two elements:
 
 1. An transformer (to encode our data)
 2. An indexer
@@ -101,8 +107,8 @@ But this is an empty Flow, since we want to encode our data and then index it, w
 
 Right now we haven't defined `MyTransformer` or `MyIndexer`, we will do that later. But for now, you should understand that this is where you will use the command `add` to add any elements that you will need in your Flow. You can refer to our cookbook to see more details on how to create a `Flow <https://github.com/jina-ai/jina/blob/master/.github/2.0/cookbooks/Flow.md#minimum-working-example>`_
 
-Now we have our Flow ready, we can start to index. But we can't just pass the dataset that we have to our Flow, we need to create a Document with the data that we want to use.
-We can index our data now. For this need to create a Document and to create a Document we just need to import it from Jina:
+Now we have our Flow ready, we can start to index. But we can't just pass the dataset that we have to our Flow, we need to create a Document with the data we want to use.
+We can index our data now. For this, we need to create a Document, and to create it, we need to import it from Jina:
 
 .. code-block:: python
 
@@ -119,7 +125,7 @@ But in our case, the content of our Document needs to be the dataset set we want
 So what happened there? We created a Document `d`, and we use `from_csv` to load our dataset.
 We use `field_resolver` to map the text from our dataset to the Document attributes.
 
-By now you should have this:
+By now, you should have this:
 
 .. code-block:: python
     from jina import Flow, Document
