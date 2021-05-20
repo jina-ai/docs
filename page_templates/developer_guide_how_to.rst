@@ -1,5 +1,5 @@
 How To Template (Use Title Case)
-============================================================
+================================
 
 Section headers use sentence case
 
@@ -7,8 +7,8 @@ Overview
 --------
 
 Summarize what this How To article is about in a sentence or two. How To
-articles primarily include tasks, and answer the question "how do I do
-it?".
+articles primarily include tasks, and answer the question “how do I do
+it?”.
 
 Before you start
 ----------------
@@ -51,10 +51,10 @@ version.
 
 .. code:: bash
 
-    $ sudo apt install asciidoctor
+   $ sudo apt install asciidoctor
 
-    $ asciidoctor --version
-    Asciidoctor 1.5.6.2 [https://asciidoctor.org]
+   $ asciidoctor --version
+   Asciidoctor 1.5.6.2 [https://asciidoctor.org]
 
 Step 4: Optional: title for step - Conclusion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,6 +64,8 @@ achieved by following them. You can also include links to related
 articles that may help the reader reinforce concepts discussed in this
 How To article.
 
-Limitations [optional]:
-------------------------
- If there are known feature limitations that a user would expect to see mention them here.
+### Limitations [optional]:
+---------------------------
+
+If there are known feature limitations that a user would expect to see
+mention them here.
