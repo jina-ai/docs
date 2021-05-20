@@ -3,7 +3,7 @@ Tutorial 1
 ==================================
 
 .. contents:: Table of Contents
-    :depth: 2
+    :depth: 3
 
 What is Jina
 ----------------------------------
@@ -82,18 +82,39 @@ Now let's create a `/data` folder inside your current working environment. We `d
 
 We have our data ready. What now? Well, we can't use our data directly from its original data type, text in this case. We need first to transform that data into vectors, and this way, it doesn't matter if we have an image, video, text, 3D mesh, or any other type. All of them will be transformed into vector embeddings so we can all treat them the same way.
 
-Let's start to create our Index Flow so we can encode our data there.
+Let's talk a little bit about the Flow before moving. You can refer to our cookbook to see more details on the `Flow <https://github.com/jina-ai/jina/blob/master/.github/2.0/cookbooks/Flow.md#minimum-working-example>`_, but let's quickly see some details. The most urgent bits are:
 
-To create a Flow you only need:
+1. Create a Flow
+2. Add elements to a Flow
+3. Use a Flow
+3.1. Create a Document. We will need a Document to pass to our Flow
+4. Visualize a Flow. This is an extra, but it can be very useful.
+
+1 Create a Flow
+*******************
+To create a Flow you only need to import it from Jina:
 
 .. code-block:: python
 
     from jina import Flow
     f = Flow()
 
-But this is an empty Flow, since we want to encode our data and then index it, we will need our Flow to have the next two elements:
+But this is an empty Flow, since we want to encode our data and then index it, we need to add elements to it.
 
-1. An transformer (to encode our data)
+2 Add elements to a Flow
+***************************
+
+To add elements to your Flow you just need to use the `add` keyword. You can add as many pods as you wish.
+
+.. code-block:: python
+
+    from jina import Flow
+
+    f = Flow().add().add().add()
+
+And for our example, we need to add two elements:
+
+1. A transformer (to encode our data)
 2. An indexer
 
 .. code-block:: python
@@ -105,10 +126,47 @@ But this is an empty Flow, since we want to encode our data and then index it, w
             .add(uses=MyIndexer)
         )
 
-Right now we haven't defined `MyTransformer` or `MyIndexer`, we will do that later. But for now, you should understand that this is where you will use the command `add` to add any elements that you will need in your Flow. You can refer to our cookbook to see more details on how to create a `Flow <https://github.com/jina-ai/jina/blob/master/.github/2.0/cookbooks/Flow.md#minimum-working-example>`_
+Right now we haven't defined `MyTransformer` or `MyIndexer`, we will do that later. But for now, you should understand that this is where you will use the command `add` to add any elements that you will need in your Flow.
 
-Now we have our Flow ready, we can start to index. But we can't just pass the dataset that we have to our Flow, we need to create a Document with the data we want to use.
-We can index our data now. For this, we need to create a Document, and to create it, we need to import it from Jina:
+So now we have a Flow with two elements. Those elements are two `Executors`. We haven't formally talked about them, but you don't need to know the details yet, so for now don't worry too much about them.
+
+Since we have our Flow ready, the next step is to actually use it.
+
+3 Use a Flow
+****************
+
+The correct way to use a Flow is to open it as a context manager, with the `with` keyword:
+
+.. code-block:: python
+
+    with f:
+        ...
+
+So let's recap a bit what we have seen:
+
+.. code-block:: python
+
+    from jina import Flow
+    f = Flow()          # Create Flow
+
+    f.add().add()       # Add elements to Flow
+
+    with f:             # Use Flow as context manager
+        f.index()
+
+So in our example, we have a Flow with two executors (`MyTransformer` and `MyIndexer`) and we want to use our Flow to index our data. But in this case our data is a `csv` file, so we need to open it first
+
+.. code-block:: python
+
+    with f, open('our_dataset.csv']) as fp:
+            f.index()
+
+Now we have our Flow ready, we can start to index. But we can't just pass the dataset in the original format to our Flow, we need to create a Document with the data we want to use.
+
+3.1 Create a Document
+***************************
+
+To create a Document, we do it like this:
 
 .. code-block:: python
 
@@ -122,7 +180,7 @@ But in our case, the content of our Document needs to be the dataset set we want
     from jina import Document
     d = Document.from_csv(fp, field_resolver={'question': 'text'})
 
-So what happened there? We created a Document `d`, and we use `from_csv` to load our dataset.
+So what happened there? We created a Document `d`, and we uses `from_csv` to load our dataset.
 We use `field_resolver` to map the text from our dataset to the Document attributes.
 
 By now, you should have this:
@@ -139,8 +197,9 @@ By now, you should have this:
     with f, open('our_dataset.csv']) as fp:
         f.index(Document.from_csv(fp, field_resolver={'question': 'text'}))
 
+2.2 Plot a Flow
+****************
 
-6. Explain what Flow is and plot
 7. Index and interpret output
 
 Query Flow
