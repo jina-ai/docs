@@ -37,10 +37,16 @@ for each property you designed a list of features, such as #bedrooms, #size, #pr
 Equipped with labels (house price) and features,
 you trained a regression model to predict the house price.
 
-The idea also applies to Search/Retrieval.
+The idea also applies to Search/Retrieval,
+usually reffered to Learning-to-Rank.
+The features can be the score of Bm25, #tokens in the document, #links in the document etc,
+the labels are the user annotated relevance score.
+Thus we can train a supervised model to optimise the ``Ranker``.
 
-
-
+In Jina, we created a new type of ``Executor`` named ``RankerTrainer``.
+The ``RankerTrainer`` needs user to implement a `train` and a `save` method.
+The ``train`` method takes a machine learning model to train the ``Ranker``,
+and ``save`` method saves the re-trained model into a directory.
 
 Conclusion
 -----------------
