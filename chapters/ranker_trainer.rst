@@ -67,7 +67,7 @@ Imaging you're running a online-mall sells shoes, and you want to optimize your 
 The labels are collected `num_clicks` in the past month.
 Your training data might looks like this:
 
-.. list-table:: List of Jina Data Types
+.. list-table:: Sample Training Data
    :widths: 50 25 50 50
    :header-rows: 1
 
@@ -110,6 +110,21 @@ For example:
 Train your model using LightGBMRankerTrainer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+``LightGBMRankerTrainer`` is specifically designed for training a ``LightGBMRanker``.
+While using it, please pass the feature names and label name as well as the parameters in the YAML configuration:
+
+.. highlight:: yaml
+.. code-block:: yaml
+
+    jtype: LightGBMRankerTrainer
+    with:
+      model_path: './lightgbm-model.txt'
+      query_feature_names: ['tags__price', 'tags__size', 'tags__brand']
+      match_feature_names: ['tags__price', 'tags__size', 'tags__brand']
+      label_feature_name: ['tags__relevance']
+    metas:
+      py_modules:
+        - __init__.py
 
 
 
