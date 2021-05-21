@@ -53,6 +53,20 @@ This feature could be beneficial to continuously improve our ranking model in an
 Ranker Trainer in Action: Optimize a LightGBMRanker
 ---------------------------------------------------
 
+`LightGBM <https://lightgbm.readthedocs.io/en/latest/index.html#>`_ is a gradient boosting framework that uses tree based learning algorithms.
+One of LightGBM's application is optimize Ranking using the algorithm ``LambdaRank`` to optimize ``nDCG``.
+
+In `Jina Hub <https://github.com/jina-ai/jina-hub/tree/master/rankers/LightGBMRanker>`_, we've created the ``LightGBMRanker``, which allows you to load a LightGBM model with Jina.
+In this guideline, we'll demonstrate a simple use case: Optimize the ranking for a online shopping website:
+
+Imaging you're running a online-mall sells shoes, and you want to optimize your product ranking using a list of three features:
+`price`, `brand` and `stock_number`.
+The labels are collected `num_clicks` in the past month.
+
+
+
+
+
 
 
 What's next
