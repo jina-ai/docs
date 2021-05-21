@@ -4,11 +4,18 @@ Parallelization
 Learn how Jina handles parallelization of data processing
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+.. toctree::
+    :maxdepth: 6
+    :glob:
+
+    parallel
+
+
 Feature description and expected outcome
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Jina allows for parallelization of Peas and Pods. This generally leads
-to an increase in throughput, as the data is split across processes.
+to an increase in performance, as the data is split across processes.
 
 Before you start
 ~~~~~~~~~~~~~~~~
@@ -20,8 +27,7 @@ presented in
 You should also have experience with parallelism in other systems. Jina
 does follow the best practices and designs from other databases or
 search engines. However, Jina is primarily a *neural search engine*.
-This means some changes and adaptations were necessary. This chapter
-will explain these.
+This means some changes and adaptations were necessary. I will explain these here.
 
 Implementation
 ~~~~~~~~~~~~~~
@@ -54,13 +60,21 @@ Replicas of Pods
 
 Another level of parallelism is within the Pods themselves, with **Replicas**.
 These operate inside a Pod, by creating duplicates of one Pod.
+This is different from the inter-parallelism provided by the ``needs`` parameter,
+as that one operates between different Pods of different business logic.
+On the other hand, the Replicas operate within
+
 The requests will then be sent to **one** of the Pods (the equivalent of ``polling: any``).
 In this case, a **Pod** is the **Replica** itself.
-Internally, Jina switches the class from the Pod to a CompoundPod, which contains multiple Pods.
+Internally, Jina switches the class from the Pod to a ``CompoundPod``, which contains multiple Pods.
 
-This feature was introduced for the `Querying while Indexing feature </chapters/dump-reload/>`_.
+We introduce this for the  `Querying while Indexing feature </chapters/dump-reload/>`_.
 
-In order to enable this feature for a specific Pod add the following to your YAML or Python programmatic API:
+.. image:: images/dump-reload/replicas.jpg
+
+In this graphic ``Dump Time 1`` and ``Dump Time 2`` represent the inner state of the two replicas. One is serving data from ``Time 1`` (with continuous line), while the other is being reloaded with new data (from ``Time 2``, dotted line).
+
+In order to enable this feature for a specific Pod, add the following:
 
 .. code:: yaml
 
@@ -76,6 +90,7 @@ In order to enable this feature for a specific Pod add the following to your YAM
 
 1. Replicas always have ``polling: any``.
 2. Replicas are currently running on the same machine. We are working on being able to separate them to distinct machines.
+3. Replicas cannot be added to a live Flow system. The Flow needs to be started fresh with a specific number of Replicas.
 
 Intra-parallelism
 ^^^^^^^^^^^^^^^^^
@@ -103,7 +118,7 @@ In *state-less* ``Peas`` (``Crafters``, ``Encoders`` etc.), you
 it’s only processed in a parallel manner.
 
 On the other hand, *state-ful* ``Peas`` (Indexers) will store the data
-across *shards*. This terminology is borrowed from other database
+across shards. This terminology is borrowed from other database
 systems.
 
 For more on sharding in other DB systems (with a focus on traditional
@@ -131,10 +146,10 @@ Scheduling
 
 Jina offers two types of scheduling:
 
-1. ``round_robin`` will assign tasks in circular order, without any
+1. ``round_robin`` assigns tasks in circular order, without any
    prioritization. We assume all ``Peas`` have uniform processing power.
 
-2. ``load_balance`` will assign tasks to the idle ``Peas``.
+2. ``load_balance`` assigns tasks to the idle ``Peas``.
 
 These are configured via ``scheduling``, on the ``Pod`` level.
 
@@ -145,12 +160,6 @@ An example of configuring the above parameters can be seen here:
    from jina.enums import  SchedulerType
    f = Flow().add(name='p1', parallel=3, scheduling=SchedulerType.ROUND_ROBIN)
 
-Limitations
-~~~~~~~~~~~
-
-At the moment Jina does not support sharding and replication of shards
-at the same time. We only support sharding (``Peas`` of the ``Pod`` with
-their own parts of the data).
 
 .. |image0| image:: ./images/simple-plot3.svg
 .. |image1| image:: ./images/simple-plot4.svg
