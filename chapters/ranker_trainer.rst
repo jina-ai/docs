@@ -25,6 +25,7 @@ Before you start
 -------------------
 
 * This guide assumes you have a good understanding of Jina, if you haven't, please check out `Jina 101 <https://101.jina.ai>`_ first.
+* This guide assumes you have a good understanding of Jina ``Rankers``.
 * This guide assumes you have a good understanding of Machine Learning (Supervised Statistical Learning).
 * You have installed the latest stable release of Jina Core according to the instructions found `here <https://docs.jina.ai/chapters/core/setup/index.html>`_.
 
@@ -38,7 +39,7 @@ Equipped with labels (house price) and features,
 you trained a regression model to predict the house price.
 
 The idea also applies to Search/Retrieval,
-usually reffered to Learning-to-Rank.
+usually referred to Learning-to-Rank.
 The features can be the score of Bm25, #tokens in the document, #links in the document etc,
 the labels are the user annotated relevance score.
 Thus we can train a supervised model to optimise the ``Ranker``.
@@ -47,11 +48,12 @@ In Jina, we created a new type of ``Executor`` named ``RankerTrainer``.
 The ``RankerTrainer`` needs user to implement a `train` and a `save` method.
 The ``train`` method takes a machine learning model to train the ``Ranker``,
 and ``save`` method saves the re-trained model into a directory.
+This feature could be beneficial to continuously improve our ranking model in an incremental manner.
 
-Conclusion
------------------
+Ranker Trainer in Action: Optimize a LightGBMRanker
+---------------------------------------------------
 
-In this guide, we introduced why we need :term:`Rankers` and how to use them. Apart from that, we provided some concrete examples of :term:`Rankers` in use.
+
 
 What's next
 -----------------
