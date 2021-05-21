@@ -125,9 +125,7 @@ While using it, please pass the feature names and label name as well as the para
 
 The meaning of these parameters are:
 
-* ``model_path``: The model you want to optimize, if the ``model_path`` does not exist,
-the ranker trainer will train the model from scratch.
-Otherwise will train the model in an incremental manner.
+* ``model_path``: The model you want to optimize, if the ``model_path`` does not exist, the ranker trainer will train the model from scratch. Otherwise will train the model in an incremental manner.
 * ``query_feature_names``: Feature names used to extract from query ``Documents``.
 * ``match_feature_names``: Feature names used to extract from match ``Documents``.
 * ``label_feature_name``: Feature name used to train the model as label.
