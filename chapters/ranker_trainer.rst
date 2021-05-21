@@ -17,7 +17,7 @@ In most cases, we expect well-ordered query results to be presented.
 For one search request, we may have multiple matches and we want to have the most relevant match or top-K matches presented to users.
 
 In the Information Retrieval and Machine Learning community,
-researchers has developed Learning-to-Rank technique to allow users to train a ``Ranker`` in a supervised fashion.
+researchers have developed the Learning-to-Rank technique to allow users to train a ``Ranker`` in a supervised fashion.
 In this guide, we will introduce how to train your ``Ranker`` with Jina ``RankerTrainer``.
 
 
@@ -32,23 +32,23 @@ Before you start
 Overview
 -----------------
 
-Imaging you are a data scientist, and working on building a model to predict the house price.
+Imagine you are a data scientist, and working on building a model to predict the house price.
 You collected historical property selling price,
-for each property you designed a list of features, such as #bedrooms, #size, #primary schools near property, #supermarkets near property etc.
+for each property, you designed a list of features, such as #bedrooms, #size, #primary schools near the property, #supermarkets near the property, etc.
 Equipped with labels (house price) and features,
 you trained a regression model to predict the house price.
 
 The idea also applies to Search/Retrieval,
 usually referred to Learning-to-Rank.
-The features can be the score of Bm25, #tokens in the document, #links in the document etc,
+The features can be the score of Bm25, #tokens in the document, #links in the document, etc,
 the labels are the user annotated relevance score.
-Thus we can train a supervised model to optimise the ``Ranker``.
+Thus we can train a supervised model to optimize the ``Ranker``.
 
 In Jina, we created a new type of ``Executor`` named ``RankerTrainer``.
-The ``RankerTrainer`` needs user to implement a `train` and a `save` method.
+The ``RankerTrainer`` needs a user to implement a `train` and a `save` method.
 The ``train`` method takes a machine learning model to train the ``Ranker``,
-and ``save`` method saves the re-trained model into a directory.
-This feature could be beneficial to continuously improve our ranking model in an incremental manner.
+and the ``save`` method saves the re-trained model into a directory.
+This feature could be beneficial to continuously improve our ranking model incrementally.
 
 Ranker Trainer in Action: Optimize a LightGBMRanker
 ---------------------------------------------------
@@ -56,14 +56,14 @@ Ranker Trainer in Action: Optimize a LightGBMRanker
 Context
 ^^^^^^^
 
-`LightGBM <https://lightgbm.readthedocs.io/en/latest/index.html#>`_ is a gradient boosting framework that uses tree based learning algorithms.
-One of LightGBM's application is optimize Ranking using the algorithm ``LambdaRank`` to optimize ``nDCG``.
+`LightGBM <https://lightgbm.readthedocs.io/en/latest/index.html#>`_ is a gradient boosting framework that uses tree-based learning algorithms.
+One of LightGBM's applications is optimize Ranking using the algorithm ``LambdaRank`` to optimize ``nDCG``.
 
 In `Jina Hub <https://github.com/jina-ai/jina-hub/tree/master/rankers/LightGBMRanker>`_, we've created the ``LightGBMRanker``, which allows you to load a LightGBM model with Jina.
 In this guideline, we'll demonstrate a simple use case: Optimize the ranking for a online shopping website:
 
-Imaging you're running a online-mall sells shoes, and you want to optimize your product ranking using a list of three features:
-`price`, `brand` and `color`.
+Imagine you're running a online mall that sells shoes, and you want to optimize your product ranking using a list of three features:
+`price`, `brand`, and `color`.
 The labels are collected `num_clicks` in the past month.
 Your training data might looks like this:
 
@@ -125,10 +125,10 @@ While using it, please pass the feature names and label name as well as the para
 
 The meaning of these parameters are:
 
-* ``model_path``: The model you want to optimize, if the ``model_path`` does not exist, the ranker trainer will train the model from scratch. Otherwise will train the model in an incremental manner.
-* ``query_feature_names``: Feature names used to extract from query ``Documents``.
+* ``model_path``: The model you want to optimize, if the ``model_path`` does not exist, the ranker trainer will train the model from scratch. Otherwise will incrementally train the model.
+* ``query_feature_names``: Feature names are used to extract from query ``Documents``.
 * ``match_feature_names``: Feature names used to extract from match ``Documents``.
-* ``label_feature_name``: Feature name used to train the model as label.
+* ``label_feature_name``: Feature name used to train the model as the label.
 
 Use this ``Executor`` will trigger ``train`` to use LightGBM to train the model and ``save`` the trained/re-trained model into ``model_path`` as was defined in YAML.
 
