@@ -66,6 +66,7 @@ Further information on any specific method can be obtained in the :doc:`../api_r
    ../../evaluation
    ../../optimization
    ../../ranker
+   ../../ranker_trainer
    ../../prevent_duplicate_indexing
    ../../incremental_indexing
    ../../parallel
