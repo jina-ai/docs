@@ -53,6 +53,9 @@ This feature could be beneficial to continuously improve our ranking model in an
 Ranker Trainer in Action: Optimize a LightGBMRanker
 ---------------------------------------------------
 
+Context
+^^^^^^^
+
 `LightGBM <https://lightgbm.readthedocs.io/en/latest/index.html#>`_ is a gradient boosting framework that uses tree based learning algorithms.
 One of LightGBM's application is optimize Ranking using the algorithm ``LambdaRank`` to optimize ``nDCG``.
 
@@ -89,6 +92,23 @@ Your training data might looks like this:
      - ...
      - ...
 
+Organize You Training Data
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The features and labels to train the model should be stored in `tags` in a Jina `Document`.
+For example:
+
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Document
+
+    d1 = Document(tags={'price': 100, 'brand': 'nike', 'color': 'white', 'num_clicks': 768})
+    d2 = Document(tags={'price': 600, 'brand': 'addidas', 'color': 'red', 'num_clicks': 54})
+    d3 = Document(tags={'price': 68, 'brand': 'asics', 'color': 'black', 'num_clicks': 691})
+
+Train your model using LightGBMRankerTrainer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 
