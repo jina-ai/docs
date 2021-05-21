@@ -68,7 +68,7 @@ The labels are collected `num_clicks` in the past month.
 Your training data might looks like this:
 
 .. list-table:: Sample Training Data
-   :widths: 50 25 50 50
+   :widths: 50 50 50 50
    :header-rows: 1
 
    * - price
