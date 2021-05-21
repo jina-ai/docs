@@ -60,8 +60,35 @@ In `Jina Hub <https://github.com/jina-ai/jina-hub/tree/master/rankers/LightGBMRa
 In this guideline, we'll demonstrate a simple use case: Optimize the ranking for a online shopping website:
 
 Imaging you're running a online-mall sells shoes, and you want to optimize your product ranking using a list of three features:
-`price`, `brand` and `stock_number`.
+`price`, `brand` and `color`.
 The labels are collected `num_clicks` in the past month.
+Your training data might looks like this:
+
+.. list-table:: List of Jina Data Types
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - price
+     - brand
+     - color
+     - num_clicks
+   * - 100
+     - nike
+     - white
+     - 768
+   * - 600
+     - addidas
+     - red
+     - 54
+   * - 68
+     - asics
+     - black
+     - 691
+   * - ...
+     - ...
+     - ...
+     - ...
+
 
 
 
