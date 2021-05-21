@@ -65,7 +65,7 @@ The labels are collected `num_clicks` in the past month.
 Your training data might looks like this:
 
 .. list-table:: List of Jina Data Types
-   :widths: 25 25 50
+   :widths: 50 25 50 50
    :header-rows: 1
 
    * - price
