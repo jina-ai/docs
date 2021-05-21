@@ -119,16 +119,20 @@ While using it, please pass the feature names and label name as well as the para
     jtype: LightGBMRankerTrainer
     with:
       model_path: './lightgbm-model.txt'
-      query_feature_names: ['tags__price', 'tags__size', 'tags__brand']
-      match_feature_names: ['tags__price', 'tags__size', 'tags__brand']
-      label_feature_name: ['tags__relevance']
-    metas:
-      py_modules:
-        - __init__.py
+      query_feature_names: ['tags__price', 'tags__brand', 'tags__color']
+      match_feature_names: ['tags__price', 'tags__brand', 'tags__color']
+      label_feature_name: ['tags__num_clicks']
 
+The meaning of these parameters are:
 
+* ``model_path``: The model you want to optimize, if the ``model_path`` does not exist,
+the ranker trainer will train the model from scratch.
+Otherwise will train the model in an incremental manner.
+* ``query_feature_names``: Feature names used to extract from query ``Documents``.
+* ``match_feature_names``: Feature names used to extract from match ``Documents``.
+* ``label_feature_name``: Feature name used to train the model as label.
 
-
+Use this ``Executor`` will trigger ``train`` to use LightGBM to train the model and ``save`` the trained/re-trained model into ``model_path`` as was defined in YAML.
 
 
 What's next
