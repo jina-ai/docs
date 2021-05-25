@@ -45,7 +45,7 @@ the labels are the user annotated relevance score.
 Thus we can train a supervised model to optimize the ``Ranker``.
 
 In Jina, we created a new type of ``Executor`` named ``RankerTrainer``.
-The ``RankerTrainer`` needs a user to implement a `train` and a `save` method.
+The ``RankerTrainer`` needs a user to implement a ``train`` and a ``save`` method.
 The ``train`` method takes a machine learning model to train the ``Ranker``,
 and the ``save`` method saves the re-trained model into a directory.
 This feature could be beneficial to continuously improve our ranking model incrementally.
@@ -111,11 +111,12 @@ Train your model using LightGBMRankerTrainer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``LightGBMRankerTrainer`` is specifically designed for training a ``LightGBMRanker``.
-While using it, please pass the feature names and label name as well as the parameters in the YAML configuration:
+While using it, please pass the feature names and label name as well as the parameters in the YAML configuration (``train.yml``):
 
 .. highlight:: yaml
 .. code-block:: yaml
 
+    # train.yml
     jtype: LightGBMRankerTrainer
     with:
       model_path: './lightgbm-model.txt'
@@ -130,8 +131,55 @@ The meaning of these parameters are:
 * ``match_feature_names``: Feature names used to extract from match ``Documents``.
 * ``label_feature_name``: Feature name used to train the model as the label.
 
-Use this ``Executor`` will trigger ``train`` to use LightGBM to train the model and ``save`` the trained/re-trained model into ``model_path`` as was defined in YAML.
+Use RankerTrainer in a Train Flow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+You might be concerning that now we know the features and labels,
+but we haven't specify the ``query`` yet.
+Since each ``query`` should have a corresponded list of feature values and label(relevance score).
+It works as follows:
+
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Document
+
+    queries = ['shoe'] # assume we have one query to train
+    for query in queries:
+        q = Document(content=query)
+        # assume we have three matches as listed in the above table, i.e. nike, addidas and asics.
+        m1 = Document(tags={'price': 100, 'brand': 'nike', 'color': 'white', 'num_clicks': 768})
+        m2 = Document(tags={'price': 600, 'brand': 'addidas', 'color': 'red', 'num_clicks': 54})
+        m3 = Document(tags={'price': 68, 'brand': 'asics', 'color': 'black', 'num_clicks': 691})
+        q.matches.extend([m1, m2, m3])
+    query_docs = DocumentSet([q])
+
+The above ``DocumentSet`` of query match pairs with tags and labels will be passed into ``Flow``.
+If you're familiar with Jina, you should already know that normally we have two ``Flows``: Index and Search.
+For the training purpose, we need to add a new flow called ``Train``, and the flow only has one pod: the ``RankerTrainer``:
+
+.. highlight:: yaml
+.. code-block:: yaml
+
+    # flow_train.yml
+    jtype: Flow
+    version: '1'
+    pods:
+      - name: trainer
+        uses: yaml/train.yml
+
+and to use the ``Flow``:
+
+.. highlight:: python
+.. code-block:: python
+
+    from jina import Flow
+
+    with Flow.load_config('flow_train.yml')) as f:
+        f.train(inputs=query_docs) # the query match pair we created above
+
+As a result, the model will be saved in the ``model_path`` as we specified in the ``Pod`` YAML.
+After training, re-run your search ``Flow`` will use the new model.
 
 What's next
 -----------------
