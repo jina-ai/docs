@@ -48,7 +48,7 @@ At the beginning of the Flow, you have your data, and this can be any type:
 
 In this case, we are using text, so in the image, you see text only. But it can be whatever type you want.
 
-Once we have our data, as usual in Machine Learning, it's probable that you might need to pre-process that data. To keep this as simple as possible for this first tutorial, and since we are using the #TBD (dataset used TBD), we won't need to do any pre-processing. But remember that this is a possibility for another use case.
+Once we have our data, as usual in Machine Learning, it's probable that you might need to pre-process that data. To keep this as simple as possible for this first tutorial, and since we are using the COVID dataset, we won't need to do any pre-processing. But remember that this is a possibility for another use case.
 Once that is ready, we can encode our data into vectors and finally store those vectors, so it is ready for indexing and then querying.
 
 Let's see each part of our Flow in detail.
@@ -387,14 +387,14 @@ And we are done!!! If you followed all the steps, now you should have something 
 
 There are still a lot of concepts to learn. So stay tuned for the next tutorials we'll have.
 
-If you have any issues following this tutorial, you can always get support from our [Slack community](https://join.slack.com/t/jina-ai/shared_invite/zt-dkl7x8p0-rVCv~3Fdc3~Dpwx7T7XG8w).
+If you have any issues following this tutorial, you can always get support from our [Slack community](https://slack.jina.ai/)
 
 Community
 ----------------------------------
 
-- [Slack channel](slack.jina.ai) - a communication platform for developers to discuss Jina.
+- [Slack channel](https://slack.jina.ai/) - a communication platform for developers to discuss Jina.
 - [LinkedIn](https://www.linkedin.com/company/jinaai/) - get to know Jina AI as a company and find job opportunities.
-- [![Twitter Follow](https://img.shields.io/twitter/follow/JinaAI_?label=Follow%20%40JinaAI_&style=social)](https://twitter.com/JinaAI_) - follow us and interact with us using hashtag `#JinaSearch`.
+- [Twitter](https://twitter.com/JinaAI_) - follow us and interact with us using hashtag `#JinaSearch`.
 - [Company](https://jina.ai) - know more about our company, we are fully committed to open-source!
 
 License
