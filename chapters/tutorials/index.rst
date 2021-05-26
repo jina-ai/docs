@@ -6,18 +6,18 @@ Tutorial 1
     :depth: 3
 
 
-We will use the hello world chatbot for this tutorial. You can find the complete code `here <https://github.com/jina-ai/jina/tree/master/jina/helloworld/chatbot>`_ but we will go step by step in this tutorial.
+We will use th `hello world chatbot <https://github.com/jina-ai/jina#run-quick-demo>`_ for this tutorial. You can find the complete code `here <https://github.com/jina-ai/jina/tree/master/jina/helloworld/chatbot>`_ and we will go step by step.
 
-At the end of this tutorial, you will have your own chatbot. You will use text as an input and get a matching text as output.
+At the end of this tutorial, you will have your own chatbot. You will use text as an input and get a text result as output.
 For this example, we will use a `covid dataset <https://www.kaggle.com/xhlulu/covidqa>`_.
 You will understand how every part of this example works and how you could create new apps with different datasets on your own.
 
 Set-up & overview
 ----------------------------------
 
-We recommend creating a `new python virtual environment <https://docs.python.org/3/tutorial/venv.html>`_ to have a clean install of Jina and prevent dependency clashing.
+We recommend creating a `new python virtual environment <https://docs.python.org/3/tutorial/venv.html>`_, to have a clean install of Jina and prevent dependency clashing.
 
-Then we can install Jina:
+We can start by installing Jina:
 
   .. code-block:: python
 
@@ -25,7 +25,7 @@ Then we can install Jina:
 
 For more information on installing Jina, refer to this `page <https://docs.jina.ai/chapters/install/os/via-pip>`_.
 
-And we will also need the following dependencies:
+And we need the following dependencies:
 
   .. code-block:: python
 
@@ -34,7 +34,7 @@ And we will also need the following dependencies:
     pip install torch==1.7.1
 
 
-Once you have Jina installed, let's take a broad overview of what we should do:
+Once you have Jina and the dependencies installed, let's take a broad overview of what we should do:
 
 .. image:: res/flow.png
    :width: 600
@@ -45,13 +45,12 @@ At the beginning of the Flow, you have your data, and this can be any type:
 * Image
 * Video
 * Text
+* Or any other type
 
 In this case, we are using text, so in the image, you see text only. But it can be whatever type you want.
 
-Once we have our data, as usual in Machine Learning, it's probable that you might need to pre-process that data. To keep this as simple as possible for this first tutorial, and since we are using the COVID dataset, we won't need to do any pre-processing. But remember that this is a possibility for another use case.
-Once that is ready, we can encode our data into vectors and finally store those vectors, so it is ready for indexing and then querying.
-
-Let's see each part of our Flow in detail.
+Once we have our data, as usual in Machine Learning, it's probable that you might need to pre-process that data. To keep this as simple as possible for this first tutorial, we won't need to do any pre-processing. But remember that this is a possibility for another use case.
+Once that is ready, we can encode our data into vectors and finally store those vectors, so it is ready for indexing and querying.
 
 Tutorial
 ---------
@@ -61,7 +60,7 @@ Define data and work directory
 
 We can start creating an empty folder, I'll call mine `tutorial` and that's the name you'll see through the tutorial but feel free to use whatever you wish.
 
-We will display our results in our browser, so download the `static` folder from `here <https://github.com/jina-ai/jina/tree/master/jina/helloworld/chatbot/static>`_, and paste it in in your `tutorial` folder. We will use a dataset in a .csv format. I'll use the `COVID <https://www.kaggle.com/xhlulu/covidqa>`_ dataset from Kaggle. You don't need to download this by hand, we'll do it in our code.
+We will display our results in our browser, so download the `static` folder from `here <https://github.com/jina-ai/jina/tree/master/jina/helloworld/chatbot/static>`_, and paste it in in your `tutorial` folder. This is only the CSS and HTML files to render our results. We will use a dataset in a .csv format. I'll use the `COVID <https://www.kaggle.com/xhlulu/covidqa>`_ dataset from Kaggle. You don't need to download this by hand, we'll do it later in our app.
 
 Create a Flow
 ++++++++++++++++++++++++++++++++++++
@@ -100,7 +99,7 @@ And for our example, we need to add two elements:
             .add(uses=MyIndexer)
         )
 
-Right now we haven't defined `MyTransformer` or `MyIndexer`, let's create some dummy `Executors` so we can try our code.
+Right now we haven't defined `MyTransformer` or `MyIndexer`, let's create some dummy `Executors` so we can try our code. These will not be our final `Executors` but let's create something basic to learn first.
 
 Create dummy Executors
 ++++++++++++++++++++++++++++++++++++
@@ -118,22 +117,22 @@ So now we have a Flow with two elements. Those elements are two `Executors`. We 
             print(f'bar is doing cool stuff: {kwargs}')
 
 We will have more complex Executors later, for now, the only important part for you to understand is that you can create any Executor you want inheriting from the `Executor` class.
-In this case, our two executors are only printing some information.
+In this case, our two executors are only printing a line.
 
 It's been a lot of information so far, so let's run this to see what happens.
 
 .. image:: res/executors_print.png
    :width: 600
 
-If you run this you should see something similar to this. Somewhere in the output, you should see the messages we defined in our Executors, along with its information.
+If you run the code you should see something similar to this. Somewhere in the output, you should see the messages we defined in our Executors, along with its information.
 
-Since we have our Flow ready, but sometimes it can get messy if we start adding many elements to it. So it is very useful to have a tool to visualize our Flow.
+So we have our Flow ready with two Executors. So far it's a simple one but it is still useful to have visualize our Flow to make sure it's what we want.
 
 
 Visualize a Flow
 ++++++++++++++++++++++++++++++
 
-By now, you should have this:
+By now, your code should look like this:
 
 .. code-block:: python
     from jina import Flow, Document
@@ -170,7 +169,7 @@ Let's run the code we have so far. If you try it, not much will happen since we 
 .. image:: res/plot_flow1.png
    :width: 600
 
-You can see a Flow with two pods, but what if you have many pods? this can quickly become very messy, so it is best practice to name all the Executors with `name='CoolName`. So in our example, we use:
+You can see a Flow with two pods, but what if you have many pods? this can quickly become very messy, so it is better to name the Executors with `name='CoolName`. So in our example, we use:
 
 .. code-block:: python
 
@@ -187,7 +186,6 @@ Now if you run this, you should have a Flow that is more explicit:
 
 .. image:: res/plot_flow2.png
    :width: 600
-
 
 Use a Flow
 ++++++++++++++++++++++++++++++++++++
@@ -230,7 +228,7 @@ To create a Document, we do it like this:
     from jina import Document
     d = Document(content='hello, world!')
 
-But in our case, the content of our Document needs to be the dataset we want to use, so we do it like this:
+In our case, the content of our Document needs to be the dataset we want to use, so we do it like this:
 
 .. code-block:: python
 
@@ -339,7 +337,7 @@ If you run this, it should finish without errors. You won't see much yet because
 .. image:: res/downloaded_dataset.png
    :width: 600
 
-To actually see something we need to specify where we will see it, we will display it in our browser, so we need to add the following after indexing:
+To actually see something we need to specify how we will display it, and for our tutorial we will do so in our browser, so we need to add the following after indexing:
 
 .. code-block:: python
 
@@ -365,7 +363,7 @@ To actually see something we need to specify where we will see it, we will displ
 
 For more information on what the Flow is doing, specially in `f.use_rest_gateway(args.port_expose)` and `f.block()` check our `cookbook <https://github.com/jina-ai/jina/blob/master/.github/2.0/cookbooks/Flow.md>`_
 
-Ok, so it seems that we have work done already. If you run this you will see a new tab in your browser open, and there you will have a text box ready for you to input some text. However, if you try to enter anything you won't have any results. This is because we are using very dummy Executors. Our `MyTransformer` and `MyIndexer` aren't actually doing anything. So far they only print a line when they are called. So we need real `Executors`.
+Ok, so it seems that we have plentf of work done already. If you run this you will see a new tab in your browser open, and there you will have a text box ready for you to input some text. However, if you try to enter anything you won't have any results. This is because we are using very dummy Executors. Our `MyTransformer` and `MyIndexer` aren't actually doing anything. So far they only print a line when they are called. So we need real `Executors`.
 
 This has been already plenty of new information you've learned so far, so we won't go into `Executors` today, instead you can copy-paste the ones we are using for `this example <https://github.com/jina-ai/jina/blob/master/jina/helloworld/chatbot/executors.py>`_. The important part for you to understand is that it's here where you'll define exactly what you want your `Executors` to do. It can be something as simple as printing a line as we did today. Or something more complex as in the example.
 
