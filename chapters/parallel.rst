@@ -27,7 +27,7 @@ presented in
 You should also have experience with parallelism in other systems. Jina
 does follow the best practices and designs from other databases or
 search engines. However, Jina is primarily a *neural search engine*.
-This means some changes and adaptations were necessary. I will explain these here.
+This means some changes and adaptations were necessary.
 
 Implementation
 ~~~~~~~~~~~~~~
@@ -62,7 +62,7 @@ Another level of parallelism is within the Pods themselves, with **Replicas**.
 These operate inside a Pod, by creating duplicates of one Pod.
 This is different from the inter-parallelism provided by the ``needs`` parameter,
 as that one operates between different Pods of different business logic.
-On the other hand, the Replicas operate within
+On the other hand, the Replicas operate within.
 
 The requests will then be sent to **one** of the Pods (the equivalent of ``polling: any``).
 In this case, a **Pod** is the **Replica** itself.
