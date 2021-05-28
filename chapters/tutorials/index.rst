@@ -39,7 +39,7 @@ Once you have Jina and the dependencies installed, let's get a broad overview of
 .. image:: res/flow.png
    :width: 600
 
-If you see the image, at the beginning of this flow process, you have your data, and this can be any type:
+You see from this image that you have your data at the beginning of this Flow process, and this can be any data type:
 
 * Text
 * Images
@@ -75,7 +75,7 @@ So open your favorite IDE and let's start writing our code:
     from jina import Flow
     flow = Flow()
 
-But this is an empty `Flow`, since we want to encode our data and then index it, we need to add elements to it. And what we add to a `Flow` are always `Executors` we will talk about them more formally later. But think of them as the elements you will need to do all the processing you want.
+But this is an empty `Flow`. Since we want to encode our data and then index it, we need to add elements to it. The only things we add to a `Flow` are `Executors`. We will talk about them more formally later, but think of them as the elements that will do all the data processing you want.
 
 Add elements to a Flow
 ++++++++++++++++++++++++++++++++++++
@@ -104,7 +104,7 @@ So add the following to our code:
             .add(uses=MyIndexer)
         )
 
-Right now we haven't defined `MyTransformer` or `MyIndexer`, let's create some dummy `Executors` so we can try our app. These will not be our final `Executors` but let's create something basic to learn first.
+Right now we haven't defined `MyTransformer` or `MyIndexer`. Let's create some dummy `Executors` so we can try our app. These will not be our final `Executors` but just something basic to learn first.
 
 Create dummy Executors
 ++++++++++++++++++++++++++++++++++++
@@ -123,7 +123,7 @@ Now we have a Flow with two `Executors`. Write the following in your code:
         def bar(self, **kwargs):
             print(f'bar is doing cool stuff: {kwargs}')
 
-We will have more complex `Executors` later, for now our two `Executors` are only printing a line.
+We will have more complex `Executors` later. For now our two `Executors` are only printing a line.
 
 It's been a lot of information so far, so let's run our app to see what happens.
 
