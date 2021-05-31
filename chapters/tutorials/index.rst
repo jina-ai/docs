@@ -370,7 +370,7 @@ For more information on what the Flow is doing, specially in `f.use_rest_gateway
 
 Ok, so it seems that we have plenty of work done already. If you run this you will see a new tab open in your browser, and there you will have a text box ready for you to input some text. However, if you try to enter anything you won't get any results. This is because we are using dummy Executors. Our `MyTransformer` and `MyIndexer` aren't actually doing anything. So far they only print a line when they are called. So we need real `Executors`.
 
-This has been already plenty of new information you've learned so far, so we won't go into `Executors` today. Instead you can copy-paste the ones we are using for `this example <https://github.com/jina-ai/jina/blob/master/jina/helloworld/chatbot/executors.py>`_. The important part to know is that all Executors' behavior is defined in executors.py`
+This has been plenty of new information you've learned so far, so we won't go deep into `Executors` today. Instead you can copy-paste the ones we are using for `this example <https://github.com/jina-ai/jina/blob/master/jina/helloworld/chatbot/executors.py>`_, save that `executors.py` file in the same directory where the rest of your code is. The important part to understand is that all Executors' behavior is defined in `executors.py`
 
 To try the `Executors` from the Github repo, just add this before the `download_data` function:
 
