@@ -487,10 +487,12 @@ And remove the dummy executors we made. Your `app.py` should now look like this:
 
 And your directory should be:
 
-- app.py
-- executors.py
-- static/
-- our_flow.svg #This will be here if you used the `.plot()` function
+::
+    | project
+    | ├── app.py
+    | ├── executors.py
+    | ├── static/
+    | ├── our_flow.svg #This will be here if you used the `.plot()` function
 
 And we are done! If you followed all the steps, now you should have something like this in your browser:
 
