@@ -68,7 +68,7 @@ Create a Flow
 The very first concept you'll see in Jina is a `Flow`. You can see `here <https://github.com/jina-ai/jina/blob/master/.github/2.0/cookbooks/Flow.md>`_ a more formal introduction of what it is, but for now, think of the `Flow` as a manager in Jina, it takes care of the all the tasks that will run on your application and each `Flow` object will take care of one real-world task.
 
 To create a `Flow` you only need to import it from Jina.
-So open your favorite IDE and let's start writing our code:
+So open your favorite IDE, create a `app.py` file and let's start writing our code:
 
 .. code-block:: python
 
@@ -381,7 +381,116 @@ To try the `Executors` from the Github repo, just add this before the `download_
     else:
         from .executors import MyTransformer, MyIndexer
 
-And remove the dummy executors we made.
+And remove the dummy executors we made. Your `app.py` should now look like this:
+
+.. code-block:: python
+
+    import os
+    import urllib.request
+    import webbrowser
+    from pathlib import Path
+
+    from jina import Flow, Executor
+    from jina.logging import default_logger
+    from jina.logging.profile import ProgressBar
+    from jina.parsers.helloworld import set_hw_chatbot_parser
+    from jina.types.document.generators import from_csv
+
+    if __name__ == '__main__':
+        from executors import MyTransformer, MyIndexer
+    else:
+        from .executors import MyTransformer, MyIndexer
+
+
+    def download_data(targets, download_proxy=None, task_name='download fashion-mnist'):
+        """
+        Download data.
+
+        :param targets: target path for data.
+        :param download_proxy: download proxy (e.g. 'http', 'https')
+        :param task_name: name of the task
+        """
+        opener = urllib.request.build_opener()
+        opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+        if download_proxy:
+            proxy = urllib.request.ProxyHandler(
+                {'http': download_proxy, 'https': download_proxy}
+            )
+            opener.add_handler(proxy)
+        urllib.request.install_opener(opener)
+        with ProgressBar(task_name=task_name, batch_unit='') as t:
+            for k, v in targets.items():
+                if not os.path.exists(v['filename']):
+                    urllib.request.urlretrieve(
+                        v['url'], v['filename'], reporthook=lambda *x: t.update_tick(0.01)
+                    )
+
+    def tutorial(args):
+
+        Path(args.workdir).mkdir(parents=True, exist_ok=True)
+
+        '''
+        Comment this to use the exectors you have in `executors.py`
+        class MyTransformer(Executor):
+            def foo(self, **kwargs):
+                print(f'foo is doing cool stuff: {kwargs}')
+
+        class MyIndexer(Executor):
+            def bar(self, **kwargs):
+                print(f'bar is doing cool stuff: {kwargs}')
+        '''
+
+        targets = {
+            'covid-csv': {
+                'url': args.index_data_url,
+                'filename': os.path.join(args.workdir, 'dataset.csv'),
+            }
+        }
+
+        # download the data
+        download_data(targets, args.download_proxy, task_name='download covid-dataset')
+
+        f = (
+            Flow()
+                .add(name='MyTransformer', uses=MyTransformer)
+                .add(name='MyIndexer', uses=MyIndexer)
+                .plot('test.svg')
+        )
+
+        with f, open(targets['covid-csv']['filename']) as fp:
+            f.index(from_csv(fp, field_resolver={'question': 'text'}))
+
+            # switch to REST gateway at runtime
+            f.use_rest_gateway(args.port_expose)
+
+            url_html_path = 'file://' + os.path.abspath(
+                os.path.join(
+                    os.path.dirname(os.path.realpath(__file__)), 'static/index.html'
+                )
+            )
+            try:
+                webbrowser.open(url_html_path, new=2)
+            except:
+                pass  # intentional pass, browser support isn't cross-platform
+            finally:
+                default_logger.success(
+                    f'You should see a demo page opened in your browser, '
+                    f'if not, you may open {url_html_path} manually'
+                )
+
+            if not args.unblock_query_flow:
+                f.block()
+
+    if __name__ == '__main__':
+        args = set_hw_chatbot_parser().parse_args()
+        tutorial(args)
+
+And your directory should be:
+
+- app.py
+- executors.py
+- static/
+- our_flow.svg #This will be here if you used the `.plot()` function
 
 And we are done! If you followed all the steps, now you should have something like this in your browser:
 
@@ -390,19 +499,19 @@ And we are done! If you followed all the steps, now you should have something li
 
 There are still a lot of concepts to learn. So stay tuned for our next tutorials.
 
-If you have any issues following this tutorial, you can always get support from our [Slack community](https://slack.jina.ai/)
+If you have any issues following this tutorial, you can always get support from our `Slack community <https://slack.jina.ai/>`_
 
 Community
 ----------------------------------
 
-- [Slack channel](https://slack.jina.ai/) - a communication platform for developers to discuss Jina.
-- [LinkedIn](https://www.linkedin.com/company/jinaai/) - get to know Jina AI as a company and find job opportunities.
-- [Twitter](https://twitter.com/JinaAI_) - follow us and interact with us using hashtag `#JinaSearch`.
-- [Company](https://jina.ai) - know more about our company, we are fully committed to open-source!
+- `Slack community <https://slack.jina.ai/>`_ - a communication platform for developers to discuss Jina.
+- `LinkedIn <https://www.linkedin.com/company/jinaai/>`_ - get to know Jina AI as a company and find job opportunities.
+- `Twitter <https://twitter.com/JinaAI_>`_  - follow us and interact with us using hashtag `#JinaSearch`.
+- `Company <https://jina.ai>`_ - know more about our company, we are fully committed to open-source!
 
 License
 ----------------------------------
 
 Copyright (c) 2021 Jina AI Limited. All rights reserved.
 
-Jina is licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/jina-ai/jina/blob/master/LICENSE) for the full license text.
+Jina is licensed under the Apache License, Version 2.0. See `LICENSE <https://github.com/jina-ai/jina/blob/master/LICENSE>`_ for the full license text.
