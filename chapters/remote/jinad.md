@@ -16,19 +16,6 @@ We use the tag `latest-daemon` in the below command, which uses the latest relea
 docker pull jinaai/jina:latest-daemon
 ```
 
-##### Deploying AWS EC2 instance with jinad by [terraform](https://www.terraform.io/)
-
-We extract a module [jinad-aws](https://registry.terraform.io/modules/jina-ai/jinad-aws/jina/latest) to simplify this work. 
-
-With this terraform module we can:
-
-- Custom the type and size of the root disk
-- Deploy multiple AWS EC2 instance
-- Execute extra command line
-- Install `jinad`
-- Manage `jinad` with `systemd`
-- Add other python packages as required
-
 ##### PyPi package
 
 > Note: `JinaD` is a part of the Jina and follows the same [installation instructions](https://docs.jina.ai/chapters/install/os/via-pip.html) and you only need to pick `[daemon]`
