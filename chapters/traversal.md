@@ -47,10 +47,10 @@ print(len(root.chunks))                # outputs 0
 # Initialise two Documents and add them as chunks to root.
 with Document() as chunk1:
     chunk1.text = 'What is love?'
-    root.chunks.add(chunk1)
+    root.chunks.append(chunk1)
 with Document() as chunk2:
-    chunk1.text = 'Oh baby do not hurt me.'
-    root.chunks.add(chunk2)
+    chunk2.text = 'Oh baby do not hurt me.'
+    root.chunks.append(chunk2)
 
 # Now the Document has two chunks
 print(len(root.chunks))                # outputs 2
@@ -100,16 +100,16 @@ print(root.adjacency)                  # outputs 0
 # Initialise two Documents and add as chunks to root.
 with Document() as chunk1:
     chunk1.text = 'What is love?'
-    root.chunks.add(chunk1)
+    root.chunks.append(chunk1)
 with Document() as chunk2:
-    chunk1.text = 'Oh baby do not hurt me.'
-    root.chunks.add(chunk2)
+    chunk2.text = 'Oh baby do not hurt me.'
+    root.chunks.append(chunk2)
 
 # Add a match Document.
 with Document() as match:
     # a match Document semantically related to our root
     match.text = 'What is love? Oh please do not hurt me.'
-    root.matches.add(match)
+    root.matchesa.append(match)
 
 print(len(root.matches))               # outputs 1
 print(root.matches[0].granularity)     # outputs 0

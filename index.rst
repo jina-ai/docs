@@ -82,6 +82,7 @@ Table of contents
    chapters/faq/dev
    chapters/faq/user
    chapters/docstring
+   chapters/tutorials
 
 
 .. toctree::

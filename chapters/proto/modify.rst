@@ -37,6 +37,7 @@ Take MacOS as an example,
 
        git clone https://github.com/grpc/grpc.git
        git submodule update --init
+       cmake .
        make grpc_python_plugin
 
 
