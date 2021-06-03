@@ -1,4 +1,4 @@
-# Deploying JinaD on AWS with Terraform
+# Deploying JinaD on AWS With Terraform
 
 ## Overview
 
