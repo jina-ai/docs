@@ -114,12 +114,12 @@ Default output format [None]: json
 
 ### [Terraform CLI](https://www.terraform.io/docs/cli/index.html)
 
-1. Basic 
+- Basic 
    1. `terraform init` is used to initialize a working directory containing Terraform configuration files.
    2. `terraform apply` executes the actions proposed in a Terraform plan.
    3. `terraform output` extract the value of an output variable from the state file.
    4. `terraform destory` is a convenient way to destroy all remote objects managed by a particular Terraform configuration.
-2. More
-   1. `terraform validate` validates the configuration files in a directory, referring only to the configuration and not accessing any remote services such as remote state, provider APIs, etc.
-   2. `terrafrom plan` creates an execution plan. By default, creating a plan consists
-   3. `terraform console` provides an interactive console for evaluating expressions.
+- More
+   - `terraform validate` validates the configuration files in a directory, referring only to the configuration and not accessing any remote services such as remote state, provider APIs, etc.
+   - `terrafrom plan` creates an execution plan. By default, creating a plan consists
+   - `terraform console` provides an interactive console for evaluating expressions.
