@@ -6,12 +6,12 @@ The Jina AI team has released  [terraform module jinad-aws](https://registry.ter
 
 With this terraform module you can:
 
-- Customize the type and size of the root disk
-- Deploy multiple AWS EC2 instance
-- Execute extra command line
 - Install `jinad`
 - Manage `jinad` with `systemd`
-- Add other python packages as required
+- Deploy `jinad` on multiple AWS EC2 instances
+- Customize python packages installation as required
+- Customize the root disk of the instance
+- Customize the execution on the instance
 
 ## Concepts
 
