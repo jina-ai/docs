@@ -9,3 +9,4 @@ Distributing Jina Remotely
    jinad
    remote-pods
    remote-flows
+   deploy-jinad-on-aws-with-terraform
