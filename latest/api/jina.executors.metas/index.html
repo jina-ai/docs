@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.metas &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.executors.metas &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -54,8 +54,8 @@
     
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
-    <link rel="next" title="jina.executors.requests" href="../jina.executors.requests/" />
-    <link rel="prev" title="jina.executors.devices" href="../jina.executors.devices/" /> 
+    <link rel="next" title="jina.flow" href="../jina.flow/" />
+    <link rel="prev" title="jina.executors.decorators" href="../jina.executors.decorators/" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,10 +84,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -230,21 +234,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../../chapters/daemon/">Jina Daemon API Specification</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../jina/">Jina Python API Reference</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../jina.clients/">jina.clients</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../jina.docker/">jina.docker</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../jina.drivers/">jina.drivers</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="../jina.executors/">jina.executors</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.classifiers/">jina.executors.classifiers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.crafters/">jina.executors.crafters</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.encoders/">jina.executors.encoders</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.evaluators/">jina.executors.evaluators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.indexers/">jina.executors.indexers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.rankers/">jina.executors.rankers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.segmenters/">jina.executors.segmenters</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.compound/">jina.executors.compound</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.executors.decorators/">jina.executors.decorators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.devices/">jina.executors.devices</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">jina.executors.metas</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.executors.requests/">jina.executors.requests</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../jina.flow/">jina.flow</a></li>
@@ -301,8 +293,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -383,7 +375,7 @@
             
   <div class="section" id="module-jina.executors.metas">
 <span id="jina-executors-metas"></span><h1>jina.executors.metas<a class="headerlink" href="#module-jina.executors.metas" title="Permalink to this headline">¶</a></h1>
-<p>The default meta config that all executors follow, they can be overridden by the YAML config</p>
+<p>The default meta config that all executors follow, they can be overrided by the YAML config</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>When you define your own Executor class, make sure your attributes/methods name do not
@@ -398,6 +390,21 @@ via <code class="xref py py-func docutils literal notranslate"><span class="pre"
 <p>Any executor inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseExecutor</span></code> always has the following <strong>meta</strong> fields:</p>
 <blockquote>
 <div><dl class="std confval">
+<dt id="confval-is_trained">
+<code class="sig-name descname"><span class="pre">is_trained</span></code><a class="headerlink" href="#confval-is_trained" title="Permalink to this definition">¶</a></dt>
+<dd><p>indicates if the executor is trained or not, if not then methods decorated by <code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;required_train()</span></code>
+can not be executed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std confval">
 <dt id="confval-is_updated">
 <code class="sig-name descname"><span class="pre">is_updated</span></code><a class="headerlink" href="#confval-is_updated" title="Permalink to this definition">¶</a></dt>
 <dd><p>indicates if the executor is updated or changed since last save, if not then <code class="xref py py-func docutils literal notranslate"><span class="pre">save()</span></code> will do nothing.
@@ -434,7 +441,7 @@ too large to fit into (GPU) memory.</p>
 used during a workflow run.</p>
 <p>By default it is not set, if you expect your executor to be persisted or to persist any data, remember to set it
 to the desired value.</p>
-<p>When a <cite>BaseExecutor</cite> is a component of a <cite>CompoundExecutor</cite>, its <cite>workspace</cite> value will be overridden by the <cite>workspace</cite>
+<p>When a <cite>BaseExecutor</cite> is a component of a <cite>CompoundExecutor</cite>, its <cite>workspace</cite> value will be overriden by the <cite>workspace</cite>
 coming from the <cite>CompoundExecutor</cite> unless a particular <cite>workspace</cite> value is set for the component <cite>BaseExecutor</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -603,14 +610,15 @@ or when a <cite>BaseNumpyIndexer</cite> is used with a <cite>ref_indexer</cite><
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">pea_id</span></code> is set in a way that when the executor <code class="docutils literal notranslate"><span class="pre">A</span></code> is used as
-a component of a <a class="reference internal" href="../jina.executors.compound/#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a> <code class="docutils literal notranslate"><span class="pre">B</span></code>, then <code class="docutils literal notranslate"><span class="pre">A</span></code>’s setting will be overridden by B’s counterpart.</p>
+a component of a <a class="reference internal" href="../jina.executors.compound/#jina.executors.compound.CompoundExecutor" title="jina.executors.compound.CompoundExecutor"><code class="xref py py-class docutils literal notranslate"><span class="pre">jina.executors.compound.CompoundExecutor</span></code></a> <code class="docutils literal notranslate"><span class="pre">B</span></code>, then <code class="docutils literal notranslate"><span class="pre">A</span></code>’s setting will be overrided by B’s counterpart.</p>
 </div>
-<p>These <strong>meta</strong> fields can be accessed via <cite>self.name</cite> or loaded from a YAML config via <code class="xref py py-func docutils literal notranslate"><span class="pre">load_config()</span></code>:</p>
+<p>These <strong>meta</strong> fields can be accessed via <cite>self.is_trained</cite> or loaded from a YAML config via <code class="xref py py-func docutils literal notranslate"><span class="pre">load_config()</span></code>:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="kt">!MyAwesomeExecutor</span>
 <span class="nt">with</span><span class="p">:</span>
   <span class="l l-Scalar l-Scalar-Plain">...</span>
 <span class="nt">metas</span><span class="p">:</span>
   <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my_transformer</span>  <span class="c1"># a customized name</span>
+  <span class="nt">is_trained</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>  <span class="c1"># indicate the model has been trained</span>
   <span class="nt">workspace</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./</span>  <span class="c1"># path for serialize/deserialize</span>
 </pre></div>
 </div>
@@ -618,13 +626,10 @@ a component of a <a class="reference internal" href="../jina.executors.compound/
 <dl class="py function">
 <dt id="jina.executors.metas.get_default_metas">
 <code class="sig-prename descclassname"><span class="pre">jina.executors.metas.</span></code><code class="sig-name descname"><span class="pre">get_default_metas</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/executors/metas/#get_default_metas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.executors.metas.get_default_metas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a copy of default meta variables.</p>
+<dd><p>Get a copy of default meta variables</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>default metas</p>
 </dd>
 </dl>
 </dd></dl>
@@ -640,9 +645,6 @@ a component of a <a class="reference internal" href="../jina.executors.compound/
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>dictionary with injected metas</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -656,11 +658,11 @@ a component of a <a class="reference internal" href="../jina.executors.compound/
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="../jina.executors.requests/" class="btn btn-neutral float-right" title="jina.executors.requests"
+        <a href="../jina.flow/" class="btn btn-neutral float-right" title="jina.flow"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
-        <a href="../jina.executors.devices/" class="btn btn-neutral float-left" title="jina.executors.devices"
+        <a href="../jina.executors.decorators/" class="btn btn-neutral float-left" title="jina.executors.decorators"
            accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
         
     </div>
@@ -790,7 +792,7 @@ a component of a <a class="reference internal" href="../jina.executors.compound/
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

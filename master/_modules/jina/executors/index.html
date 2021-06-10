@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.executors &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -330,8 +334,8 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.executors</h1><div class="highlight"><pre>
-<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright (c) 2020 Jina AI Limited. All rights reserved.&#39;</span>
-<span class="n">__license__</span> <span class="o">=</span> <span class="s1">&#39;Apache-2.0&#39;</span>
+<span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
@@ -339,26 +343,21 @@
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">from</span> <span class="nn">.decorators</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">as_update_method</span><span class="p">,</span>
-    <span class="n">store_init_kwargs</span><span class="p">,</span>
-    <span class="n">as_aggregate_method</span><span class="p">,</span>
-    <span class="n">wrap_func</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.decorators</span> <span class="kn">import</span> <span class="n">as_train_method</span><span class="p">,</span> <span class="n">as_update_method</span><span class="p">,</span> <span class="n">store_init_kwargs</span><span class="p">,</span> <span class="n">as_aggregate_method</span><span class="p">,</span> <span class="n">wrap_func</span>
 <span class="kn">from</span> <span class="nn">.metas</span> <span class="kn">import</span> <span class="n">get_default_metas</span><span class="p">,</span> <span class="n">fill_metas_with_defaults</span>
 <span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">BadPersistantFile</span><span class="p">,</span> <span class="n">NoDriverForRequest</span><span class="p">,</span> <span class="n">UnattachedDriver</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">typename</span><span class="p">,</span> <span class="n">random_identity</span>
 <span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAMLCompatible</span><span class="p">,</span> <span class="n">JAML</span><span class="p">,</span> <span class="n">subvar_regex</span><span class="p">,</span> <span class="n">internal_var_regex</span>
 <span class="kn">from</span> <span class="nn">..logging</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
+<span class="kn">from</span> <span class="nn">..logging.profile</span> <span class="kn">import</span> <span class="n">TimeContext</span>
 
-<span class="c1"># noinspection PyUnreachableCode</span>
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">..peapods.runtimes.zmq.zed</span> <span class="kn">import</span> <span class="n">ZEDRuntime</span>
     <span class="kn">from</span> <span class="nn">..drivers</span> <span class="kn">import</span> <span class="n">BaseDriver</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BaseExecutor&#39;</span><span class="p">,</span> <span class="s1">&#39;AnyExecutor&#39;</span><span class="p">,</span> <span class="s1">&#39;ExecutorType&#39;</span><span class="p">,</span> <span class="s1">&#39;GenericExecutor&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;BaseExecutor&#39;</span><span class="p">,</span> <span class="s1">&#39;AnyExecutor&#39;</span><span class="p">,</span> <span class="s1">&#39;ExecutorType&#39;</span><span class="p">]</span>
 
 <span class="n">AnyExecutor</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s1">&#39;AnyExecutor&#39;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s1">&#39;BaseExecutor&#39;</span><span class="p">)</span>
 
@@ -366,39 +365,15 @@
 <span class="n">_ref_desolve_map</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
 <span class="n">_ref_desolve_map</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
 <span class="n">_ref_desolve_map</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;pea_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">_ref_desolve_map</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;replica_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
 
 <div class="viewcode-block" id="ExecutorType"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.ExecutorType">[docs]</a><span class="k">class</span> <span class="nc">ExecutorType</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">JAMLCompatible</span><span class="p">),</span> <span class="nb">type</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The class of Executor type, which is the metaclass of :class:`BaseExecutor`.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-
-<span class="sd">        # noqa: DAR201</span>
-
-
-<span class="sd">        # noqa: DAR101</span>
-
-
-<span class="sd">        # noqa: DAR102</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">register_class</span><span class="p">(</span><span class="n">_cls</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-
-<span class="sd">        # noqa: DAR201</span>
-
-
-<span class="sd">        # noqa: DAR101</span>
-
-
-<span class="sd">        # noqa: DAR102</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># do _preload_package</span>
         <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;pre_init&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="kc">None</span><span class="p">)()</span>
 
@@ -416,13 +391,8 @@
 
 <div class="viewcode-block" id="ExecutorType.register_class"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.ExecutorType.register_class">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">register_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Register a class and wrap update, train, aggregate functions.</span>
-
-<span class="sd">        :param cls: The class.</span>
-<span class="sd">        :return: The class, after being registered.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">update_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">]</span>
+        <span class="n">update_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">]</span>
+        <span class="n">train_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span>
         <span class="n">aggregate_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;evaluate&#39;</span><span class="p">]</span>
 
         <span class="n">reg_cls_set</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_registered_class&#39;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
@@ -430,6 +400,7 @@
         <span class="n">cls_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="n">cls_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reg_cls_set</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;force_register&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
             <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;__init__&#39;</span><span class="p">],</span> <span class="n">store_init_kwargs</span><span class="p">)</span>
+            <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">train_funcs</span><span class="p">,</span> <span class="n">as_train_method</span><span class="p">)</span>
             <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">update_funcs</span><span class="p">,</span> <span class="n">as_update_method</span><span class="p">)</span>
             <span class="n">wrap_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">aggregate_funcs</span><span class="p">,</span> <span class="n">as_aggregate_method</span><span class="p">)</span>
 
@@ -476,8 +447,9 @@
 <span class="sd">        Meta fields :mod:`jina.executors.metas.defaults`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">store_args_kwargs</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1">#: set this to ``True`` to save ``args`` (in a list) and ``kwargs`` (in a map) in YAML config</span>
+    <span class="n">exec_methods</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;encode&#39;</span><span class="p">,</span> <span class="s1">&#39;add&#39;</span><span class="p">,</span> <span class="s1">&#39;query&#39;</span><span class="p">,</span> <span class="s1">&#39;craft&#39;</span><span class="p">,</span> <span class="s1">&#39;segment&#39;</span><span class="p">,</span> <span class="s1">&#39;score&#39;</span><span class="p">,</span> <span class="s1">&#39;evaluate&#39;</span><span class="p">,</span> <span class="s1">&#39;predict&#39;</span><span class="p">,</span> <span class="s1">&#39;query_by_key&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;update&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -489,92 +461,41 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_post_init_vars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_snapshot_ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_post_init_wrapper</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">_metas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">_requests</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">fill_in_metas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">fill_in_metas</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">_metas</span><span class="p">:</span>
-                <span class="n">_metas</span> <span class="o">=</span> <span class="n">get_default_metas</span><span class="p">()</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_fill_metas</span><span class="p">(</span><span class="n">_metas</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">fill_in_drivers</span><span class="p">(</span><span class="n">_requests</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_post_init_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_metas</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">_requests</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fill_in_metas</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">TimeContext</span><span class="p">(</span><span class="s1">&#39;post_init may take some time&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">fill_in_metas</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_metas</span><span class="p">:</span>
+                    <span class="n">_metas</span> <span class="o">=</span> <span class="n">get_default_metas</span><span class="p">()</span>
 
-        <span class="n">_before</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">post_init</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_post_init_vars</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_before</span><span class="p">}</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_requests</span><span class="p">:</span>
+                    <span class="kn">from</span> <span class="nn">..executors.requests</span> <span class="kn">import</span> <span class="n">get_default_reqs</span>
+                    <span class="n">_requests</span> <span class="o">=</span> <span class="n">get_default_reqs</span><span class="p">(</span><span class="nb">type</span><span class="o">.</span><span class="n">mro</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">))</span>
 
-<div class="viewcode-block" id="BaseExecutor.fill_in_drivers"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.fill_in_drivers">[docs]</a>    <span class="k">def</span> <span class="nf">fill_in_drivers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_requests</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Fill in drivers in a BaseExecutor.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fill_metas</span><span class="p">(</span><span class="n">_metas</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fill_requests</span><span class="p">(</span><span class="n">_requests</span><span class="p">)</span>
 
-<span class="sd">        :param _requests: Dict containing driver information.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">..executors.requests</span> <span class="kn">import</span> <span class="n">get_default_reqs</span>
+            <span class="n">_before</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">post_init</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_post_init_vars</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_before</span><span class="p">}</span>
 
-        <span class="n">default_requests</span> <span class="o">=</span> <span class="n">get_default_reqs</span><span class="p">(</span><span class="nb">type</span><span class="o">.</span><span class="n">mro</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">_requests</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_drivers_from_requests</span><span class="p">(</span><span class="n">default_requests</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">parsed_drivers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_drivers_from_requests</span><span class="p">(</span><span class="n">_requests</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">_requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;use_default&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-                <span class="n">default_drivers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_drivers_from_requests</span><span class="p">(</span><span class="n">default_requests</span><span class="p">)</span>
-
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">default_drivers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parsed_drivers</span><span class="p">:</span>
-                        <span class="n">parsed_drivers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span> <span class="o">=</span> <span class="n">parsed_drivers</span></div>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_drivers_from_requests</span><span class="p">(</span><span class="n">_requests</span><span class="p">):</span>
-        <span class="n">_drivers</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[str, List[&#39;BaseDriver&#39;]]</span>
+    <span class="k">def</span> <span class="nf">_fill_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_requests</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># type: Dict[str, List[&#39;BaseDriver&#39;]]</span>
 
         <span class="k">if</span> <span class="n">_requests</span> <span class="ow">and</span> <span class="s1">&#39;on&#39;</span> <span class="ow">in</span> <span class="n">_requests</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_requests</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="c1"># if control request is forget in YAML, then fill it</span>
             <span class="k">if</span> <span class="s1">&#39;ControlRequest&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_requests</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">]:</span>
                 <span class="kn">from</span> <span class="nn">..drivers.control</span> <span class="kn">import</span> <span class="n">ControlReqDriver</span>
-
                 <span class="n">_requests</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">][</span><span class="s1">&#39;ControlRequest&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ControlReqDriver</span><span class="p">()]</span>
 
-            <span class="k">for</span> <span class="n">req_type</span><span class="p">,</span> <span class="n">drivers_spec</span> <span class="ow">in</span> <span class="n">_requests</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">req_type</span><span class="p">,</span> <span class="n">drivers</span> <span class="ow">in</span> <span class="n">_requests</span><span class="p">[</span><span class="s1">&#39;on&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">req_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                     <span class="n">req_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">req_type</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">drivers_spec</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-                    <span class="c1"># old syntax</span>
-                    <span class="n">drivers</span> <span class="o">=</span> <span class="n">drivers_spec</span>
-                    <span class="n">common_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">drivers_spec</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                    <span class="n">drivers</span> <span class="o">=</span> <span class="n">drivers_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;drivers&#39;</span><span class="p">,</span> <span class="p">[])</span>
-                    <span class="n">common_kwargs</span> <span class="o">=</span> <span class="n">drivers_spec</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;with&#39;</span><span class="p">,</span> <span class="p">{})</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unsupported type of driver spec: </span><span class="si">{</span><span class="n">drivers_spec</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-
                 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">req_type</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">r</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_drivers</span><span class="p">:</span>
-                        <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">!=</span> <span class="n">drivers</span><span class="p">:</span>
-                        <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">drivers</span><span class="p">)</span>
-
-                    <span class="c1"># inject common kwargs to drivers</span>
-                    <span class="k">if</span> <span class="n">common_kwargs</span><span class="p">:</span>
-                        <span class="n">new_drivers</span> <span class="o">=</span> <span class="p">[]</span>
-                        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]:</span>
-                            <span class="n">new_init_kwargs_dict</span> <span class="o">=</span> <span class="p">{</span>
-                                <span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">_init_kwargs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-                            <span class="p">}</span>
-                            <span class="n">new_init_kwargs_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">common_kwargs</span><span class="p">)</span>
-                            <span class="n">new_drivers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">**</span><span class="n">new_init_kwargs_dict</span><span class="p">))</span>
-                        <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-                        <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_drivers</span>
-
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]:</span>
-                        <span class="n">_drivers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">_drivers</span>
+                    <span class="k">if</span> <span class="n">r</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">!=</span> <span class="n">drivers</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">drivers</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_fill_metas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_metas</span><span class="p">):</span>
         <span class="n">unresolved_attr</span> <span class="o">=</span> <span class="kc">False</span>
@@ -597,8 +518,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s1">&#39;this executor is not named, i will call it &quot;</span><span class="si">{</span><span class="n">_name</span><span class="si">}</span><span class="s1">&quot;. &#39;</span>
                     <span class="s1">&#39;naming is important as it provides an unique identifier when &#39;</span>
-                    <span class="s1">&#39;persisting this executor on disk.&#39;</span>
-                <span class="p">)</span>
+                    <span class="s1">&#39;persisting this executor on disk.&#39;</span><span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">unresolved_attr</span><span class="p">:</span>
             <span class="n">_tmp</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -609,14 +529,10 @@
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_metas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-                            <span class="n">subvar_regex</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="n">internal_var_regex</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-                        <span class="p">):</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">subvar_regex</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="n">internal_var_regex</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">v</span><span class="p">)):</span>
                             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1"> is not substitutable or badly referred&#39;</span>
-                            <span class="p">)</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1"> is not substitutable or badly referred&#39;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
@@ -649,8 +565,6 @@
         <span class="sd">&quot;&quot;&quot;Get the file path of the binary serialized object</span>
 
 <span class="sd">        The file name ends with `.bin`.</span>
-
-<span class="sd">        :return: the name of the file with `.bin`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_from_workspace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.bin&#39;</span><span class="p">)</span>
 
@@ -658,45 +572,22 @@
     <span class="k">def</span> <span class="nf">config_abspath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get the file path of the YAML config</span>
 
-<span class="sd">        :return: The file name ends with `.yml`.</span>
+<span class="sd">        The file name ends with `.yml`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_from_workspace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">.yml&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseExecutor.get_shard_workspace"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.get_shard_workspace">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_shard_workspace</span><span class="p">(</span>
-        <span class="n">workspace_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">replica_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the path of the current shard.</span>
-
-<span class="sd">        :param workspace_folder: folder of the workspace.</span>
-<span class="sd">        :param workspace_name: name of the workspace.</span>
-<span class="sd">        :param pea_id: id of the pea</span>
-<span class="sd">        :param replica_id: id of the replica</span>
-
-<span class="sd">        :return: returns the workspace of the shard of this Executor.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">replica_id</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">replica_id</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">get_shard_workspace</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># TODO (Joan, Florian). We would prefer not to keep `pea_id` condition, but afraid many tests rely on this</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">workspace_name</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">pea_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">pea_id</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">workspace_folder</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">workspace_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the name of the workspace.</span>
-
-<span class="sd">        :return: returns the name of the executor</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Property to access `workspace` if existing or default to `./`. Useful to provide good interface when</span>
+        <span class="sd">&quot;&quot;&quot; Property to access `workspace` if existing or default to `./`. Useful to provide good interface when</span>
 <span class="sd">        using executors directly in python.</span>
 
 <span class="sd">        .. highlight:: python</span>
@@ -711,30 +602,25 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shard_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the path of the current shard.</span>
+        <span class="sd">&quot;&quot;&quot; Get the path of the current shard.</span>
 
 <span class="sd">        :return: returns the workspace of the shard of this Executor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">get_shard_workspace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">replica_id</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">BaseExecutor</span><span class="o">.</span><span class="n">get_shard_workspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pea_id</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseExecutor.get_file_from_workspace"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.get_file_from_workspace">[docs]</a>    <span class="k">def</span> <span class="nf">get_file_from_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Get a usable file path under the current workspace</span>
 
 <span class="sd">        :param name: the name of the file</span>
 
-<span class="sd">        :return: file path</span>
+<span class="sd">        :return file path</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shard_workspace</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shard_workspace</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">physical_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the size of the current workspace in bytes</span>
-
-<span class="sd">        :return: byte size of the current workspace</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return the size of the current workspace in bytes&quot;&quot;&quot;</span>
         <span class="n">root_directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shard_workspace</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">root_directory</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;**/*&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">())</span>
 
@@ -746,8 +632,6 @@
         <span class="n">cached</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;CACHED_&#39;</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">cached</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-
-        <span class="n">d</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_drivers&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">d</span>
 
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
@@ -756,11 +640,15 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_post_init_wrapper</span><span class="p">(</span><span class="n">fill_in_metas</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span><span class="si">}</span><span class="s1"> is often caused by a missing component, &#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;which often can be solved by &quot;pip install&quot; relevant package: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">,</span>
-                <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">typename</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span><span class="si">}</span><span class="s1"> is often caused by a missing component, &#39;</span>
+                                <span class="sa">f</span><span class="s1">&#39;which often can be solved by &quot;pip install&quot; relevant package: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseExecutor.train"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Train this executor, need to be overrided</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="BaseExecutor.touch"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.touch">[docs]</a>    <span class="k">def</span> <span class="nf">touch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Touch the executor and change ``is_updated`` to ``True`` so that one can call :func:`save`. &quot;&quot;&quot;</span>
@@ -778,27 +666,23 @@
 <span class="sd">            - (pre)trained models</span>
 
 <span class="sd">        .. warning::</span>
+<span class="sd">            All class members created here will NOT be serialized when calling :func:`save`. Therefore if you</span>
+<span class="sd">            want to store them, please implement the :func:`__getstate__`.</span>
 
-<span class="sd">            Class members created in `post_init` will NOT be serialized when calling :func:`save`. Therefore if you</span>
-<span class="sd">            want to store them, please override the :func:`__getstate__`.</span>
-
-<span class="sd">        It uses ``pickle`` for dumping. For members/attributes that are invalid or inefficient for ``pickle``, you</span>
+<span class="sd">        It uses ``pickle`` for dumping. For members/attributes that are not valid or not efficient for ``pickle``, you</span>
 <span class="sd">        need to implement their own persistence strategy in the :func:`__getstate__`.</span>
 
 <span class="sd">        :param filename: file path of the serialized file, if not given then :attr:`save_abspath` is used</span>
+<span class="sd">        :return: successfully persisted or not</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_only</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_updated</span><span class="p">:</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_abspath</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
-                    <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_EXECUTOR_WORKDIR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="p">)</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                                <span class="nb">dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_EXECUTOR_WORKDIR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span><span class="o">.</span><span class="n">name</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_snapshot</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-                <span class="n">bak_f</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">f</span>
-                    <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;.snapshot-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_snapshot_ts</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;NA&quot;</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="p">)</span>
+                <span class="n">bak_f</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;.snapshot-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_snapshot_ts</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">%H%M%S&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;NA&quot;</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">bak_f</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_snapshot_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bak_f</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_snapshot_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_snapshot</span><span class="p">:</span>
@@ -809,47 +693,31 @@
                 <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_last_snapshot_ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">is_updated</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;artifacts of this executor (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">) is persisted to </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;artifacts of this executor (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">) is persisted to </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_updated</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;no update since </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_snapshot_ts</span><span class="si">:</span><span class="s1">%Y-%m-%d %H:%M:%S%z</span><span class="si">}</span><span class="s1">, will not save. &#39;</span>
-                    <span class="s1">&#39;If you really want to save it, call &quot;touch()&quot; before &quot;save()&quot; to force saving&#39;</span>
-                <span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no update since </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_snapshot_ts</span><span class="si">:</span><span class="s1">%Y-%m-%d %H:%M:%S%z</span><span class="si">}</span><span class="s1">, will not save. &#39;</span>
+                                 <span class="s1">&#39;If you really want to save it, call &quot;touch()&quot; before &quot;save()&quot; to force saving&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BaseExecutor.inject_config"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.inject_config">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">inject_config</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">AnyExecutor</span><span class="p">],</span>
-        <span class="n">raw_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
-        <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">replica_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">read_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">inject_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">AnyExecutor</span><span class="p">],</span>
+                      <span class="n">raw_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+                      <span class="n">pea_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                      <span class="n">read_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                      <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Inject config into the raw_config before loading into an object.</span>
 
 <span class="sd">        :param raw_config: raw config to work on</span>
 <span class="sd">        :param pea_id: the id of the storage of this parallel pea</span>
-<span class="sd">        :param replica_id: the id of the replica the pea is contained in</span>
 <span class="sd">        :param read_only: if the executor should be readonly</span>
-<span class="sd">        :param args: Additional arguments.</span>
-<span class="sd">        :param kwargs: Additional key word arguments.</span>
-
 <span class="sd">        :return: an executor object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s1">&#39;metas&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">raw_config</span><span class="p">:</span>
             <span class="n">raw_config</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">fill_metas_with_defaults</span><span class="p">(</span><span class="n">raw_config</span><span class="p">)</span>
         <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;pea_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pea_id</span>
-        <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;replica_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">replica_id</span>
         <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">][</span><span class="s1">&#39;read_only&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">read_only</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;metas&#39;</span><span class="p">):</span>
-            <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">])</span>
-            <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;metas&#39;</span><span class="p">]</span>
-        <span class="n">tmp</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">tmp</span></div>
 
 <div class="viewcode-block" id="BaseExecutor.load"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.load">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -861,8 +729,7 @@
 
 <span class="sd">        It uses ``pickle`` for loading.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">FileNotFoundError</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">FileNotFoundError</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
@@ -871,7 +738,7 @@
 
 <div class="viewcode-block" id="BaseExecutor.close"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Release the resources as executor is destroyed, need to be overridden</span>
+<span class="sd">        Release the resources as executor is destroyed, need to be overrided</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
@@ -883,36 +750,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <div class="viewcode-block" id="BaseExecutor.attach"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.BaseExecutor.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="p">:</span> <span class="s1">&#39;ZEDRuntime&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Attach this executor to a Basepea</span>
+        <span class="sd">&quot;&quot;&quot;Attach this executor to a :class:`jina.peapods.runtime.BasePea`.</span>
 
 <span class="sd">        This is called inside the initializing of a :class:`jina.peapods.runtime.BasePea`.</span>
-
-<span class="sd">        :param runtime: Runtime procedure leveraging ZMQ.</span>
-<span class="sd">        :param args: Additional arguments.</span>
-<span class="sd">        :param kwargs: Additional key word arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">req_type</span><span class="p">,</span> <span class="n">drivers</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">driver</span> <span class="ow">in</span> <span class="n">drivers</span><span class="p">:</span>
-                <span class="n">driver</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span>
-                    <span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="o">=</span><span class="n">runtime</span><span class="p">,</span> <span class="n">req_type</span><span class="o">=</span><span class="n">req_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-                <span class="p">)</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">attach</span><span class="p">(</span><span class="n">executor</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">runtime</span><span class="o">=</span><span class="n">runtime</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># replacing the logger to runtime&#39;s logger</span>
         <span class="k">if</span> <span class="n">runtime</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">runtime</span><span class="p">,</span> <span class="s1">&#39;logger&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">JinaLogger</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">runtime</span><span class="o">.</span><span class="n">logger</span></div>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req_type</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-
-<span class="sd">        # noqa: DAR201</span>
-
-
-<span class="sd">        # noqa: DAR101</span>
-
-
-<span class="sd">        # noqa: DAR102</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">req_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drivers</span><span class="p">[</span><span class="n">req_type</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">attached</span><span class="p">:</span>
@@ -924,10 +774,6 @@
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span></div>
-
-
-<div class="viewcode-block" id="GenericExecutor"><a class="viewcode-back" href="../../../api/jina.executors/#jina.executors.GenericExecutor">[docs]</a><span class="k">class</span> <span class="nc">GenericExecutor</span><span class="p">(</span><span class="n">BaseExecutor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Alias to BaseExecutor, but bind with GenericDriver by default. &quot;&quot;&quot;</span></div>
 </pre></div>
 
            </div>
@@ -1060,7 +906,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

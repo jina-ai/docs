@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.encoders.numeric &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.executors.encoders.numeric &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -343,39 +347,57 @@
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">BaseNumericEncoder</span>
 <span class="kn">from</span> <span class="nn">...decorators</span> <span class="kn">import</span> <span class="n">batching</span>
+<span class="kn">from</span> <span class="nn">....excepts</span> <span class="kn">import</span> <span class="n">UndefinedModel</span>
 
 
 <div class="viewcode-block" id="TransformEncoder"><a class="viewcode-back" href="../../../../../api/jina.executors.encoders.numeric/#jina.executors.encoders.numeric.TransformEncoder">[docs]</a><span class="k">class</span> <span class="nc">TransformEncoder</span><span class="p">(</span><span class="n">BaseNumericEncoder</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :class:`TransformEncoder` encodes data from an ndarray in size `B x T` into an ndarray in size `B x D`</span>
-
-<span class="sd">    :param model_path: path from where to pickle the sklearn model.</span>
-<span class="sd">    :param args: Extra positional arguments to be set</span>
-<span class="sd">    :param kwargs: Extra keyword arguments to be set</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">output_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
+                 <span class="n">model_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">random_state</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2020</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param model_path: path from where to pickle the sklearn model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="n">model_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dim</span> <span class="o">=</span> <span class="n">output_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
 
 <div class="viewcode-block" id="TransformEncoder.post_init"><a class="viewcode-back" href="../../../../../api/jina.executors.encoders.numeric/#jina.executors.encoders.numeric.TransformEncoder.post_init">[docs]</a>    <span class="k">def</span> <span class="nf">post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Load the model from path if :param:`model_path` is set.&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">pickle</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">model_file</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="TransformEncoder.train"><a class="viewcode-back" href="../../../../../api/jina.executors.encoders.numeric/#jina.executors.encoders.numeric.TransformEncoder.train">[docs]</a>    <span class="nd">@batching</span>
+    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UndefinedModel</span><span class="p">(</span>
+                <span class="s1">&#39;Model is not defined: Provide a loadable pickled model, or defined any specific TransformEncoder&#39;</span><span class="p">)</span>
+        <span class="n">num_samples</span><span class="p">,</span> <span class="n">num_features</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;num_features&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_features</span> <span class="o">=</span> <span class="n">num_features</span>
+        <span class="k">if</span> <span class="n">num_samples</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">num_features</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;the batch size (=</span><span class="si">{}</span><span class="s1">) is suggested to be 5 * num_features(=</span><span class="si">{}</span><span class="s1">) to provide a balance between &#39;</span>
+                <span class="s1">&#39;approximation accuracy and memory consumption.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">num_features</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_trained</span> <span class="o">=</span> <span class="kc">True</span></div>
+
 <div class="viewcode-block" id="TransformEncoder.encode"><a class="viewcode-back" href="../../../../../api/jina.executors.encoders.numeric/#jina.executors.encoders.numeric.TransformEncoder.encode">[docs]</a>    <span class="nd">@batching</span>
-    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param content: a `B x T` numpy ``ndarray``, `B` is the size of the batch</span>
+<span class="sd">        :param data: a `B x T` numpy ``ndarray``, `B` is the size of the batch</span>
 <span class="sd">        :return: a `B x D` numpy ``ndarray``</span>
-<span class="sd">        :param args: Extra positional arguments to be set</span>
-<span class="sd">        :param kwargs: Extra keyword arguments to be set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">content</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -508,7 +530,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

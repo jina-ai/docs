@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.parsers.peapods.runtimes.zed &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.parsers.peapods.runtimes.zed &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -332,153 +336,89 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.parsers.peapods.runtimes.zed</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Argparser module for ZED runtime&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">argparse</span>
+<span></span><span class="kn">import</span> <span class="nn">argparse</span>
 
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">add_arg_group</span><span class="p">,</span> <span class="n">_SHOW_ALL_ARGS</span>
 <span class="kn">from</span> <span class="nn">....</span> <span class="kn">import</span> <span class="n">__default_host__</span>
 <span class="kn">from</span> <span class="nn">....enums</span> <span class="kn">import</span> <span class="n">OnErrorStrategy</span><span class="p">,</span> <span class="n">SocketType</span>
-<span class="kn">from</span> <span class="nn">....</span> <span class="kn">import</span> <span class="n">helper</span>
+<span class="kn">from</span> <span class="nn">....helper</span> <span class="kn">import</span> <span class="n">random_port</span>
 
 
 <div class="viewcode-block" id="mixin_zed_runtime_parser"><a class="viewcode-back" href="../../../../../../api/jina.parsers.peapods.runtimes.zed/#jina.parsers.peapods.runtimes.zed.mixin_zed_runtime_parser">[docs]</a><span class="k">def</span> <span class="nf">mixin_zed_runtime_parser</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Mixing in arguments required by :class:`ZEDRuntime` into the given parser.</span>
-<span class="sd">    :param parser: the parser instance to which we add arguments</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Mixing in arguments required by :class:`ZEDRuntime` into the given parser.&quot;&quot;&quot;</span>
 
     <span class="n">gp</span> <span class="o">=</span> <span class="n">add_arg_group</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;ZEDRuntime&#39;</span><span class="p">)</span>
 
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--uses&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;_pass&#39;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">            The config of the executor, it could be one of the followings:</span>
-<span class="s1">            * an Executor-level YAML file path (.yml, .yaml, .jaml)</span>
-<span class="s1">            * a name of a class inherited from `jina.Executor`</span>
-<span class="s1">            * a docker image (must start with `docker://`)</span>
-<span class="s1">            * builtin executors, e.g. `_pass`, `_logforward`, `_merge`</span>
-<span class="s1">            * the string literal of a YAML config (must start with `!`)</span>
-<span class="s1">            * the string literal of a JSON config</span>
-<span class="s1">            * the string literal of a YAML driver config (must start with `- !!`)</span>
-<span class="s1">            </span>
-<span class="s1">            When use it under Python, one can use the following values additionally:</span>
-<span class="s1">            - a Python dict that represents the config</span>
-<span class="s1">            - a text file stream has `.read()` interface</span>
-<span class="s1">            &#39;&#39;&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--py-modules&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
-        <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;PATH&#39;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--uses&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;_pass&#39;</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">The config of the executor, it could be one of the followings: </span>
+<span class="s1">- an Executor-level YAML file path (*.yml/yaml) </span>
+<span class="s1">- a name of a class inherited from `jina.Executor`</span>
+<span class="s1">- a docker image (must start with `docker://`)</span>
+<span class="s1">- builtin executors, e.g. `_pass`, `_logforward`, `_merge` </span>
+<span class="s1">- the string literal of a YAML config (must start with `!`)</span>
+<span class="s1">- the string literal of a JSON config</span>
+<span class="s1">- the string literal of a YAML driver config (must start with `- !!`)</span>
+
+<span class="s1">When use it under Python, one can use the following values additionally:</span>
+<span class="s1">- a Python dict that represents the config</span>
+<span class="s1">- a text file stream has `.read()` interface</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--py-modules&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;PATH&#39;</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">The customized python modules need to be imported before loading the executor</span>
 
-<span class="s1">Note, when importing multiple files and there is a dependency between them, then one has to write the dependencies in</span>
-<span class="s1">reverse order. That is, if `__init__.py` depends on `A.py`, which again depends on `B.py`, then you need to write:</span>
+<span class="s1">Note, when importing multiple files and there is a dependency between them, then one has to write the dependencies in </span>
+<span class="s1">reverse order. That is, if `__init__.py` depends on `A.py`, which again depends on `B.py`, then you need to write: </span>
 
 <span class="s1">--py-modules __init__.py --py-modules B.py --py-modules A.py</span>
 
-<span class="s1">&#39;&#39;&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
 
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--port-in&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">helper</span><span class="o">.</span><span class="n">random_port</span><span class="p">(),</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The port for input data, default a random port between [49152, 65535]&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--port-out&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">helper</span><span class="o">.</span><span class="n">random_port</span><span class="p">(),</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The port for output data, default a random port between [49152, 65535]&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--host-in&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">__default_host__</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;The host address for input, by default it is </span><span class="si">{</span><span class="n">__default_host__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--host-out&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">__default_host__</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;The host address for output, by default it is </span><span class="si">{</span><span class="n">__default_host__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--socket-in&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">SocketType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span>
-        <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">SocketType</span><span class="p">),</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">SocketType</span><span class="o">.</span><span class="n">PULL_BIND</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The socket type for input port&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--socket-out&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">SocketType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span>
-        <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">SocketType</span><span class="p">),</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">SocketType</span><span class="o">.</span><span class="n">PUSH_BIND</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The socket type for output port&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--port-in&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">random_port</span><span class="p">(),</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The port for input data, default a random port between [49152, 65535]&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--port-out&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">random_port</span><span class="p">(),</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The port for output data, default a random port between [49152, 65535]&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--host-in&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">__default_host__</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;The host address for input, by default it is </span><span class="si">{</span><span class="n">__default_host__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--host-out&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">__default_host__</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;The host address for output, by default it is </span><span class="si">{</span><span class="n">__default_host__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--socket-in&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">SocketType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">SocketType</span><span class="p">),</span>
+                    <span class="n">default</span><span class="o">=</span><span class="n">SocketType</span><span class="o">.</span><span class="n">PULL_BIND</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The socket type for input port&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--socket-out&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">SocketType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">SocketType</span><span class="p">),</span>
+                    <span class="n">default</span><span class="o">=</span><span class="n">SocketType</span><span class="o">.</span><span class="n">PUSH_BIND</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The socket type for output port&#39;</span><span class="p">)</span>
 
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--load-interval&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Reload the Executor in the Pod on every n seconds. &#39;</span>
-        <span class="s1">&#39;-1 or 0 means do not reload. &#39;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dump-interval&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">240</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Serialize the model in the pod every n seconds if model changes. &#39;</span>
+                         <span class="s1">&#39;-1 means --read-only. &#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--read-only&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If set, do not allow the pod to modify the model, &#39;</span>
+                         <span class="s1">&#39;dump_interval will be ignored&#39;</span><span class="p">)</span>
 
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--dump-interval&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">240</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Serialize the Executor in the Pod every n seconds if model changes. &#39;</span>
-        <span class="s1">&#39;-1 means --read-only. &#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--read-only&#39;</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;If set, do not allow the pod to modify the model, &#39;</span>
-        <span class="s1">&#39;dump_interval will be ignored&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--memory-hwm&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The memory high watermark of this pod in Gigabytes, pod will restart when this is reached. &#39;</span>
+                         <span class="s1">&#39;-1 means no restriction&#39;</span><span class="p">)</span>
 
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--memory-hwm&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The memory high watermark of this pod in Gigabytes, pod will restart when this is reached. &#39;</span>
-        <span class="s1">&#39;-1 means no restriction&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--on-error-strategy&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">OnErrorStrategy</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span>
-        <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">OnErrorStrategy</span><span class="p">),</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">OnErrorStrategy</span><span class="o">.</span><span class="n">IGNORE</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--on-error-strategy&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">OnErrorStrategy</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">OnErrorStrategy</span><span class="p">),</span>
+                    <span class="n">default</span><span class="o">=</span><span class="n">OnErrorStrategy</span><span class="o">.</span><span class="n">IGNORE</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">The skip strategy on exceptions.</span>
 
 <span class="s1">- IGNORE: Ignore it, keep running all Drivers &amp; Executors logics in the sequel flow</span>
 <span class="s1">- SKIP_EXECUTOR: Skip all Executors in the sequel, but drivers are still called</span>
 <span class="s1">- SKIP_HANDLE: Skip all Drivers &amp; Executors in the sequel, only `pre_hook` and `post_hook` are called</span>
-<span class="s1">- THROW_EARLY: Immediately throw the exception, the sequel flow will not be running at all</span>
-
-<span class="s1">Note, `IGNORE`, `SKIP_EXECUTOR` and `SKIP_HANDLE` do not guarantee the success execution in the sequel flow. If something</span>
+<span class="s1">- THROW_EARLY: Immediately throw the exception, the sequel flow will not be running at all </span>
+<span class="s1">                    </span>
+<span class="s1">Note, `IGNORE`, `SKIP_EXECUTOR` and `SKIP_HANDLE` do not guarantee the success execution in the sequel flow. If something </span>
 <span class="s1">is wrong in the upstream, it is hard to carry this exception and moving forward without any side-effect.</span>
-<span class="s1">&#39;&#39;&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
 
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--num-part&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the number of messages expected from upstream, 0 and 1 means single part&#39;</span>
-        <span class="k">if</span> <span class="n">_SHOW_ALL_ARGS</span>
-        <span class="k">else</span> <span class="n">argparse</span><span class="o">.</span><span class="n">SUPPRESS</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num-part&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;the number of messages expected from upstream, 0 and 1 means single part&#39;</span>
+                    <span class="k">if</span> <span class="n">_SHOW_ALL_ARGS</span> <span class="k">else</span> <span class="n">argparse</span><span class="o">.</span><span class="n">SUPPRESS</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>
@@ -611,7 +551,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

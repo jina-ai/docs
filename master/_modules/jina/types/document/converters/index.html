@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.document.converters &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.types.document.converters &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -351,33 +355,26 @@
     <span class="c1"># reverse the vertical line order and add null bytes at the start</span>
     <span class="n">width_byte_4</span> <span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="mi">4</span>
     <span class="n">raw_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-        <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">buf</span><span class="p">[</span><span class="n">span</span> <span class="p">:</span> <span class="n">span</span> <span class="o">+</span> <span class="n">width_byte_4</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">span</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">width_byte_4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">width_byte_4</span><span class="p">)</span>
-    <span class="p">)</span>
+        <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">buf</span><span class="p">[</span><span class="n">span</span><span class="p">:</span><span class="n">span</span> <span class="o">+</span> <span class="n">width_byte_4</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">span</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">width_byte_4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span> <span class="n">width_byte_4</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">png_pack</span><span class="p">(</span><span class="n">png_tag</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="n">chunk_head</span> <span class="o">=</span> <span class="n">png_tag</span> <span class="o">+</span> <span class="n">data</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;!I&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
-            <span class="o">+</span> <span class="n">chunk_head</span>
-            <span class="o">+</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;!I&#39;</span><span class="p">,</span> <span class="mh">0xFFFFFFFF</span> <span class="o">&amp;</span> <span class="n">zlib</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">chunk_head</span><span class="p">))</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;!I&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+                <span class="o">+</span> <span class="n">chunk_head</span>
+                <span class="o">+</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;!I&#39;</span><span class="p">,</span> <span class="mh">0xFFFFFFFF</span> <span class="o">&amp;</span> <span class="n">zlib</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">chunk_head</span><span class="p">)))</span>
 
-    <span class="n">png_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-        <span class="p">[</span>
-            <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x89</span><span class="s1">PNG</span><span class="se">\r\n\x1a\n</span><span class="s1">&#39;</span><span class="p">,</span>
-            <span class="n">png_pack</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;IHDR&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;!2I5B&#39;</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
-            <span class="n">png_pack</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;IDAT&#39;</span><span class="p">,</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span>
-            <span class="n">png_pack</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;IEND&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
-        <span class="p">]</span>
-    <span class="p">)</span>
+    <span class="n">png_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+        <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x89</span><span class="s1">PNG</span><span class="se">\r\n\x1a\n</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">png_pack</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;IHDR&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;!2I5B&#39;</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+        <span class="n">png_pack</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;IDAT&#39;</span><span class="p">,</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="mi">9</span><span class="p">)),</span>
+        <span class="n">png_pack</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;IEND&#39;</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)])</span>
 
     <span class="k">return</span> <span class="n">png_bytes</span>
 
 
 <span class="k">def</span> <span class="nf">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">image_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">io</span>
-
     <span class="n">img_byte_arr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
     <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">img_byte_arr</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">image_format</span><span class="p">)</span>
     <span class="n">img_byte_arr</span> <span class="o">=</span> <span class="n">img_byte_arr</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
@@ -400,13 +397,11 @@
         <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_png_to_buffer_1d</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-
         <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">)</span>
         <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Image</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">))</span>
         <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="s1">&#39;PNG&#39;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-
         <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
         <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">),</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Image</span><span class="p">,</span> <span class="n">resize_method</span><span class="p">))</span>
         <span class="n">png_bytes</span> <span class="o">=</span> <span class="n">_pillow_image_to_buffer</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">image_format</span><span class="o">=</span><span class="s1">&#39;PNG&#39;</span><span class="p">)</span>
@@ -417,15 +412,7 @@
 
 
 <div class="viewcode-block" id="to_image_blob"><a class="viewcode-back" href="../../../../../api/jina.types.document.converters/#jina.types.document.converters.to_image_blob">[docs]</a><span class="k">def</span> <span class="nf">to_image_blob</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">color_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert an image buffer to blob</span>
-
-<span class="sd">    :param source: image bytes buffer</span>
-<span class="sd">    :param color_axis: the axis id of the color channel, ``-1`` indicates the color channel info at the last axis</span>
-<span class="sd">    :return: image blob</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-
     <span class="n">raw_img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGB&#39;</span><span class="p">)</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raw_img</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">color_axis</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
@@ -433,9 +420,7 @@
     <span class="k">return</span> <span class="n">img</span></div>
 
 
-<div class="viewcode-block" id="to_datauri"><a class="viewcode-back" href="../../../../../api/jina.types.document.converters/#jina.types.document.converters.to_datauri">[docs]</a><span class="k">def</span> <span class="nf">to_datauri</span><span class="p">(</span>
-    <span class="n">mimetype</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">charset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">base64</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="p">):</span>
+<div class="viewcode-block" id="to_datauri"><a class="viewcode-back" href="../../../../../api/jina.types.document.converters/#jina.types.document.converters.to_datauri">[docs]</a><span class="k">def</span> <span class="nf">to_datauri</span><span class="p">(</span><span class="n">mimetype</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">charset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">base64</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">binary</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert data to data URI.</span>
 
@@ -443,8 +428,8 @@
 <span class="sd">    :param data: Data representations.</span>
 <span class="sd">    :param charset: Charset may be any character set registered with IANA</span>
 <span class="sd">    :param base64: Used to encode arbitrary octet sequences into a form that satisfies the rules of 7bit. Designed to be efficient for non-text 8 bit and binary data. Sometimes used for text data that frequently uses non-US-ASCII characters.</span>
-<span class="sd">    :param binary: True if from binary data False for other data (e.g. text)</span>
-<span class="sd">    :return: URI data</span>
+<span class="sd">    :param binary:</span>
+<span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;data:&#39;</span><span class="p">,</span> <span class="n">mimetype</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">charset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -452,14 +437,12 @@
     <span class="k">if</span> <span class="n">base64</span><span class="p">:</span>
         <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;;base64&#39;</span><span class="p">)</span>
         <span class="kn">from</span> <span class="nn">base64</span> <span class="kn">import</span> <span class="n">encodebytes</span> <span class="k">as</span> <span class="n">encode64</span>
-
         <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
             <span class="n">encoded_data</span> <span class="o">=</span> <span class="n">encode64</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">charset</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">encoded_data</span> <span class="o">=</span> <span class="n">encode64</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">quote_from_bytes</span><span class="p">,</span> <span class="n">quote</span>
-
         <span class="k">if</span> <span class="n">binary</span><span class="p">:</span>
             <span class="n">encoded_data</span> <span class="o">=</span> <span class="n">quote_from_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -615,7 +598,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

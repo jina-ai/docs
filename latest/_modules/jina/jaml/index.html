@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.jaml &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.jaml &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -335,7 +339,7 @@
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">yaml.constructor</span> <span class="kn">import</span> <span class="n">FullConstructor</span>
@@ -347,9 +351,7 @@
 <span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">BadConfigSource</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">expand_env_var</span>
 
-<span class="n">subvar_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-    <span class="sa">r</span><span class="s1">&#39;\${{\s*([\w\[\].]+)\s*}}&#39;</span>
-<span class="p">)</span>  <span class="c1">#: regex for substituting variables</span>
+<span class="n">subvar_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\${{\s*([\w\[\].]+)\s*}}&#39;</span><span class="p">)</span>  <span class="c1">#: regex for substituting variables</span>
 <span class="n">internal_var_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;{.+}|\$[a-zA-Z0-9_]*\b&#39;</span><span class="p">)</span>
 
 
@@ -403,7 +405,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="JAML.load"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAML.load">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="n">substitute</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span>
+             <span class="n">substitute</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+             <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse the first YAML document in a stream and produce the corresponding Python object.</span>
 
 <span class="sd">        .. note::</span>
@@ -423,89 +427,21 @@
             <span class="n">r</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">expand_dict</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span></div>
 
-<div class="viewcode-block" id="JAML.escape"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAML.escape">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">escape</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">include_unknown_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Escape the YAML content by replacing all customized tags ``!`` to ``jtype: ``.</span>
-
-<span class="sd">        :param value: the original YAML content</span>
-<span class="sd">        :param include_unknown_tags: if to include unknown tags during escaping</span>
-<span class="sd">        :return: escaped YAML</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">include_unknown_tags</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;!(\w+)\b&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">JAML</span><span class="o">.</span><span class="n">registered_tags</span><span class="p">())</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;!(</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1">)\b&#39;</span>
-        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;jtype: \1&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="JAML.unescape"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAML.unescape">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">unescape</span><span class="p">(</span>
-        <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">include_unknown_tags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">jtype_whitelist</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Unescape the YAML content by replacing all ``jtype: `` to tags.</span>
-
-<span class="sd">        :param value: the escaped YAML content</span>
-<span class="sd">        :param include_unknown_tags: if to include unknown tags during unescaping</span>
-<span class="sd">        :param jtype_whitelist: the list of jtype to be unescaped</span>
-<span class="sd">        :return: unescaped YAML</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">include_unknown_tags</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;jtype: (\w+)\b&#39;</span>
-        <span class="k">elif</span> <span class="n">jtype_whitelist</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jtype_whitelist</span><span class="p">)</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;jtype: (</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1">)\b&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">JAML</span><span class="o">.</span><span class="n">registered_tags</span><span class="p">())</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="sa">rf</span><span class="s1">&#39;jtype: (</span><span class="si">{</span><span class="n">r</span><span class="si">}</span><span class="s1">)\b&#39;</span>
-        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;!\1&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="JAML.registered_tags"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAML.registered_tags">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">registered_tags</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a list of :class:`JAMLCompatible` classes that have been registered.</span>
-
-<span class="sd">        :return: tags</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span>
-            <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">JinaLoader</span><span class="o">.</span><span class="n">yaml_constructors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;!&#39;</span><span class="p">)</span>
-        <span class="p">)</span></div>
-
 <div class="viewcode-block" id="JAML.load_no_tags"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAML.load_no_tags">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">load_no_tags</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load yaml object but ignore all customized tags, e.g. !Executor, !Driver, !Flow.</span>
-
+        <span class="sd">&quot;&quot;&quot;Load yaml object but ignore all customized tags, e.g. !Executor, !Driver, !Flow</span>
 <span class="sd">        :param stream: the output stream</span>
-<span class="sd">        :param kwargs: other kwargs</span>
+<span class="sd">        :param **kwargs: other kwargs</span>
 <span class="sd">        :return: the Python object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">safe_yml</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">))</span>
+        <span class="n">safe_yml</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">v</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;^[\s-]*?!\b&#39;</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;__cls: &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">JAML</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">safe_yml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="JAML.expand_dict"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAML.expand_dict">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">expand_dict</span><span class="p">(</span>
-        <span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
-        <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">SimpleNamespace</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">resolve_cycle_ref</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">resolve_passes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Expand variables from YAML file.</span>
-
-<span class="sd">        :param d: yaml file loaded as python dict</span>
-<span class="sd">        :param context: context replacement variables in a dict, the value of the dict is the replacement.</span>
-<span class="sd">        :param resolve_cycle_ref: resolve internal reference if True.</span>
-<span class="sd">        :param resolve_passes: number of rounds to resolve internal reference.</span>
-<span class="sd">        :return: expanded dict.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">expand_dict</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">SimpleNamespace</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">resolve_cycle_ref</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">resolve_passes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
         <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">parse_arg</span>
-
         <span class="n">expand_map</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
         <span class="n">env_map</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
 
@@ -634,23 +570,18 @@
     <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Serialize a Python object into a YAML stream.</span>
-
 <span class="sd">        If stream is None, return the produced string instead.</span>
 
 <span class="sd">        :param data: the data to serialize</span>
 <span class="sd">        :param stream: the output stream</span>
-<span class="sd">        :param kwargs: other kwargs</span>
+<span class="sd">        :param **kwargs: other kwargs</span>
 <span class="sd">        :return: the yaml output</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span>
-            <span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">stream</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">stream</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="JAML.register"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAML.register">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Register a class for dumping loading.</span>
-
+        <span class="sd">&quot;&quot;&quot;register a class for dumping loading</span>
 <span class="sd">            - if it has attribute yaml_tag use that to register, else use class name</span>
 <span class="sd">            - if it has methods to_yaml/from_yaml use those to dump/load else dump attributes</span>
 <span class="sd">              as mapping</span>
@@ -658,20 +589,13 @@
 <span class="sd">        :param cls: the class to register</span>
 <span class="sd">        :return: the registered class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">tag</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;yaml_tag&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">yaml</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_to_yaml</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-
             <span class="k">def</span> <span class="nf">t_y</span><span class="p">(</span><span class="n">representer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-                <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">                Wrapper function for the representer.</span>
-
-<span class="sd">                :param representer: yaml representer</span>
-<span class="sd">                :param data: state of the representer</span>
-<span class="sd">                :return: node</span>
-<span class="sd">                &quot;&quot;&quot;</span>
                 <span class="k">return</span> <span class="n">representer</span><span class="o">.</span><span class="n">represent_yaml_object</span><span class="p">(</span>
                     <span class="n">tag</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">flow_style</span><span class="o">=</span><span class="n">representer</span><span class="o">.</span><span class="n">default_flow_style</span>
                 <span class="p">)</span>
@@ -682,13 +606,6 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
 
             <span class="k">def</span> <span class="nf">f_y</span><span class="p">(</span><span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-                <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">                Wrapper function for the constructor.</span>
-
-<span class="sd">                :param constructor: yaml constructor</span>
-<span class="sd">                :param node: to be added</span>
-<span class="sd">                :return: generator</span>
-<span class="sd">                &quot;&quot;&quot;</span>
                 <span class="k">return</span> <span class="n">constructor</span><span class="o">.</span><span class="n">construct_yaml_object</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>
 
             <span class="n">yaml</span><span class="o">.</span><span class="n">add_constructor</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">f_y</span><span class="p">,</span> <span class="n">JinaLoader</span><span class="p">)</span>
@@ -696,11 +613,8 @@
 
 
 <span class="k">class</span> <span class="nc">JAMLCompatibleType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Metaclass for :class:`JAMLCompatible`.</span>
-
-<span class="sd">    It enables any class inherit from :class:`JAMLCompatible` to auto-register itself at :class:`JAML`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Metaclass for :class:`JAMLCompatible`.</span>
+<span class="sd">    It enables any class inherit from :class:`JAMLCompatible` to auto-register itself at :class:`JAML`&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -710,7 +624,6 @@
 
 <div class="viewcode-block" id="JAMLCompatible"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAMLCompatible">[docs]</a><span class="k">class</span> <span class="nc">JAMLCompatible</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">JAMLCompatibleType</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;:class:`JAMLCompatible` is a mixin class designed to be used with multiple inheritance.</span>
-
 <span class="sd">    It will add :meth:`to_yaml` and :meth:`from_yaml` to the target class,</span>
 <span class="sd">    making that class JAML-friendly.</span>
 
@@ -722,8 +635,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">representer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        A low-level interface required by :mod:`pyyaml` write interface.</span>
+        <span class="sd">&quot;&quot;&quot;A low-level interface required by :mod:`pyyaml` write interface</span>
 
 <span class="sd">        .. warning::</span>
 <span class="sd">            This function should not be used directly, please use :meth:`save_config`.</span>
@@ -733,13 +645,12 @@
 <span class="sd">        :return: the node&#39;s representation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">get_parser</span>
-
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">get_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">_version</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">representer</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span><span class="s1">&#39;!&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">:</span> <span class="n">FullConstructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;A low-level interface required by :mod:`pyyaml` load interface.</span>
+        <span class="sd">&quot;&quot;&quot;A low-level interface required by :mod:`pyyaml` load interface</span>
 
 <span class="sd">        .. warning::</span>
 <span class="sd">            This function should not be used directly, please use :meth:`load_config`.</span>
@@ -750,36 +661,27 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">constructor</span><span class="o">.</span><span class="n">construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="kn">from</span> <span class="nn">.parsers</span> <span class="kn">import</span> <span class="n">get_parser</span>
-
         <span class="k">return</span> <span class="n">get_parser</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
 <div class="viewcode-block" id="JAMLCompatible.save_config"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAMLCompatible.save_config">[docs]</a>    <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save the object&#39;s config into a YAML file.</span>
+        <span class="sd">&quot;&quot;&quot;Save the object&#39;s config into a YAML file</span>
 
 <span class="sd">        :param filename: file path of the yaml file, if not given then :attr:`config_abspath` is used</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;config_abspath&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
-                <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_EXECUTOR_WORKDIR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">name</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;no &quot;filename&quot; is given, </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="se">\&#39;</span><span class="s1">s config will be saved to: </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_EXECUTOR_WORKDIR&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;no &quot;filename&quot; is given, </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="se">\&#39;</span><span class="s1">s config will be saved to: </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fp</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="JAMLCompatible.load_config"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAMLCompatible.load_config">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span>
-        <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span>
-        <span class="o">*</span><span class="p">,</span>
-        <span class="n">allow_py_modules</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">substitute</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;JAMLCompatible&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+                    <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span>
+                    <span class="n">allow_py_modules</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="n">substitute</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="n">context</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;JAMLCompatible&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;A high-level interface for loading configuration with features</span>
 <span class="sd">        of loading extra py_modules, substitute env &amp; context variables. Any class that</span>
 <span class="sd">        implements :class:`JAMLCompatible` mixin can enjoy this feature, e.g. :class:`BaseFlow`,</span>
@@ -818,13 +720,12 @@
 <span class="sd">            # disable substitute</span>
 <span class="sd">            b = BaseExecutor.load_config(&#39;a.yml&#39;, substitute=False)</span>
 
-
-<span class="sd">        .. # noqa: DAR401</span>
+<span class="sd">        # noqa: DAR401</span>
 <span class="sd">        :param source: the multi-kind source of the configs.</span>
 <span class="sd">        :param allow_py_modules: allow importing plugins specified by ``py_modules`` in YAML at any levels</span>
 <span class="sd">        :param substitute: substitute environment, internal reference and context variables.</span>
 <span class="sd">        :param context: context replacement variables in a dict, the value of the dict is the replacement.</span>
-<span class="sd">        :param kwargs: kwargs for parse_config_source</span>
+<span class="sd">        :param **kwargs: **kwargs for parse_config_source</span>
 <span class="sd">        :return: :class:`JAMLCompatible` object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">stream</span><span class="p">,</span> <span class="n">s_path</span> <span class="o">=</span> <span class="n">parse_config_source</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -835,32 +736,18 @@
                 <span class="c1"># extra arguments are parsed to inject_config</span>
                 <span class="n">no_tag_yml</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">inject_config</span><span class="p">(</span><span class="n">no_tag_yml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">BadConfigSource</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;can not construct </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1"> from an empty </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s1">. nothing to read from there&#39;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">BadConfigSource</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;can not construct </span><span class="si">{</span><span class="bp">cls</span><span class="si">}</span><span class="s1"> from an empty </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s1">. nothing to read from there&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">substitute</span><span class="p">:</span>
                 <span class="c1"># expand variables</span>
                 <span class="n">no_tag_yml</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">expand_dict</span><span class="p">(</span><span class="n">no_tag_yml</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">allow_py_modules</span><span class="p">:</span>
                 <span class="c1"># also add YAML parent path to the search paths</span>
-                <span class="n">load_py_modules</span><span class="p">(</span>
-                    <span class="n">no_tag_yml</span><span class="p">,</span>
-                    <span class="n">extra_search_paths</span><span class="o">=</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">s_path</span><span class="p">),)</span> <span class="k">if</span> <span class="n">s_path</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="kn">from</span> <span class="nn">..flow</span> <span class="kn">import</span> <span class="n">BaseFlow</span>
-
-            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">BaseFlow</span><span class="p">):</span>
-                <span class="n">tag_yml</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span>
-                    <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">no_tag_yml</span><span class="p">),</span>
-                    <span class="n">include_unknown_tags</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                    <span class="n">jtype_whitelist</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Flow&#39;</span><span class="p">,</span> <span class="s1">&#39;AsyncFlow&#39;</span><span class="p">),</span>
-                <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># revert yaml&#39;s tag and load again, this time with substitution</span>
-                <span class="n">tag_yml</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">no_tag_yml</span><span class="p">))</span>
+                <span class="n">load_py_modules</span><span class="p">(</span><span class="n">no_tag_yml</span><span class="p">,</span> <span class="n">extra_search_paths</span><span class="o">=</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">s_path</span><span class="p">),)</span> <span class="k">if</span> <span class="n">s_path</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="c1"># revert yaml&#39;s tag and load again, this time with substitution</span>
+            <span class="n">revert_tag_yml</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">no_tag_yml</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;__cls: &#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">)</span>
 
             <span class="c1"># load into object, no more substitute</span>
-            <span class="k">return</span> <span class="n">JAML</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">tag_yml</span><span class="p">,</span> <span class="n">substitute</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">JAML</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">revert_tag_yml</span><span class="p">,</span> <span class="n">substitute</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="JAMLCompatible.inject_config"><a class="viewcode-back" href="../../../api/jina.jaml/#jina.jaml.JAMLCompatible.inject_config">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">inject_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">raw_config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
@@ -870,8 +757,8 @@
 <span class="sd">            This function is most likely to be overridden by its subclass.</span>
 
 <span class="sd">        :param raw_config: raw config to work on</span>
-<span class="sd">        :param args: not used</span>
-<span class="sd">        :param kwargs: not used</span>
+<span class="sd">        :param *args: *args</span>
+<span class="sd">        :param **kwargs: **kwargs</span>
 <span class="sd">        :return: the config</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">raw_config</span></div></div>
@@ -1007,7 +894,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

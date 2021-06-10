@@ -1,4 +1,4 @@
-# CRUD Operations in Jina
+# CRUD Operations
 
 ##### In this section, you will get an overview of how Jina implements CRUD: Create, Read, Update, Delete  
 

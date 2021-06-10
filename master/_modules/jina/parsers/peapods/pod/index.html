@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.parsers.peapods.pod &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.parsers.peapods.pod &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -332,86 +336,41 @@
            <div itemprop="articleBody">
             
   <h1>Source code for jina.parsers.peapods.pod</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Argparser module for Pod runtimes&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">argparse</span>
+<span></span><span class="kn">import</span> <span class="nn">argparse</span>
 
 <span class="kn">from</span> <span class="nn">jina.enums</span> <span class="kn">import</span> <span class="n">PollingType</span><span class="p">,</span> <span class="n">SchedulerType</span><span class="p">,</span> <span class="n">PodRoleType</span>
-<span class="kn">from</span> <span class="nn">jina.parsers.helper</span> <span class="kn">import</span> <span class="n">add_arg_group</span><span class="p">,</span> <span class="n">_SHOW_ALL_ARGS</span><span class="p">,</span> <span class="n">KVAppendAction</span>
+<span class="kn">from</span> <span class="nn">jina.parsers.helper</span> <span class="kn">import</span> <span class="n">add_arg_group</span><span class="p">,</span> <span class="n">_SHOW_ALL_ARGS</span>
 
 
 <div class="viewcode-block" id="mixin_base_pod_parser"><a class="viewcode-back" href="../../../../../api/jina.parsers.peapods.pod/#jina.parsers.peapods.pod.mixin_base_pod_parser">[docs]</a><span class="k">def</span> <span class="nf">mixin_base_pod_parser</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Add mixin arguments required by :class:`BasePod` into the given parser.</span>
-
-<span class="sd">    :param parser: the parser instance to which we add arguments</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Mixing in arguments required by :class:`BasePod` into the given parser. &quot;&quot;&quot;</span>
     <span class="n">gp</span> <span class="o">=</span> <span class="n">add_arg_group</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Pod&#39;</span><span class="p">)</span>
 
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--uses-before&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The executor attached after the Peas described by --uses, typically before sending to all &#39;</span>
-        <span class="s1">&#39;parallels, accepted type follows `--uses`&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--uses-after&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The executor attached after the Peas described by --uses, typically used for receiving from &#39;</span>
-        <span class="s1">&#39;all parallels, accepted type follows `--uses`&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--parallel&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;--shards&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The number of parallel peas in the pod running at the same time, &#39;</span>
-        <span class="s1">&#39;`port_in` and `port_out` will be set to random, &#39;</span>
-        <span class="s1">&#39;and routers will be added automatically when necessary&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--replicas&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The number of replicas in the pod, &#39;</span>
-        <span class="s1">&#39;`port_in` and `port_out` will be set to random, &#39;</span>
-        <span class="s1">&#39;and routers will be added automatically when necessary&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--polling&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">PollingType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span>
-        <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">PollingType</span><span class="p">),</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">PollingType</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
-<span class="s1">The polling strategy of the Pod (when `parallel&gt;1`)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--uses-before&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The executor attached after the Peas described by --uses, typically before sending to all &#39;</span>
+                         <span class="s1">&#39;parallels, accepted type follows `--uses`&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--uses-after&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The executor attached after the Peas described by --uses, typically used for receiving from &#39;</span>
+                         <span class="s1">&#39;all parallels, accepted type follows `--uses`&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--parallel&#39;</span><span class="p">,</span> <span class="s1">&#39;--shards&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The number of parallel peas in the pod running at the same time, &#39;</span>
+                         <span class="s1">&#39;`port_in` and `port_out` will be set to random, &#39;</span>
+                         <span class="s1">&#39;and routers will be added automatically when necessary&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--polling&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">PollingType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">PollingType</span><span class="p">),</span>
+                    <span class="n">default</span><span class="o">=</span><span class="n">PollingType</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">The polling strategy of the Pod (when `parallel&gt;1`) </span>
 <span class="s1">- ANY: only one (whoever is idle) Pea polls the message</span>
 <span class="s1">- ALL: all Peas poll the message (like a broadcast)</span>
-<span class="s1">&#39;&#39;&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--scheduling&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">SchedulerType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span>
-        <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">SchedulerType</span><span class="p">),</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">SchedulerType</span><span class="o">.</span><span class="n">LOAD_BALANCE</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The strategy of scheduling workload among Peas&#39;</span><span class="p">,</span>
-    <span class="p">)</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--scheduling&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">SchedulerType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">SchedulerType</span><span class="p">),</span>
+                    <span class="n">default</span><span class="o">=</span><span class="n">SchedulerType</span><span class="o">.</span><span class="n">LOAD_BALANCE</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The strategy of scheduling workload among Peas&#39;</span><span class="p">)</span>
 
     <span class="c1"># hidden CLI used for internal only</span>
 
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--pod-role&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="n">PodRoleType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span>
-        <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">PodRoleType</span><span class="p">),</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The role of this pod in the flow&#39;</span>
-        <span class="k">if</span> <span class="n">_SHOW_ALL_ARGS</span>
-        <span class="k">else</span> <span class="n">argparse</span><span class="o">.</span><span class="n">SUPPRESS</span><span class="p">,</span>
-    <span class="p">)</span>
-    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s1">&#39;--peas-hosts&#39;</span><span class="p">,</span>
-        <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;The hosts of the peas when parallel greater than 1.</span>
-<span class="s1">        Peas will be evenly distributed among the hosts. By default,</span>
-<span class="s1">        peas are running on host provided by the argument ``host``&#39;&#39;&#39;</span><span class="p">,</span>
-    <span class="p">)</span></div>
+    <span class="n">gp</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--pod-role&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">PodRoleType</span><span class="o">.</span><span class="n">from_string</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">PodRoleType</span><span class="p">),</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The role of this pod in the flow&#39;</span> <span class="k">if</span> <span class="n">_SHOW_ALL_ARGS</span> <span class="k">else</span> <span class="n">argparse</span><span class="o">.</span><span class="n">SUPPRESS</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -544,7 +503,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

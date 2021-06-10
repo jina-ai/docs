@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.logging.logger &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.logging.logger &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -337,6 +341,7 @@
 <span class="kn">import</span> <span class="nn">logging.handlers</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
@@ -345,6 +350,85 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">formatter</span>
 <span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">LogVerbosity</span>
 <span class="kn">from</span> <span class="nn">..jaml</span> <span class="kn">import</span> <span class="n">JAML</span>
+
+
+<div class="viewcode-block" id="NTLogger"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger">[docs]</a><span class="k">class</span> <span class="nc">NTLogger</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;A compatible logger for Windows system, colors are all removed to keep compatible.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">log_level</span><span class="p">:</span> <span class="s1">&#39;LogVerbosity&#39;</span> <span class="o">=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">INFO</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a compatible logger for Windows system, colors are all removed to keep compatible.</span>
+
+<span class="sd">        :param context: The name prefix of each log.</span>
+<span class="sd">        :param log_level: Level of log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="n">log_level</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\u001b\[.*?[@-~]&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NTLogger.info"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log info-level message.</span>
+
+<span class="sd">        :param msg: Context of log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[I]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NTLogger.critical"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.critical">[docs]</a>    <span class="k">def</span> <span class="nf">critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log critical-level message.</span>
+
+<span class="sd">        :param msg: Context of log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[C]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NTLogger.debug"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.debug">[docs]</a>    <span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log debug-level message.</span>
+
+<span class="sd">        :param msg: Content of log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[D]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NTLogger.error"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.error">[docs]</a>    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log error-level message.</span>
+
+<span class="sd">        :param msg: Context of log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">ERROR</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[E]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NTLogger.warning"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.warning">[docs]</a>    <span class="k">def</span> <span class="nf">warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log warning-level message.</span>
+
+<span class="sd">        :param msg: Context of log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">WARNING</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[W]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NTLogger.success"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.NTLogger.success">[docs]</a>    <span class="k">def</span> <span class="nf">success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Log success-level message.</span>
+
+<span class="sd">        :param msg: Context of log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_level</span> <span class="o">&lt;=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">[S]:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PrintLogger"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.PrintLogger">[docs]</a><span class="k">class</span> <span class="nc">PrintLogger</span><span class="p">(</span><span class="n">NTLogger</span><span class="p">):</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_planify</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">msg</span></div>
 
 
 <div class="viewcode-block" id="SysLogHandlerWrapper"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.SysLogHandlerWrapper">[docs]</a><span class="k">class</span> <span class="nc">SysLogHandlerWrapper</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">SysLogHandler</span><span class="p">):</span>
@@ -363,49 +447,35 @@
         <span class="s1">&#39;WARNING&#39;</span><span class="p">:</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span>
         <span class="s1">&#39;ERROR&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
         <span class="s1">&#39;CRITICAL&#39;</span><span class="p">:</span> <span class="s1">&#39;critical&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;SUCCESS&#39;</span><span class="p">:</span> <span class="s1">&#39;notice&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;SUCCESS&#39;</span><span class="p">:</span> <span class="s1">&#39;notice&#39;</span>
     <span class="p">}</span></div>
 
 
 <div class="viewcode-block" id="JinaLogger"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.JinaLogger">[docs]</a><span class="k">class</span> <span class="nc">JinaLogger</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Build a logger for a context.</span>
-
-<span class="sd">    :param context: The context identifier of the class, module or method.</span>
-<span class="sd">    :param log_config: The configuration file for the logger.</span>
-<span class="sd">    :param identity: The id of the group the messages from this logger will belong, used by fluentd default</span>
-<span class="sd">    configuration to group logs by pod.</span>
-<span class="sd">    :param workspace_path: The workspace path where the log will be stored at (only apply to fluentd)</span>
-<span class="sd">    :return:: an executor object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">supported</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;FileHandler&#39;</span><span class="p">,</span> <span class="s1">&#39;StreamHandler&#39;</span><span class="p">,</span> <span class="s1">&#39;SysLogHandler&#39;</span><span class="p">,</span> <span class="s1">&#39;FluentHandler&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">identity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">workspace_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">log_config</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">identity</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">workspace_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build a logger for a context.</span>
+
+<span class="sd">        :param context: The context identifier of the class, module or method.</span>
+<span class="sd">        :param log_config: The configuration file for the logger.</span>
+<span class="sd">        :param identity: The id of the group the messages from this logger will belong, used by fluentd default</span>
+<span class="sd">        configuration to group logs by pod.</span>
+<span class="sd">        :param workspace_path: The workspace path where the log will be stored at (only apply to fluentd)</span>
+<span class="sd">        :returns: an executor object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__uptime__</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="n">log_config</span><span class="p">:</span>
-            <span class="n">log_config</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span>
-                <span class="s1">&#39;JINA_LOG_CONFIG&#39;</span><span class="p">,</span>
-                <span class="n">resource_filename</span><span class="p">(</span>
-                    <span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;logging.default.yml&#39;</span><span class="p">))</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">quiet</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;JINA_LOG_CONFIG&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;QUIET&#39;</span><span class="p">:</span>
-            <span class="n">log_config</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span>
-                <span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;logging.quiet.yml&#39;</span><span class="p">))</span>
-            <span class="p">)</span>
-
+            <span class="n">log_config</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;JINA_LOG_CONFIG&#39;</span><span class="p">,</span>
+                                   <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                                       <span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="s1">&#39;logging.default.yml&#39;</span><span class="p">))))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">identity</span><span class="p">:</span>
             <span class="n">identity</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;JINA_LOG_ID&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
@@ -422,12 +492,10 @@
         <span class="k">if</span> <span class="n">workspace_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">workspace_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;JINA_LOG_WORKSPACE&#39;</span><span class="p">,</span> <span class="s1">&#39;/tmp/jina/&#39;</span><span class="p">)</span>
 
-        <span class="n">context_vars</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-            <span class="s1">&#39;uptime&#39;</span><span class="p">:</span> <span class="n">__uptime__</span><span class="p">,</span>
-            <span class="s1">&#39;context&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">,</span>
-            <span class="s1">&#39;workspace_path&#39;</span><span class="p">:</span> <span class="n">workspace_path</span><span class="p">,</span>
-        <span class="p">}</span>
+        <span class="n">context_vars</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                        <span class="s1">&#39;uptime&#39;</span><span class="p">:</span> <span class="n">__uptime__</span><span class="p">,</span>
+                        <span class="s1">&#39;context&#39;</span><span class="p">:</span> <span class="n">context</span><span class="p">,</span>
+                        <span class="s1">&#39;workspace_path&#39;</span><span class="p">:</span> <span class="n">workspace_path</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">identity</span><span class="p">:</span>
             <span class="n">context_vars</span><span class="p">[</span><span class="s1">&#39;log_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">identity</span>
 
@@ -436,11 +504,7 @@
         <span class="c1"># note logger.success isn&#39;t default there</span>
         <span class="n">success_level</span> <span class="o">=</span> <span class="n">LogVerbosity</span><span class="o">.</span><span class="n">SUCCESS</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># between WARNING and INFO</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">addLevelName</span><span class="p">(</span><span class="n">success_level</span><span class="p">,</span> <span class="s1">&#39;SUCCESS&#39;</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
-            <span class="s1">&#39;success&#39;</span><span class="p">,</span>
-            <span class="k">lambda</span> <span class="n">message</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">success_level</span><span class="p">,</span> <span class="n">message</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span> <span class="s1">&#39;success&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">message</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">success_level</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">critical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">critical</span>
@@ -454,7 +518,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the handlers of the logger.</span>
 
-<span class="sd">        :return:: Handlers of logger.</span>
+<span class="sd">        :returns: Handlers of logger.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span>
 
@@ -465,16 +529,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <div class="viewcode-block" id="JinaLogger.close"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.JinaLogger.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Close all the handlers.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close all the handlers.</span>
+
+<span class="sd">        :returns: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
             <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="JinaLogger.add_handlers"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.JinaLogger.add_handlers">[docs]</a>    <span class="k">def</span> <span class="nf">add_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="JinaLogger.add_handlers"><a class="viewcode-back" href="../../../../api/jina.logging.logger/#jina.logging.logger.JinaLogger.add_handlers">[docs]</a>    <span class="k">def</span> <span class="nf">add_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add handlers from config file.</span>
 
 <span class="sd">        :param config_path: Path of config file.</span>
 <span class="sd">        :param kwargs: Extra parameters.</span>
+<span class="sd">        :returns: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -486,9 +555,7 @@
             <span class="n">fmt</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">formatter</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;formatter&#39;</span><span class="p">,</span> <span class="s1">&#39;PlainFormatter&#39;</span><span class="p">))</span>
 
             <span class="k">if</span> <span class="n">h</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">supported</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">cfg</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;can not find configs for </span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s1">, maybe it is not supported&#39;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;can not find configs for </span><span class="si">{</span><span class="n">h</span><span class="si">}</span><span class="s1">, maybe it is not supported&#39;</span><span class="p">)</span>
 
             <span class="n">handler</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">if</span> <span class="n">h</span> <span class="o">==</span> <span class="s1">&#39;StreamHandler&#39;</span><span class="p">:</span>
@@ -513,23 +580,17 @@
                     <span class="n">handler</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="k">pass</span>
             <span class="k">elif</span> <span class="n">h</span> <span class="o">==</span> <span class="s1">&#39;FileHandler&#39;</span><span class="p">:</span>
-                <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span>
-                    <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">delay</span><span class="o">=</span><span class="kc">True</span>
-                <span class="p">)</span>
+                <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;output&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">delay</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)))</span>
             <span class="k">elif</span> <span class="n">h</span> <span class="o">==</span> <span class="s1">&#39;FluentHandler&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">..importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
-
                 <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
                     <span class="kn">from</span> <span class="nn">fluent</span> <span class="kn">import</span> <span class="n">asynchandler</span> <span class="k">as</span> <span class="n">fluentasynchandler</span>
                     <span class="kn">from</span> <span class="nn">fluent.handler</span> <span class="kn">import</span> <span class="n">FluentRecordFormatter</span>
 
-                    <span class="n">handler</span> <span class="o">=</span> <span class="n">fluentasynchandler</span><span class="o">.</span><span class="n">FluentHandler</span><span class="p">(</span>
-                        <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;tag&#39;</span><span class="p">],</span>
-                        <span class="n">host</span><span class="o">=</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">],</span>
-                        <span class="n">port</span><span class="o">=</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">],</span>
-                        <span class="n">queue_circular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="p">)</span>
+                    <span class="n">handler</span> <span class="o">=</span> <span class="n">fluentasynchandler</span><span class="o">.</span><span class="n">FluentHandler</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;tag&#39;</span><span class="p">],</span>
+                                                               <span class="n">host</span><span class="o">=</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">],</span>
+                                                               <span class="n">port</span><span class="o">=</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">],</span> <span class="n">queue_circular</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
                     <span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
                     <span class="n">fmt</span> <span class="o">=</span> <span class="n">FluentRecordFormatter</span><span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">])</span>
@@ -674,7 +735,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

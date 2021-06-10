@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.querylang.queryset.dunderkey &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.types.querylang.queryset.dunderkey &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -379,8 +383,8 @@
 <span class="sd">       &gt;&gt;&gt; dunderkey(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;)</span>
 <span class="sd">       &gt;&gt;&gt; &#39;a__b__c&#39;</span>
 
-<span class="sd">    :param args: the multiple strings</span>
-<span class="sd">    :return:: the joined key</span>
+<span class="sd">    :param *args: the multiple strings</span>
+<span class="sd">    :returns: the joined key</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s1">&#39;__&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
 
@@ -487,22 +491,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Recursively undunder the keys.</span>
-
-<span class="sd">        :param keys: keys to undunder</span>
-<span class="sd">        :param value: related value</span>
-<span class="sd">        :return: undundered keys</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">f</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">value</span><span class="p">)}</span> <span class="k">if</span> <span class="n">keys</span> <span class="k">else</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">merge</span><span class="p">(</span><span class="n">dict1</span><span class="p">,</span> <span class="n">dict2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Merge second dictionary into the first one.</span>
-
-<span class="sd">        :param dict1: dictionary which gets modified</span>
-<span class="sd">        :param dict2: dictionary to read from</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dict2</span><span class="o">.</span><span class="n">items</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dict1</span><span class="p">:</span>
@@ -538,13 +529,6 @@
     <span class="n">keylist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">decide_key</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">klist</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the truncated key.</span>
-
-<span class="sd">        :param k: One element of key list.</span>
-<span class="sd">        :param klist: List of current keys.</span>
-<span class="sd">        :return: Original k if truncated key is not unique else return truncated key.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">newkey</span> <span class="o">=</span> <span class="n">dunder_last</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">newkey</span> <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">dunder_last</span><span class="p">,</span> <span class="n">klist</span><span class="p">))</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">newkey</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">k</span>
 
@@ -682,7 +666,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

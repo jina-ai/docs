@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.flow.builder &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.flow.builder &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -337,9 +341,9 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__default_host__</span>
-<span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">SocketType</span><span class="p">,</span> <span class="n">FlowBuildLevel</span><span class="p">,</span> <span class="n">PodRoleType</span>
-<span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">FlowBuildLevelError</span><span class="p">,</span> <span class="n">SocketTypeError</span>
-<span class="kn">from</span> <span class="nn">..peapods.pods</span> <span class="kn">import</span> <span class="n">BasePod</span>
+<span class="kn">from</span> <span class="nn">..enums</span> <span class="kn">import</span> <span class="n">SocketType</span><span class="p">,</span> <span class="n">FlowOptimizeLevel</span><span class="p">,</span> <span class="n">FlowBuildLevel</span><span class="p">,</span> <span class="n">PodRoleType</span>
+<span class="kn">from</span> <span class="nn">..excepts</span> <span class="kn">import</span> <span class="n">FlowBuildLevelError</span>
+<span class="kn">from</span> <span class="nn">..peapods.pods</span> <span class="kn">import</span> <span class="n">_fill_in_host</span>
 
 <span class="c1"># noinspection PyUnreachableCode</span>
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
@@ -362,7 +366,6 @@
 <span class="sd">    :param required_level: required build level to run this function.</span>
 <span class="sd">    :return: annotated function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="nf">__build_level</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">arg_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -371,8 +374,7 @@
                     <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">FlowBuildLevelError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;build_level check failed for </span><span class="si">{</span><span class="n">func</span><span class="si">!r}</span><span class="s1">, required level: </span><span class="si">{</span><span class="n">required_level</span><span class="si">}</span><span class="s1">, actual level: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_level</span><span class="si">}</span><span class="s1">&#39;</span>
-                    <span class="p">)</span>
+                        <span class="sa">f</span><span class="s1">&#39;build_level check failed for </span><span class="si">{</span><span class="n">func</span><span class="si">!r}</span><span class="s1">, required level: </span><span class="si">{</span><span class="n">required_level</span><span class="si">}</span><span class="s1">, actual level: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_build_level</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1"> has no attribute &quot;_build_level&quot;&#39;</span><span class="p">)</span>
 
@@ -381,11 +383,8 @@
     <span class="k">return</span> <span class="n">__build_level</span></div>
 
 
-<span class="k">def</span> <span class="nf">_traverse_graph</span><span class="p">(</span>
-    <span class="n">op_flow</span><span class="p">:</span> <span class="s1">&#39;Flow&#39;</span><span class="p">,</span>
-    <span class="n">outgoing_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
-    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Flow&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Flow&#39;</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_traverse_graph</span><span class="p">(</span><span class="n">op_flow</span><span class="p">:</span> <span class="s1">&#39;Flow&#39;</span><span class="p">,</span> <span class="n">outgoing_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+                    <span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="s1">&#39;Flow&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Flow&#39;</span><span class="p">:</span>
     <span class="n">_outgoing_idx</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">outgoing_map</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">stack</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
     <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;gateway&#39;</span><span class="p">)</span>
@@ -434,60 +433,93 @@
             <span class="n">first_socket_type</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PUB_BIND</span>
         <span class="k">elif</span> <span class="n">end_node_name</span> <span class="o">==</span> <span class="s1">&#39;gateway&#39;</span><span class="p">:</span>
             <span class="n">first_socket_type</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PUSH_BIND</span>
-        <span class="k">elif</span> <span class="p">(</span>
-            <span class="n">start_node</span><span class="o">.</span><span class="n">host</span> <span class="o">!=</span> <span class="n">__default_host__</span>
-            <span class="ow">and</span> <span class="n">end_node</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="n">__default_host__</span>
-            <span class="ow">and</span> <span class="n">end_node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pod_role</span> <span class="o">!=</span> <span class="n">PodRoleType</span><span class="o">.</span><span class="n">JOIN</span>
-        <span class="p">):</span>
+        <span class="k">elif</span> <span class="n">start_node</span><span class="o">.</span><span class="n">host</span> <span class="o">!=</span> <span class="n">__default_host__</span> <span class="ow">and</span> <span class="n">end_node</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="n">__default_host__</span> <span class="ow">and</span> <span class="n">end_node</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pod_role</span> <span class="o">!=</span> <span class="n">PodRoleType</span><span class="o">.</span><span class="n">JOIN</span><span class="p">:</span>
             <span class="c1"># first node is on remote, second is local. in this case, local node is often behind router/private</span>
             <span class="c1"># network, there is no way that first node can send data &quot;actively&quot; (CONNECT) to it</span>
             <span class="n">first_socket_type</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PUSH_BIND</span>
         <span class="n">_connect</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">,</span> <span class="n">first_socket_type</span><span class="o">=</span><span class="n">first_socket_type</span><span class="p">)</span>
-        <span class="n">flow</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;Connect </span><span class="si">{</span><span class="n">start_node_name</span><span class="si">}</span><span class="s1"> &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;with </span><span class="si">{</span><span class="n">end_node_name</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">end_node</span><span class="o">.</span><span class="n">role</span><span class="p">)</span><span class="si">}</span><span class="s1"> require &#39;</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">end_node</span><span class="o">.</span><span class="n">head_args</span><span class="p">,</span> <span class="s2">&quot;num_part&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s1"> messages&#39;</span>
-        <span class="p">)</span>
+        <span class="n">flow</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connect </span><span class="si">{</span><span class="n">start_node_name</span><span class="si">}</span><span class="s1"> &#39;</span>
+                          <span class="sa">f</span><span class="s1">&#39;with </span><span class="si">{</span><span class="n">end_node_name</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">end_node</span><span class="o">.</span><span class="n">role</span><span class="p">)</span><span class="si">}</span><span class="s1"> require &#39;</span>
+                          <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">getattr</span><span class="p">(</span><span class="n">end_node</span><span class="o">.</span><span class="n">head_args</span><span class="p">,</span> <span class="s2">&quot;num_part&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="si">}</span><span class="s1"> messages&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">_traverse_graph</span><span class="p">(</span><span class="n">op_flow</span><span class="p">,</span> <span class="n">outgoing_map</span><span class="p">,</span> <span class="n">_connect_two_nodes</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_connect</span><span class="p">(</span>
-    <span class="n">first</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">,</span> <span class="n">second</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">,</span> <span class="n">first_socket_type</span><span class="p">:</span> <span class="s1">&#39;SocketType&#39;</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_connect</span><span class="p">(</span><span class="n">first</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">,</span> <span class="n">second</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">,</span> <span class="n">first_socket_type</span><span class="p">:</span> <span class="s1">&#39;SocketType&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Connect two Pods</span>
 
-
-<span class="sd">    .. # noqa: DAR401</span>
+<span class="sd">    # noqa: DAR401</span>
 <span class="sd">    :param first: the first BasePod</span>
 <span class="sd">    :param second: the second BasePod</span>
-<span class="sd">    :param first_socket_type: socket type of the first BasePod, one of PUSH_BIND, PUSH_CONNECT and PUB_BIND</span>
+<span class="sd">    :param first_socket_type: socket type of the first BasePod, availables are PUSH_BIND, PUSH_CONNECT, PUB_BIND</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">socket_out</span> <span class="o">=</span> <span class="n">first_socket_type</span>
     <span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">socket_in</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">socket_out</span><span class="o">.</span><span class="n">paired</span>
 
     <span class="k">if</span> <span class="n">first_socket_type</span> <span class="o">==</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PUSH_BIND</span><span class="p">:</span>
         <span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span> <span class="o">=</span> <span class="n">__default_host__</span>
-        <span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_fill_in_host</span><span class="p">(</span>
-            <span class="n">bind_args</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span> <span class="n">connect_args</span><span class="o">=</span><span class="n">second</span><span class="o">.</span><span class="n">head_args</span>
-        <span class="p">)</span>
+        <span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span> <span class="o">=</span> <span class="n">_fill_in_host</span><span class="p">(</span><span class="n">bind_args</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span>
+                                                 <span class="n">connect_args</span><span class="o">=</span><span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="p">)</span>
         <span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">port_in</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">port_out</span>
     <span class="k">elif</span> <span class="n">first_socket_type</span> <span class="o">==</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PUSH_CONNECT</span><span class="p">:</span>
-        <span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_fill_in_host</span><span class="p">(</span>
-            <span class="n">connect_args</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span> <span class="n">bind_args</span><span class="o">=</span><span class="n">second</span><span class="o">.</span><span class="n">head_args</span>
-        <span class="p">)</span>
+        <span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span> <span class="o">=</span> <span class="n">_fill_in_host</span><span class="p">(</span><span class="n">connect_args</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span>
+                                                 <span class="n">bind_args</span><span class="o">=</span><span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="p">)</span>
         <span class="c1"># (Joan) - Commented to allow the Flow composed by G-R-L-R-G (G: Gateway) (L: Local Pod) (R: Remote Pod)</span>
         <span class="c1"># https://github.com/jina-ai/jina/pull/1654</span>
         <span class="c1"># second.head_args.host_in = __default_host__</span>
         <span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">port_out</span> <span class="o">=</span> <span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">port_in</span>
     <span class="k">elif</span> <span class="n">first_socket_type</span> <span class="o">==</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PUB_BIND</span><span class="p">:</span>
         <span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span> <span class="o">=</span> <span class="n">__default_host__</span>  <span class="c1"># bind always get default 0.0.0.0</span>
-        <span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_fill_in_host</span><span class="p">(</span>
-            <span class="n">bind_args</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span> <span class="n">connect_args</span><span class="o">=</span><span class="n">second</span><span class="o">.</span><span class="n">head_args</span>
-        <span class="p">)</span>  <span class="c1"># the hostname of s_pod</span>
+        <span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span> <span class="o">=</span> <span class="n">_fill_in_host</span><span class="p">(</span><span class="n">bind_args</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span>
+                                                 <span class="n">connect_args</span><span class="o">=</span><span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="p">)</span>  <span class="c1"># the hostname of s_pod</span>
         <span class="n">second</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">port_in</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">port_out</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">SocketTypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">first_socket_type</span><span class="si">!r}</span><span class="s1"> is not supported here&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">first_socket_type</span><span class="si">!r}</span><span class="s1"> is not supported here&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_optimize_flow</span><span class="p">(</span><span class="n">op_flow</span><span class="p">,</span> <span class="n">outgoing_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">pod_edges</span><span class="p">:</span> <span class="p">{</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="s1">&#39;Flow&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_optimize_two_connections</span><span class="p">(</span><span class="n">flow</span><span class="p">:</span> <span class="s1">&#39;Flow&#39;</span><span class="p">,</span> <span class="n">start_node_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">end_node_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; THIS CODE IS NEVER TESTED AND THE LOGIC MAY NOT APPLIED ANYMORE</span>
+
+<span class="sd">        :param flow: the Flow we&#39;re optimizing</span>
+<span class="sd">        :param start_node_name: first node of connection</span>
+<span class="sd">        :param end_node_name: second node of connection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start_node</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">[</span><span class="n">start_node_name</span><span class="p">]</span>
+        <span class="n">end_node</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">_pod_nodes</span><span class="p">[</span><span class="n">end_node_name</span><span class="p">]</span>
+        <span class="n">edges_with_same_start</span> <span class="o">=</span> <span class="p">[</span><span class="n">ed</span> <span class="k">for</span> <span class="n">ed</span> <span class="ow">in</span> <span class="n">pod_edges</span> <span class="k">if</span> <span class="n">ed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">start_node_name</span><span class="p">)]</span>
+        <span class="n">edges_with_same_end</span> <span class="o">=</span> <span class="p">[</span><span class="n">ed</span> <span class="k">for</span> <span class="n">ed</span> <span class="ow">in</span> <span class="n">pod_edges</span> <span class="k">if</span> <span class="n">ed</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">end_node_name</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges_with_same_start</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">edges_with_same_end</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">flow</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Connection between </span><span class="si">{</span><span class="n">start_node_name</span><span class="si">}</span><span class="s1"> and </span><span class="si">{</span><span class="n">end_node_name</span><span class="si">}</span><span class="s1"> cannot be optimized&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">start_node</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="n">PodRoleType</span><span class="o">.</span><span class="n">GATEWAY</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">flow</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">optimize_level</span> <span class="o">&gt;</span> <span class="n">FlowOptimizeLevel</span><span class="o">.</span><span class="n">IGNORE_GATEWAY</span> <span class="ow">and</span> <span class="n">end_node</span><span class="o">.</span><span class="n">is_head_router</span><span class="p">:</span>
+                    <span class="n">flow</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Node </span><span class="si">{</span><span class="n">end_node_name</span><span class="si">}</span><span class="s1"> connects to tail of </span><span class="si">{</span><span class="n">start_node_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">end_node</span><span class="o">.</span><span class="n">optimize_connect_to_tail_of</span><span class="p">(</span><span class="n">start_node</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">end_node</span><span class="o">.</span><span class="n">role</span> <span class="o">==</span> <span class="n">PodRoleType</span><span class="o">.</span><span class="n">GATEWAY</span><span class="p">:</span>
+                <span class="c1"># TODO: this part of the code is never executed given the current optimization level. Never tested.</span>
+                <span class="k">if</span> <span class="n">flow</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">optimize_level</span> <span class="o">&gt;</span> <span class="n">FlowOptimizeLevel</span><span class="o">.</span><span class="n">IGNORE_GATEWAY</span> <span class="ow">and</span> \
+                        <span class="n">start_node</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="n">start_node</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">num_part</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># connect gateway directly to peas only if this is unblock router</span>
+                    <span class="c1"># as gateway can not block &amp; reduce message</span>
+                    <span class="n">flow</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Node </span><span class="si">{</span><span class="n">start_node_name</span><span class="si">}</span><span class="s1"> connects to head of </span><span class="si">{</span><span class="n">end_node_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">start_node</span><span class="o">.</span><span class="n">optimize_connect_to_head_of</span><span class="p">(</span><span class="n">end_node</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">end_node</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">start_node</span><span class="o">.</span><span class="n">is_tail_router</span><span class="p">:</span>
+                    <span class="n">flow</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Node </span><span class="si">{</span><span class="n">end_node_name</span><span class="si">}</span><span class="s1"> connects to tail of </span><span class="si">{</span><span class="n">start_node_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">end_node</span><span class="o">.</span><span class="n">optimize_connect_to_tail_of</span><span class="p">(</span><span class="n">start_node</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">start_node</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="n">start_node</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">num_part</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">flow</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;Node </span><span class="si">{</span><span class="n">start_node_name</span><span class="si">}</span><span class="s1"> connects to head of </span><span class="si">{</span><span class="n">end_node_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">start_node</span><span class="o">.</span><span class="n">optimize_connect_to_head_of</span><span class="p">(</span><span class="n">end_node</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">op_flow</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">optimize_level</span> <span class="o">&gt;</span> <span class="n">FlowOptimizeLevel</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_traverse_graph</span><span class="p">(</span><span class="n">op_flow</span><span class="p">,</span> <span class="n">outgoing_map</span><span class="p">,</span> <span class="n">_optimize_two_connections</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">op_flow</span>
 </pre></div>
 
            </div>
@@ -620,7 +652,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

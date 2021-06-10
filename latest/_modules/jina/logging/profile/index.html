@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.logging.profile &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.logging.profile &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -337,14 +341,12 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">from</span> <span class="nn">..importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
 <span class="kn">from</span> <span class="nn">..helper</span> <span class="kn">import</span> <span class="n">colored</span><span class="p">,</span> <span class="n">get_readable_size</span><span class="p">,</span> <span class="n">get_readable_time</span>
 
 <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
     <span class="c1"># fix type-hint complain for sphinx and flake</span>
-    <span class="kn">from</span> <span class="nn">..logging</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">JinaLogger</span>
 
 
 <div class="viewcode-block" id="used_memory"><a class="viewcode-back" href="../../../../api/jina.logging.profile/#jina.logging.profile.used_memory">[docs]</a><span class="k">def</span> <span class="nf">used_memory</span><span class="p">(</span><span class="n">unit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -354,18 +356,14 @@
 <span class="sd">    :param unit: Unit of the memory, default in Gigabytes.</span>
 <span class="sd">    :return: Memory usage of the current process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">resource</span>
-
         <span class="k">return</span> <span class="n">resource</span><span class="o">.</span><span class="n">getrusage</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">RUSAGE_SELF</span><span class="p">)</span><span class="o">.</span><span class="n">ru_maxrss</span> <span class="o">/</span> <span class="n">unit</span>
-
-    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">default_logger</span>
-
-    <span class="n">default_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-        <span class="s1">&#39;module &quot;resource&quot; can not be found and you are likely running it on Windows, &#39;</span>
-        <span class="s1">&#39;i will return 0&#39;</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="mi">0</span></div>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">default_logger</span>
+        <span class="n">default_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;module &quot;resource&quot; can not be found and you are likely running it on Windows, &#39;</span>
+                             <span class="s1">&#39;i will return 0&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
 
 
 <div class="viewcode-block" id="used_memory_readable"><a class="viewcode-back" href="../../../../api/jina.logging.profile/#jina.logging.profile.used_memory_readable">[docs]</a><span class="k">def</span> <span class="nf">used_memory_readable</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -389,8 +387,6 @@
 <span class="sd">        def foo():</span>
 <span class="sd">            print(1)</span>
 
-<span class="sd">    :param func: function to be profiled</span>
-<span class="sd">    :return: arguments wrapper</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">default_logger</span>
 
@@ -404,9 +400,7 @@
         <span class="c1"># level_prefix = &#39;&#39;.join(&#39;-&#39; for v in inspect.stack() if v and v.index is not None and v.index &gt;= 0)</span>
         <span class="n">level_prefix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="n">mem_status</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;memory Δ </span><span class="si">{</span><span class="n">get_readable_size</span><span class="p">(</span><span class="n">end_mem</span> <span class="o">-</span> <span class="n">start_mem</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">get_readable_size</span><span class="p">(</span><span class="n">start_mem</span><span class="p">)</span><span class="si">}</span><span class="s1"> -&gt; </span><span class="si">{</span><span class="n">get_readable_size</span><span class="p">(</span><span class="n">end_mem</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">level_prefix</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1"> time: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s1">s </span><span class="si">{</span><span class="n">mem_status</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="p">)</span>
+        <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">level_prefix</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1"> time: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">}</span><span class="s1">s </span><span class="si">{</span><span class="n">mem_status</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">r</span>
 
     <span class="k">return</span> <span class="n">arg_wrapper</span></div>
@@ -439,19 +433,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add time counter.</span>
-
-<span class="sd">        :param key: key name of the counter</span>
-<span class="sd">        :param args: extra arguments</span>
-<span class="sd">        :param kwargs: keyword arguments</span>
-<span class="sd">        :return: self object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_key_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
 <div class="viewcode-block" id="TimeDict.reset"><a class="viewcode-back" href="../../../../api/jina.logging.profile/#jina.logging.profile.TimeDict.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Clear the time information.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear the time information.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_stack</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pending_reset</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
@@ -509,25 +499,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_exit_msg</span><span class="p">()</span>
 
 <div class="viewcode-block" id="TimeContext.now"><a class="viewcode-back" href="../../../../api/jina.logging.profile/#jina.logging.profile.TimeContext.now">[docs]</a>    <span class="k">def</span> <span class="nf">now</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the passed time from start to now.</span>
-
-<span class="sd">        :return: passed time</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span></div>
 
     <span class="k">def</span> <span class="nf">_exit_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_name</span><span class="si">}</span><span class="s1"> takes </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">readable_duration</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">s)&#39;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_name</span><span class="si">}</span><span class="s1"> takes </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">readable_duration</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">s)&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span>
-                <span class="n">colored</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_name</span><span class="si">}</span><span class="s1"> takes </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">readable_duration</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">s)&#39;</span>
-                <span class="p">),</span>
-                <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">readable_duration</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">s)&#39;</span><span class="p">,</span> <span class="s1">&#39;green&#39;</span><span class="p">),</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ProgressBar"><a class="viewcode-back" href="../../../../api/jina.logging.profile/#jina.logging.profile.ProgressBar">[docs]</a><span class="k">class</span> <span class="nc">ProgressBar</span><span class="p">(</span><span class="n">TimeContext</span><span class="p">):</span>
@@ -542,13 +520,7 @@
 <span class="sd">                do_busy()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">bar_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
-        <span class="n">task_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">batch_unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;requests&#39;</span><span class="p">,</span>
-        <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bar_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">task_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">batch_unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;batch&#39;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create the ProgressBar.</span>
 
@@ -563,7 +535,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ticks</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">batch_unit</span> <span class="o">=</span> <span class="n">batch_unit</span>
 
-<div class="viewcode-block" id="ProgressBar.update_tick"><a class="viewcode-back" href="../../../../api/jina.logging.profile/#jina.logging.profile.ProgressBar.update_tick">[docs]</a>    <span class="k">def</span> <span class="nf">update_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tick</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ProgressBar.update_tick"><a class="viewcode-back" href="../../../../api/jina.logging.profile/#jina.logging.profile.ProgressBar.update_tick">[docs]</a>    <span class="k">def</span> <span class="nf">update_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tick</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Increment the progress bar by one tick, when the ticks accumulate to one, trigger one :meth:`update`.</span>
 
@@ -574,13 +546,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ticks</span> <span class="o">=</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="ProgressBar.update"><a class="viewcode-back" href="../../../../api/jina.logging.profile/#jina.logging.profile.ProgressBar.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="ProgressBar.update"><a class="viewcode-back" href="../../../../api/jina.logging.profile/#jina.logging.profile.ProgressBar.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Increment the progress bar by one unit.</span>
 
 <span class="sd">        :param progress: The number of unit to increment.</span>
-<span class="sd">        :param args: extra arguments</span>
-<span class="sd">        :param kwargs: keyword arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_reqs</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -599,28 +569,21 @@
                 <span class="n">elapsed</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">num_docs</span> <span class="o">/</span> <span class="n">elapsed</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">num_reqs</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">batch_unit</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">batch_unit</span>
+            <span class="p">))</span>
         <span class="k">if</span> <span class="n">num_bars</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_len</span><span class="p">:</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">profile_logger</span>
-
-        <span class="n">profile_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="p">{</span>
-                <span class="s1">&#39;num_bars&#39;</span><span class="p">:</span> <span class="n">num_bars</span><span class="p">,</span>
-                <span class="s1">&#39;num_reqs&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_reqs</span><span class="p">,</span>
-                <span class="s1">&#39;bar_len&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_len</span><span class="p">,</span>
-                <span class="s1">&#39;progress&#39;</span><span class="p">:</span> <span class="n">num_bars</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_len</span><span class="p">,</span>
-                <span class="s1">&#39;task_name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_name</span><span class="p">,</span>
-                <span class="s1">&#39;qps&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_reqs</span> <span class="o">/</span> <span class="n">elapsed</span><span class="p">,</span>
-                <span class="s1">&#39;speed&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_docs</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_docs</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_reqs</span><span class="p">)</span>
-                <span class="o">/</span> <span class="n">elapsed</span><span class="p">,</span>
-                <span class="s1">&#39;speed_unit&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Documents&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_docs</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;Requests&#39;</span><span class="p">),</span>
-                <span class="s1">&#39;elapsed&#39;</span><span class="p">:</span> <span class="n">elapsed</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">)</span></div>
+        <span class="n">profile_logger</span><span class="o">.</span><span class="n">info</span><span class="p">({</span><span class="s1">&#39;num_bars&#39;</span><span class="p">:</span> <span class="n">num_bars</span><span class="p">,</span>
+                             <span class="s1">&#39;num_reqs&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_reqs</span><span class="p">,</span>
+                             <span class="s1">&#39;bar_len&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_len</span><span class="p">,</span>
+                             <span class="s1">&#39;progress&#39;</span><span class="p">:</span> <span class="n">num_bars</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">bar_len</span><span class="p">,</span>
+                             <span class="s1">&#39;task_name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">task_name</span><span class="p">,</span>
+                             <span class="s1">&#39;qps&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_reqs</span> <span class="o">/</span> <span class="n">elapsed</span><span class="p">,</span>
+                             <span class="s1">&#39;speed&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_docs</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_docs</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_reqs</span><span class="p">)</span> <span class="o">/</span> <span class="n">elapsed</span><span class="p">,</span>
+                             <span class="s1">&#39;speed_unit&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;Documents&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_docs</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;Requests&#39;</span><span class="p">),</span>
+                             <span class="s1">&#39;elapsed&#39;</span><span class="p">:</span> <span class="n">elapsed</span><span class="p">})</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__enter__</span><span class="p">()</span>
@@ -637,9 +600,7 @@
             <span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_docs</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">speed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_reqs</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ done in ⏱ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">readable_duration</span><span class="si">}</span><span class="s2"> 🐎 </span><span class="si">{</span><span class="n">speed</span><span class="si">:</span><span class="s2">3.1f</span><span class="si">}</span><span class="s2">/s&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="p">)</span></div>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{</span><span class="n">colored</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ done in ⏱ </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">readable_duration</span><span class="si">}</span><span class="s2"> 🐎 </span><span class="si">{</span><span class="n">speed</span><span class="si">:</span><span class="s2">3.1f</span><span class="si">}</span><span class="s2">/s&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -772,7 +733,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

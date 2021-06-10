@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.runtimes.asyncio.rest.app &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.peapods.runtimes.asyncio.rest.app &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -339,7 +343,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToDict</span><span class="p">,</span> <span class="n">MessageToJson</span>
+<span class="kn">from</span> <span class="nn">google.protobuf.json_format</span> <span class="kn">import</span> <span class="n">MessageToDict</span>
 
 <span class="kn">from</span> <span class="nn">..grpc.async_call</span> <span class="kn">import</span> <span class="n">AsyncPrefetchCall</span>
 <span class="kn">from</span> <span class="nn">....zmq</span> <span class="kn">import</span> <span class="n">AsyncZmqlet</span>
@@ -355,13 +359,6 @@
 
 
 <div class="viewcode-block" id="get_fastapi_app"><a class="viewcode-back" href="../../../../../../../api/jina.peapods.runtimes.asyncio.rest.app/#jina.peapods.runtimes.asyncio.rest.app.get_fastapi_app">[docs]</a><span class="k">def</span> <span class="nf">get_fastapi_app</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span> <span class="n">logger</span><span class="p">:</span> <span class="s1">&#39;JinaLogger&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the app from FastAPI as the REST interface.</span>
-
-<span class="sd">    :param args: passed arguments.</span>
-<span class="sd">    :param logger: Jina logger.</span>
-<span class="sd">    :return: fastapi app</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">WebSocket</span><span class="p">,</span> <span class="n">Body</span>
         <span class="kn">from</span> <span class="nn">fastapi.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
@@ -370,14 +367,8 @@
         <span class="kn">from</span> <span class="nn">starlette</span> <span class="kn">import</span> <span class="n">status</span>
         <span class="kn">from</span> <span class="nn">starlette.types</span> <span class="kn">import</span> <span class="n">Receive</span><span class="p">,</span> <span class="n">Scope</span><span class="p">,</span> <span class="n">Send</span>
         <span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">StreamingResponse</span>
-        <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="p">(</span>
-            <span class="n">JinaStatusModel</span><span class="p">,</span>
-            <span class="n">JinaIndexRequestModel</span><span class="p">,</span>
-            <span class="n">JinaDeleteRequestModel</span><span class="p">,</span>
-            <span class="n">JinaUpdateRequestModel</span><span class="p">,</span>
-            <span class="n">JinaSearchRequestModel</span><span class="p">,</span>
-            <span class="n">JinaReloadRequestModel</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">JinaStatusModel</span><span class="p">,</span> <span class="n">JinaIndexRequestModel</span><span class="p">,</span> <span class="n">JinaDeleteRequestModel</span><span class="p">,</span> <span class="n">JinaUpdateRequestModel</span><span class="p">,</span> \
+            <span class="n">JinaSearchRequestModel</span>
 
     <span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span>
         <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Jina&#39;</span><span class="p">,</span>
@@ -395,13 +386,6 @@
     <span class="n">servicer</span> <span class="o">=</span> <span class="n">AsyncPrefetchCall</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">zmqlet</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">reason</span><span class="p">,</span> <span class="n">status_code</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the error code.</span>
-
-<span class="sd">        :param reason: content of error</span>
-<span class="sd">        :param status_code: status code</span>
-<span class="sd">        :return: error in JSON response</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;reason&#39;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span> <span class="n">status_code</span><span class="o">=</span><span class="n">status_code</span><span class="p">)</span>
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s1">&#39;shutdown&#39;</span><span class="p">)</span>
@@ -410,41 +394,29 @@
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s1">&#39;startup&#39;</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">startup</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot;Log the host information when start the server.&quot;&quot;&quot;</span>
-        <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
+        <span class="n">default_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="s1">    Jina REST interface</span>
 <span class="s1">    💬 Swagger UI:</span><span class="se">\t</span><span class="s1">http://localhost:</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">/docs</span>
 <span class="s1">    📚 Redoc     :</span><span class="se">\t</span><span class="s1">http://localhost:</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">port_expose</span><span class="si">}</span><span class="s1">/redoc</span>
-<span class="s1">        &#39;&#39;&#39;</span>
-        <span class="p">)</span>
+<span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span>
         <span class="kn">from</span> <span class="nn">jina</span> <span class="kn">import</span> <span class="n">__ready_msg__</span>
-
         <span class="n">default_logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">__ready_msg__</span><span class="p">)</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/status&#39;</span><span class="p">,</span>
-        <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get the status of Jina&#39;</span><span class="p">,</span>
-        <span class="n">response_model</span><span class="o">=</span><span class="n">JinaStatusModel</span><span class="p">,</span>
-        <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;jina&#39;</span><span class="p">],</span>
-    <span class="p">)</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/status&#39;</span><span class="p">,</span>
+             <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Get the status of Jina&#39;</span><span class="p">,</span>
+             <span class="n">response_model</span><span class="o">=</span><span class="n">JinaStatusModel</span><span class="p">,</span>
+             <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;jina&#39;</span><span class="p">]</span>
+             <span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_status</span><span class="p">():</span>
         <span class="n">_info</span> <span class="o">=</span> <span class="n">get_full_version</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;jina&#39;</span><span class="p">:</span> <span class="n">_info</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="s1">&#39;envs&#39;</span><span class="p">:</span> <span class="n">_info</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="s1">&#39;used_memory&#39;</span><span class="p">:</span> <span class="n">used_memory_readable</span><span class="p">(),</span>
+            <span class="s1">&#39;used_memory&#39;</span><span class="p">:</span> <span class="n">used_memory_readable</span><span class="p">()</span>
         <span class="p">}</span>
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/api/</span><span class="si">{mode}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">deprecated</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">api</span><span class="p">(</span><span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">body</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">Body</span><span class="p">(</span><span class="o">...</span><span class="p">)):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Request mode service and return results in JSON, a deprecated interface.</span>
-
-<span class="sd">        :param mode: INDEX, SEARCH, DELETE, UPDATE, CONTROL, TRAIN.</span>
-<span class="sd">        :param body: Request body.</span>
-<span class="sd">        :return: Results in JSONresponse.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;this interface will be retired soon&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">error</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;unsupported mode </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">405</span><span class="p">)</span>
@@ -454,122 +426,61 @@
 
         <span class="n">body</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
-
         <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
         <span class="n">req_iter</span> <span class="o">=</span> <span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">body</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_result_in_json</span><span class="p">(</span><span class="n">req_iter</span><span class="o">=</span><span class="n">req_iter</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">get_result_in_json</span><span class="p">(</span><span class="n">req_iter</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Convert message to JSON data.</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">MessageToDict</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">async</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">servicer</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">request_iterator</span><span class="o">=</span><span class="n">req_iter</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)]</span>
 
-<span class="sd">        :param req_iter: Request iterator</span>
-<span class="sd">        :return: Results in JSON format</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span>
-            <span class="n">MessageToDict</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-            <span class="k">async</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">servicer</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">request_iterator</span><span class="o">=</span><span class="n">req_iter</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-        <span class="p">]</span>
-
-    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/index&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Index documents into Jina&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">])</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/index&#39;</span><span class="p">,</span>
+              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Index documents into Jina&#39;</span><span class="p">,</span>
+              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+              <span class="p">)</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaIndexRequestModel</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Index API to index documents.</span>
-
-<span class="sd">        :param body: index request.</span>
-<span class="sd">        :return: Response of the results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
-
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">INDEX</span>
-        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span>
-            <span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)),</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span>
-        <span class="p">)</span>
+        <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/search&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Search documents from Jina&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">])</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">search_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaSearchRequestModel</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Search API to search documents.</span>
-
-<span class="sd">        :param body: search request.</span>
-<span class="sd">        :return: Response of the results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/search&#39;</span><span class="p">,</span>
+              <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Search documents from Jina&#39;</span><span class="p">,</span>
+              <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+              <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaSearchRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
-
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">SEARCH</span>
-        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span>
-            <span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)),</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span>
-        <span class="p">)</span>
+        <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update documents in Jina&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">])</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">update_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaUpdateRequestModel</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update API to update documents.</span>
-
-<span class="sd">        :param body: update request.</span>
-<span class="sd">        :return: Response of the results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/update&#39;</span><span class="p">,</span>
+             <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Update documents in Jina&#39;</span><span class="p">,</span>
+             <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+             <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaUpdateRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
-
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">UPDATE</span>
-        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span>
-            <span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)),</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span>
-        <span class="p">)</span>
+        <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
-    <span class="nd">@app</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/delete&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete documents in Jina&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">])</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">delete_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaDeleteRequestModel</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Delete API to delete documents.</span>
-
-<span class="sd">        :param body: delete request.</span>
-<span class="sd">        :return: Response of the results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="nd">@app</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/delete&#39;</span><span class="p">,</span>
+                <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Delete documents in Jina&#39;</span><span class="p">,</span>
+                <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;CRUD&#39;</span><span class="p">]</span>
+                <span class="p">)</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">index_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaDeleteRequestModel</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
-
         <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
         <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">DELETE</span>
-        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span>
-            <span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)),</span> <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span>
-        <span class="p">)</span>
-
-    <span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/reload&#39;</span><span class="p">,</span> <span class="n">summary</span><span class="o">=</span><span class="s1">&#39;Reload the executor of certain Peas/Pods in the Flow&#39;</span>
-    <span class="p">)</span>
-    <span class="k">async</span> <span class="k">def</span> <span class="nf">reload_api</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">JinaReloadRequestModel</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Reload the executor of certain peas/pods in the Flow</span>
-
-<span class="sd">        :param body: reload request.</span>
-<span class="sd">        :return: Response of the results.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">.....clients</span> <span class="kn">import</span> <span class="n">BaseClient</span>
-
-        <span class="n">bd</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
-        <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RequestType</span><span class="o">.</span><span class="n">CONTROL</span>
-        <span class="n">bd</span><span class="p">[</span><span class="s1">&#39;command&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;RELOAD&#39;</span>
-        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span>
-            <span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">bd</span><span class="p">)),</span>
-            <span class="n">media_type</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">BaseClient</span><span class="o">.</span><span class="n">add_default_kwargs</span><span class="p">(</span><span class="n">bd</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">StreamingResponse</span><span class="p">(</span><span class="n">result_in_stream</span><span class="p">(</span><span class="n">request_generator</span><span class="p">(</span><span class="o">**</span><span class="n">bd</span><span class="p">)))</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">result_in_stream</span><span class="p">(</span><span class="n">req_iter</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Streams results from AsyncPrefetchCall as json</span>
-
-<span class="sd">        :param req_iter: request iterator</span>
-<span class="sd">        :yield: result</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">async</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">servicer</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">request_iterator</span><span class="o">=</span><span class="n">req_iter</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-            <span class="k">yield</span> <span class="n">MessageToJson</span><span class="p">(</span>
-                <span class="n">k</span><span class="p">,</span>
-                <span class="n">including_default_value_fields</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">preserving_proto_field_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">use_integers_for_enums</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="k">yield</span> <span class="n">MessageToDict</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
     <span class="nd">@app</span><span class="o">.</span><span class="n">websocket_route</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/stream&#39;</span><span class="p">)</span>
     <span class="k">class</span> <span class="nc">StreamingEndpoint</span><span class="p">(</span><span class="n">WebSocketEndpoint</span><span class="p">):</span>
@@ -600,7 +511,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">client_encoding</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">async</span> <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;Awaits on concurrent tasks :meth:`handle_receive()` &amp; :meth:`handle_send()`&quot;&quot;&quot;</span>
             <span class="n">websocket</span> <span class="o">=</span> <span class="n">WebSocket</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scope</span><span class="p">,</span> <span class="n">receive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">receive</span><span class="p">,</span> <span class="n">send</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">)</span>
             <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_connect</span><span class="p">(</span><span class="n">websocket</span><span class="p">)</span>
             <span class="n">close_code</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">WS_1000_NORMAL_CLOSURE</span>
@@ -610,36 +520,15 @@
             <span class="p">)</span>
 
         <span class="k">async</span> <span class="k">def</span> <span class="nf">on_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Await the websocket to accept and log the information.</span>
-
-<span class="sd">            :param websocket: connected websocket</span>
-<span class="sd">            &quot;&quot;&quot;</span>
             <span class="c1"># TODO(Deepankar): To enable multiple concurrent clients,</span>
             <span class="c1"># Register each client - https://fastapi.tiangolo.com/advanced/websockets/#handling-disconnections-and-multiple-clients</span>
             <span class="c1"># And move class variables to instance variable</span>
             <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">client_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">websocket</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">websocket</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;Client </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client_info</span><span class="si">}</span><span class="s1"> connected to stream requests via websockets&#39;</span>
-            <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client_info</span><span class="si">}</span><span class="s1"> connected to stream requests via websockets&#39;</span><span class="p">)</span>
 
         <span class="k">async</span> <span class="k">def</span> <span class="nf">handle_receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">,</span> <span class="n">close_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Await a message on :meth:`websocket.receive()`</span>
-<span class="sd">            Send the message to zmqlet via :meth:`zmqlet.send_message()` and await</span>
-
-<span class="sd">            :param websocket: WebSocket connection between clinet sand server.</span>
-<span class="sd">            :param close_code: close code</span>
-<span class="sd">            &quot;&quot;&quot;</span>
-
             <span class="k">def</span> <span class="nf">handle_route</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="s1">&#39;Message&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Request&#39;</span><span class="p">:</span>
-                <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">                Add route information to `message`.</span>
-
-<span class="sd">                :param msg: receive message</span>
-<span class="sd">                :return: message response with route information</span>
-<span class="sd">                &quot;&quot;&quot;</span>
                 <span class="n">msg</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">msg</span><span class="o">.</span><span class="n">response</span>
 
@@ -649,20 +538,16 @@
                     <span class="k">if</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;websocket.receive&#39;</span><span class="p">:</span>
                         <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">websocket</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">data</span> <span class="o">==</span> <span class="nb">bytes</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
-                            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+                            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
                             <span class="k">continue</span>
-                        <span class="k">await</span> <span class="n">zmqlet</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
-                            <span class="n">Message</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Request</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s1">&#39;gateway&#39;</span><span class="p">,</span> <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">))</span>
-                        <span class="p">)</span>
+                        <span class="k">await</span> <span class="n">zmqlet</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">Message</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">Request</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="s1">&#39;gateway&#39;</span><span class="p">,</span> <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)))</span>
                         <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">zmqlet</span><span class="o">.</span><span class="n">recv_message</span><span class="p">(</span><span class="n">callback</span><span class="o">=</span><span class="n">handle_route</span><span class="p">)</span>
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_encoding</span> <span class="o">==</span> <span class="s1">&#39;bytes&#39;</span><span class="p">:</span>
                             <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send_bytes</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">())</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="k">await</span> <span class="n">websocket</span><span class="o">.</span><span class="n">send_json</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
                     <span class="k">elif</span> <span class="n">message</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;websocket.disconnect&#39;</span><span class="p">:</span>
-                        <span class="n">close_code</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
-                            <span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">WS_1000_NORMAL_CLOSURE</span><span class="p">)</span>
-                        <span class="p">)</span>
+                        <span class="n">close_code</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">status</span><span class="o">.</span><span class="n">WS_1000_NORMAL_CLOSURE</span><span class="p">))</span>
                         <span class="k">break</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
                 <span class="n">close_code</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">WS_1011_INTERNAL_ERROR</span>
@@ -672,13 +557,6 @@
                 <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_disconnect</span><span class="p">(</span><span class="n">websocket</span><span class="p">,</span> <span class="n">close_code</span><span class="p">)</span>
 
         <span class="k">async</span> <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Decode the text or bytes format `message`</span>
-
-<span class="sd">            :param websocket: WebSocket connection.</span>
-<span class="sd">            :param message: Jina `Message`.</span>
-<span class="sd">            :return: decoded message.</span>
-<span class="sd">            &quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="s1">&#39;text&#39;</span> <span class="ow">in</span> <span class="n">message</span> <span class="ow">or</span> <span class="s1">&#39;json&#39;</span> <span class="ow">in</span> <span class="n">message</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">client_encoding</span> <span class="o">=</span> <span class="s1">&#39;text&#39;</span>
 
@@ -688,12 +566,6 @@
             <span class="k">return</span> <span class="k">await</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">websocket</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 
         <span class="k">async</span> <span class="k">def</span> <span class="nf">on_disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">websocket</span><span class="p">:</span> <span class="n">WebSocket</span><span class="p">,</span> <span class="n">close_code</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Log the information when client is disconnected.</span>
-
-<span class="sd">            :param websocket: disconnected websocket</span>
-<span class="sd">            :param close_code: close code</span>
-<span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Client </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">client_info</span><span class="si">}</span><span class="s1"> got disconnected!&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">app</span></div>
@@ -829,7 +701,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

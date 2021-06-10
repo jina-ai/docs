@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.jaml.helper &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.jaml.helper &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -351,15 +355,9 @@
 
 
 <div class="viewcode-block" id="JinaConstructor"><a class="viewcode-back" href="../../../../api/jina.jaml.helper/#jina.jaml.helper.JinaConstructor">[docs]</a><span class="k">class</span> <span class="nc">JinaConstructor</span><span class="p">(</span><span class="n">FullConstructor</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert List into tuple when doing hashing.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Convert List into tuple when doing hashing&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="JinaConstructor.get_hashable_key"><a class="viewcode-back" href="../../../../api/jina.jaml.helper/#jina.jaml.helper.JinaConstructor.get_hashable_key">[docs]</a>    <span class="k">def</span> <span class="nf">get_hashable_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the hash value of key.</span>
-
-<span class="sd">        :param key: key value to be hashed.</span>
-<span class="sd">        :return: Hash value of key.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="nb">hash</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
@@ -373,25 +371,15 @@
         <span class="k">return</span> <span class="n">key</span></div>
 
 <div class="viewcode-block" id="JinaConstructor.construct_mapping"><a class="viewcode-back" href="../../../../api/jina.jaml.helper/#jina.jaml.helper.JinaConstructor.construct_mapping">[docs]</a>    <span class="k">def</span> <span class="nf">construct_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build the mapping from node.</span>
-
-<span class="sd">        :param node: the node to traverse</span>
-<span class="sd">        :param deep: required param from YAML constructor</span>
-<span class="sd">        :return: Mapped data</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">MappingNode</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">flatten_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_mapping</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="n">deep</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_construct_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">MappingNode</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ConstructorError</span><span class="p">(</span>
-                <span class="kc">None</span><span class="p">,</span>
-                <span class="kc">None</span><span class="p">,</span>
-                <span class="s1">&#39;expected a mapping node, but found </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                <span class="n">node</span><span class="o">.</span><span class="n">start_mark</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ConstructorError</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                                   <span class="s1">&#39;expected a mapping node, but found </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                                   <span class="n">node</span><span class="o">.</span><span class="n">start_mark</span><span class="p">)</span>
         <span class="n">mapping</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">key_node</span><span class="p">,</span> <span class="n">value_node</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
             <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_object</span><span class="p">(</span><span class="n">key_node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -399,12 +387,8 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_hashable_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ConstructorError</span><span class="p">(</span>
-                        <span class="s1">&#39;while constructing a mapping&#39;</span><span class="p">,</span>
-                        <span class="n">node</span><span class="o">.</span><span class="n">start_mark</span><span class="p">,</span>
-                        <span class="s1">&#39;found unacceptable key (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">exc</span><span class="p">,</span>
-                        <span class="n">key_node</span><span class="o">.</span><span class="n">start_mark</span><span class="p">,</span>
-                    <span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">ConstructorError</span><span class="p">(</span><span class="s1">&#39;while constructing a mapping&#39;</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">start_mark</span><span class="p">,</span>
+                                           <span class="s1">&#39;found unacceptable key (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">exc</span><span class="p">,</span> <span class="n">key_node</span><span class="o">.</span><span class="n">start_mark</span><span class="p">)</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_object</span><span class="p">(</span><span class="n">value_node</span><span class="p">,</span> <span class="n">deep</span><span class="o">=</span><span class="n">deep</span><span class="p">)</span>
 
             <span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -412,18 +396,11 @@
 
 
 <div class="viewcode-block" id="JinaResolver"><a class="viewcode-back" href="../../../../api/jina.jaml.helper/#jina.jaml.helper.JinaResolver">[docs]</a><span class="k">class</span> <span class="nc">JinaResolver</span><span class="p">(</span><span class="n">Resolver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Remove `on|On|ON` as bool resolver.&quot;&quot;&quot;</span>
-
+    <span class="sd">&quot;&quot;&quot;Remove `on|On|ON` as bool resolver&quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
 
 <div class="viewcode-block" id="JinaLoader"><a class="viewcode-back" href="../../../../api/jina.jaml.helper/#jina.jaml.helper.JinaLoader">[docs]</a><span class="k">class</span> <span class="nc">JinaLoader</span><span class="p">(</span><span class="n">Reader</span><span class="p">,</span> <span class="n">Scanner</span><span class="p">,</span> <span class="n">Parser</span><span class="p">,</span> <span class="n">Composer</span><span class="p">,</span> <span class="n">JinaConstructor</span><span class="p">,</span> <span class="n">JinaResolver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The Jina loader which should be able to load YAML safely.</span>
-
-<span class="sd">    :param stream: the stream to load.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">):</span>
         <span class="n">Reader</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span>
         <span class="n">Scanner</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -438,23 +415,19 @@
 <span class="n">JinaResolver</span><span class="o">.</span><span class="n">yaml_implicit_resolvers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="parse_config_source"><a class="viewcode-back" href="../../../../api/jina.jaml.helper/#jina.jaml.helper.parse_config_source">[docs]</a><span class="k">def</span> <span class="nf">parse_config_source</span><span class="p">(</span>
-    <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span>
-    <span class="n">allow_stream</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">allow_yaml_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">allow_builtin_resource</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">allow_raw_yaml_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">allow_raw_driver_yaml_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">allow_class_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">allow_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">allow_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TextIO</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Check if the text or text stream is valid.</span>
+<div class="viewcode-block" id="parse_config_source"><a class="viewcode-back" href="../../../../api/jina.jaml.helper/#jina.jaml.helper.parse_config_source">[docs]</a><span class="k">def</span> <span class="nf">parse_config_source</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span>
+                        <span class="n">allow_stream</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">allow_yaml_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">allow_builtin_resource</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">allow_raw_yaml_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">allow_raw_driver_yaml_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">allow_class_type</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">allow_dict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="n">allow_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">TextIO</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Check if the text or text stream is valid.</span>
 
-<span class="sd">    .. # noqa: DAR401</span>
+<span class="sd">    # noqa: DAR401</span>
 <span class="sd">    :param path: the multi-kind source of the configs.</span>
 <span class="sd">    :param allow_stream: flag</span>
 <span class="sd">    :param allow_yaml_file: flag</span>
@@ -464,19 +437,17 @@
 <span class="sd">    :param allow_class_type: flag</span>
 <span class="sd">    :param allow_dict: flag</span>
 <span class="sd">    :param allow_json: flag</span>
-<span class="sd">    :param args: unused</span>
-<span class="sd">    :param kwargs: unused</span>
+<span class="sd">    :param *args: *args</span>
+<span class="sd">    :param **kwargs: **kwargs</span>
 <span class="sd">    :return: a tuple, the first element is the text stream, the second element is the file path associate to it</span>
 <span class="sd">            if available.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">io</span>
     <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
-
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">BadConfigSource</span>
     <span class="k">elif</span> <span class="n">allow_dict</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">JAML</span>
-
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="kc">None</span>
     <span class="k">elif</span> <span class="n">allow_stream</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;read&#39;</span><span class="p">):</span>
@@ -485,41 +456,22 @@
     <span class="k">elif</span> <span class="n">allow_yaml_file</span> <span class="ow">and</span> <span class="n">is_yaml_filepath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="n">comp_path</span> <span class="o">=</span> <span class="n">complete_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">comp_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">),</span> <span class="n">comp_path</span>
-    <span class="k">elif</span> <span class="p">(</span>
-        <span class="n">allow_builtin_resource</span>
-        <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
-        <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
-            <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;executors.</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">.yml&#39;</span><span class="p">)))</span>
-        <span class="p">)</span>
-    <span class="p">):</span>
+    <span class="k">elif</span> <span class="n">allow_builtin_resource</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span>
+            <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;executors.</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">.yml&#39;</span><span class="p">)))):</span>
         <span class="c1"># NOTE: this returns a binary stream</span>
-        <span class="n">comp_path</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span>
-            <span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;executors.</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">.yml&#39;</span><span class="p">))</span>
-        <span class="p">)</span>
+        <span class="n">comp_path</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;executors.</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">.yml&#39;</span><span class="p">)))</span>
         <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">comp_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf8&#39;</span><span class="p">),</span> <span class="n">comp_path</span>
-    <span class="k">elif</span> <span class="n">allow_raw_yaml_content</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;jtype&#39;</span><span class="p">)):</span>
+    <span class="k">elif</span> <span class="n">allow_raw_yaml_content</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;!&#39;</span><span class="p">):</span>
         <span class="c1"># possible YAML content</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">    with: &#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="kc">None</span>
-    <span class="k">elif</span> <span class="n">allow_raw_driver_yaml_content</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">&#39;- !&#39;</span><span class="p">,</span> <span class="s1">&#39;- jtype&#39;</span><span class="p">)):</span>
+    <span class="k">elif</span> <span class="n">allow_raw_driver_yaml_content</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;- !&#39;</span><span class="p">):</span>
         <span class="c1"># possible driver YAML content, right now it is only used for debugging</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span>
-            <span class="n">resource_filename</span><span class="p">(</span>
-                <span class="s1">&#39;jina&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="p">(</span>
-                        <span class="s1">&#39;resources&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;executors.base.all.yml&#39;</span>
-                        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;- !!&#39;</span><span class="p">)</span>
-                        <span class="k">else</span> <span class="s1">&#39;executors.base.yml&#39;</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="p">),</span>
-            <span class="p">)</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">resource_filename</span><span class="p">(</span><span class="s1">&#39;jina&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">(</span><span class="s1">&#39;resources&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;executors.base.all.yml&#39;</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;- !!&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;executors.base.yml&#39;</span><span class="p">))))</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
             <span class="n">_defaults</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;- !!&#39;</span><span class="p">,</span> <span class="s1">&#39;- !&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-            <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        with: &#39;</span>
-        <span class="p">)</span>  <span class="c1"># for indent, I know, its nasty</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;- !!&#39;</span><span class="p">,</span> <span class="s1">&#39;- !&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">        with: &#39;</span><span class="p">)</span>  <span class="c1"># for indent, I know, its nasty</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">_defaults</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="kc">None</span>
     <span class="k">elif</span> <span class="n">allow_class_type</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">():</span>
@@ -528,27 +480,17 @@
     <span class="k">elif</span> <span class="n">allow_json</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">JAML</span>
-
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">JAML</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">BadConfigSource</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">BadConfigSource</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> can not be resolved, it should be a readable stream,&#39;</span>
-            <span class="s1">&#39; or a valid file path, or a supported class name.&#39;</span>
-        <span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">BadConfigSource</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> can not be resolved, it should be a readable stream,&#39;</span>
+                              <span class="s1">&#39; or a valid file path, or a supported class name.&#39;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="complete_path"><a class="viewcode-back" href="../../../../api/jina.jaml.helper/#jina.jaml.helper.complete_path">[docs]</a><span class="k">def</span> <span class="nf">complete_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extra_search_paths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Complete the path of file via searching in abs and relative paths.</span>
-
-<span class="sd">    :param path: path of file.</span>
-<span class="sd">    :param extra_search_paths: extra paths to conduct search</span>
-<span class="sd">    :return: Completed file path.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_p</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="c1"># this checks both abs and relative paths already</span>
@@ -562,15 +504,13 @@
 
 
 <span class="k">def</span> <span class="nf">_search_file_in_paths</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">extra_search_paths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Search in all dirs of the PATH environment variable and all dirs of files used in the call stack.</span>
+    <span class="sd">&quot;&quot;&quot;searches in all dirs of the PATH environment variable and all dirs of files used in the call stack.</span>
 
 <span class="sd">    :param path: the path to search for</span>
 <span class="sd">    :param extra_search_paths: any extra locations to search for</span>
 <span class="sd">    :return: the path (if found)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">inspect</span>
-
     <span class="n">search_paths</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">extra_search_paths</span><span class="p">:</span>
         <span class="n">search_paths</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">extra_search_paths</span><span class="p">))</span>
@@ -591,8 +531,7 @@
 
 
 <div class="viewcode-block" id="load_py_modules"><a class="viewcode-back" href="../../../../api/jina.jaml.helper/#jina.jaml.helper.load_py_modules">[docs]</a><span class="k">def</span> <span class="nf">load_py_modules</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">extra_search_paths</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Find &#39;py_modules&#39; in the dict recursively and then load them.</span>
+    <span class="sd">&quot;&quot;&quot;Find &#39;py_modules&#39; in the dict recursively and then load them</span>
 
 <span class="sd">    :param d: the dictionary to traverse</span>
 <span class="sd">    :param extra_search_paths: any extra paths to search</span>
@@ -745,7 +684,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

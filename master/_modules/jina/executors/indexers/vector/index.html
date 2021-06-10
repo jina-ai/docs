@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.executors.indexers.vector &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.executors.indexers.vector &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -340,17 +344,15 @@
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">BaseVectorIndexer</span>
 <span class="kn">from</span> <span class="nn">..decorators</span> <span class="kn">import</span> <span class="n">batching</span>
 <span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">cached_property</span>
-<span class="kn">from</span> <span class="nn">...importer</span> <span class="kn">import</span> <span class="n">ImportExtensions</span>
 
 
 <div class="viewcode-block" id="BaseNumpyIndexer"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.BaseNumpyIndexer">[docs]</a><span class="k">class</span> <span class="nc">BaseNumpyIndexer</span><span class="p">(</span><span class="n">BaseVectorIndexer</span><span class="p">):</span>
@@ -364,30 +366,25 @@
 <span class="sd">        Setting :attr:`compress_level`&gt;0 gives a smaller file size on the disk in the index time. However, in the query</span>
 <span class="sd">        time it loads all data into memory at once. Not ideal for large scale application.</span>
 
-<span class="sd">        Setting :attr:`compress_level`=0 enables :func:`np.memmap`, which loads data in an on-demand way and</span>
+<span class="sd">        Setting :attr:`compress_level`=0 enables :func:`np.memmap`, which loads data in an on-demanding way and</span>
 <span class="sd">        gives smaller memory footprint in the query time. However, it often gives larger file size on the disk.</span>
-
-<span class="sd">    :param compress_level: The compresslevel argument is an integer from 0 to 9 controlling the</span>
-<span class="sd">                    level of compression; 1 is fastest and produces the least compression,</span>
-<span class="sd">                    and 9 is slowest and produces the most compression. 0 is no compression</span>
-<span class="sd">                    at all. The default is 9.</span>
-<span class="sd">    :param ref_indexer: Bootstrap the current indexer from a ``ref_indexer``. This enables user to switch</span>
-<span class="sd">                        the query algorithm at the query time.</span>
-<span class="sd">    :param delete_on_dump: whether to delete the rows marked as delete (see ``valid_indices``)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">compress_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">ref_indexer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;BaseNumpyIndexer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">delete_on_dump</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">compress_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="n">ref_indexer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;BaseNumpyIndexer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param compress_level: The compresslevel argument is an integer from 0 to 9 controlling the</span>
+<span class="sd">                        level of compression; 1 is fastest and produces the least compression,</span>
+<span class="sd">                        and 9 is slowest and produces the most compression. 0 is no compression</span>
+<span class="sd">                        at all. The default is 9.</span>
+<span class="sd">        :param ref_indexer: Bootstrap the current indexer from a ``ref_indexer``. This enables user to switch</span>
+<span class="sd">                            the query algorithm at the query time.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span> <span class="o">=</span> <span class="n">delete_on_dump</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span> <span class="o">=</span> <span class="n">compress_level</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
@@ -405,83 +402,17 @@
             <span class="c1"># so that later in `post_init()` it will load from the referred index_filename</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">=</span> <span class="n">ref_indexer</span><span class="o">.</span><span class="n">valid_indices</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">index_filename</span> <span class="o">=</span> <span class="n">ref_indexer</span><span class="o">.</span><span class="n">index_filename</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;num_dim extracted from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">num_dim</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;_size extracted from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">_size</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;dtype extracted from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;compress_level overridden from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">compress_level</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
-                <span class="sa">f</span><span class="s1">&#39;index_filename overridden from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">index_filename</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                <span class="sa">f</span><span class="s1">&#39;num_dim extracted from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">num_dim</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                <span class="sa">f</span><span class="s1">&#39;_size extracted from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">_size</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                <span class="sa">f</span><span class="s1">&#39;dtype extracted from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                <span class="sa">f</span><span class="s1">&#39;compress_level overriden from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">compress_level</span><span class="si">}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                <span class="sa">f</span><span class="s1">&#39;index_filename overriden from `ref_indexer` to </span><span class="si">{</span><span class="n">ref_indexer</span><span class="o">.</span><span class="n">index_filename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ref_indexer_workspace_name</span> <span class="o">=</span> <span class="n">ref_indexer</span><span class="o">.</span><span class="n">workspace_name</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ref_indexer</span><span class="p">,</span> <span class="s1">&#39;delete_on_dump&#39;</span><span class="p">,</span> <span class="n">delete_on_dump</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_delete_invalid_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">valid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">==</span> <span class="kc">True</span><span class="p">]</span>  <span class="c1"># noqa</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_clean_memmap</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_post_clean_memmap</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_post_clean_memmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">valid</span><span class="p">):</span>
-        <span class="c1"># here we need to make sure the fields</span>
-        <span class="c1"># that depend on the valid_indices are cleaned up too</span>
-        <span class="n">valid_key_bytes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">)</span>
-        <span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">]</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span> <span class="o">=</span> <span class="n">valid_key_bytes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">=</span> <span class="n">valid</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int2ext_id</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext2int_id</span>
-
-    <span class="k">def</span> <span class="nf">_clean_memmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># clean up the underlying matrix of entries marked for deletion</span>
-        <span class="c1"># first we need to make sure we flush the writing handler</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
-            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">handler_mutex</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="c1"># force the raw_ndarray (underlying matrix) to re-read from disk</span>
-        <span class="c1"># (needed when there were writing ops to be flushed)</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span>
-        <span class="n">filtered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">]</span>
-        <span class="c1"># we need an intermediary file</span>
-        <span class="n">tmp_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span> <span class="o">+</span> <span class="s1">&#39;tmp&#39;</span>
-
-        <span class="c1"># write the bytes in the respective files</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
-                <span class="n">tmp_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span>
-            <span class="p">)</span> <span class="k">as</span> <span class="n">new_gzip_fh</span><span class="p">:</span>
-                <span class="n">new_gzip_fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filtered</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">filtered_data_fh</span><span class="p">:</span>
-                <span class="n">filtered_data_fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filtered</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span>
-
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
-        <span class="c1"># force it to re-read again from the new file</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span>
-
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># called on pickle save</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">delete_on_dump</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_delete_invalid_indices</span><span class="p">()</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">d</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">workspace_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the workspace name.</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_indexer_workspace_name</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_indexer_workspace_name</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_indexer_workspace_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_indexer_workspace_name</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">index_abspath</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -489,8 +420,6 @@
 
 <span class="sd">        Use index_abspath</span>
 
-
-<span class="sd">        .. # noqa: DAR201</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_file_from_workspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_filename</span><span class="p">)</span>
 
@@ -500,9 +429,7 @@
 <span class="sd">        :return: a gzip file stream</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;ab&#39;</span><span class="p">)</span></div>
 
@@ -512,42 +439,32 @@
 <span class="sd">        :return: a gzip file stream</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compress_level</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_validate_key_vector_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">vectors</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;vectors shape </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> is not valid, expecting &quot;vectors&quot; to have rank of 2&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;vectors shape </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> is not valid, expecting &quot;vectors&quot; to have rank of 2&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;num_dim&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span> <span class="o">=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span> <span class="o">!=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;vectors shape </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> does not match with indexers</span><span class="se">\&#39;</span><span class="s1">s dim: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;vectors shape </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1"> does not match with indexers</span><span class="se">\&#39;</span><span class="s1">s dim: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;vectors</span><span class="se">\&#39;</span><span class="s1"> dtype </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> does not match with indexers</span><span class="se">\&#39;</span><span class="s1">s dtype: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;vectors</span><span class="se">\&#39;</span><span class="s1"> dtype </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> does not match with indexers</span><span class="se">\&#39;</span><span class="s1">s dtype: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;number of key </span><span class="si">{</span><span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> not equal to number of vectors </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;number of key </span><span class="si">{</span><span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> not equal to number of vectors </span><span class="si">{</span><span class="n">vectors</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseNumpyIndexer.add"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.BaseNumpyIndexer.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add the embeddings and document ids to the index.</span>
 
 <span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
 <span class="sd">        :param vectors: embeddings</span>
-<span class="sd">        :param args: not used</span>
-<span class="sd">        :param kwargs: not used</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">np_keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">(</span><span class="n">np_keys</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span></div>
@@ -556,27 +473,19 @@
         <span class="k">if</span> <span class="n">keys</span><span class="o">.</span><span class="n">size</span> <span class="ow">and</span> <span class="n">vectors</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_validate_key_vector_shapes</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">write_handler</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">vectors</span><span class="o">.</span><span class="n">tobytes</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="kc">True</span><span class="p">))</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="kc">True</span><span class="p">)))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span> <span class="o">+=</span> <span class="n">keys</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="n">keys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<div class="viewcode-block" id="BaseNumpyIndexer.update"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.BaseNumpyIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseNumpyIndexer.update"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.BaseNumpyIndexer.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Update the embeddings on the index via document ids.</span>
 
 <span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
 <span class="sd">        :param vectors: embeddings</span>
-<span class="sd">        :param args: not used</span>
-<span class="sd">        :param kwargs: not used</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># noinspection PyTypeChecker</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-            <span class="n">keys</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys_values</span><span class="p">(</span>
-                <span class="n">keys</span><span class="p">,</span> <span class="n">vectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext2int_id</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-            <span class="p">)</span>
+            <span class="n">keys</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys_values</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">vectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext2int_id</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="k">if</span> <span class="n">keys</span><span class="p">:</span>
                 <span class="n">np_keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="n">np_keys</span><span class="p">)</span>
@@ -595,8 +504,6 @@
         <span class="sd">&quot;&quot;&quot;Delete the embeddings from the index via document ids.</span>
 
 <span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
-<span class="sd">        :param args: not used</span>
-<span class="sd">        :param kwargs: not used</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext2int_id</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -620,30 +527,24 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_advanced_index</span><span class="p">(</span><span class="n">vecs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="BaseNumpyIndexer.build_advanced_index"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.BaseNumpyIndexer.build_advanced_index">[docs]</a>    <span class="k">def</span> <span class="nf">build_advanced_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vecs</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Not implemented here.</span>
+        <span class="sd">&quot;&quot;&quot;Build advanced index structure based on in-memory numpy ndarray, e.g. graph, tree, etc.</span>
 
-
-<span class="sd">        .. # noqa: DAR201</span>
-
-
-<span class="sd">        .. # noqa: DAR101</span>
+<span class="sd">        :param vecs: the raw numpy ndarray</span>
+<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
-    <span class="k">def</span> <span class="nf">_load_gzip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abspath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_load_gzip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abspath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;loading index from </span><span class="si">{</span><span class="n">abspath</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
-            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">abspath</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
-                    <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span><span class="p">]</span>
-                <span class="p">)</span>
+            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">abspath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">abspath</span><span class="si">}</span><span class="s1"> is broken/incomplete, perhaps forgot to &quot;.close()&quot; in the last usage?&#39;</span>
-            <span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">abspath</span><span class="si">}</span><span class="s1"> is broken/incomplete, perhaps forgot to &quot;.close()&quot; in the last usage?&#39;</span><span class="p">)</span>
 
     <span class="nd">@cached_property</span>
-    <span class="k">def</span> <span class="nf">_raw_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.memmap&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_raw_ndarray</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
             <span class="k">return</span>
 
@@ -651,35 +552,16 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_gzip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">)</span><span class="o">.</span><span class="n">st_size</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;memmap is enabled for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">deleted_keys</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">==</span> <span class="kc">False</span><span class="p">])</span>
             <span class="c1"># `==` is required. `is False` does not work in np</span>
-            <span class="n">deleted_keys</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span> <span class="o">==</span> <span class="kc">False</span><span class="p">])</span>  <span class="c1"># noqa</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
-                <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
-                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">deleted_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span><span class="p">),</span>
-            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_abspath</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+                             <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">deleted_keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_dim</span><span class="p">))</span>
 
-<div class="viewcode-block" id="BaseNumpyIndexer.sample"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.BaseNumpyIndexer.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Return a random entry from the indexer for sanity check.</span>
-
-<span class="sd">        :return: A random entry from the indexer.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ext2int_id</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span><span class="p">[</span><span class="n">k</span><span class="p">]</span></div>
-
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
-
-<div class="viewcode-block" id="BaseNumpyIndexer.query_by_key"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.BaseNumpyIndexer.query_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">query_by_key</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+<div class="viewcode-block" id="BaseNumpyIndexer.query_by_key"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.BaseNumpyIndexer.query_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">query_by_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Search the index by the external key (passed during `.add(`).</span>
 
 <span class="sd">        :param keys: a list of ``id``, i.e. ``doc.id`` in protobuf</span>
-<span class="sd">        :param args: not used</span>
-<span class="sd">        :param kwargs: not used</span>
 <span class="sd">        :return: ndarray of vectors</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_nonexistent_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ext2int_id</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -691,11 +573,7 @@
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_int2ext_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Convert internal ids (0,1,2,3,4,...) to external ids (random strings)</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Convert internal ids (0,1,2,3,4,...) to external ids (random index) &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">key_bytes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_length</span><span class="p">))</span>
             <span class="c1"># `==` is required. `is False` does not work in np</span>
@@ -703,24 +581,14 @@
             <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">deleted_keys</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="n">r</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;the size of the keys and vectors are inconsistent &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">), &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;did you write to this index twice? or did you forget to save indexer?&#39;</span>
-                <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s1">&#39;the size of the keys and vectors are inconsistent &#39;</span>
                     <span class="sa">f</span><span class="s1">&#39;(</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_ndarray</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">), &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;did you write to this index twice? or did you forget to save indexer?&#39;</span>
-                <span class="p">)</span>
+                    <span class="sa">f</span><span class="s1">&#39;did you write to this index twice? or did you forget to save indexer?&#39;</span><span class="p">)</span>
 
     <span class="nd">@cached_property</span>
     <span class="k">def</span> <span class="nf">_ext2int_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Convert external ids (random strings) to internal ids (0,1,2,3,4,...)</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Convert external ids (random index) to internal ids (0,1,2,3,4,...) &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int2ext_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_int2ext_id</span><span class="p">)}</span></div>
 
@@ -733,8 +601,8 @@
 <span class="k">def</span> <span class="nf">_ext_A</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
     <span class="n">nA</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">A_ext</span> <span class="o">=</span> <span class="n">_get_ones</span><span class="p">(</span><span class="n">nA</span><span class="p">,</span> <span class="n">dim</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">A_ext</span><span class="p">[:,</span> <span class="n">dim</span> <span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span>
-    <span class="n">A_ext</span><span class="p">[:,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dim</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">A</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">A_ext</span><span class="p">[:,</span> <span class="n">dim</span><span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span>
+    <span class="n">A_ext</span><span class="p">[:,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dim</span><span class="p">:]</span> <span class="o">=</span> <span class="n">A</span> <span class="o">**</span> <span class="mi">2</span>
     <span class="k">return</span> <span class="n">A_ext</span>
 
 
@@ -742,7 +610,7 @@
     <span class="n">nB</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">B_ext</span> <span class="o">=</span> <span class="n">_get_ones</span><span class="p">(</span><span class="n">dim</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">nB</span><span class="p">)</span>
     <span class="n">B_ext</span><span class="p">[:</span><span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">B</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-    <span class="n">B_ext</span><span class="p">[</span><span class="n">dim</span> <span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">B</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">B_ext</span><span class="p">[</span><span class="n">dim</span><span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dim</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">B</span><span class="o">.</span><span class="n">T</span>
     <span class="k">del</span> <span class="n">B</span>
     <span class="k">return</span> <span class="n">B_ext</span>
 
@@ -761,46 +629,37 @@
 
 
 <div class="viewcode-block" id="NumpyIndexer"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.NumpyIndexer">[docs]</a><span class="k">class</span> <span class="nc">NumpyIndexer</span><span class="p">(</span><span class="n">BaseNumpyIndexer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An exhaustive vector indexers implemented with numpy and scipy.</span>
-
-<span class="sd">    .. note::</span>
-<span class="sd">        Metrics other than `cosine` and `euclidean` requires ``scipy`` installed.</span>
-
-<span class="sd">    :param metric: The distance metric to use. `braycurtis`, `canberra`, `chebyshev`, `cityblock`, `correlation`,</span>
-<span class="sd">                    `cosine`, `dice`, `euclidean`, `hamming`, `jaccard`, `jensenshannon`, `kulsinski`,</span>
-<span class="sd">                    `mahalanobis`,</span>
-<span class="sd">                    `matching`, `minkowski`, `rogerstanimoto`, `russellrao`, `seuclidean`, `sokalmichener`,</span>
-<span class="sd">                    `sokalsneath`, `sqeuclidean`, `wminkowski`, `yule`.</span>
-<span class="sd">    :param backend: `numpy` or `scipy`, `numpy` only supports `euclidean` and `cosine` distance</span>
-<span class="sd">    :param compress_level: compression level to use</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;An exhaustive vector indexers implemented with numpy and scipy. &quot;&quot;&quot;</span>
 
     <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">512</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
-        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;numpy&#39;</span><span class="p">,</span>
-        <span class="n">compress_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;cosine&#39;</span><span class="p">,</span>
+                 <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;numpy&#39;</span><span class="p">,</span>
+                 <span class="n">compress_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param metric: The distance metric to use. `braycurtis`, `canberra`, `chebyshev`, `cityblock`, `correlation`,</span>
+<span class="sd">                        `cosine`, `dice`, `euclidean`, `hamming`, `jaccard`, `jensenshannon`, `kulsinski`,</span>
+<span class="sd">                        `mahalanobis`,</span>
+<span class="sd">                        `matching`, `minkowski`, `rogerstanimoto`, `russellrao`, `seuclidean`, `sokalmichener`,</span>
+<span class="sd">                        `sokalsneath`, `sqeuclidean`, `wminkowski`, `yule`.</span>
+<span class="sd">        :param backend: `numpy` or `scipy`, `numpy` only supports `euclidean` and `cosine` distance</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            Metrics other than `cosine` and `euclidean` requires ``scipy`` installed.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">compress_level</span><span class="o">=</span><span class="n">compress_level</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">metric</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_sorted_top_k</span><span class="p">(</span>
-        <span class="n">dist</span><span class="p">:</span> <span class="s1">&#39;np.array&#39;</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_get_sorted_top_k</span><span class="p">(</span><span class="n">dist</span><span class="p">:</span> <span class="s1">&#39;np.array&#39;</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Find top-k smallest distances in ascending order.</span>
 
 <span class="sd">        Idea is to use partial sort to retrieve top-k smallest distances unsorted and then sort these</span>
 <span class="sd">        in ascending order. Equivalent to full sort but faster for n &gt;&gt; k. If k &gt;= n revert to full sort.</span>
 
-<span class="sd">        :param dist: the distances</span>
-<span class="sd">        :param top_k: nr to limit</span>
-<span class="sd">        :return: tuple of indices, computed distances</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">top_k</span> <span class="o">&gt;=</span> <span class="n">dist</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:,</span> <span class="p">:</span><span class="n">top_k</span><span class="p">]</span>
@@ -814,9 +673,7 @@
 
         <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">dist</span>
 
-<div class="viewcode-block" id="NumpyIndexer.query"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.NumpyIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
+<div class="viewcode-block" id="NumpyIndexer.query"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.NumpyIndexer.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vectors</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">top_k</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Find the top-k vectors with smallest ``metric`` and return their ids in ascending order.</span>
 
 <span class="sd">        :return: a tuple of two ndarray.</span>
@@ -827,11 +684,6 @@
 
 <span class="sd">            Distance (the smaller the better) is returned, not the score.</span>
 
-<span class="sd">        :param vectors: the vectors with which to search</span>
-<span class="sd">        :param args: not used</span>
-<span class="sd">        :param kwargs: not used</span>
-<span class="sd">        :param top_k: nr of results to return</span>
-<span class="sd">        :return: tuple of indices within matrix and distances</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
@@ -843,18 +695,14 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">==</span> <span class="s1">&#39;cosine&#39;</span><span class="p">:</span>
             <span class="n">_query_vectors</span> <span class="o">=</span> <span class="n">_ext_A</span><span class="p">(</span><span class="n">_norm</span><span class="p">(</span><span class="n">vectors</span><span class="p">))</span>
             <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosine</span><span class="p">(</span><span class="n">_query_vectors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_handler</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="si">}</span><span class="s1"> is not implemented&#39;</span><span class="p">)</span>
 
         <span class="n">idx</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sorted_top_k</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">top_k</span><span class="p">)</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int2ext_id</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valid_indices</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">indices</span><span class="p">,</span> <span class="n">dist</span></div>
 
 <div class="viewcode-block" id="NumpyIndexer.build_advanced_index"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.NumpyIndexer.build_advanced_index">[docs]</a>    <span class="k">def</span> <span class="nf">build_advanced_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vecs</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Build advanced index structure based on in-memory numpy ndarray, e.g. graph, tree, etc.</span>
-
-<span class="sd">        :param vecs: The raw numpy ndarray.</span>
-<span class="sd">        :return: Advanced index.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">vecs</span></div>
 
     <span class="nd">@batching</span><span class="p">(</span><span class="n">merge_over_axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">slice_on</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
@@ -869,13 +717,11 @@
 
     <span class="nd">@batching</span><span class="p">(</span><span class="n">merge_over_axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">slice_on</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">_cdist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">ImportExtensions</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">cdist</span>
-        <span class="k">return</span> <span class="n">cdist</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="VectorIndexer"><a class="viewcode-back" href="../../../../../api/jina.executors.indexers.vector/#jina.executors.indexers.vector.VectorIndexer">[docs]</a><span class="k">class</span> <span class="nc">VectorIndexer</span><span class="p">(</span><span class="n">NumpyIndexer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Alias to :class:`NumpyIndexer` &quot;&quot;&quot;</span></div>
+            <span class="k">return</span> <span class="n">cdist</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;your metric </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="si">}</span><span class="s1"> requires scipy, but scipy is not found&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -1008,7 +854,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

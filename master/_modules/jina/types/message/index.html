@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.message &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.types.message &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -374,13 +378,9 @@
 <span class="sd">    :param kwargs: Additional keyword arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">envelope</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.EnvelopeProto&#39;</span><span class="p">]],</span>
-        <span class="n">request</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.RequestProto&#39;</span><span class="p">],</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">envelope</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.EnvelopeProto&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+                 <span class="n">request</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.RequestProto&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">envelope</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">EnvelopeProto</span><span class="p">()</span>
@@ -404,11 +404,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Request&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the request.</span>
-
-<span class="sd">        :return: request</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the request.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">,</span> <span class="n">Request</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="o">.</span><span class="n">as_typed_request</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -417,28 +413,18 @@
 
     <span class="nd">@request</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bytes</span><span class="p">,</span> <span class="s1">&#39;jina_pb2.RequestProto&#39;</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the request to :param: `val`.</span>
-
-<span class="sd">        :param val: serialized Request</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set the request to :param: `val`.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="n">Request</span><span class="p">,</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">val</span>  <span class="c1"># type: Union[&#39;Request&#39;, &#39;jina_pb2.RequestProto&#39;]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;expecting request to be bytes or jina_pb2.RequestProto, but receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;expecting request to be bytes or jina_pb2.RequestProto, but receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">proto</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;jina_pb2.MessageProto&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the RequestProto.</span>
-
-<span class="sd">        :return: protobuf object</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the RequestProto.&quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">MessageProto</span><span class="p">()</span>
         <span class="n">r</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="p">):</span>
@@ -455,26 +441,13 @@
 <span class="sd">        .. warning::</span>
 <span class="sd">            If ``request`` change the type, e.g. by leveraging the feature of ``oneof``, this</span>
 <span class="sd">            property wont be updated. This is not considered as a good practice.</span>
-
-<span class="sd">        :return: boolean which states if data is requested</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span> <span class="o">!=</span> <span class="s1">&#39;ControlRequest&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">propagate</span>
-        <span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span> <span class="o">!=</span> <span class="s1">&#39;DumpRequest&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span> <span class="o">!=</span> <span class="s1">&#39;ControlRequest&#39;</span>
 
-    <span class="k">def</span> <span class="nf">_add_envelope</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">pod_name</span><span class="p">,</span>
-        <span class="n">identity</span><span class="p">,</span>
-        <span class="n">check_version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">request_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">request_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">compress</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;NONE&#39;</span><span class="p">,</span>
-        <span class="n">compress_min_bytes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">compress_min_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;jina_pb2.EnvelopeProto&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_envelope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pod_name</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">check_version</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">request_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">request_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">compress</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">compress_min_bytes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">compress_min_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                      <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;jina_pb2.EnvelopeProto&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add envelope to a request and make it as a complete message, which can be transmitted between pods.</span>
 
 <span class="sd">        .. note::</span>
@@ -484,29 +457,17 @@
 <span class="sd">        :param pod_name: the name of the current pod</span>
 <span class="sd">        :param identity: the identity of the current pod</span>
 <span class="sd">        :param check_version: turn on check_version</span>
-<span class="sd">        :param args: Additional positional arguments</span>
-<span class="sd">        :param kwargs: Additional keyword arguments</span>
-<span class="sd">        :param request_id: request id of the envelope</span>
-<span class="sd">        :param request_type: request type of the envelope</span>
-<span class="sd">        :param compress: used compression algorithm</span>
-<span class="sd">        :param compress_min_bytes: used for configuring compression</span>
-<span class="sd">        :param compress_min_ratio: used for configuring compression</span>
 <span class="sd">        :return: the resulted protobuf message</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">envelope</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">EnvelopeProto</span><span class="p">()</span>
         <span class="n">envelope</span><span class="o">.</span><span class="n">receiver_id</span> <span class="o">=</span> <span class="n">identity</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="n">request_id</span> <span class="ow">and</span> <span class="n">request_type</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">request_id</span> <span class="ow">and</span> <span class="n">request_type</span><span class="p">):</span>
             <span class="c1"># not lazy request, so we can directly access its request_id without worrying about</span>
             <span class="c1"># triggering the deserialization</span>
             <span class="n">envelope</span><span class="o">.</span><span class="n">request_id</span> <span class="o">=</span> <span class="n">request_id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">request_id</span>
-            <span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">request_type</span>
-                <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">)</span>
-                <span class="p">)</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="p">)</span>
+            <span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span> <span class="o">=</span> <span class="n">request_type</span> <span class="ow">or</span> \
+                                    <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">WhichOneof</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">))</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
 
             <span class="c1"># for compatibility</span>
             <span class="k">if</span> <span class="n">envelope</span><span class="o">.</span><span class="n">request_type</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;Proto&#39;</span><span class="p">):</span>
@@ -524,9 +485,7 @@
             <span class="c1">#                 &#39;in general, this invoke should not exist, &#39;</span>
             <span class="c1">#                 &#39;as add_envelope() is only called at the gateway&#39;)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;expecting request in type: jina_pb2.RequestProto, but receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;expecting request in type: jina_pb2.RequestProto, but receiving </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">compress</span><span class="p">)</span>
         <span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">min_ratio</span> <span class="o">=</span> <span class="n">compress_min_ratio</span>
@@ -538,11 +497,7 @@
         <span class="k">return</span> <span class="n">envelope</span>
 
 <div class="viewcode-block" id="Message.dump"><a class="viewcode-back" href="../../../../api/jina.types.message/#jina.Message.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the message in a list of bytes.</span>
-
-<span class="sd">        :return: array, containing encoded receiver id, serialized envelope and the compressed serialized envelope</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the message in a list of bytes.&quot;&quot;&quot;</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">SerializeToString</span><span class="p">()</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compress</span><span class="p">(</span><span class="n">r2</span><span class="p">)</span>
 
@@ -572,33 +527,25 @@
         <span class="n">_size_before</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
         <span class="c1"># lower than hwm, pass compression</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="n">_size_before</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">min_bytes</span>
-            <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">min_bytes</span> <span class="o">&lt;</span> <span class="mi">0</span>
-        <span class="p">):</span>
+        <span class="k">if</span> <span class="n">_size_before</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">min_bytes</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">min_bytes</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">=</span> <span class="s1">&#39;NONE&#39;</span>
             <span class="k">return</span> <span class="n">data</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ctag</span> <span class="o">==</span> <span class="n">CompressAlgo</span><span class="o">.</span><span class="n">LZ4</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">lz4.frame</span>
-
                 <span class="n">c_data</span> <span class="o">=</span> <span class="n">lz4</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">ctag</span> <span class="o">==</span> <span class="n">CompressAlgo</span><span class="o">.</span><span class="n">BZ2</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">bz2</span>
-
                 <span class="n">c_data</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">ctag</span> <span class="o">==</span> <span class="n">CompressAlgo</span><span class="o">.</span><span class="n">LZMA</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">lzma</span>
-
                 <span class="n">c_data</span> <span class="o">=</span> <span class="n">lzma</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">ctag</span> <span class="o">==</span> <span class="n">CompressAlgo</span><span class="o">.</span><span class="n">ZLIB</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">zlib</span>
-
                 <span class="n">c_data</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">ctag</span> <span class="o">==</span> <span class="n">CompressAlgo</span><span class="o">.</span><span class="n">GZIP</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">gzip</span>
-
                 <span class="n">c_data</span> <span class="o">=</span> <span class="n">gzip</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
             <span class="n">_size_after</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getsizeof</span><span class="p">(</span><span class="n">c_data</span><span class="p">)</span>
@@ -609,25 +556,22 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># compression rate is too bad, dont bother</span>
                 <span class="c1"># save time on decompression</span>
-                <span class="n">default_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;compression rate </span><span class="si">{</span><span class="p">(</span><span class="n">_size_before</span> <span class="o">/</span> <span class="n">_size_after</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">% &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;is lower than min_ratio &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">min_ratio</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="p">)</span>
+                <span class="n">default_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;compression rate </span><span class="si">{</span><span class="p">(</span><span class="n">_size_before</span> <span class="o">/</span> <span class="n">_size_after</span><span class="p">)</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">% &#39;</span>
+                                     <span class="sa">f</span><span class="s1">&#39;is lower than min_ratio &#39;</span>
+                                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">min_ratio</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">=</span> <span class="s1">&#39;NONE&#39;</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
             <span class="n">default_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;compression=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">ctag</span><span class="p">)</span><span class="si">}</span><span class="s1"> failed, fallback to compression=&quot;NONE&quot;. reason: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+                <span class="sa">f</span><span class="s1">&#39;compression=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">ctag</span><span class="p">)</span><span class="si">}</span><span class="s1"> failed, fallback to compression=&quot;NONE&quot;. reason: </span><span class="si">{</span><span class="n">ex</span><span class="si">!r}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">compression</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">=</span> <span class="s1">&#39;NONE&#39;</span>
 
         <span class="k">return</span> <span class="n">data</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">colored_route</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the string representation of the routes in a message.</span>
+        <span class="sd">&quot;&quot;&quot; Get the string representation of the routes in a message.</span>
 
-<span class="sd">        :return: colored route</span>
+<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">_pod_str</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
@@ -652,14 +596,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_route</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_add_route</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">envelope</span><span class="p">:</span> <span class="s1">&#39;jina_pb2.EnvelopeProto&#39;</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_add_route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">identity</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">envelope</span><span class="p">:</span> <span class="s1">&#39;jina_pb2.EnvelopeProto&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Add a route to the envelope.</span>
 
 <span class="sd">        :param name: the name of the pod service</span>
 <span class="sd">        :param identity: the identity of the pod service</span>
-<span class="sd">        :param envelope: protobuf definition of the envelope</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">envelope</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
         <span class="n">r</span><span class="o">.</span><span class="n">pod</span> <span class="o">=</span> <span class="n">name</span>
@@ -671,7 +612,6 @@
         <span class="sd">&quot;&quot;&quot;Get the size in bytes.</span>
 
 <span class="sd">        To get the latest size, use it after :meth:`dump`</span>
-<span class="sd">        :return: size of the message</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
 
@@ -679,53 +619,39 @@
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">jina</span><span class="p">:</span>
                 <span class="c1"># only happen in unittest</span>
-                <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s1">&#39;incoming message contains empty &quot;version.jina&quot;, &#39;</span>
-                    <span class="s1">&#39;you may ignore it in debug/unittest mode. &#39;</span>
-                    <span class="s1">&#39;otherwise please check if gateway service set correct version&#39;</span>
-                <span class="p">)</span>
+                <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;incoming message contains empty &quot;version.jina&quot;, &#39;</span>
+                                       <span class="s1">&#39;you may ignore it in debug/unittest mode. &#39;</span>
+                                       <span class="s1">&#39;otherwise please check if gateway service set correct version&#39;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">__version__</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">jina</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">MismatchedVersion</span><span class="p">(</span>
-                    <span class="s1">&#39;mismatched JINA version! &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;incoming message has JINA version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">jina</span><span class="si">}</span><span class="s1">, &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;whereas local JINA version </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">MismatchedVersion</span><span class="p">(</span><span class="s1">&#39;mismatched JINA version! &#39;</span>
+                                        <span class="sa">f</span><span class="s1">&#39;incoming message has JINA version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">jina</span><span class="si">}</span><span class="s1">, &#39;</span>
+                                        <span class="sa">f</span><span class="s1">&#39;whereas local JINA version </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">proto</span><span class="p">:</span>
                 <span class="c1"># only happen in unittest</span>
-                <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s1">&#39;incoming message contains empty &quot;version.proto&quot;, &#39;</span>
-                    <span class="s1">&#39;you may ignore it in debug/unittest mode. &#39;</span>
-                    <span class="s1">&#39;otherwise please check if gateway service set correct version&#39;</span>
-                <span class="p">)</span>
+                <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;incoming message contains empty &quot;version.proto&quot;, &#39;</span>
+                                       <span class="s1">&#39;you may ignore it in debug/unittest mode. &#39;</span>
+                                       <span class="s1">&#39;otherwise please check if gateway service set correct version&#39;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">__proto_version__</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">proto</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">MismatchedVersion</span><span class="p">(</span>
-                    <span class="s1">&#39;mismatched protobuf version! &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;incoming message has protobuf version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">proto</span><span class="si">}</span><span class="s1">, &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;whereas local protobuf version </span><span class="si">{</span><span class="n">__proto_version__</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">MismatchedVersion</span><span class="p">(</span><span class="s1">&#39;mismatched protobuf version! &#39;</span>
+                                        <span class="sa">f</span><span class="s1">&#39;incoming message has protobuf version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">proto</span><span class="si">}</span><span class="s1">, &#39;</span>
+                                        <span class="sa">f</span><span class="s1">&#39;whereas local protobuf version </span><span class="si">{</span><span class="n">__proto_version__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">vcs</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_VCS_VERSION&#39;</span><span class="p">):</span>
-                <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="s1">&#39;incoming message contains empty &quot;version.vcs&quot;, &#39;</span>
-                    <span class="s1">&#39;you may ignore it in debug/unittest mode, &#39;</span>
-                    <span class="s1">&#39;or if you run jina OUTSIDE docker container where JINA_VCS_VERSION is unset&#39;</span>
-                    <span class="s1">&#39;otherwise please check if gateway service set correct version&#39;</span>
-                <span class="p">)</span>
+                <span class="n">default_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;incoming message contains empty &quot;version.vcs&quot;, &#39;</span>
+                                       <span class="s1">&#39;you may ignore it in debug/unittest mode, &#39;</span>
+                                       <span class="s1">&#39;or if you run jina OUTSIDE docker container where JINA_VCS_VERSION is unset&#39;</span>
+                                       <span class="s1">&#39;otherwise please check if gateway service set correct version&#39;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;JINA_VCS_VERSION&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">vcs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">MismatchedVersion</span><span class="p">(</span>
-                    <span class="s1">&#39;mismatched vcs version! &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;incoming message has vcs_version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">vcs</span><span class="si">}</span><span class="s1">, &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;whereas local environment vcs_version is &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;JINA_VCS_VERSION&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">MismatchedVersion</span><span class="p">(</span><span class="s1">&#39;mismatched vcs version! &#39;</span>
+                                        <span class="sa">f</span><span class="s1">&#39;incoming message has vcs_version </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">vcs</span><span class="si">}</span><span class="s1">, &#39;</span>
+                                        <span class="sa">f</span><span class="s1">&#39;whereas local environment vcs_version is &#39;</span>
+                                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;JINA_VCS_VERSION&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">MismatchedVersion</span><span class="p">(</span>
-                <span class="s1">&#39;version_check=True locally, &#39;</span>
-                <span class="s1">&#39;but incoming message contains no version info in its envelope. &#39;</span>
-                <span class="s1">&#39;the message is probably sent from a very outdated JINA version&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">MismatchedVersion</span><span class="p">(</span><span class="s1">&#39;version_check=True locally, &#39;</span>
+                                    <span class="s1">&#39;but incoming message contains no version info in its envelope. &#39;</span>
+                                    <span class="s1">&#39;the message is probably sent from a very outdated JINA version&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">envelope</span><span class="p">):</span>
         <span class="n">envelope</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">jina</span> <span class="o">=</span> <span class="n">__version__</span>
@@ -742,7 +668,6 @@
 
 <span class="sd">        .. note::</span>
 <span class="sd">            This should be only called at Gateway</span>
-<span class="sd">        :return: request object which contains the response</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">end_time</span><span class="o">.</span><span class="n">GetCurrentTime</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">CopyFrom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
@@ -758,19 +683,13 @@
         <span class="n">routes</span> <span class="o">=</span> <span class="p">{(</span><span class="n">r</span><span class="o">.</span><span class="n">pod</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">pod_id</span><span class="p">):</span> <span class="n">r</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">msgs</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">routes</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">ClearField</span><span class="p">(</span><span class="s1">&#39;routes&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-            <span class="nb">sorted</span><span class="p">(</span>
-                <span class="n">routes</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
-                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">start_time</span><span class="o">.</span><span class="n">seconds</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">start_time</span><span class="o">.</span><span class="n">nanos</span><span class="p">),</span>
-            <span class="p">)</span>
-        <span class="p">)</span></div>
+            <span class="nb">sorted</span><span class="p">(</span><span class="n">routes</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">start_time</span><span class="o">.</span><span class="n">seconds</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">start_time</span><span class="o">.</span><span class="n">nanos</span><span class="p">)))</span></div>
 
-<div class="viewcode-block" id="Message.add_exception"><a class="viewcode-back" href="../../../../api/jina.types.message/#jina.Message.add_exception">[docs]</a>    <span class="k">def</span> <span class="nf">add_exception</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Exception&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="s1">&#39;BaseExecutor&#39;</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Add exception to the last route in the envelope</span>
+<div class="viewcode-block" id="Message.add_exception"><a class="viewcode-back" href="../../../../api/jina.types.message/#jina.Message.add_exception">[docs]</a>    <span class="k">def</span> <span class="nf">add_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ex</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s1">&#39;Exception&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">executor</span><span class="p">:</span> <span class="s1">&#39;BaseExecutor&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot; Add exception to the last route in the envelope</span>
 
 <span class="sd">        :param ex: Exception to be added</span>
-<span class="sd">        :param executor: Executor related to the exception</span>
+<span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">status</span>
         <span class="k">if</span> <span class="n">ex</span><span class="p">:</span>
@@ -782,30 +701,18 @@
             <span class="n">d</span><span class="o">.</span><span class="n">exception</span><span class="o">.</span><span class="n">executor</span> <span class="o">=</span> <span class="n">executor</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="n">d</span><span class="o">.</span><span class="n">exception</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">ex</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
             <span class="n">d</span><span class="o">.</span><span class="n">exception</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ex</span><span class="o">.</span><span class="n">args</span><span class="p">])</span>
-            <span class="n">d</span><span class="o">.</span><span class="n">exception</span><span class="o">.</span><span class="n">stacks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-                <span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span>
-                    <span class="n">etype</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">ex</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">ex</span><span class="p">,</span> <span class="n">tb</span><span class="o">=</span><span class="n">ex</span><span class="o">.</span><span class="n">__traceback__</span>
-                <span class="p">)</span>
-            <span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">exception</span><span class="o">.</span><span class="n">stacks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exception</span><span class="p">(</span><span class="n">etype</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">ex</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">ex</span><span class="p">,</span> <span class="n">tb</span><span class="o">=</span><span class="n">ex</span><span class="o">.</span><span class="n">__traceback__</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">d</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">StatusProto</span><span class="o">.</span><span class="n">ERROR_CHAINED</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return if the envelope status is ERROR.</span>
-
-<span class="sd">         :return: boolean stating if the status code of the envelope is error</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return if the envelope status is ERROR.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">code</span> <span class="o">&gt;=</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">StatusProto</span><span class="o">.</span><span class="n">ERROR</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return if the envelope status is READY.</span>
-
-<span class="sd">        :return: boolean stating if the status code of the envelope is ready</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return if the envelope status is READY.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="n">jina_pb2</span><span class="o">.</span><span class="n">StatusProto</span><span class="o">.</span><span class="n">READY</span></div>
 </pre></div>
 
@@ -939,7 +846,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

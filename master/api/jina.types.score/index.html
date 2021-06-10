@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.score &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.types.score &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -54,8 +54,8 @@
     
     <link rel="index" title="Index" href="../../genindex/" />
     <link rel="search" title="Search" href="../../search/" />
-    <link rel="next" title="jina.types.sets" href="../jina.types.sets/" />
-    <link rel="prev" title="jina.types.request.update" href="../jina.types.request.update/" /> 
+    <link rel="next" title="jina.types.mixin" href="../jina.types.mixin/" />
+    <link rel="prev" title="jina.types.request.mixin" href="../jina.types.request.mixin/" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,10 +84,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -230,8 +234,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../chapters/daemon/">Jina Daemon API Specification</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../jina/">Jina Python API Reference</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../jina.clients/">jina.clients</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../jina.docker/">jina.docker</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../jina.drivers/">jina.drivers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../jina.executors/">jina.executors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../jina.flow/">jina.flow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../jina.helloworld/">jina.helloworld</a></li>
@@ -247,11 +249,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../jina.types.document/">jina.types.document</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.types.message/">jina.types.message</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.types.ndarray/">jina.types.ndarray</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.types.querylang/">jina.types.querylang</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.types.request/">jina.types.request</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">jina.types.score</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../jina.types.sets/">jina.types.sets</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../jina.types.mixin/">jina.types.mixin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../jina.types.struct/">jina.types.struct</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../jina.checker/">jina.checker</a></li>
@@ -298,8 +299,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -419,31 +420,26 @@ view (i.e. weak reference) from it or a deep copy from it.</p></li>
 </ul>
 </dd>
 </dl>
+<p>Set constructor.</p>
 <dl class="py method">
 <dt id="jina.types.score.NamedScore.ref_id">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ref_id</span></code><a class="headerlink" href="#jina.types.score.NamedScore.ref_id" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">ref_id</span></code> of this NamedScore, the <cite>id</cite> of which this NamedScore is a score.
-:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>
-:return:: the ref_id</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="jina.types.score.NamedScore.operands">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">operands</span></code><a class="headerlink" href="#jina.types.score.NamedScore.operands" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns list of nested NamedScore operands.
-:rtype: <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="#jina.types.score.NamedScore" title="jina.types.score.NamedScore"><code class="xref py py-class docutils literal notranslate"><span class="pre">NamedScore</span></code></a>]
-:return:: list of nested NamedScore operands.</p>
+<dd><p>Return computed score between doc <code class="docutils literal notranslate"><span class="pre">id</span></code> and <code class="docutils literal notranslate"><span class="pre">ref_id</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt id="jina.types.score.NamedScore.set_attrs">
 <code class="sig-name descname"><span class="pre">set_attrs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/jina/types/score/#NamedScore.set_attrs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jina.types.score.NamedScore.set_attrs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Udate Document fields with key-value specified in kwargs.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>kwargs</strong> – Key-value parameters to be set</p>
-</dd>
-</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_attrs()</span></code> for bulk get attributes</p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -458,11 +454,11 @@ view (i.e. weak reference) from it or a deep copy from it.</p></li>
     
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         
-        <a href="../jina.types.sets/" class="btn btn-neutral float-right" title="jina.types.sets"
+        <a href="../jina.types.mixin/" class="btn btn-neutral float-right" title="jina.types.mixin"
            accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
         
         
-        <a href="../jina.types.request.update/" class="btn btn-neutral float-left" title="jina.types.request.update"
+        <a href="../jina.types.request.mixin/" class="btn btn-neutral float-left" title="jina.types.request.mixin"
            accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
         
     </div>
@@ -592,7 +588,7 @@ view (i.e. weak reference) from it or a deep copy from it.</p></li>
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

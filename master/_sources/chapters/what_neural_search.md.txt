@@ -45,7 +45,7 @@ While neural search has many advantages, there are still some situations where i
 - Your search needs are constrained and unlikely to change over time
 - You are searching for text in just one language
 - Speed is more important than getting the most accurate results
-- You want to understand **why** you're getting your *those* results
+- You want to understand **why** you're getting *those* results
 - Your computing power is highly limited
 - You have a small amount of data (neural search requires big data)
 

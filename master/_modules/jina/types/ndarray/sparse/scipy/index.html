@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.ndarray.sparse.scipy &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.types.ndarray.sparse.scipy &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -361,28 +365,18 @@
 <span class="sd">    :param sp_format: the sparse format of the scipy matrix. one of &#39;coo&#39;, &#39;bsr&#39;, &#39;csc&#39;, &#39;csr&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">proto</span><span class="p">:</span> <span class="s1">&#39;jina_pb2.SparseNdArrayProto&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">sp_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coo&#39;</span><span class="p">,</span>
-        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto</span><span class="p">:</span> <span class="s1">&#39;jina_pb2.SparseNdArrayProto&#39;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">sp_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coo&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">scipy.sparse</span>
-
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">proto</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">support_fmt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;coo&#39;</span><span class="p">,</span> <span class="s1">&#39;bsr&#39;</span><span class="p">,</span> <span class="s1">&#39;csc&#39;</span><span class="p">,</span> <span class="s1">&#39;csr&#39;</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">sp_format</span> <span class="ow">in</span> <span class="n">support_fmt</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">spmat_fn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sp_format</span><span class="si">}</span><span class="s1">_matrix&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sp_format</span><span class="si">}</span><span class="s1"> sparse matrix is not supported, please choose one of those: </span><span class="si">{</span><span class="n">support_fmt</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sp_format</span><span class="si">}</span><span class="s1"> sparse matrix is not supported, please choose one of those: </span><span class="si">{</span><span class="n">support_fmt</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SparseNdArray.sparse_constructor"><a class="viewcode-back" href="../../../../../../api/jina.types.ndarray.sparse.scipy/#jina.types.ndarray.sparse.scipy.SparseNdArray.sparse_constructor">[docs]</a>    <span class="k">def</span> <span class="nf">sparse_constructor</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;scipy.sparse.spmatrix&#39;</span><span class="p">:</span>
+<div class="viewcode-block" id="SparseNdArray.sparse_constructor"><a class="viewcode-back" href="../../../../../../api/jina.types.ndarray.sparse.scipy/#jina.types.ndarray.sparse.scipy.SparseNdArray.sparse_constructor">[docs]</a>    <span class="k">def</span> <span class="nf">sparse_constructor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="s1">&#39;np.ndarray&#39;</span><span class="p">,</span>
+                           <span class="n">shape</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;scipy.sparse.spmatrix&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sparse NdArray constructor for scipy.sparse.spmatrix.</span>
 
@@ -392,9 +386,7 @@
 <span class="sd">        :return: SparseTensor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;scipy backend only supports ndim=2 sparse matrix, given </span><span class="si">{</span><span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;scipy backend only supports ndim=2 sparse matrix, given </span><span class="si">{</span><span class="n">indices</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spmat_fn</span><span class="p">((</span><span class="n">values</span><span class="p">,</span> <span class="n">indices</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SparseNdArray.sparse_parser"><a class="viewcode-back" href="../../../../../../api/jina.types.ndarray.sparse.scipy/#jina.types.ndarray.sparse.scipy.SparseNdArray.sparse_parser">[docs]</a>    <span class="k">def</span> <span class="nf">sparse_parser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="s1">&#39;scipy.sparse.spmatrix&#39;</span><span class="p">):</span>
@@ -405,11 +397,9 @@
 <span class="sd">        :return: a Dict with three entries {&#39;indices&#39;: ..., &#39;values&#39;:..., &#39;shape&#39;:...}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">v</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">tocoo</span><span class="p">()</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;indices&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">col</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-            <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-            <span class="s1">&#39;shape&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
-        <span class="p">}</span></div></div>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;indices&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">col</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+                <span class="s1">&#39;shape&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">}</span></div></div>
 </pre></div>
 
            </div>
@@ -542,7 +532,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

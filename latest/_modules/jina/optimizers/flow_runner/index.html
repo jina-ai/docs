@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.optimizers.flow_runner &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.optimizers.flow_runner &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -359,7 +363,7 @@
 <span class="sd">        :param trial_parameters: Parameters to be used as context</span>
 <span class="sd">        :param workspace: Directory to be used for the flows</span>
 <span class="sd">        :param callback: Callback that will be called by the Flows. Should store the evaluation results.</span>
-<span class="sd">        :param kwargs: Further arguments passed to the Flow(s) as `context`</span>
+<span class="sd">        :param **kwargs: Further arguments passed to the Flow(s) as `context`</span>
 <span class="sd">        :raises NotImplementedError: :class:`FlowRunner` is just an interface. Please use any implemented subclass.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
@@ -374,7 +378,7 @@
         <span class="n">documents</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
         <span class="n">request_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">execution_method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">documents_parameter_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;inputs&#39;</span><span class="p">,</span>
+        <span class="n">documents_parameter_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;input_fn&#39;</span><span class="p">,</span>
         <span class="n">overwrite_workspace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -441,14 +445,7 @@
         <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Running method of :class:`SingleFlowRunner`.</span>
 
-<span class="sd">        :param trial_parameters: parameters need to be tried</span>
-<span class="sd">        :param workspace: path of workspace</span>
-<span class="sd">        :param callback: callback function</span>
-<span class="sd">        :param kwargs: keyword argument</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setup_workspace</span><span class="p">(</span><span class="n">workspace</span><span class="p">)</span>
         <span class="n">additional_arguments</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_documents_parameter_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_documents</span><span class="p">}</span>
         <span class="n">additional_arguments</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -480,14 +477,6 @@
         <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Running method of :class:`MultiFlowRunner`.</span>
-
-<span class="sd">        :param trial_parameters: parameters need to be tried</span>
-<span class="sd">        :param workspace: path of workspace</span>
-<span class="sd">        :param callback: callback function</span>
-<span class="sd">        :param kwargs: keyword argument</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">flow</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">flows</span><span class="p">:</span>
             <span class="n">flow</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">trial_parameters</span><span class="p">,</span> <span class="n">workspace</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 </pre></div>
@@ -622,7 +611,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

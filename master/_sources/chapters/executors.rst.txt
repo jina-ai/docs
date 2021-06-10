@@ -1,5 +1,5 @@
 ==================================
-Jina Executors and How to Use Them
+Executors and How to Use Them
 ==================================
 
 .. meta::

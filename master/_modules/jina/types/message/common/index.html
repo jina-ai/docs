@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.types.message.common &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.types.message.common &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 68 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -336,9 +340,7 @@
 <span class="kn">from</span> <span class="nn">..request</span> <span class="kn">import</span> <span class="n">Request</span>
 <span class="kn">from</span> <span class="nn">...proto</span> <span class="kn">import</span> <span class="n">jina_pb2</span>
 
-<span class="n">_available_commands</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-    <span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="o">.</span><span class="n">ControlRequestProto</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">enum_values_by_name</span>
-<span class="p">)</span>
+<span class="n">_available_commands</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="o">.</span><span class="n">ControlRequestProto</span><span class="o">.</span><span class="n">DESCRIPTOR</span><span class="o">.</span><span class="n">enum_values_by_name</span><span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ControlMessage&#39;</span><span class="p">]</span>
 
@@ -347,34 +349,22 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class of the protobuf message.</span>
 
-<span class="sd">    :param command: Command with string content. (e.g. &#39;IDLE&#39;, &#39;CANCEL&#39;, &#39;TERMINATE&#39;, &#39;STATUS&#39;)</span>
+<span class="sd">    :param command: Command with string content. (e.g. &#39;IDLE&#39;, &#39;TERMINATE&#39;, &#39;STATUS&#39;)</span>
 <span class="sd">    :param pod_name: Name of the current pod.</span>
 <span class="sd">    :param identity: The identity of the current pod</span>
-<span class="sd">    :param args: Additional positional arguments which are just used for the parent initialization</span>
-<span class="sd">    :param kwargs: Additional keyword arguments which are just used for the parent initialization</span>
+<span class="sd">    :param args: Additional positional arguments.</span>
+<span class="sd">    :param kwargs: Additional keyword arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pod_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ctl&#39;</span><span class="p">,</span> <span class="n">identity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pod_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;ctl&#39;</span><span class="p">,</span> <span class="n">identity</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set constructor method.&quot;&quot;&quot;</span>
         <span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">_available_commands</span><span class="p">:</span>
-            <span class="n">req</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
-                <span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="o">.</span><span class="n">ControlRequestProto</span><span class="p">,</span> <span class="n">command</span>
-            <span class="p">)</span>
+            <span class="n">req</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">jina_pb2</span><span class="o">.</span><span class="n">RequestProto</span><span class="o">.</span><span class="n">ControlRequestProto</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;command &quot;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&quot; is not supported, must be one of </span><span class="si">{</span><span class="n">_available_commands</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="kc">None</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">pod_name</span><span class="o">=</span><span class="n">pod_name</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
-        <span class="n">req</span><span class="o">.</span><span class="n">request_type</span> <span class="o">=</span> <span class="s1">&#39;control&#39;</span>
-        <span class="n">args</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
-            <span class="n">req</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
-
-        <span class="n">req</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">pod_name</span><span class="p">])</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;command &quot;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="s1">&quot; is not supported, must be one of </span><span class="si">{</span><span class="n">_available_commands</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">pod_name</span><span class="o">=</span><span class="n">pod_name</span><span class="p">,</span> <span class="n">identity</span><span class="o">=</span><span class="n">identity</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">req</span><span class="o">.</span><span class="n">request_type</span> <span class="o">=</span> <span class="s1">&#39;control&#39;</span></div>
 </pre></div>
 
            </div>
@@ -507,7 +497,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 17, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

@@ -1,5 +1,5 @@
 ===========================
-Jina's Primitive Data Types
+Primitive Data Types
 ===========================
 
 .. meta::

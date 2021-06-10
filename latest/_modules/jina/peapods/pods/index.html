@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.peapods.pods &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.peapods.pods &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -333,402 +337,130 @@
 <span></span><span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (c) 2020 Jina AI Limited. All rights reserved.&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache-2.0&quot;</span>
 
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">abstractmethod</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">from</span> <span class="nn">argparse</span> <span class="kn">import</span> <span class="n">Namespace</span>
 <span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">ExitStack</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Set</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Set</span>
 
-<span class="kn">from</span> <span class="nn">jina.peapods.zmq</span> <span class="kn">import</span> <span class="n">send_ctrl_message</span>
-<span class="kn">from</span> <span class="nn">jina.types.message.dump</span> <span class="kn">import</span> <span class="n">DumpMessage</span>
+<span class="kn">from</span> <span class="nn">.helper</span> <span class="kn">import</span> <span class="n">_set_peas_args</span><span class="p">,</span> <span class="n">_set_after_to_pass</span><span class="p">,</span> <span class="n">_copy_to_head_args</span><span class="p">,</span> <span class="n">_copy_to_tail_args</span><span class="p">,</span> <span class="n">_fill_in_host</span>
 <span class="kn">from</span> <span class="nn">..peas</span> <span class="kn">import</span> <span class="n">BasePea</span>
-<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">__default_host__</span>
-<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">helper</span>
-<span class="kn">from</span> <span class="nn">...enums</span> <span class="kn">import</span> <span class="n">SchedulerType</span><span class="p">,</span> <span class="n">PodRoleType</span><span class="p">,</span> <span class="n">SocketType</span><span class="p">,</span> <span class="n">PeaRoleType</span><span class="p">,</span> <span class="n">PollingType</span>
-<span class="kn">from</span> <span class="nn">...helper</span> <span class="kn">import</span> <span class="n">get_public_ip</span><span class="p">,</span> <span class="n">get_internal_ip</span><span class="p">,</span> <span class="n">random_identity</span>
-<span class="kn">from</span> <span class="nn">...types.message.common</span> <span class="kn">import</span> <span class="n">ControlMessage</span>
+<span class="kn">from</span> <span class="nn">...enums</span> <span class="kn">import</span> <span class="o">*</span>
 
 
-<div class="viewcode-block" id="ExitFIFO"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.ExitFIFO">[docs]</a><span class="k">class</span> <span class="nc">ExitFIFO</span><span class="p">(</span><span class="n">ExitStack</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ExitFIFO changes the exiting order of exitStack to turn it into FIFO.</span>
-
-<span class="sd">    .. note::</span>
-<span class="sd">    The `__exit__` method is copied literally from `ExitStack` and changed the call:</span>
-<span class="sd">    `is_sync, cb = self._exit_callbacks.pop()` to `is_sync, cb = self._exit_callbacks.popleft()`</span>
-
+<div class="viewcode-block" id="BasePod"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod">[docs]</a><span class="k">class</span> <span class="nc">BasePod</span><span class="p">(</span><span class="n">ExitStack</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A BasePod is a immutable set of peas, which run in parallel. They share the same input and output socket.</span>
+<span class="sd">    Internally, the peas can run with the process/thread backend. They can be also run in their own containers</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc_details</span><span class="p">):</span>
-        <span class="n">received_exc</span> <span class="o">=</span> <span class="n">exc_details</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;argparse.Namespace&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span> <span class="n">needs</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 
-        <span class="c1"># We manipulate the exception state so it behaves as though</span>
-        <span class="c1"># we were actually nesting multiple with statements</span>
-        <span class="n">frame_exc</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">def</span> <span class="nf">_fix_exception_context</span><span class="p">(</span><span class="n">new_exc</span><span class="p">,</span> <span class="n">old_exc</span><span class="p">):</span>
-            <span class="c1"># Context may not be correct, so find the end of the chain</span>
-            <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">exc_context</span> <span class="o">=</span> <span class="n">new_exc</span><span class="o">.</span><span class="n">__context__</span>
-                <span class="k">if</span> <span class="n">exc_context</span> <span class="ow">is</span> <span class="n">old_exc</span><span class="p">:</span>
-                    <span class="c1"># Context is already set correctly (see issue 20317)</span>
-                    <span class="k">return</span>
-                <span class="k">if</span> <span class="n">exc_context</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">exc_context</span> <span class="ow">is</span> <span class="n">frame_exc</span><span class="p">:</span>
-                    <span class="k">break</span>
-                <span class="n">new_exc</span> <span class="o">=</span> <span class="n">exc_context</span>
-            <span class="c1"># Change the end of the chain to point to the exception</span>
-            <span class="c1"># we expect it to reference</span>
-            <span class="n">new_exc</span><span class="o">.</span><span class="n">__context__</span> <span class="o">=</span> <span class="n">old_exc</span>
-
-        <span class="c1"># Callbacks are invoked in LIFO order to match the behaviour of</span>
-        <span class="c1"># nested context managers</span>
-        <span class="n">suppressed_exc</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="n">pending_raise</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exit_callbacks</span><span class="p">:</span>
-            <span class="n">is_sync</span><span class="p">,</span> <span class="n">cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exit_callbacks</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-            <span class="k">assert</span> <span class="n">is_sync</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">cb</span><span class="p">(</span><span class="o">*</span><span class="n">exc_details</span><span class="p">):</span>
-                    <span class="n">suppressed_exc</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="n">pending_raise</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="n">exc_details</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="n">new_exc_details</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
-                <span class="c1"># simulate the stack of exceptions by setting the context</span>
-                <span class="n">_fix_exception_context</span><span class="p">(</span><span class="n">new_exc_details</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">exc_details</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">pending_raise</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">exc_details</span> <span class="o">=</span> <span class="n">new_exc_details</span>
-        <span class="k">if</span> <span class="n">pending_raise</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="c1"># bare &quot;raise exc_details[1]&quot; replaces our carefully</span>
-                <span class="c1"># set-up context</span>
-                <span class="n">fixed_ctx</span> <span class="o">=</span> <span class="n">exc_details</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">__context__</span>
-                <span class="k">raise</span> <span class="n">exc_details</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">BaseException</span><span class="p">:</span>
-                <span class="n">exc_details</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">__context__</span> <span class="o">=</span> <span class="n">fixed_ctx</span>
-                <span class="k">raise</span>
-        <span class="k">return</span> <span class="n">received_exc</span> <span class="ow">and</span> <span class="n">suppressed_exc</span></div>
-
-
-<div class="viewcode-block" id="BasePod"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod">[docs]</a><span class="k">class</span> <span class="nc">BasePod</span><span class="p">(</span><span class="n">ExitFIFO</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A BasePod is an immutable set of peas. They share the same input and output socket.</span>
-<span class="sd">    Internally, the peas can run with the process/thread backend.</span>
-<span class="sd">    They can be also run in their own containers on remote machines.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Namespace&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span> <span class="n">needs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">):</span>
+<span class="sd">        :param args: arguments parsed from the CLI</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_conditional_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">needs</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">needs</span> <span class="k">if</span> <span class="n">needs</span> <span class="k">else</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="p">)</span>  <span class="c1">#: used in the :class:`jina.flow.Flow` to build the graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs</span> <span class="o">=</span> <span class="n">needs</span> <span class="k">if</span> <span class="n">needs</span> <span class="k">else</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1">#: used in the :class:`jina.flow.Flow` to build the graph</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">peas</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[&#39;BasePea&#39;]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deducted_head</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deducted_tail</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="BasePod.start"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Start to run all :class:`BasePea` in this BasePod.</span>
-
-<span class="sd">        .. note::</span>
-<span class="sd">            If one of the :class:`BasePea` fails to start, make sure that all of them</span>
-<span class="sd">            are properly closed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="BasePod.close"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Stop all :class:`BasePea` in this BasePod.</span>
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_set_conditional_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">pod_role</span> <span class="o">==</span> <span class="n">PodRoleType</span><span class="o">.</span><span class="n">GATEWAY</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">restful</span><span class="p">:</span>
-                <span class="n">args</span><span class="o">.</span><span class="n">runtime_cls</span> <span class="o">=</span> <span class="s1">&#39;RESTRuntime&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">args</span><span class="o">.</span><span class="n">runtime_cls</span> <span class="o">=</span> <span class="s1">&#39;GRPCRuntime&#39;</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">role</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;PodRoleType&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the role of this :class:`BasePod`.</span>
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pod_role</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;The name of this :class:`BasePod`.</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">name</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">host_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the host_in of this pod</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">host_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the host_out of this pod</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">address_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the full incoming address of this pod</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">port_in</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">socket_in</span><span class="si">!s}</span><span class="s1">)&#39;</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">address_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the full outgoing address of this pod</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">port_out</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">socket_out</span><span class="si">!s}</span><span class="s1">)&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_copy_to_head_args</span><span class="p">(</span>
-        <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">polling_type</span><span class="p">:</span> <span class="n">PollingType</span><span class="p">,</span> <span class="n">as_router</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Namespace</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the outgoing args of the head router</span>
-
-<span class="sd">        :param args: basic arguments</span>
-<span class="sd">        :param polling_type: polling_type can be all or any</span>
-<span class="sd">        :param as_router: if true, router configuration is applied</span>
-<span class="sd">        :return: enriched head arguments</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">_head_args</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="n">_head_args</span><span class="o">.</span><span class="n">polling</span> <span class="o">=</span> <span class="n">polling_type</span>
-        <span class="n">_head_args</span><span class="o">.</span><span class="n">port_ctrl</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">random_port</span><span class="p">()</span>
-        <span class="n">_head_args</span><span class="o">.</span><span class="n">port_out</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">random_port</span><span class="p">()</span>
-        <span class="n">_head_args</span><span class="o">.</span><span class="n">uses</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">polling_type</span><span class="o">.</span><span class="n">is_push</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">scheduling</span> <span class="o">==</span> <span class="n">SchedulerType</span><span class="o">.</span><span class="n">ROUND_ROBIN</span><span class="p">:</span>
-                <span class="n">_head_args</span><span class="o">.</span><span class="n">socket_out</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PUSH_BIND</span>
-            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">scheduling</span> <span class="o">==</span> <span class="n">SchedulerType</span><span class="o">.</span><span class="n">LOAD_BALANCE</span><span class="p">:</span>
-                <span class="n">_head_args</span><span class="o">.</span><span class="n">socket_out</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">ROUTER_BIND</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">_head_args</span><span class="o">.</span><span class="n">socket_out</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PUB_BIND</span>
-        <span class="k">if</span> <span class="n">as_router</span><span class="p">:</span>
-            <span class="n">_head_args</span><span class="o">.</span><span class="n">uses</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">uses_before</span> <span class="ow">or</span> <span class="s1">&#39;_pass&#39;</span>
-
-        <span class="k">if</span> <span class="n">as_router</span><span class="p">:</span>
-            <span class="n">_head_args</span><span class="o">.</span><span class="n">pea_role</span> <span class="o">=</span> <span class="n">PeaRoleType</span><span class="o">.</span><span class="n">HEAD</span>
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                <span class="n">_head_args</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">/head&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">_head_args</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;head&#39;</span>
-
-        <span class="c1"># in any case, if header is present, it represent this Pod to consume `num_part`</span>
-        <span class="c1"># the following peas inside the pod will have num_part=1</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">num_part</span> <span class="o">=</span> <span class="mi">1</span>
-
-        <span class="k">return</span> <span class="n">_head_args</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_copy_to_tail_args</span><span class="p">(</span>
-        <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">polling_type</span><span class="p">:</span> <span class="n">PollingType</span><span class="p">,</span> <span class="n">as_router</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Namespace</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the incoming args of the tail router</span>
-
-<span class="sd">        :param args: configuration for the connection</span>
-<span class="sd">        :param polling_type: polling type can be any or all</span>
-<span class="sd">        :param as_router: if true, add router configuration</span>
-<span class="sd">        :return: enriched arguments</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_tail_args</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="n">_tail_args</span><span class="o">.</span><span class="n">polling_type</span> <span class="o">=</span> <span class="n">polling_type</span>
-        <span class="n">_tail_args</span><span class="o">.</span><span class="n">port_in</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">random_port</span><span class="p">()</span>
-        <span class="n">_tail_args</span><span class="o">.</span><span class="n">port_ctrl</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">random_port</span><span class="p">()</span>
-        <span class="n">_tail_args</span><span class="o">.</span><span class="n">socket_in</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PULL_BIND</span>
-        <span class="n">_tail_args</span><span class="o">.</span><span class="n">uses</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="n">as_router</span><span class="p">:</span>
-            <span class="n">_tail_args</span><span class="o">.</span><span class="n">uses</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">uses_after</span> <span class="ow">or</span> <span class="s1">&#39;_pass&#39;</span>
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                <span class="n">_tail_args</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">/tail&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">_tail_args</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;tail&#39;</span>
-            <span class="n">_tail_args</span><span class="o">.</span><span class="n">pea_role</span> <span class="o">=</span> <span class="n">PeaRoleType</span><span class="o">.</span><span class="n">TAIL</span>
-            <span class="n">_tail_args</span><span class="o">.</span><span class="n">num_part</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">polling_type</span><span class="o">.</span><span class="n">is_push</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">parallel</span>
-
-        <span class="k">return</span> <span class="n">_tail_args</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_fill_in_host</span><span class="p">(</span><span class="n">bind_args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">,</span> <span class="n">connect_args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the host address for ``connect_args``</span>
-
-<span class="sd">        :param bind_args: configuration for the host ip binding</span>
-<span class="sd">        :param connect_args: configuration for the host ip connection</span>
-<span class="sd">        :return: host ip</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">platform</span>
-
-        <span class="c1"># by default __default_host__ is 0.0.0.0</span>
-
-        <span class="c1"># is BIND at local</span>
-        <span class="n">bind_local</span> <span class="o">=</span> <span class="n">bind_args</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="n">__default_host__</span>
-
-        <span class="c1"># is CONNECT at local</span>
-        <span class="n">conn_local</span> <span class="o">=</span> <span class="n">connect_args</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="n">__default_host__</span>
-
-        <span class="c1"># is CONNECT inside docker?</span>
-        <span class="n">conn_docker</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
-            <span class="n">connect_args</span><span class="p">,</span> <span class="s1">&#39;uses&#39;</span><span class="p">,</span> <span class="kc">None</span>
-        <span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">connect_args</span><span class="o">.</span><span class="n">uses</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;docker://&#39;</span><span class="p">)</span>
-
-        <span class="c1"># is BIND &amp; CONNECT all on the same remote?</span>
-        <span class="n">bind_conn_same_remote</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="n">bind_local</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conn_local</span> <span class="ow">and</span> <span class="p">(</span><span class="n">bind_args</span><span class="o">.</span><span class="n">host</span> <span class="o">==</span> <span class="n">connect_args</span><span class="o">.</span><span class="n">host</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">platform</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;linux&#39;</span><span class="p">,</span> <span class="s1">&#39;linux2&#39;</span><span class="p">):</span>
-            <span class="n">local_host</span> <span class="o">=</span> <span class="n">__default_host__</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">local_host</span> <span class="o">=</span> <span class="s1">&#39;host.docker.internal&#39;</span>
-
-        <span class="c1"># pod1 in local, pod2 in local (conn_docker if pod2 in docker)</span>
-        <span class="k">if</span> <span class="n">bind_local</span> <span class="ow">and</span> <span class="n">conn_local</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">local_host</span> <span class="k">if</span> <span class="n">conn_docker</span> <span class="k">else</span> <span class="n">__default_host__</span>
-
-        <span class="c1"># pod1 and pod2 are remote but they are in the same host (pod2 is local w.r.t pod1)</span>
-        <span class="k">if</span> <span class="n">bind_conn_same_remote</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">local_host</span> <span class="k">if</span> <span class="n">conn_docker</span> <span class="k">else</span> <span class="n">__default_host__</span>
-
-        <span class="c1"># From here: Missing consideration of docker</span>
-        <span class="k">if</span> <span class="n">bind_local</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conn_local</span><span class="p">:</span>
-            <span class="c1"># in this case we are telling CONN (at remote) our local ip address</span>
-            <span class="k">return</span> <span class="n">get_public_ip</span><span class="p">()</span> <span class="k">if</span> <span class="n">bind_args</span><span class="o">.</span><span class="n">expose_public</span> <span class="k">else</span> <span class="n">get_internal_ip</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># in this case we (at local) need to know about remote the BIND address</span>
-            <span class="k">return</span> <span class="n">bind_args</span><span class="o">.</span><span class="n">host</span>
-
-<div class="viewcode-block" id="BasePod.head_args"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.head_args">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">head_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the arguments for the `head` of this BasePod.</span>
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span></div>
-
-<div class="viewcode-block" id="BasePod.tail_args"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.tail_args">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">tail_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the arguments for the `tail` of this BasePod.</span>
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="o">...</span></div>
-
-<div class="viewcode-block" id="BasePod.join"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.join">[docs]</a>    <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wait until all pods and peas exit.&quot;&quot;&quot;</span>
-        <span class="o">...</span></div></div>
-
-
-<div class="viewcode-block" id="Pod"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.Pod">[docs]</a><span class="k">class</span> <span class="nc">Pod</span><span class="p">(</span><span class="n">BasePod</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A BasePod is an immutable set of peas, which run in parallel. They share the same input and output socket.</span>
-<span class="sd">    Internally, the peas can run with the process/thread backend. They can be also run in their own containers</span>
-<span class="sd">    :param args: arguments parsed from the CLI</span>
-<span class="sd">    :param needs: pod names of preceding pods, the output of these pods are going into the input of this pod</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s1">&#39;Namespace&#39;</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span> <span class="n">needs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">needs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">peas</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># type: List[&#39;BasePea&#39;]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
             <span class="c1"># This is used when a Pod is created in a remote context, where peas &amp; their connections are already given.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">role</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;PodRoleType&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the role of this :class:`BasePod`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">pod_role</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_singleton</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return if the Pod contains only a single Pea</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Return if the Pod contains only a single Pea &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">first_pea_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Namespace</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the first non-head/tail pea&#39;s args</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># note this will be never out of boundary</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;The name of this :class:`BasePod`. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">port_expose</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the grpc port number</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the grpc port number &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_pea_args</span><span class="o">.</span><span class="n">port_expose</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">host</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the host name of this Pod</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the host name of this Pod&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_pea_args</span><span class="o">.</span><span class="n">host</span>
 
-    <span class="k">def</span> <span class="nf">_parse_args</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">],</span> <span class="n">Namespace</span><span class="p">]]]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_base_pod_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">host_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the host_in of this pod&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">host_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the host_out of this pod&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">address_in</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the full incoming address of this pod&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">host_in</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">port_in</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="o">.</span><span class="n">socket_in</span><span class="si">!s}</span><span class="s1">)&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">address_out</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Get the full outgoing address of this pod&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">host_out</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">port_out</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="o">.</span><span class="n">socket_out</span><span class="si">!s}</span><span class="s1">)&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">first_pea_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Namespace</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the first non-head/tail pea&#39;s args &quot;&quot;&quot;</span>
+        <span class="c1"># note this will be never out of boundary</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_parse_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">],</span> <span class="n">Namespace</span><span class="p">]]]:</span>
+        <span class="n">peas_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;head&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;tail&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;peas&#39;</span><span class="p">:</span> <span class="p">[]</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># reasons to separate head and tail from peas is that they</span>
+            <span class="c1"># can be deducted based on the previous and next pods</span>
+            <span class="n">_set_after_to_pass</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_copy_to_head_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="o">.</span><span class="n">is_push</span><span class="p">)</span>
+            <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_copy_to_tail_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">],</span> <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_before&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">uses_before</span> <span class="o">!=</span> <span class="s1">&#39;_pass&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_after&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">uses_after</span> <span class="o">!=</span> <span class="s1">&#39;_pass&#39;</span><span class="p">):</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">scheduling</span> <span class="o">=</span> <span class="n">SchedulerType</span><span class="o">.</span><span class="n">ROUND_ROBIN</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_before&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_copy_to_head_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="o">.</span><span class="n">is_push</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_after&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_copy_to_tail_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">peas_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">peas_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tail&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">args</span><span class="p">]</span>
+
+        <span class="c1"># note that peas_args[&#39;peas&#39;][0] exist either way and carries the original property</span>
+        <span class="k">return</span> <span class="n">peas_args</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">head_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the arguments for the `head` of this Pod.</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the arguments for the `head` of this BasePod. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -740,11 +472,7 @@
 
     <span class="nd">@head_args</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">head_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the arguments for the `head` of this Pod.</span>
-
-
-<span class="sd">        .. # noqa: DAR101</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set the arguments for the `head` of this BasePod. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -756,10 +484,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tail_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the arguments for the `tail` of this BasePod.</span>
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the arguments for the `tail` of this BasePod. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -771,10 +496,7 @@
 
     <span class="nd">@tail_args</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">tail_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set the arguments for the `tail` of this BasePod.</span>
-
-<span class="sd">        .. # noqa: DAR101</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Set the arguments for the `tail` of this BasePod. &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -786,249 +508,135 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get all arguments of all Peas in this BasePod.</span>
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span>
-            <span class="o">+</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span>
-        <span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_fifo_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Get all arguments of all Peas in this BasePod.</span>
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># For some reason, it seems that using `stack` and having `Head` started after the rest of Peas do not work and</span>
-        <span class="c1"># some messages are not received by the inner peas. That&#39;s why ExitFIFO is needed</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span>
-            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span>
-            <span class="o">+</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span>
-        <span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Get all arguments of all Peas in this BasePod. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span> <span class="o">+</span> \
+               <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="p">[])</span> <span class="o">+</span> \
+               <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_peas</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Get the number of running :class:`BasePea`</span>
-
-<span class="sd">        .. # noqa: DAR201</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Get the number of running :class:`BasePea`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_peas</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">num_peas</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span>
 
-    <span class="k">def</span> <span class="nf">_enter_pea</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pea</span><span class="p">:</span> <span class="s1">&#39;BasePea&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pea</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">pea</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_activate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># order is good. Activate from tail to head</span>
-        <span class="k">for</span> <span class="n">pea</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">pea</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">socket_in</span> <span class="o">==</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">DEALER_CONNECT</span><span class="p">:</span>
-                <span class="n">pea</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">activate</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">True</span>
-
-<div class="viewcode-block" id="Pod.start"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.Pod.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Start to run all :class:`BasePea` in this BasePod.</span>
-
-<span class="sd">        :return: started pod</span>
+<div class="viewcode-block" id="BasePod.start"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Start to run all :class:`BasePea` in this BasePod.</span>
 
 <span class="sd">        .. note::</span>
 <span class="sd">            If one of the :class:`BasePea` fails to start, make sure that all of them</span>
 <span class="sd">            are properly closed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;noblock_on_start&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fifo_args</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="p">:</span>
                 <span class="n">_args</span><span class="o">.</span><span class="n">noblock_on_start</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="n">BasePea</span><span class="p">(</span><span class="n">_args</span><span class="p">))</span>
             <span class="c1"># now rely on higher level to call `wait_start_success`</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fifo_args</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">_args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_args</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_enter_pea</span><span class="p">(</span><span class="n">BasePea</span><span class="p">(</span><span class="n">_args</span><span class="p">))</span>
-
-                <span class="bp">self</span><span class="o">.</span><span class="n">_activate</span><span class="p">()</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="k">raise</span>
             <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="Pod.wait_start_success"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.Pod.wait_start_success">[docs]</a>    <span class="k">def</span> <span class="nf">wait_start_success</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="BasePod.wait_start_success"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.wait_start_success">[docs]</a>    <span class="k">def</span> <span class="nf">wait_start_success</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Block until all peas starts successfully.</span>
 
-<span class="sd">        If not successful, it will raise an error hoping the outer function to catch it</span>
+<span class="sd">        If not success, it will raise an error hoping the outer function to catch it</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">noblock_on_start</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_start_success</span><span class="si">!r}</span><span class="s1"> should only be called when `noblock_on_start` is set to True&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">wait_start_success</span><span class="si">!r}</span><span class="s1"> should only be called when `noblock_on_start` is set to True&#39;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">:</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">wait_start_success</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_activate</span><span class="p">()</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">raise</span></div>
 
-<div class="viewcode-block" id="Pod.join"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.Pod.join">[docs]</a>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_enter_pea</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pea</span><span class="p">:</span> <span class="s1">&#39;BasePea&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pea</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enter_context</span><span class="p">(</span><span class="n">pea</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__exit__</span><span class="p">(</span><span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+<div class="viewcode-block" id="BasePod.join"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.join">[docs]</a>    <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wait until all peas exit&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">:</span>
                 <span class="n">p</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span> <span class="o">=</span> <span class="kc">False</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_set_conditional_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;pod_role&#39;</span> <span class="ow">in</span> <span class="n">args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">pod_role</span> <span class="o">==</span> <span class="n">PodRoleType</span><span class="o">.</span><span class="n">GATEWAY</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">restful</span><span class="p">:</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">runtime_cls</span> <span class="o">=</span> <span class="s1">&#39;RESTRuntime&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">runtime_cls</span> <span class="o">=</span> <span class="s1">&#39;GRPCRuntime&#39;</span>
+
+<div class="viewcode-block" id="BasePod.optimize_connect_to_tail_of"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.optimize_connect_to_tail_of">[docs]</a>    <span class="k">def</span> <span class="nf">optimize_connect_to_tail_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">incoming_pod</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Removes the `head` arguments to make sure that the Peas are connected directly to the</span>
+<span class="sd">        `tail` of the incoming pod.</span>
+
+<span class="sd">        :param incoming_pod: :class:`BasePod` that connects its tail to this :class:`BasePod` head</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">parallel</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span><span class="p">:</span>
+            <span class="c1"># keep the port_in and socket_in of prev_args</span>
+            <span class="c1"># only reset its output</span>
+            <span class="n">incoming_pod</span><span class="o">.</span><span class="n">tail_args</span> <span class="o">=</span> <span class="n">_copy_to_head_args</span><span class="p">(</span><span class="n">incoming_pod</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="o">.</span><span class="n">is_push</span><span class="p">,</span>
+                                                        <span class="n">as_router</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># update peas to receive from it</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="n">incoming_pod</span><span class="o">.</span><span class="n">tail_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tail_args</span><span class="p">)</span>
+            <span class="c1"># remove the head node</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># head is no longer a router anymore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deducted_head</span> <span class="o">=</span> <span class="n">incoming_pod</span><span class="o">.</span><span class="n">tail_args</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;the current pod has no head router, deducting the head is confusing&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasePod.optimize_connect_to_head_of"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.BasePod.optimize_connect_to_head_of">[docs]</a>    <span class="k">def</span> <span class="nf">optimize_connect_to_head_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outgoing_pod</span><span class="p">:</span> <span class="s1">&#39;BasePod&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Removes the `tail` arguments to make sure that the Peas are connected directly to the</span>
+<span class="sd">        `head` of the outgoing pod.</span>
+
+<span class="sd">        :param outgoing_pod: :class:`BasePod` that this :class:`BasePod` tries to send data to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">parallel</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span><span class="p">:</span>
+            <span class="c1"># keep the port_out and socket_out of next_arts</span>
+            <span class="c1"># only reset its input</span>
+            <span class="n">outgoing_pod</span><span class="o">.</span><span class="n">head_args</span> <span class="o">=</span> <span class="n">_copy_to_tail_args</span><span class="p">(</span><span class="n">outgoing_pod</span><span class="o">.</span><span class="n">head_args</span><span class="p">,</span>
+                                                        <span class="n">as_router</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># update peas to receive from it</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_set_peas_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_args</span><span class="p">,</span> <span class="n">outgoing_pod</span><span class="o">.</span><span class="n">head_args</span><span class="p">)</span>
+            <span class="c1"># remove the tail node</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peas_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># tail is no longer a router anymore</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deducted_tail</span> <span class="o">=</span> <span class="n">outgoing_pod</span><span class="o">.</span><span class="n">head_args</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;the current pod has no tail router, deducting the tail is confusing&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Checks if Pod is ready</span>
-
+        <span class="sd">&quot;&quot;&quot;Checks if Pod is read.</span>
 <span class="sd">        .. note::</span>
 <span class="sd">            A Pod is ready when all the Peas it contains are ready</span>
-
-
-<span class="sd">        .. # noqa: DAR201</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">is_ready</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_activated</span>
-
-    <span class="k">def</span> <span class="nf">_set_after_to_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="c1"># TODO: check if needed</span>
-        <span class="c1"># remark 1: i think it&#39;s related to route driver.</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;polling&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="o">.</span><span class="n">is_push</span><span class="p">:</span>
-            <span class="c1"># ONLY reset when it is push</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">uses_after</span> <span class="o">=</span> <span class="s1">&#39;_pass&#39;</span>
-
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_set_peas_args</span><span class="p">(</span>
-        <span class="n">args</span><span class="p">:</span> <span class="n">Namespace</span><span class="p">,</span>
-        <span class="n">head_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Namespace</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">tail_args</span><span class="p">:</span> <span class="n">Namespace</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Namespace</span><span class="p">]:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">_host_list</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">peas_hosts</span>
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">peas_hosts</span>
-            <span class="k">else</span> <span class="p">[</span>
-                <span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
-            <span class="p">]</span>
-        <span class="p">)</span>
-
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">pea_host</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">parallel</span><span class="p">),</span> <span class="n">cycle</span><span class="p">(</span><span class="n">_host_list</span><span class="p">)):</span>
-            <span class="n">_args</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-            <span class="n">_args</span><span class="o">.</span><span class="n">pea_id</span> <span class="o">=</span> <span class="n">idx</span>
-
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">parallel</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">_args</span><span class="o">.</span><span class="n">pea_role</span> <span class="o">=</span> <span class="n">PeaRoleType</span><span class="o">.</span><span class="n">PARALLEL</span>
-                <span class="n">_args</span><span class="o">.</span><span class="n">identity</span> <span class="o">=</span> <span class="n">random_identity</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">_args</span><span class="o">.</span><span class="n">peas_hosts</span><span class="p">:</span>
-                    <span class="n">_args</span><span class="o">.</span><span class="n">host</span> <span class="o">=</span> <span class="n">pea_host</span>
-                <span class="k">if</span> <span class="n">_args</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-                    <span class="n">_args</span><span class="o">.</span><span class="n">name</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;/</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">_args</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">_args</span><span class="o">.</span><span class="n">pea_role</span> <span class="o">=</span> <span class="n">PeaRoleType</span><span class="o">.</span><span class="n">SINGLETON</span>
-
-            <span class="k">if</span> <span class="n">head_args</span><span class="p">:</span>
-                <span class="n">_args</span><span class="o">.</span><span class="n">port_in</span> <span class="o">=</span> <span class="n">head_args</span><span class="o">.</span><span class="n">port_out</span>
-            <span class="k">if</span> <span class="n">tail_args</span><span class="p">:</span>
-                <span class="n">_args</span><span class="o">.</span><span class="n">port_out</span> <span class="o">=</span> <span class="n">tail_args</span><span class="o">.</span><span class="n">port_in</span>
-            <span class="n">_args</span><span class="o">.</span><span class="n">port_ctrl</span> <span class="o">=</span> <span class="n">helper</span><span class="o">.</span><span class="n">random_port</span><span class="p">()</span>
-            <span class="n">_args</span><span class="o">.</span><span class="n">socket_out</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PUSH_CONNECT</span>
-            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="o">.</span><span class="n">is_push</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">scheduling</span> <span class="o">==</span> <span class="n">SchedulerType</span><span class="o">.</span><span class="n">ROUND_ROBIN</span><span class="p">:</span>
-                    <span class="n">_args</span><span class="o">.</span><span class="n">socket_in</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PULL_CONNECT</span>
-                <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">scheduling</span> <span class="o">==</span> <span class="n">SchedulerType</span><span class="o">.</span><span class="n">LOAD_BALANCE</span><span class="p">:</span>
-                    <span class="n">_args</span><span class="o">.</span><span class="n">socket_in</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">DEALER_CONNECT</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">scheduling</span><span class="si">}</span><span class="s1"> is not supported as a SchedulerType!&#39;</span>
-                    <span class="p">)</span>
-
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">_args</span><span class="o">.</span><span class="n">socket_in</span> <span class="o">=</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">SUB_CONNECT</span>
-            <span class="k">if</span> <span class="n">head_args</span><span class="p">:</span>
-                <span class="n">_args</span><span class="o">.</span><span class="n">host_in</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_fill_in_host</span><span class="p">(</span>
-                    <span class="n">bind_args</span><span class="o">=</span><span class="n">head_args</span><span class="p">,</span> <span class="n">connect_args</span><span class="o">=</span><span class="n">_args</span>
-                <span class="p">)</span>
-            <span class="k">if</span> <span class="n">tail_args</span><span class="p">:</span>
-                <span class="n">_args</span><span class="o">.</span><span class="n">host_out</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_fill_in_host</span><span class="p">(</span>
-                    <span class="n">bind_args</span><span class="o">=</span><span class="n">tail_args</span><span class="p">,</span> <span class="n">connect_args</span><span class="o">=</span><span class="n">_args</span>
-                <span class="p">)</span>
-
-            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span>
-
-    <span class="k">def</span> <span class="nf">_parse_base_pod_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="n">parsed_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;head&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;tail&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;peas&#39;</span><span class="p">:</span> <span class="p">[]}</span>
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;parallel&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># reasons to separate head and tail from peas is that they</span>
-            <span class="c1"># can be deducted based on the previous and next pods</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_copy_to_head_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="p">)</span>
-            <span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">BasePod</span><span class="o">.</span><span class="n">_copy_to_tail_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="p">)</span>
-            <span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_peas_args</span><span class="p">(</span>
-                <span class="n">args</span><span class="p">,</span>
-                <span class="n">head_args</span><span class="o">=</span><span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">],</span>
-                <span class="n">tail_args</span><span class="o">=</span><span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">],</span>
-            <span class="p">)</span>
-        <span class="k">elif</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_before&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">uses_before</span> <span class="o">!=</span> <span class="s1">&#39;_pass&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_after&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">uses_after</span> <span class="o">!=</span> <span class="s1">&#39;_pass&#39;</span>
-        <span class="p">):</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">scheduling</span> <span class="o">=</span> <span class="n">SchedulerType</span><span class="o">.</span><span class="n">ROUND_ROBIN</span>
-            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_before&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;head&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy_to_head_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s1">&#39;uses_after&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;tail&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copy_to_tail_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">polling</span><span class="p">)</span>
-            <span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_peas_args</span><span class="p">(</span>
-                <span class="n">args</span><span class="p">,</span>
-                <span class="n">head_args</span><span class="o">=</span><span class="n">parsed_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;head&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                <span class="n">tail_args</span><span class="o">=</span><span class="n">parsed_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tail&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_head_router</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_tail_router</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">parsed_args</span><span class="p">[</span><span class="s1">&#39;peas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">args</span><span class="p">]</span>
-
-        <span class="c1"># note that peas_args[&#39;peas&#39;][0] exist either way and carries the original property</span>
-        <span class="k">return</span> <span class="n">parsed_args</span>
-
-<div class="viewcode-block" id="Pod.dump"><a class="viewcode-back" href="../../../../api/jina.peapods.pods/#jina.peapods.pods.Pod.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pod_name</span><span class="p">,</span> <span class="n">dump_path</span><span class="p">,</span> <span class="n">shards</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Emit a Dump request to its Peas</span>
-
-<span class="sd">        :param pod_name: the pod to target</span>
-<span class="sd">        :param shards: the nr of shards in the dump</span>
-<span class="sd">        :param dump_path: the path to which to dump</span>
-<span class="sd">        :param timeout: time to wait (seconds)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">pea</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">pea</span><span class="o">.</span><span class="n">inner</span><span class="p">:</span>
-                <span class="n">send_ctrl_message</span><span class="p">(</span>
-                    <span class="n">pea</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">ctrl_addr</span><span class="p">,</span>
-                    <span class="n">ControlMessage</span><span class="p">(</span>
-                        <span class="n">command</span><span class="o">=</span><span class="s1">&#39;DUMP&#39;</span><span class="p">,</span>
-                        <span class="n">pod_name</span><span class="o">=</span><span class="n">pod_name</span><span class="p">,</span>
-                        <span class="n">args</span><span class="o">=</span><span class="p">{</span>
-                            <span class="s1">&#39;dump_path&#39;</span><span class="p">:</span> <span class="n">dump_path</span><span class="p">,</span>
-                            <span class="s1">&#39;shards&#39;</span><span class="p">:</span> <span class="n">shards</span><span class="p">,</span>
-                        <span class="p">},</span>
-                    <span class="p">),</span>
-                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
-                <span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">is_ready</span><span class="o">.</span><span class="n">is_set</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">peas</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
@@ -1161,7 +769,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

@@ -21,7 +21,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   
-  <title>jina.enums &mdash; Jina 1.2.5-master documentation</title>
+  <title>jina.enums &mdash; Jina 2.0.0rc5 documentation</title>
   
 
   
@@ -82,10 +82,14 @@
             
 
           <div class="dropdown version">
-            <button class="dropbtn version">1.2.5-master</button>
+            <button class="dropbtn version">2.0.0rc5</button>
             <div class="dropdown-content">
               
               <a class="dropdown-item" href="/master">master</a>
+              
+              <a class="dropdown-item" href="/v1.3.0">1.3.0</a>
+              
+              <a class="dropdown-item" href="/v1.2.4">1.2.4</a>
               
               <a class="dropdown-item" href="/v1.2.2">1.2.2</a>
               
@@ -255,8 +259,8 @@
 </ul>
 <p class="caption"><span class="caption-text">Indices and Tables</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 69 Executors in Jina</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 79 Drivers in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_exec/">List of 123 Executors in Jina</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../chapters/all_driver/">List of 62 Drivers in Jina</a></li>
 </ul>
 
             
@@ -338,6 +342,19 @@
 <span class="sd">.. highlight:: yaml</span>
 <span class="sd">.. code-block:: yaml</span>
 
+<span class="sd">    !Flow</span>
+<span class="sd">    with:</span>
+<span class="sd">      optimize_level: !FlowOptimizeLevel IGNORE_GATEWAY</span>
+<span class="sd">      # or</span>
+<span class="sd">      optimize_level: IGNORE_GATEWAY</span>
+<span class="sd">      #or</span>
+<span class="sd">      optimize_level: ignore_gateway</span>
+<span class="sd">      no_gateway: true</span>
+
+
+<span class="sd">.. highlight:: yaml</span>
+<span class="sd">.. code-block:: yaml</span>
+
 <span class="sd">      chunk_idx:</span>
 <span class="sd">        uses: index/chunk.yml</span>
 <span class="sd">        parallel: ${{PARALLEL}}</span>
@@ -358,12 +375,6 @@
     <span class="sd">&quot;&quot;&quot;The metaclass for BetterEnum.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Register a new EnumType</span>
-
-<span class="sd">        :param args: args passed to super()</span>
-<span class="sd">        :param kwargs: kwargs passed to super()</span>
-<span class="sd">        :return: the registry class</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">register_class</span><span class="p">(</span><span class="n">_cls</span><span class="p">)</span>
 
@@ -380,7 +391,6 @@
             <span class="n">reg_cls_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_registered_class&#39;</span><span class="p">,</span> <span class="n">reg_cls_set</span><span class="p">)</span>
         <span class="kn">from</span> <span class="nn">.jaml</span> <span class="kn">import</span> <span class="n">JAML</span>
-
         <span class="n">JAML</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span></div></div>
 
@@ -393,18 +403,11 @@
 
 <div class="viewcode-block" id="BetterEnum.from_string"><a class="viewcode-back" href="../../../api/jina.enums/#jina.enums.BetterEnum.from_string">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parse the enum from a string.</span>
-
-<span class="sd">        :param s: string representation of the enum value</span>
-<span class="sd">        :return: enum value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Parse the enum from a string.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1"> is not a valid enum for </span><span class="si">{</span><span class="bp">cls</span><span class="si">!r}</span><span class="s1">, must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1"> is not a valid enum for </span><span class="si">{</span><span class="bp">cls</span><span class="si">!r}</span><span class="s1">, must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_to_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">representer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
@@ -413,13 +416,8 @@
 <span class="sd">        .. note::</span>
 <span class="sd">            In principle, this should inherit from :class:`JAMLCompatible` directly,</span>
 <span class="sd">            however, this method is too simple and thus replaced the parent method.</span>
-<span class="sd">        :param representer: pyyaml representer</span>
-<span class="sd">        :param data: enum value</span>
-<span class="sd">        :return: yaml representation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">representer</span><span class="o">.</span><span class="n">represent_scalar</span><span class="p">(</span>
-            <span class="s1">&#39;tag:yaml.org,2002:str&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;&quot;&#39;</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">representer</span><span class="o">.</span><span class="n">represent_scalar</span><span class="p">(</span><span class="s1">&#39;!&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">constructor</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
@@ -428,9 +426,6 @@
 <span class="sd">        .. note::</span>
 <span class="sd">            In principle, this should inherit from :class:`JAMLCompatible` directly,</span>
 <span class="sd">            however, this method is too simple and thus replaced the parent method.</span>
-<span class="sd">        :param constructor: unused</span>
-<span class="sd">        :param node: node to derive the enum value from</span>
-<span class="sd">        :return: enum value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">)</span></div>
 
@@ -466,6 +461,14 @@
 <span class="sd">        :return: True if this :class:`PollingType` is requiring `block` protocol else False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="FlowOptimizeLevel"><a class="viewcode-back" href="../../../api/jina.enums/#jina.enums.FlowOptimizeLevel">[docs]</a><span class="k">class</span> <span class="nc">FlowOptimizeLevel</span><span class="p">(</span><span class="n">BetterEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The level of flow optimization.&quot;&quot;&quot;</span>
+
+    <span class="n">NONE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">IGNORE_GATEWAY</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">FULL</span> <span class="o">=</span> <span class="mi">2</span></div>
 
 
 <div class="viewcode-block" id="LogVerbosity"><a class="viewcode-back" href="../../../api/jina.enums/#jina.enums.LogVerbosity">[docs]</a><span class="k">class</span> <span class="nc">LogVerbosity</span><span class="p">(</span><span class="n">BetterEnum</span><span class="p">):</span>
@@ -539,7 +542,7 @@
             <span class="n">SocketType</span><span class="o">.</span><span class="n">PUSH_BIND</span><span class="p">:</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PULL_CONNECT</span><span class="p">,</span>
             <span class="n">SocketType</span><span class="o">.</span><span class="n">PUB_CONNECT</span><span class="p">:</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">SUB_BIND</span><span class="p">,</span>
             <span class="n">SocketType</span><span class="o">.</span><span class="n">PUB_BIND</span><span class="p">:</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">SUB_CONNECT</span><span class="p">,</span>
-            <span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_CONNECT</span><span class="p">:</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_BIND</span><span class="p">,</span>
+            <span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_CONNECT</span><span class="p">:</span> <span class="n">SocketType</span><span class="o">.</span><span class="n">PAIR_BIND</span>
         <span class="p">}[</span><span class="bp">self</span><span class="p">]</span></div>
 
 
@@ -634,9 +637,7 @@
 <span class="sd">        side-effect.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">IGNORE</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="mi">0</span>  <span class="c1">#: Ignore it, keep running all Drivers &amp; Executors logics in the sequel flow</span>
-    <span class="p">)</span>
+    <span class="n">IGNORE</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1">#: Ignore it, keep running all Drivers &amp; Executors logics in the sequel flow</span>
     <span class="n">SKIP_EXECUTOR</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1">#: Skip all Executors in the sequel, but drivers are still called</span>
     <span class="n">SKIP_HANDLE</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1">#: Skip all Drivers &amp; Executors in the sequel, only `pre_hook` and `post_hook` are called</span>
     <span class="n">THROW_EARLY</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1">#: Immediately throw the exception, the sequel flow will not be running at all</span></div>
@@ -689,82 +690,6 @@
 
     <span class="n">THREAD</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">PROCESS</span> <span class="o">=</span> <span class="mi">1</span></div>
-
-
-<div class="viewcode-block" id="EmbeddingClsType"><a class="viewcode-back" href="../../../api/jina.enums/#jina.enums.EmbeddingClsType">[docs]</a><span class="k">class</span> <span class="nc">EmbeddingClsType</span><span class="p">(</span><span class="n">BetterEnum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Enums for representing the type of embeddings supported.&quot;&quot;&quot;</span>
-
-    <span class="n">DENSE</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">SCIPY_COO</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">SCIPY_CSR</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">SCIPY_BSR</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">SCIPY_CSC</span> <span class="o">=</span> <span class="mi">4</span>
-    <span class="n">TORCH</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">TF</span> <span class="o">=</span> <span class="mi">6</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_sparse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check if is of sparse type</span>
-
-<span class="sd">        :return: True if the type is sparse</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check if is of dense type</span>
-
-<span class="sd">        :return: True if the type is dense</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_scipy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check if is of scipy sparse type</span>
-
-<span class="sd">        :return: True is of scipy sparse type</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_torch</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check if is of torch sparse type</span>
-
-<span class="sd">        :return: True is of torch sparse type</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">5</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_tf</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check if is of tf sparse type</span>
-
-<span class="sd">        :return: True is of tf sparse type</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">6</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">scipy_cls_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the specific scipy class type (coo, csr, csc, bsr)</span>
-
-<span class="sd">        :return: True is of scipy sparse type</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_scipy</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_scipy_stackable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return if the specific scipy class is stackable. (BSR and CSC when stacked are converted into COO)</span>
-
-<span class="sd">        :return: True is class is stackable</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="replace_enum_to_str"><a class="viewcode-back" href="../../../api/jina.enums/#jina.enums.replace_enum_to_str">[docs]</a><span class="k">def</span> <span class="nf">replace_enum_to_str</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
@@ -912,7 +837,7 @@
             
             &copy; Copyright Jina AI Limited. All rights reserved.
             <span class="lastupdated">
-        Last updated on May 16, 2021.
+        Last updated on Jun 10, 2021.
       </span>
 
         </p>

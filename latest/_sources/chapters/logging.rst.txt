@@ -1,5 +1,5 @@
 ==============================
-Configure Logging
+Configuring Logging
 ==============================
 
 .. meta::
