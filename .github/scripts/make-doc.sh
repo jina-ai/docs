@@ -69,7 +69,7 @@ elif [[ $1 == "release" ]]; then
   cd -
   cd ${HTML_DIR}
   rm -rf bak
-  echo docs.jina.ai > CNAME
+  echo docs1.jina.ai > CNAME
   git init
   git config --local user.email "dev-bot@jina.ai"
   git config --local user.name "Jina Dev Bot"
