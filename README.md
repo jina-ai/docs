@@ -1,3 +1,6 @@
+# THIS DOCUMENTATION IS DEPRECATED
+# PLEASE VISIT (https://docs.jina.ai/)[https://docs.jina.ai/]
+
 # Jina Documentation
 
 ![CD](https://github.com/jina-ai/docs/workflows/CD/badge.svg?branch=master)
