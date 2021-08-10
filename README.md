@@ -1,5 +1,5 @@
 # THIS DOCUMENTATION IS DEPRECATED
-# PLEASE VISIT (https://docs.jina.ai/)[https://docs.jina.ai/]
+# PLEASE VISIT [https://docs.jina.ai/](https://docs.jina.ai/)
 
 # Jina Documentation
 
